@@ -1,0 +1,20 @@
+{
+  "articles": [
+    {
+      "path": "about.html",
+      "title": "About this blog",
+      "description": "Some additional details about the blog",
+      "author": [],
+      "contents": "\n\n\n\n",
+      "last_modified": "2021-10-11T00:00:49+11:00"
+    },
+    {
+      "path": "index.html",
+      "title": "Un garçon pas comme les autres (Bayes)",
+      "author": [],
+      "contents": "\n\n\n\n",
+      "last_modified": "2021-10-11T00:00:50+11:00"
+    }
+  ],
+  "collections": ["posts/posts.json"]
+}

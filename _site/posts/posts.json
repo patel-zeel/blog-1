@@ -1,0 +1,19 @@
+[
+  {
+    "path": "posts/welcome/",
+    "title": "Welcome to Un garçon pas comme les autres (Bayes)",
+    "description": "Welcome to our new blog, Un garçon pas comme les autres (Bayes). We hope you enjoy \nreading what we have to say!",
+    "author": [
+      {
+        "name": "Nora Jones",
+        "url": "https://example.com/norajones"
+      }
+    ],
+    "date": "2021-10-11",
+    "categories": [],
+    "contents": "\n\n\n\n",
+    "preview": {},
+    "last_modified": "2021-10-11T00:00:49+11:00",
+    "input_file": {}
+  }
+]
