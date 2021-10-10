@@ -117,7 +117,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["n-sane-in-the-membrane_files/figure-html5/unnamed-chunk-1-1.png","tweet_poll.png"]}
+  {"type":"character","attributes":{},"value":["n-sane-in-the-membrane_files/anchor-4.2.2/anchor.min.js","n-sane-in-the-membrane_files/bowser-1.9.3/bowser.min.js","n-sane-in-the-membrane_files/distill-2.2.21/template.v2.js","n-sane-in-the-membrane_files/figure-html5/unnamed-chunk-1-1.png","n-sane-in-the-membrane_files/header-attrs-2.11/header-attrs.js","n-sane-in-the-membrane_files/jquery-3.6.0/jquery-3.6.0.js","n-sane-in-the-membrane_files/jquery-3.6.0/jquery-3.6.0.min.js","n-sane-in-the-membrane_files/jquery-3.6.0/jquery-3.6.0.min.map","n-sane-in-the-membrane_files/popper-2.6.0/popper.min.js","n-sane-in-the-membrane_files/tippy-6.2.7/tippy-bundle.umd.min.js","n-sane-in-the-membrane_files/tippy-6.2.7/tippy-light-border.css","n-sane-in-the-membrane_files/tippy-6.2.7/tippy.css","n-sane-in-the-membrane_files/tippy-6.2.7/tippy.umd.min.js","n-sane-in-the-membrane_files/webcomponents-2.0.0/webcomponents.js","tweet_poll.png"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2118,21 +2118,26 @@ document.addEventListener('DOMContentLoaded', function() {
 <p>This is a very long way to say <em>I saw a tweet an had feelings</em>.</p>
 <p>Because I’m thinking about this stuff pretty hard right now, I am (as <a href="https://www.youtube.com/watch?v=x31XrfiikwQ">Hedwig</a> would say) fully dilated.</p>
 <p>And my question is <em>what is the use of teaching this distinction?</em> Should anyone bother dividing by <span class="math inline">\((n-1)\)</span> instead of <span class="math inline">\(n\)</span> in their variance estimates?</p>
-<p>Well I guess the first question is <em>is there a distinction</em>? Let’s do the sort of R experiment I want my students to do!</p>
+<p>Well I guess the first question is <em>is there a difference in this distinction</em>? Let’s do the sort of R experiment I want my students to do!</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># Independent samples for a qq-plot!</span>
+<span class='co'># Thanks to Rob Trangucci for catching this!</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
 <span class='va'>n_sim</span> <span class='op'>&lt;-</span> <span class='fl'>100000</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>10</span>
 <span class='va'>experiments</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='op'>(</span>exp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>n_sim</span>, each <span class='op'>=</span> <span class='va'>n</span><span class='op'>)</span>,
-                      sample <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span> <span class='op'>*</span> <span class='va'>n_sim</span><span class='op'>)</span><span class='op'>)</span>
+                      sample <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span> <span class='op'>*</span> <span class='va'>n_sim</span><span class='op'>)</span>,
+                      sample2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span> <span class='op'>*</span> <span class='va'>n_sim</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='va'>compare</span> <span class='op'>&lt;-</span> <span class='va'>experiments</span> <span class='op'>%&gt;%</span>
   <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>exp</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>summarise</span><span class='op'>(</span>m <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>sample</span><span class='op'>)</span>,
+            m2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>sample2</span><span class='op'>)</span>,
             var_bias <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>sample</span> <span class='op'>-</span> <span class='va'>m</span><span class='op'>)</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>)</span>,
             z_bias <span class='op'>=</span> <span class='va'>m</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>var_bias</span><span class='op'>)</span><span class='op'>)</span>,
-            z <span class='op'>=</span> <span class='va'>m</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span><span class='op'>(</span><span class='va'>sample</span><span class='op'>)</span><span class='op'>)</span>
+            z <span class='op'>=</span> <span class='va'>m2</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span><span class='op'>(</span><span class='va'>sample2</span><span class='op'>)</span><span class='op'>)</span>
+
 
 <span class='va'>compare</span> <span class='op'>%&gt;%</span> 
   <span class='fu'>ggplot</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='va'>z_bias</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
@@ -2175,7 +2180,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <p>The <span class="math inline">\(n\)</span> vs <span class="math inline">\((n-1)\)</span> denominator for a variance estimator is a curiosity. It is the source of thrilling<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> exercises or exam questions. But it is not interesting.</p>
 <p>It could maybe set up the idea that MLEs are not unbiased. But even then, the useless correction term is not needed. Just let it be slightly biased and move on with your life.</p>
 <p>Because if that is the biggest bias in your analysis, you are truly blessed.</p>
-<p>But in real life, bias is the price you pay for being good at statistics. And like any market, if you pay too much you’re maybe not that good. But if you pay nothing at all, you don’t get to play.</p>
+<p>In real life, bias is the price you pay for being good at statistics. And like any market, if you pay too much you’re maybe not that good. But if you pay nothing at all, you don’t get to play.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <section class="footnotes" role="doc-endnotes">
 <hr />

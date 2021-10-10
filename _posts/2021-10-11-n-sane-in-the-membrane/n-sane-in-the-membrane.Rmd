@@ -53,21 +53,26 @@ Because I'm thinking about this stuff pretty hard right now, I am (as [Hedwig](h
 
 And my question is _what is the use of teaching this distinction?_ Should anyone bother dividing by $(n-1)$ instead of $n$ in their variance estimates?
 
-Well I guess the first question is _is there a distinction_? Let's do the sort of R experiment I want my students to do!
+Well I guess the first question is _is there a difference in this distinction_? Let's do the sort of R experiment I want my students to do!
 
 ```{r, message = FALSE, echo = TRUE}
+# Independent samples for a qq-plot!
+# Thanks to Rob Trangucci for catching this!
 library(tidyverse)
 n_sim <- 100000
 n <- 10
 experiments <- tibble(exp = rep(1:n_sim, each = n),
-                      sample = rnorm(n * n_sim))
+                      sample = rnorm(n * n_sim),
+                      sample2 = rnorm(n * n_sim))
 
 compare <- experiments %>%
   group_by(exp) %>%
   summarise(m = mean(sample),
+            m2 = mean(sample2),
             var_bias = mean((sample - m)^2),
             z_bias = m / sqrt(mean(var_bias)),
-            z = m / sd(sample))
+            z = m2 / sd(sample2))
+
 
 compare %>% 
   ggplot(aes(sort(z), sort(z_bias))) +
@@ -128,4 +133,4 @@ It could maybe set up the idea that MLEs are not unbiased. But even then, the us
 
 Because if that is the biggest bias in your analysis, you are truly blessed.
 
-But in real life, bias is the price you pay for being good at statistics. And like any market, if you pay too much you’re maybe not that good. But if you pay nothing at all, you don’t get to play.
+In real life, bias is the price you pay for being good at statistics. And like any market, if you pay too much you’re maybe not that good. But if you pay nothing at all, you don’t get to play.
