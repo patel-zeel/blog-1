@@ -2154,11 +2154,11 @@ document.addEventListener('DOMContentLoaded', function() {
 <p>But to see it, you need a lot of samples! Why? Well the easy answer is maths.</p>
 <p>For one thing, when <span class="math inline">\(n=10\)</span>, <span class="math display">\[
 \frac{1}{n} - \frac{1}{n-1} = \frac{1}{90} = 0.01.
-\]</span> This does not compare well against the sampling variance, which (assuming <span class="math inline">\(\sigma^2=1\)</span>) is about <span class="math inline">\(0.3\)</span>.</p>
+\]</span> This does not compare well against the sampling variance, which (assuming <span class="math inline">\(\sigma^2\approx 1\)</span>, which is usual if you’ve scaled your problem correctly) is about <span class="math inline">\(0.3\)</span>.</p>
 <p>But we could choose to do it properly. The bias in the MLE (aka the divide by <span class="math inline">\(n\)</span>) variance estimate is <span class="math display">\[
 -\frac{\sigma^2}{n}.
 \]</span> This is a lot smaller than the sampling variability of the estimate (aka how much uncertainty you have because of the finite sample), which is <span class="math display">\[
-\frac{\sigma^2}{\sqrt{n}}.
+\frac{\sigma}{\sqrt{n}}.
 \]</span></p>
 <p>And that’s the whole story. Dividing by <span class="math inline">\(n\)</span> instead of <span class="math inline">\((n-1)\)</span> leaves you with a <em>slightly</em> biased estimate. But the bias if <em>fucking tiny</em>. It is possibly moving your second decimal place by about 1 number (assume our population variance is one). The sampling variably is moving the <em>first</em> decimal place by several digits.</p>
 <p>Truly. What is the point. The old guys<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> who went wild about bias are now mostly dead. Or they’ve changed their minds (which is, you know, a reasonable thing to do as information about best practice is updated). The war against bias was lost before your undergraduates were born.</p>

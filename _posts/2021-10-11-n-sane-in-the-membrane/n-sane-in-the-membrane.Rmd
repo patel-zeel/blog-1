@@ -90,12 +90,12 @@ But to see it, you need a lot of samples! Why? Well the easy answer is maths.
 
 For one thing, when $n=10$, $$
 \frac{1}{n} - \frac{1}{n-1} = \frac{1}{90} = 0.01.
-$$ This does not compare well against the sampling variance, which (assuming $\sigma^2=1$) is about $0.3$.
+$$ This does not compare well against the sampling variance, which (assuming $\sigma^2\approx 1$, which is usual if you've scaled your problem correctly) is about $0.3$.
 
 But we could choose to do it properly. The bias in the MLE (aka the divide by $n$) variance estimate is $$
 -\frac{\sigma^2}{n}.
 $$ This is a lot smaller than the sampling variability of the estimate (aka how much uncertainty you have because of the finite sample), which is $$
-\frac{\sigma^2}{\sqrt{n}}.
+\frac{\sigma}{\sqrt{n}}.
 $$
 
 And that's the whole story. Dividing by $n$ instead of $(n-1)$ leaves you with a _slightly_ biased estimate. But the bias if _fucking tiny_. It is possibly moving your second decimal place by about 1 number (assume our population variance is one). The sampling variably is moving the _first_ decimal place by several digits.
