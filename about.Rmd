@@ -1,9 +1,11 @@
 ---
 title: "About this blog"
 description: |
-  Some additional details about the blog
+  Nobody asked for this.
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+
+There is no reason for this to exist.
