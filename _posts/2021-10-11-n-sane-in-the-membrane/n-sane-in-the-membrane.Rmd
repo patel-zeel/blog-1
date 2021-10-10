@@ -1,7 +1,7 @@
 ---
 title: "$(n-1)$-sane in the membrane"
 description: |
- Windmills? Tilted. Topic? Boring. Ns? Sure.
+ Windmills? Tilted. Topic? Boring. (n-1)? No.
 author:
   - name: Dan Simpson
 
