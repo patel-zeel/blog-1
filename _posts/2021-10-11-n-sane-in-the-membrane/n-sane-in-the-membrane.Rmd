@@ -55,7 +55,7 @@ And my question is _what is the use of teaching this distinction?_ Should anyone
 
 Well I guess the first question is _is there a distinction_? Let's do the sort of R experiment I want my students to do!
 
-```{r, message = FALSE}
+```{r, message = FALSE, echo = TRUE}
 library(tidyverse)
 n_sim <- 100000
 n <- 10
