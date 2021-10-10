@@ -23,7 +23,7 @@ And when you're in a period of heavy teaching, every-fucking-thing is about teac
 
 So this blogpost is about teaching.
 
-Right now, I'm coming to the end of a second year class called _Statistical Thinking_. It's been fun to work out how to teach the material. It's standard fare: sampling variation, tests, bootstraps, regression, and just a hint of Bayes in the last 2 weeks that you incentivize by promising a bastard of an exam question. So you know, (arms up even though I'm Catholic) **tradition**!
+Right now, I'm coming to the end of a second year class called _Statistical Thinking_. It's been fun to work out how to teach the material. It's standard fare: sampling variation, tests, bootstraps, regression, and just a hint of Bayes in the last 2 weeks that you incentivize by promising a bastard of an exam question. So you know, (arms up even though I'm Catholic) [**tradition**](https://www.youtube.com/watch?v=6nwj8nAYEM4)!
 
 ### If I were a rich man (Katrina Lenk with a violin)
 
