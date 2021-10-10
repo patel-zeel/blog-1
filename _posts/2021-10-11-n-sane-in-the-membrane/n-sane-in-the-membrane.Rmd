@@ -128,3 +128,4 @@ It could maybe set up the idea that MLEs are not unbiased. But even then, the us
 
 Because if that is the biggest bias in your analysis, you are truly blessed.
 
+But in real life, bias is the price you pay for being good at statistics. And like any market, if you pay too much you’re maybe not that good. But if you pay nothing at all, you don’t get to play.
