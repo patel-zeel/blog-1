@@ -2097,70 +2097,72 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <div class="d-article">
-<p>I’ve been teaching a lot lately. That’s no huge surprise. It is my job. Maybe the one slight oddity this year is that I shifted jobs and, in switching hemispheres, I landed 3 consecutive teaching semesers. So. I’ve been teaching a lot lately.</p>
+<p>I’ve been teaching a lot lately. That’s no huge surprise. It is my job. Maybe the one slight oddity this year is that I shifted jobs and, in switching hemispheres, I landed 3 consecutive teaching semesters. So. I’ve been teaching a lot lately.</p>
 <p>And when you’re in a period of heavy teaching, every-fucking-thing is about teaching.</p>
 <p>So this blogpost is about teaching.</p>
-<p>Right now, I’m coming to the end of a second year class called <em>Statistical Thinking</em>. It’s been fun to work out how to teach the material. It’s standard fare: sampling variation, tests, bootstraps, regression, and just a hint of Bayes in the last 2 weeks that you incentivize by promising a bastard of an exam question. So you know, (arms up even though I’m Catholic) <a href="https://www.youtube.com/watch?v=6nwj8nAYEM4"><strong>tradition</strong></a>!</p>
+<p>Right now, I’m coming to the end of a second year class called <em>Statistical Thinking</em>. It’s been fun to work out how to teach the material. It’s standard fare: sampling variation, tests, bootstraps<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, regression, and just a hint of Bayes in the last 2 weeks that you incentivize by promising a bastard of an exam question. So you know, (arms up even though I’m Catholic) <a href="https://www.youtube.com/watch?v=6nwj8nAYEM4"><strong>tradition</strong></a>!</p>
 <h3 id="if-i-were-a-rich-man-katrina-lenk-with-a-violin">If I were a rich man (Katrina Lenk with a violin)</h3>
-<p>The thing about teaching an intro stats class is that it brings screaming to mind that quote from Bennett’s The History Boys<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>: (paraphrasing) <em>“How do I define [intro to Statistics]? It’s just one fucking thing after another”</em>.</p>
-<p>Constructing 12 moderately sequential weeks from the whole mass of things that someone being introduced to statistics needs to know is not unlike being thrown in the middle of the lake with nothing but an ice-cream container and a desiccated whale penis: confusing, difficult, and rather damp.</p>
-<p>The nice thing about building an intro stats course is you’re not alone. You’re adrift in a sea of shit ideas! (Also a lot of good ones<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, but don’t ruin my flow!)</p>
+<p>The thing about teaching an intro stats class is that it brings screaming to mind that quote from Bennett’s The History Boys<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>: (paraphrasing) <em>“How do I define [intro to Statistics]? It’s just one fucking thing after another”</em>.</p>
+<p>Constructing twelve moderately sequential weeks from the whole mass of things that someone being introduced to statistics needs to know is not unlike being thrown in the middle of the lake with nothing but an ice-cream container and a desiccated whale penis: confusing, difficult, and rather damp.</p>
+<p>The nice thing about building an intro stats course is you’re not alone. You’re adrift in a sea of shit ideas! (Also a lot of good ones<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, but don’t ruin my flow!)</p>
 <p>The trouble is that this sort of course is simultaneously teaching <em>big concepts</em> and <em>complex details</em>. And while it’s not toooooo hard to make the concepts build and reinforce as time inexorably marches on, the techniques and details needed to illuminate the big concepts are not quite as linear.</p>
-<p>There are two routes through this conundrum: incantations inscribed onto books made of human skin using the blood of sacrificial virgins (aka the engineering statistics service teaching) or computers.</p>
+<p>There are two routes through this conundrum: incantations inscribed onto books made of human skin using the blood of sacrificial virgins (aka gathered during engineering statistics service teaching) or computers.</p>
 <p>I went with computers because we are in lockdown and I couldn’t be bothered sourcing and bleeding virgins.</p>
-<p>The downside is that you need the students to have a grip on R programming (and programatic thinking). This only happens if your program is built for it. Otherwise you need to teach both (which is very possible, but you need to teach less statistical content).</p>
+<p>The downside is that you need the students to have a grip on R programming (and programmatic thinking). This only happens if the degree you are teaching in is built in such a way that these skills have already been taught. Otherwise you need to teach both (which is very possible, but you need to teach less statistical content).</p>
 <p>This is not a postmortem on my teaching, but if it were, it would be about that last point.</p>
 <h3 id="i-saw-goody-proctor-with-the-devil">I saw Goody Proctor with the devil!</h3>
 <figure>
 <img src="tweet_poll.png" alt="" /><figcaption>A <a href="https://twitter.com/hardsci/status/1446498701615288320">tweet</a> from Sanjay Srivastava</figcaption>
 </figure>
 <p>This is a very long way to say <em>I saw a tweet an had feelings</em>.</p>
-<p>Because I’m thinking about this stuff pretty hard right now, I am (as Hedwig would say) fully dilated.</p>
-<p>And my question is _what is the use of teaching this distinction? Should anyone bother dividing by <span class="math inline">\((n-1)\)</span> instead of <span class="math inline">\(n\)</span> in their variance estimates?</p>
-<p>Well I guess the first question is <em>is there a distinction</em>? Let’s do the sort of R experient I want my students to do!</p>
+<p>Because I’m thinking about this stuff pretty hard right now, I am (as <a href="https://www.youtube.com/watch?v=x31XrfiikwQ">Hedwig</a> would say) fully dilated.</p>
+<p>And my question is <em>what is the use of teaching this distinction?</em> Should anyone bother dividing by <span class="math inline">\((n-1)\)</span> instead of <span class="math inline">\(n\)</span> in their variance estimates?</p>
+<p>Well I guess the first question is <em>is there a distinction</em>? Let’s do the sort of R experiment I want my students to do!</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="n-sane-in-the-membrane_files/figure-html5/unnamed-chunk-1-1.png" width="624" /></p>
 </div>
-<p>There is not.</p>
+<p>Well that is clear. There is not.</p>
 <p>Or, well, there is a <em>small</em> difference.</p>
 <p>But to see it, you need a lot of samples! Why? Well the easy answer is maths.</p>
 <p>For one thing, when <span class="math inline">\(n=10\)</span>, <span class="math display">\[
 \frac{1}{n} - \frac{1}{n-1} = \frac{1}{90} = 0.01.
-\]</span> This does not compare well against the sampling variance, which (assumeing <span class="math inline">\(\sigma^2=1\)</span>) is about <span class="math inline">\(0.3\)</span>.</p>
-<p>But we could choose to do it propely. The bias in the MLE (aka the divide by <span class="math inline">\(n\)</span>) variance estimate is <span class="math display">\[
+\]</span> This does not compare well against the sampling variance, which (assuming <span class="math inline">\(\sigma^2=1\)</span>) is about <span class="math inline">\(0.3\)</span>.</p>
+<p>But we could choose to do it properly. The bias in the MLE (aka the divide by <span class="math inline">\(n\)</span>) variance estimate is <span class="math display">\[
 -\frac{\sigma^2}{n}.
-\]</span> This is a lot smaller than the sampling variability of the estimate (aka how much uncertainty you have becasue of the finite sample), which is <span class="math display">\[
+\]</span> This is a lot smaller than the sampling variability of the estimate (aka how much uncertainty you have because of the finite sample), which is <span class="math display">\[
 \frac{\sigma^2}{\sqrt{n}}.
 \]</span></p>
 <p>And that’s the whole story. Dividing by <span class="math inline">\(n\)</span> instead of <span class="math inline">\((n-1)\)</span> leaves you with a <em>slightly</em> biased estimate. But the bias if <em>fucking tiny</em>. It is possibly moving your second decimal place by about 1 number (assume our population variance is one). The sampling variably is moving the <em>first</em> decimal place by several digits.</p>
-<p>Truly. What is the point. The old guys<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> who went wild about bias are now mostly dead. Or they’ve changed their minds (which is, you know, a reasonable thing to do). The war against bias was lost before your undergraduates were born.</p>
+<p>Truly. What is the point. The old guys<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> who went wild about bias are now mostly dead. Or they’ve changed their minds (which is, you know, a reasonable thing to do as information about best practice is updated). The war against bias was lost before your undergraduates were born.</p>
 <h3 id="even-in-crisis-i-maintain">Even in crisis, I maintain</h3>
 <p>But nevertheless, this whole DIVIDE BY N-1 OR THE BIAS MONSTER IS GONNA GET YA bullshit continues.</p>
-<p>And to some extent, maybe I shouldn’t care. I defintiely shouldn’t care this many words about it.</p>
-<p>But I do. And I do for a couple of reasions.</p>
-<p><strong>Reason One:</strong> What is the point teaching students about uncertainty and that you can’t just say “this number is different” because the estimate on a single sample is different. If I am to say that I need things to be <em>at least</em><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> <span class="math inline">\(\mathcal{O}(n^{-1/2})\)</span> apart before I’m willing to say they are maybe different, then why am I harping on about the much smaller difference?</p>
-<p><strong>Reason Two:</strong> It’s a shitty example. Bias and bias corrections have a role to play in statistics<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. But if this is your first introduction to bias correction, you are going to teach either:</p>
+<p>And to some extent, maybe I shouldn’t care. I definitely shouldn’t care this many words about it.</p>
+<p>But I do. And I do for a couple of reasons.</p>
+<p><strong>Reason One:</strong> What is the point teaching students about uncertainty and that you can’t just say “this number is different” because the estimate on a single sample is different. If I am to say that I need things to be <em>at least</em><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> <span class="math inline">\(\mathcal{O}(n^{-1/2})\)</span> apart before I’m willing to say they are maybe different, then why am I harping on about the much smaller difference?</p>
+<p><strong>Reason Two:</strong> It’s a shitty example. Bias and bias corrections have a role to play in statistics<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. But if this is your first introduction to bias correction, you are going to teach either:</p>
 <ol type="a">
 <li>Bias is always bad, regardless of context / sampling variance / etc</li>
 <li>Bias can be corrected, but it’s trivial and small.</li>
 </ol>
 <p>Both of those things are bullshit. Just teach them how to bootstrap and teach the damn thing properly. You do not have to go very far to show bias actually making a difference!</p>
+<p><em>Maybe</em> the only place the difference will be noticed is if you compare against the in-build <code>var</code> or <code>sd</code> functions. This is not the use case I would build my class around, but it is a thing you would need to be aware of.</p>
 <h3 id="the-worlds-is-a-question-this-room-is-an-answer.-and-the-answer-is-no.">The worlds is a question, this room is an answer. And the answer is no.</h3>
-<p>If you are going to teach statistics as more than just stale incantations and over-done fear-mongering, you need to constuct the types of stakes that are simply not present in the <span class="math inline">\(n\)</span> vs <span class="math inline">\(n-1\)</span> bullshit.</p>
+<p>If you are going to teach statistics as more than just stale incantations and over-done fear-mongering, you need to construct the types of stakes that are simply not present in the <span class="math inline">\(n\)</span> vs <span class="math inline">\(n-1\)</span> bullshit.</p>
 <p>It is present when you are teaching the normal vs t distribution. You are teaching that the design of your experiment changes the possible extreme behaviour and sometimes it can change <em>a lot</em>.</p>
-<p>The <span class="math inline">\(n\)</span> vs <span class="math inline">\((n-1)\)</span> denominator for a variance estimator is a curiosity. It is the source of thrilling<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> exercises or exam questions. But it is not interesting.</p>
-<p>It could maybe set up the idea that MLEs are not unbiased. But even then, the useless correciton term is not needed. Just let it be slightly biased and move on with your life.</p>
+<p>The <span class="math inline">\(n\)</span> vs <span class="math inline">\((n-1)\)</span> denominator for a variance estimator is a curiosity. It is the source of thrilling<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> exercises or exam questions. But it is not interesting.</p>
+<p>It could maybe set up the idea that MLEs are not unbiased. But even then, the useless correction term is not needed. Just let it be slightly biased and move on with your life.</p>
 <p>Because if that is the biggest bias in your analysis, you are truly blessed.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <section class="footnotes" role="doc-endnotes">
 <hr />
 <ol>
-<li id="fn1" role="doc-endnote"><p>Ok. Straight up, <em>“[Intro to statistics] is a commentary on the various and continuing incapabilities of men”</em> would’ve also worked.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2" role="doc-endnote"><p>This course stands on the shoulders of giants: Di Cook and Catherine Forbes gave me a great base. And of course every single textbook (shout out to the OpenIntro crew!), blog post, weird subsection of some other book, paper from 1987 on some weird bootstrap, etc that I have used to make a course!<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p>Yes. I used the word on purpose.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4" role="doc-endnote"><p><span class="math inline">\(n\)</span> is the size of the sample.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5" role="doc-endnote"><p>I spend most of my time doing Bayes shit, and we play this game somewhat differently. But the gist is the same.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6" role="doc-endnote"><p>Not thrilling.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1" role="doc-endnote"><p>To paraphrase Jimmy Somerville, tell me <em>whyyyyyyyyy</em> about 90% of the bootstrap material on the web is … misguided. And why <code>tidymodels</code> only has the shit bootstrap in it?<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>Ok. Straight up, <em>“[Intro to statistics] is a commentary on the various and continuing incapabilities of men”</em> would’ve also worked.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>This course stands on the shoulders of giants: Di Cook and Catherine Forbes gave me a great base. And of course every single textbook (shout out to the OpenIntro crew!), blog post, weird subsection of some other book, paper from 1987 on some weird bootstrap, etc that I have used to make a course!<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>Yes. I used the word on purpose.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p><span class="math inline">\(n\)</span> is the size of the sample.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p>I spend most of my time doing Bayes shit, and we play this game somewhat differently. But the gist is the same.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7" role="doc-endnote"><p>Not thrilling.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 <!--radix_placeholder_article_footer-->

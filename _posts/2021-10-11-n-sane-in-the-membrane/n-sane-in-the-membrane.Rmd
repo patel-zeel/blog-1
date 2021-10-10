@@ -17,29 +17,29 @@ set.seed(30127)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-I've been teaching a lot lately. That's no huge surprise. It is my job. Maybe the one slight oddity this year is that I shifted jobs and, in switching hemispheres, I landed 3 consecutive teaching semesers. So. I've been teaching a lot lately.
+I've been teaching a lot lately. That's no huge surprise. It is my job. Maybe the one slight oddity this year is that I shifted jobs and, in switching hemispheres, I landed 3 consecutive teaching semesters. So. I've been teaching a lot lately.
 
 And when you're in a period of heavy teaching, every-fucking-thing is about teaching. 
 
 So this blogpost is about teaching.
 
-Right now, I'm coming to the end of a second year class called _Statistical Thinking_. It's been fun to work out how to teach the material. It's standard fare: sampling variation, tests, bootstraps, regression, and just a hint of Bayes in the last 2 weeks that you incentivize by promising a bastard of an exam question. So you know, (arms up even though I'm Catholic) [**tradition**](https://www.youtube.com/watch?v=6nwj8nAYEM4)!
+Right now, I'm coming to the end of a second year class called _Statistical Thinking_. It's been fun to work out how to teach the material. It's standard fare: sampling variation, tests, bootstraps^[To paraphrase Jimmy Somerville, tell me _whyyyyyyyyy_ about 90% of the bootstrap material on the web is ... misguided. And why `tidymodels` only has the shit bootstrap in it?], regression, and just a hint of Bayes in the last 2 weeks that you incentivize by promising a bastard of an exam question. So you know, (arms up even though I'm Catholic) [**tradition**](https://www.youtube.com/watch?v=6nwj8nAYEM4)!
 
 ### If I were a rich man (Katrina Lenk with a violin)
 
 The thing about teaching an intro stats class is that it brings screaming to mind that quote from Bennett's The History Boys^[Ok. Straight up, _"[Intro to statistics]  is a commentary on the various and continuing incapabilities of men"_ would've also worked.]: (paraphrasing) _"How do I define [intro to Statistics]? It's just one fucking thing after another"_. 
 
-Constructing 12 moderately sequential weeks from the whole mass of things that someone being introduced to statistics needs to know is not unlike being thrown in the middle of the lake with nothing but an ice-cream container and a desiccated whale penis: confusing, difficult, and rather damp.
+Constructing twelve moderately sequential weeks from the whole mass of things that someone being introduced to statistics needs to know is not unlike being thrown in the middle of the lake with nothing but an ice-cream container and a desiccated whale penis: confusing, difficult, and rather damp.
 
 The nice thing about building an intro stats course is you're not alone. You're adrift in a sea of shit ideas! (Also a lot of good ones^[This course stands on the shoulders of giants: Di Cook and Catherine Forbes gave me a great base. And of course every single textbook (shout out to the OpenIntro crew!), blog post, weird subsection of some other book, paper from 1987 on some weird bootstrap, etc that I have used to make a course!], but don't ruin my flow!)
 
 The trouble is that this sort of course is simultaneously teaching _big concepts_ and _complex details_. And while it's not toooooo hard to make the concepts build and reinforce as time inexorably marches on, the techniques and details needed to illuminate the big concepts are not quite as linear.
 
-There are two routes through this conundrum: incantations inscribed onto books made of human skin using the blood of sacrificial virgins (aka the engineering statistics service teaching) or computers.
+There are two routes through this conundrum: incantations inscribed onto books made of human skin using the blood of sacrificial virgins (aka gathered during engineering statistics service teaching) or computers.
 
 I went with computers because we are in lockdown and I couldn't be bothered sourcing and bleeding virgins.
 
-The downside is that you need the students to have a grip on R programming (and programatic thinking). This only happens if your program is built for it. Otherwise you need to teach both (which is very possible, but you need to teach less statistical content). 
+The downside is that you need the students to have a grip on R programming (and programmatic thinking). This only happens if the degree you are teaching in is built in such a way that these skills have already been taught. Otherwise you need to teach both (which is very possible, but you need to teach less statistical content). 
 
 This is not a postmortem on my teaching, but if it were, it would be about that last point.
 
@@ -49,11 +49,11 @@ This is not a postmortem on my teaching, but if it were, it would be about that 
 
 This is a very long way to say _I saw a tweet an had feelings_.
 
-Because I'm thinking about this stuff pretty hard right now, I am (as Hedwig would say) fully dilated. 
+Because I'm thinking about this stuff pretty hard right now, I am (as [Hedwig](https://www.youtube.com/watch?v=x31XrfiikwQ) would say) fully dilated. 
 
-And my question is _what is the use of teaching this distinction? Should anyone bother dividing by $(n-1)$ instead of $n$ in their variance estimates?
+And my question is _what is the use of teaching this distinction?_ Should anyone bother dividing by $(n-1)$ instead of $n$ in their variance estimates?
 
-Well I guess the first question is _is there a distinction_? Let's do the sort of R experient I want my students to do!
+Well I guess the first question is _is there a distinction_? Let's do the sort of R experiment I want my students to do!
 
 ```{r, message = FALSE}
 library(tidyverse)
@@ -77,7 +77,7 @@ compare %>%
   coord_fixed(xlim = c(-2,2), y = c(-2,2))
 ```
 
-There is not.
+Well that is clear. There is not.
 
 Or, well, there is a _small_ difference. 
 
@@ -85,25 +85,25 @@ But to see it, you need a lot of samples! Why? Well the easy answer is maths.
 
 For one thing, when $n=10$, $$
 \frac{1}{n} - \frac{1}{n-1} = \frac{1}{90} = 0.01.
-$$ This does not compare well against the sampling variance, which (assumeing $\sigma^2=1$) is about $0.3$.
+$$ This does not compare well against the sampling variance, which (assuming $\sigma^2=1$) is about $0.3$.
 
-But we could choose to do it propely. The bias in the MLE (aka the divide by $n$) variance estimate is $$
+But we could choose to do it properly. The bias in the MLE (aka the divide by $n$) variance estimate is $$
 -\frac{\sigma^2}{n}.
-$$ This is a lot smaller than the sampling variability of the estimate (aka how much uncertainty you have becasue of the finite sample), which is $$
+$$ This is a lot smaller than the sampling variability of the estimate (aka how much uncertainty you have because of the finite sample), which is $$
 \frac{\sigma^2}{\sqrt{n}}.
 $$
 
 And that's the whole story. Dividing by $n$ instead of $(n-1)$ leaves you with a _slightly_ biased estimate. But the bias if _fucking tiny_. It is possibly moving your second decimal place by about 1 number (assume our population variance is one). The sampling variably is moving the _first_ decimal place by several digits.
 
-Truly. What is the point. The old guys^[Yes. I used the word on purpose.] who went wild about bias are now mostly dead. Or they've changed their minds (which is, you know, a reasonable thing to do). The war against bias was lost before your undergraduates were born.
+Truly. What is the point. The old guys^[Yes. I used the word on purpose.] who went wild about bias are now mostly dead. Or they've changed their minds (which is, you know, a reasonable thing to do as information about best practice is updated). The war against bias was lost before your undergraduates were born.
 
 ### Even in crisis, I maintain
 
 But nevertheless, this whole DIVIDE BY N-1 OR THE BIAS MONSTER IS GONNA GET YA bullshit continues. 
 
-And to some extent, maybe I shouldn't care. I defintiely shouldn't care this many words about it.
+And to some extent, maybe I shouldn't care. I definitely shouldn't care this many words about it.
 
-But I do. And I do for a couple of reasions.
+But I do. And I do for a couple of reasons.
 
 **Reason One:** What is the point teaching students about uncertainty and that you can't just say "this number is different" because the estimate on a single sample is different. If I am to say that I need things to be _at least_^[$n$ is the size of the sample.] $\mathcal{O}(n^{-1/2})$ apart before I'm willing to say they are maybe different, then why am I harping on about the much smaller difference?
 
@@ -114,15 +114,17 @@ b) Bias can be corrected, but it's trivial and small.
 
 Both of those things are bullshit. Just teach them how to bootstrap and teach the damn thing properly. You do not have to go very far to show bias actually making a difference! 
 
+_Maybe_ the only place the difference will be noticed is if you compare against the in-build `var` or `sd` functions. This is not the use case I would build my class around, but it is a thing you would need to be aware of.
+
 ### The worlds is a question, this room is an answer. And the answer is no.
 
-If you are going to teach statistics as more than just stale incantations and over-done fear-mongering, you need to constuct the types of stakes that are simply not present in the $n$ vs $n-1$ bullshit.
+If you are going to teach statistics as more than just stale incantations and over-done fear-mongering, you need to construct the types of stakes that are simply not present in the $n$ vs $n-1$ bullshit.
 
 It is present when you are teaching the normal vs t distribution. You are teaching that the design of your experiment changes the possible extreme behaviour and sometimes it can change _a lot_. 
 
 The $n$ vs $(n-1)$ denominator for a variance estimator is a curiosity. It is the source of thrilling^[Not thrilling.] exercises or exam questions. But it is not interesting.
 
-It could maybe set up the idea that MLEs are not unbiased. But even then, the useless correciton term is not needed. Just let it be slightly biased and move on with your life.
+It could maybe set up the idea that MLEs are not unbiased. But even then, the useless correction term is not needed. Just let it be slightly biased and move on with your life.
 
 Because if that is the biggest bias in your analysis, you are truly blessed.
 
