@@ -1,5 +1,5 @@
 ---
-title: "Priors: Whole New Way"
+title: "Priors: Whole New Way (Track 2)"
 description: |
   Conjugate Priors? The crystal deoderant of Bayesian statistics
 author:
