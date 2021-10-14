@@ -6,7 +6,7 @@ author:
   - name: Dan Simpson
     url: {}
 date: 10-14-2021
-creative_commons: CC BY
+creative_commons: CC BY-NC
 repository_url: https://github.com/dpsimpson/blog/tree/master/_posts/2021-10-14-priors1
 output:
   distill::distill_article:
