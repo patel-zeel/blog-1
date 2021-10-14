@@ -1,0 +1,87 @@
+---
+title: "Priors: Whole New Way"
+description: |
+  Conjugate Priors? The crystal deoderant of Bayesian statistics
+author:
+  - name: Dan Simpson
+    url: {}
+date: 10-14-2021
+output:
+  distill::distill_article:
+    self_contained: false
+draft: false
+---
+
+If we're going to talk about priors, let's talk about priors. And let's talk about the most prior-y priors in the whole damn prior universe. Let's talk about _conjugate priors_.
+
+### What is a conjugate prior?
+
+Who cares.
+
+### Who uses conjugate priors?
+
+90s revivalists.
+
+### Should I use conjugate priors?
+
+Live your life.
+
+## Ok. Maybe we should try again
+
+Deep breaths. You soul is an island of positivity. 
+
+### What is a conjugate prior?
+
+Conjugate priors are wild and fabulous beasts. They roam the strange, mathematic plains and live forever in our dreams of a better future.
+
+Too much? 
+
+OK.
+
+Conjugate priors are a mathematical curiosity that occasional turn out to be slightly useful.
+
+A prior distribution $p(\theta)$ is _conjugate_ to the likelihood^[Like all areas of Bayesian statistics, conjugate priors push back against the notion of Arianism.] $p(y \mid \theta)$ if the _posterior distribution_ $p(\theta \mid y)$ is in the same distributional family as the prior.
+
+Moreover, there is an rule to update the parameters in the prior to get the parameters in the posterior based on some simple summaries of the data. This means that you can simply write the posterior down as a specific distribution that you can^[often, but not always] easily sample from and get on with your life.
+
+Really, it seems like a pretty good thing. But there is, unsurprisingly, a hitch: almost no likelihoods have conjugate priors. And if you happen to have a model with a nice^[Christian Robert's book The Bayesian Choice has an example where a model has a conjugate prior but it doesn't normalise easily.] conjugate prior then good for you, but if you modify your model even slightly, you will no longer have one.
+
+That is, the restriction to conjugate priors is a massive restriction on your _entire_ model.
+
+
+
+
+### Who uses conjugate priors?
+
+Conjugate priors are primarily used by two types of people:
+
+1. People who need to write exam questions for undergraduate Bayesian statistics courses^[Or, in my case, it's explicitly listed on the syllabus.],
+1. People who need to implement a Gibbs sampler and don't want to live through the nightmare^[Not a nightmare.] that is Metropolis-within-Gibbs.
+
+For the most part, we can ignore the first group of people as a drain on society.
+
+The second group is made up of:
+
+- people who are using software that forces it on them. And like we don't all have time to learn new software^[I'm equally likely to learn Julia and Stata. Which is is to say I'm tremendously unlikely to put the effort in to either. I wish them both well. Live your life and let me live mine.]. Leave, as hero^[I have not fact checked this recently, and we all know white gays sometimes go bad. But he started from a good place, so I'm sure it's fine.] Chris Crocker, Britney alone.
+
+- people who are writing their own Gibbs sampler. Annie Lennox said it best: [Why-y-y-y-y-y-y-y-y-y-y?](https://www.youtube.com/watch?v=HG7I4oniOyA) For a very large variety of problems, _you do not have to do this_^[There is pedagogical value in learning how MCMC methods work by implementing them yourself. But girl it is 2021. Go fuck with a bouncy particle sampler or something. Live your live out loud! [Young Bayesians run free](https://www.youtube.com/watch?v=qZ88c7Wb-34)]. The exception is when you have a discrete parameter in your model that you can't marginalise out^[Often, like with mixture models or hidden markov models, you can eg https://mc-stan.org/docs/2_22/stan-users-guide/latent-discrete-chapter.html], like an exponential random graph model or something equally hideous. Thankfully, a lot of work in machine learning has expanded the options for Bayesian and pseudo-semi-kinda Bayesian^[The difference between these things is pretty slight in the usual situation where your MCMC scheme doesn't explore the space particularly well. I'm not of the opinion that you either explore the full posterior or you don't use the model. Most of the time you do perfectly fine with approximate exploration or, at least, you do as well as anything else will.] estimation of these types of models. Anyway. Discrete parameters are disgusting. I am tremendously indiscrete.
+
+The third type are the odd ducks who insist that because the posterior and the prior being in the same family means that the prior can be interpreted as the outcome of Bayesian analysis on a previous experiment. Instead of the much more realistic way of arriving at a conjugate prior where you find yourself waking up alone in a bathtub full of ice and using an $\text{Inverse-Gamma}(1/2, 0.0005)$ prior on the variance (which is conjugate for a Gaussian likelihood) because some paper from 1995^[BERNARDINELLI, L., CLAYTON, D. and MONTOMOLI, C. (1995). Bayesian estimates of disease maps: How important are priors? Stat. Med. 14 2411–2431.] told you it was a good choice.
+
+### Should I use conjugate priors?
+
+There is actually one situation where they can be pretty useful. If your parameter space breaks down into $\theta = (\eta, \phi)$, where $\eta$ is a high-dimensional variable, then if $p(y \mid \theta) = p(y \mid \eta)$ and $p(\eta \mid \phi)$ is conjugate for $p(y \mid \eta)$, then a _magical_ thing happens: you can compute $p(\eta \mid y, \phi)$ explicitly (using the conjugate property) and then you can greatly simplify the posterior as $p(\theta\mid y ) = p(\eta \mid y, \phi) p(\phi \mid y)$, where^[Multiply both sides of the first equation by the denominator and it's equivalent to $p(y, \eta, \phi) = p(y, \eta, \phi)$, which is tautologically true.] $$
+p(\phi \mid y) = \frac{p(y \mid \eta)p(\eta \mid \phi)p(\phi)}{p(y) p(\eta \mid y, \phi)} \propto \left.\frac{p(y \mid \eta)p(\eta \mid \phi)p(\phi)}{p(\eta \mid y, \phi)}\right|_{\eta = \text{anything}},
+$$ where every term on the right hand side is able to be calculated^[The constant of proportionality does not depend on $\eta$. All of the $\eta$ parts cancel!]. Even if this doesn't have a known distribution form, it is much much lower-dimensional than the original problem and much more amenable to MCMC or [possibly deterministic integration methods](https://arxiv.org/abs/2101.04468).
+
+This really does feel a bit abstract, so I will give you the one case where I know it's used very commonly.This is the case where $y \sim N(A\eta, R)$ and^[The mean doesn't have to be zero but you can usually make it zero using ... magic.] $\eta \mid \phi \sim N(0, \Sigma(\phi))$, where $\Sigma(\phi)$ is a covariance matrix and $A$ is a matrix (the dimension of $\eta$ is often higher than the dimension of $y$). 
+
+This is an example of a class of models that occur _constantly_ in statistics: Håvard Rue^[Famous for [INLA](https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/j.1467-9868.2008.00700.x)] calls them Latent Gaussian models. They basically extend^[apologies for the regexp.] `(geostatistical)? linear|additive (mixed)? models`. So for all of these models, we can explicitly integrate out the high-dimensional Gaussian component, which makes inference _a breeze_^[See also Rasmussen and Williams doing marginal inference with GPs. Exactly the same process.].
+
+It gets slightly better than that because if you combine this observation with a clever asymptotic approximation, you get an approximately conjugate model and can produce Laplace approximations, nested Laplace approximations^[https://arxiv.org/abs/2004.12550], and Integrated Nested Laplace approximations^[https://www.r-inla.org], depending on how hard you are willing to work.
+
+### A conclusion, such as it is
+
+Yes we have drifted somewhat from the topic, but that's because the topic is boring.
+
+Conjugate priors are mostly a mathematical curiosity and their role in Bayesian statistics is inexplicably inflated^[I assume this is so people don't need to update their lecture notes.] to make them seem like a core topic. If you never learn about conjugate priors your Bayesian education will not be lacking anything. It will not meaningfully impact your practice. But even stopped clocks are right 2-3 times a day^[daylight savings time fades the curtains and wreaks havoc with metaphors.]
