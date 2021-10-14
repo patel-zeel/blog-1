@@ -4,8 +4,10 @@ description: |
   Conjugate Priors? The crystal deoderant of Bayesian statistics
 author:
   - name: Dan Simpson
-    url: {}
+    url: https://dpsimpson.github.io
 date: 10-14-2021
+twitter:
+  creator: "@dan_p_simpson"
 creative_commons: CC BY-NC
 repository_url: https://github.com/dpsimpson/blog/tree/master/_posts/2021-10-14-priors2
 output:

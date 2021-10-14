@@ -4,8 +4,12 @@ description: |
  Windmills? Tilted. Topic? Boring. (n-1)? No.
 author:
   - name: Dan Simpson
-
-date: 10-10-2021
+    url: https://dpsimpson.github.io
+date: 10-14-2021
+twitter:
+  creator: "@dan_p_simpson"
+creative_commons: CC BY-NC
+repository_url: https://github.com/dpsimpson/blog/tree/master/_posts/2021-10-11-n-sane-in-the-membrane
 output:
   distill::distill_article:
     self_contained: false
