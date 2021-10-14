@@ -9,7 +9,6 @@ date: 10-14-2021
 output:
   distill::distill_article:
     self_contained: false
-draft: false
 ---
 
 If we're going to talk about priors, let's talk about priors. And let's talk about the most prior-y priors in the whole damn prior universe. Let's talk about _conjugate priors_.
