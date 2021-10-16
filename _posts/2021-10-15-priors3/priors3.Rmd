@@ -9,7 +9,7 @@ date: 10-16-2021
 twitter:
   creator: "@dan_p_simpson"
 creative_commons: CC BY-NC
-repository_url: https://github.com/dpsimpson/blog/tree/master/_posts/2021-10-14-priors2
+repository_url: https://github.com/dpsimpson/blog/tree/master/_posts/2021-10-15-priors3
 output:
   distill::distill_article:
     self_contained: false
