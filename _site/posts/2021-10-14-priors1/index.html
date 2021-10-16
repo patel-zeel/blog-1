@@ -20,19 +20,19 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -52,7 +52,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
@@ -95,7 +95,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--  https://schema.org/Article -->
 <meta property="article:published" itemprop="datePublished" content="2021-10-14"/>
 <meta property="article:created" itemprop="dateCreated" content="2021-10-14"/>
-<meta name="article:author" content="Dan Simpson"/>
 
 <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
 <meta property="og:title" content="Un garçon pas comme les autres (Bayes): Priors: Night work (Track 1)"/>
@@ -114,7 +113,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","twitter","creative_commons","repository_url","output"]}},"value":[{"type":"character","attributes":{},"value":["Priors: Night work (Track 1)"]},{"type":"character","attributes":{},"value":["Priors? Defined. Questions? Outlined. Purpose? Declared."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Dan Simpson"]},{"type":"character","attributes":{},"value":["https://dpsimpson.github.io"]}]}]},{"type":"character","attributes":{},"value":["10-14-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creator"]}},"value":[{"type":"character","attributes":{},"value":["@dan_p_simpson"]}]},{"type":"character","attributes":{},"value":["CC BY-NC"]},{"type":"character","attributes":{},"value":["https://github.com/dpsimpson/blog/tree/master/_posts/2021-10-14-priors1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","variant"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["gfm+footnotes"]}]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","date","twitter","creative_commons","repository_url","output"]}},"value":[{"type":"character","attributes":{},"value":["Priors: Night work (Track 1)"]},{"type":"character","attributes":{},"value":["Priors? Defined. Questions? Outlined. Purpose? Declared."]},{"type":"character","attributes":{},"value":["10-14-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creator"]}},"value":[{"type":"character","attributes":{},"value":["@dan_p_simpson"]}]},{"type":"character","attributes":{},"value":["CC BY-NC"]},{"type":"character","attributes":{},"value":["https://github.com/dpsimpson/blog/tree/master/_posts/2021-10-14-priors1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","variant"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["gfm+footnotes"]}]}]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
@@ -2043,6 +2042,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!--/radix_placeholder_distill-->
+  <script src="../../site_libs/header-attrs-2.11/header-attrs.js"></script>
   <script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <script src="../../site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="../../site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
@@ -2063,7 +2063,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Priors: Night work (Track 1)","description":"Priors? Defined. Questions? Outlined. Purpose? Declared.","authors":[{"author":"Dan Simpson","authorURL":"https://dpsimpson.github.io","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-10-14T00:00:00.000+00:00","citationText":"Simpson, 2021"}
+{"title":"Priors: Night work (Track 1)","description":"Priors? Defined. Questions? Outlined. Purpose? Declared.","authors":[],"publishedDate":"2021-10-14T00:00:00.000+00:00"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2092,11 +2092,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <p><p>Priors? Defined. Questions? Outlined. Purpose? Declared.</p></p>
 </div>
 
-<div class="d-byline">
-  Dan Simpson <a href="https://dpsimpson.github.io" class="uri">https://dpsimpson.github.io</a> 
-  
-<br/>10-14-2021
-</div>
 
 <div class="d-article">
 <p>I have feelings. Too many feelings. And ninety six point seven three percent of them are about prior distributions<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. So I am going to write a few blog posts about prior distributions.</p>
@@ -2116,18 +2111,23 @@ document.addEventListener('DOMContentLoaded', function() {
 <p><strong>Scenario 1:</strong> Let’s imagine that we were trying to estimate the probability that someone in some relative homogeneous subgroup of customers completed a purchase on our website. It’s a binary process, so the parameter of interest can probably just be the probability that a sale is made. While we don’t know what the probability of a sale is for the subgroup of interest, we know a lot sales on our website in general (in particular, we know that about 3% of visits result in sales). So if I also believe that it would be wildly unlikely for 20% of visits to result in a sale, I could posit a prior like a <span class="math inline">\(\text{Beta}(0.4,5)\)</span> prior that captures (a version of) these two pieces of information.</p>
 <div class="layout-chunk" data-layout="l-body">
 <details>
-<p><summary>Show code</summary></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>  <span class="co">## Step 1: </span></span>
-<span id="cb1-2"><a href="#cb1-2"></a>  </span>
-<span id="cb1-3"><a href="#cb1-3"></a>fn &lt;-<span class="st"> </span>\(x) (<span class="kw">qbeta</span>(<span class="fl">0.5</span>,x[<span class="dv">1</span>], x[<span class="dv">2</span>]) <span class="op">-</span><span class="st"> </span><span class="fl">0.02</span>)<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="st">  </span>(<span class="kw">qbeta</span>(<span class="fl">0.9</span>, x[<span class="dv">1</span>], x[<span class="dv">2</span>]) <span class="op">-</span><span class="st"> </span><span class="fl">0.2</span>)<span class="op">^</span><span class="dv">2</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a></span>
-<span id="cb1-6"><a href="#cb1-6"></a>best &lt;-<span class="st"> </span><span class="kw">optim</span>(<span class="kw">c</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">2</span>,<span class="dv">1</span><span class="op">/</span><span class="dv">2</span>), fn)</span>
-<span id="cb1-7"><a href="#cb1-7"></a></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co">## Step 3: Profit.</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co">## (AKA round and check)</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="kw">qbeta</span>(<span class="fl">0.9</span>, <span class="fl">0.4</span>, <span class="dv">5</span>)</span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="kw">qbeta</span>(<span class="fl">0.5</span>, <span class="fl">0.4</span>, <span class="dv">5</span>)</span></code></pre></div>
+<summary>
+Show code
+</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r">  <span class='co'>## Step 1: </span>
+  
+<span class='va'>fn</span> <span class='op'>&lt;-</span> \<span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Beta.html'>qbeta</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='va'>x</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>, <span class='va'>x</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>0.02</span><span class='op'>)</span><span class='op'>^</span><span class='fl'>2</span> <span class='op'>+</span> 
+  <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Beta.html'>qbeta</a></span><span class='op'>(</span><span class='fl'>0.9</span>, <span class='va'>x</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>, <span class='va'>x</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>^</span><span class='fl'>2</span>
+
+<span class='va'>best</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/optim.html'>optim</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>/</span><span class='fl'>2</span>,<span class='fl'>1</span><span class='op'>/</span><span class='fl'>2</span><span class='op'>)</span>, <span class='va'>fn</span><span class='op'>)</span>
+
+<span class='co'>## Step 3: Profit.</span>
+<span class='co'>## (AKA round and check)</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/Beta.html'>qbeta</a></span><span class='op'>(</span><span class='fl'>0.9</span>, <span class='fl'>0.4</span>, <span class='fl'>5</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/Beta.html'>qbeta</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.4</span>, <span class='fl'>5</span><span class='op'>)</span>
+</code></pre>
+</div>
 </details>
 </div>
 <p><strong>Scenario 2:</strong> Let’s imagine I want to do variable selection. I don’t know why. I was just told I want to do variable selection. So I fire up the <a href="https://statmodeling.stat.columbia.edu/2017/11/02/king-must-die/">Bayesian Lasso</a><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> and then threshold in some way. In this case, the prior encode a hoped-for property of my posterior. (To paraphrase Lana, hope is a dangerous thing for a woman like you to have because the Bayeisan Lasso does not work to the point that the original paper doesn’t even suggest using it for variable selection<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> it just, idk, liked the name. Statistics is wild.)</p>
@@ -2147,7 +2147,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <p>The reality is that while two Bayesians may use different priors and, hence, produce different posteriors for the same data set.This can be extreme. For example, if I am trying to estimate the mean of data generated by <span class="math inline">\(y_i \sim N(\mu, 1)\)</span>, then I can choose a prior<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> (that depends on the data) so that the posterior mean <span class="math inline">\(\mathbb{E}(\mu \mid y) =1\)</span>. Or, to put it differently, I can get any answer I want if I choose an prior carefully (and in a data-dependent manner).</p>
 <p>But this isn’t necessarily a problem. This is because the posteriors produced by two <em>sensible</em> priors for the same problem will produce fairly similar results<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a>. The prior I used to cheat in the previous example would not be considered sensible by anyone looking at it<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a>.</p>
 <p>But what is a sensible prior? Can you tell if a prior is sensible or not in its particular context? Well honey, how long have you got. The thing about starting a (potential) series of blog posts is that I don’t really know how far I’m going to get, but I would really like to talk a lot about that over the next little while.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <section class="footnotes" role="doc-endnotes">
 <hr />
 <ol>

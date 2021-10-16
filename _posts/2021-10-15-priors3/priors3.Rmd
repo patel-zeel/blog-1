@@ -2,9 +2,7 @@
 title: "Priors: Fire With Fire (Track 3)"
 description: |
   Objective priors? In finite dimensions? A confidence trick? Yes.
-author:
-  - name: Dan Simpson
-    url: https://dpsimpson.github.io
+
 date: 10-16-2021
 twitter:
   creator: "@dan_p_simpson"

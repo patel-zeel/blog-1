@@ -2,9 +2,7 @@
 title: "Priors: Night work (Track 1)"
 description: |
   Priors? Defined. Questions? Outlined. Purpose? Declared.
-author:
-  - name: Dan Simpson
-    url: https://dpsimpson.github.io
+  
 date: 10-14-2021
 twitter:
   creator: "@dan_p_simpson"
