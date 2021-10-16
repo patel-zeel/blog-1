@@ -27,7 +27,7 @@ But let's talk about some objective priors.
 Fuck knows.
 
 ### Who uses objective priors
-No one (see above). But otherwise, a lot of people who are being sold a mislabelled bill of goods. People who tell you, unprompted, that they went to Duke.
+No one (see above). But otherwise, a lot of people who are being sold a mislabeled bill of goods. People who tell you, unprompted, that they went to Duke.
 
 ### Should I use objective priors
 
@@ -45,7 +45,7 @@ Anyway.
 
 ### What is an objective prior
 
-Honestly, still a pretty vague and stupid concept. It is difficult to define for interesting (aka not univarite) cases, but maybe the most practical definition is _priors that come from rules_.
+Honestly, still a pretty vague and stupid concept. It is difficult to define for interesting (aka not univariate) cases, but maybe the most practical definition is _priors that come from rules_.
 
 But that's not a ... great definition. Many priors that I will talk about over the next little while could probably be shoved under the _objective_ banner. But in this post I'm going to talk about the OG concept of an _objective_ prior: the type of priors that try to add minimal information beyond the data.
 
@@ -59,11 +59,11 @@ There are, essentially, three main types of priors that fall into this tradition
 - Reference priors
 - Matching priors
 
-Jeffrey's priors argue, for a bunch of very sensible and solid geometrical reasons, that the value of the parameter $\theta$ is less important than the way that moving from $\theta$ to $\theta + d\theta$ will change the likelihood $p(y \mid \theta)$. This pushback against the [Arianist notion](https://statmodeling.stat.columbia.edu/2018/08/21/against-arianism/) that the prior can be separated from its context is welcome!
+Jefferys priors argue, for a bunch of very sensible and solid geometrical reasons, that the value of the parameter $\theta$ is less important than the way that moving from $\theta$ to $\theta + d\theta$ will change the likelihood $p(y \mid \theta)$. This push back against the [Arianist notion](https://statmodeling.stat.columbia.edu/2018/08/21/against-arianism/) that the prior can be separated from its context is welcome!
 
 The actual prior itself comes from, I guess, the idea that the prior should be invariant to reparameterisations and after some maths you get $$
 p(\theta ) \propto |I(\theta)|^{1/2},
-$$ where $|I(\theta)|$ is the determinant of the Fisher^[ew] information matrix $$
+$$ where $|I(\theta)|$ is the determinant of the Fisher^[ewwwwwww] information matrix $$
 I(\theta)_{ij} = \frac{\partial^2}{\partial \theta_i \theta_j} \log p(y \mid \theta).
 $$
 
@@ -83,7 +83,7 @@ The one big thing that I haven't mentioned so far is that most of the time the p
 
 ### Who uses objective priors
 
-Frequentists. People who are obsessed with statistical bias of their esimators (the Venn diagram here isn't a circle, but it's also not the poster child for diversity of thought or modernity). People who read boring textbooks. People who write boring textbook. People who believe that it's the choice of prior and somehow not the choice of the likelihood or, you know, their choice of data that will somehow lead to incorrect inferences^[Like seriously. I don't want to repeat that old canard that the choice of likelihood is as subjective as the choice of prior because a) Arianism and b) the choice of likelihood is a waaaaaaaaaay more important subjective modelling choice than the choice of prior in all but the most outre circumstances!]. People who tell you, without being asked^[I promise I have never asked and I will never ask.], that they went to Duke.
+Frequentists. People who are obsessed with statistical bias of their estimators (the Venn diagram here isn't a circle, but it's also not the poster child for diversity of thought or modernity). People who read boring textbooks. People who write boring textbook. People who believe that it's the choice of prior and somehow not the choice of the likelihood or, you know, their choice of data that will somehow lead to incorrect inferences^[Like seriously. I don't want to repeat that old canard that the choice of likelihood is as subjective as the choice of prior because a) Arianism and b) the choice of likelihood is a waaaaaaaaaay more important subjective modelling choice than the choice of prior in all but the most outre circumstances!]. People who tell you, without being asked^[I promise I have never asked and I will never ask.], that they went to Duke.
 
 ### Should I use objective priors
 
