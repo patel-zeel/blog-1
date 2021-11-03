@@ -1,0 +1,2494 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="distill" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ad0000; } /* Alert */
+code span.an { color: #5e5e5e; } /* Annotation */
+code span.at { color: #20794d; } /* Attribute */
+code span.bn { color: #ad0000; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007ba5; } /* ControlFlow */
+code span.ch { color: #20794d; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #5e5e5e; } /* Comment */
+code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+code span.dt { color: #ad0000; } /* DataType */
+code span.dv { color: #ad0000; } /* DecVal */
+code span.er { color: #ad0000; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #ad0000; } /* Float */
+code span.fu { color: #4758ab; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #5e5e5e; } /* Information */
+code span.kw { color: #007ba5; } /* Keyword */
+code span.op { color: #5e5e5e; } /* Operator */
+code span.ot { color: #007ba5; } /* Other */
+code span.pp { color: #ad0000; } /* Preprocessor */
+code span.sc { color: #20794d; } /* SpecialChar */
+code span.ss { color: #20794d; } /* SpecialString */
+code span.st { color: #20794d; } /* String */
+code span.va { color: #111111; } /* Variable */
+code span.vs { color: #20794d; } /* VerbatimString */
+code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+</style>
+
+  <!--radix_placeholder_meta_tags-->
+<title>Un garçon pas comme les autres (Bayes): Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness</title>
+
+<meta property="description" itemprop="description" content="Gaussian processes. As narrated by an increasingly deranged man during a day of torrential rain."/>
+
+<link rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"/>
+
+<!--  https://schema.org/Article -->
+<meta property="article:published" itemprop="datePublished" content="2021-10-16"/>
+<meta property="article:created" itemprop="dateCreated" content="2021-10-16"/>
+
+<!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+<meta property="og:title" content="Un garçon pas comme les autres (Bayes): Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness"/>
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="Gaussian processes. As narrated by an increasingly deranged man during a day of torrential rain."/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:site_name" content="Un garçon pas comme les autres (Bayes)"/>
+
+<!--  https://dev.twitter.com/cards/types/summary -->
+<meta property="twitter:card" content="summary"/>
+<meta property="twitter:title" content="Un garçon pas comme les autres (Bayes): Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness"/>
+<meta property="twitter:description" content="Gaussian processes. As narrated by an increasingly deranged man during a day of torrential rain."/>
+<meta property="twitter:creator" content="@dan_p_simpson"/>
+
+<!--/radix_placeholder_meta_tags-->
+  <!--radix_placeholder_rmarkdown_metadata-->
+
+<script type="text/json" id="radix-rmarkdown-metadata">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","date","twitter","creative_commons","repository_url","output"]}},"value":[{"type":"character","attributes":{},"value":["Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness"]},{"type":"character","attributes":{},"value":["Gaussian processes. As narrated by an increasingly deranged man during a day of torrential rain."]},{"type":"character","attributes":{},"value":["10-16-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creator"]}},"value":[{"type":"character","attributes":{},"value":["@dan_p_simpson"]}]},{"type":"character","attributes":{},"value":["CC BY-NC"]},{"type":"character","attributes":{},"value":["https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
+</script>
+<!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness_files/anchor-4.2.2/anchor.min.js","yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness_files/bowser-1.9.3/bowser.min.js","yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness_files/distill-2.2.21/template.v2.js","yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness_files/header-attrs-2.11/header-attrs.js","yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness_files/jquery-3.6.0/jquery-3.6.0.js","yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness_files/jquery-3.6.0/jquery-3.6.0.min.js","yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness_files/jquery-3.6.0/jquery-3.6.0.min.map","yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness_files/popper-2.6.0/popper.min.js","yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness_files/tippy-6.2.7/tippy-bundle.umd.min.js","yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness_files/tippy-6.2.7/tippy-light-border.css","yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness_files/tippy-6.2.7/tippy.css","yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness_files/tippy-6.2.7/tippy.umd.min.js","yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness_files/webcomponents-2.0.0/webcomponents.js"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+<meta name="distill:offset" content="../.."/>
+
+<script type="application/javascript">
+
+  window.headroom_prevent_pin = false;
+
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+
+    // initialize headroom for banner
+    var header = $('header').get(0);
+    var headerHeight = header.offsetHeight;
+    var headroom = new Headroom(header, {
+      tolerance: 5,
+      onPin : function() {
+        if (window.headroom_prevent_pin) {
+          window.headroom_prevent_pin = false;
+          headroom.unpin();
+        }
+      }
+    });
+    headroom.init();
+    if(window.location.hash)
+      headroom.unpin();
+    $(header).addClass('headroom--transition');
+
+    // offset scroll location for banner on hash change
+    // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
+    window.addEventListener("hashchange", function(event) {
+      window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
+    });
+
+    // responsive menu
+    $('.distill-site-header').each(function(i, val) {
+      var topnav = $(this);
+      var toggle = topnav.find('.nav-toggle');
+      toggle.on('click', function() {
+        topnav.toggleClass('responsive');
+      });
+    });
+
+    // nav dropdowns
+    $('.nav-dropbtn').click(function(e) {
+      $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
+      $(this).parent().siblings('.nav-dropdown')
+         .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
+    });
+    $("body").click(function(e){
+      $('.nav-dropdown-content').removeClass('nav-dropdown-active');
+    });
+    $(".nav-dropdown").click(function(e){
+      e.stopPropagation();
+    });
+  });
+</script>
+
+<style type="text/css">
+
+/* Theme (user-documented overrideables for nav appearance) */
+
+.distill-site-nav {
+  color: rgba(255, 255, 255, 0.8);
+  background-color: #0F2E3D;
+  font-size: 15px;
+  font-weight: 300;
+}
+
+.distill-site-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.distill-site-nav a:hover {
+  color: white;
+}
+
+@media print {
+  .distill-site-nav {
+    display: none;
+  }
+}
+
+.distill-site-header {
+
+}
+
+.distill-site-footer {
+
+}
+
+
+/* Site Header */
+
+.distill-site-header {
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 3;
+}
+
+.distill-site-header .nav-left {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+@media screen and (max-width: 768px) {
+  .distill-site-header .nav-left {
+    margin-left: 0;
+  }
+}
+
+
+.distill-site-header .nav-right {
+  float: right;
+  margin-right: 8px;
+}
+
+.distill-site-header a,
+.distill-site-header .title {
+  display: inline-block;
+  text-align: center;
+  padding: 14px 10px 14px 10px;
+}
+
+.distill-site-header .title {
+  font-size: 18px;
+  min-width: 150px;
+}
+
+.distill-site-header .logo {
+  padding: 0;
+}
+
+.distill-site-header .logo img {
+  display: none;
+  max-height: 20px;
+  width: auto;
+  margin-bottom: -4px;
+}
+
+.distill-site-header .nav-image img {
+  max-height: 18px;
+  width: auto;
+  display: inline-block;
+  margin-bottom: -3px;
+}
+
+
+
+@media screen and (min-width: 1000px) {
+  .distill-site-header .logo img {
+    display: inline-block;
+  }
+  .distill-site-header .nav-left {
+    margin-left: 20px;
+  }
+  .distill-site-header .nav-right {
+    margin-right: 20px;
+  }
+  .distill-site-header .title {
+    padding-left: 12px;
+  }
+}
+
+
+.distill-site-header .nav-toggle {
+  display: none;
+}
+
+.nav-dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.nav-dropdown .nav-dropbtn {
+  border: none;
+  outline: none;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 16px 10px;
+  background-color: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+  margin-top: 1px;
+  z-index: 2;
+}
+
+.nav-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 200px;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 4px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+  z-index: 1;
+  margin-top: 2px;
+  white-space: nowrap;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.nav-dropdown-content hr {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-dropdown-active {
+  display: block;
+}
+
+.nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
+  color: black;
+  padding: 6px 24px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.nav-dropdown-content .nav-dropdown-header {
+  display: block;
+  padding: 5px 24px;
+  padding-bottom: 0;
+  text-transform: uppercase;
+  font-size: 14px;
+  color: #999999;
+  white-space: nowrap;
+}
+
+.nav-dropdown:hover .nav-dropbtn {
+  color: white;
+}
+
+.nav-dropdown-content a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.nav-right .nav-dropdown-content {
+  margin-left: -45%;
+  right: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
+  .distill-site-header a.nav-toggle {
+    float: right;
+    display: block;
+  }
+  .distill-site-header .title {
+    margin-left: 0;
+  }
+  .distill-site-header .nav-right {
+    margin-right: 0;
+  }
+  .distill-site-header {
+    overflow: hidden;
+  }
+  .nav-right .nav-dropdown-content {
+    margin-left: 0;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  .distill-site-header.responsive {position: relative; min-height: 500px; }
+  .distill-site-header.responsive a.nav-toggle {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .distill-site-header.responsive a,
+  .distill-site-header.responsive .nav-dropdown {
+    display: block;
+    text-align: left;
+  }
+  .distill-site-header.responsive .nav-left,
+  .distill-site-header.responsive .nav-right {
+    width: 100%;
+  }
+  .distill-site-header.responsive .nav-dropdown {float: none;}
+  .distill-site-header.responsive .nav-dropdown-content {position: relative;}
+  .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* Site Footer */
+
+.distill-site-footer {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  z-index: 3;
+  margin-top: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  text-align: center;
+}
+
+/* Headroom */
+
+d-title {
+  padding-top: 6rem;
+}
+
+@media print {
+  d-title {
+    padding-top: 4rem;
+  }
+}
+
+.headroom {
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.headroom--transition {
+  transition: all .4s ease-in-out;
+}
+
+.headroom--unpinned {
+  top: -100px;
+}
+
+.headroom--pinned {
+  top: 0;
+}
+
+/* adjust viewport for navbar height */
+/* helps vertically center bootstrap (non-distill) content */
+.min-vh-100 {
+  min-height: calc(100vh - 100px) !important;
+}
+
+</style>
+
+<script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="../../site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
+<link href="../../site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
+<script src="../../site_libs/headroom-0.9.4/headroom.min.js"></script>
+<script src="../../site_libs/autocomplete-0.37.1/autocomplete.min.js"></script>
+<script src="../../site_libs/fuse-6.4.1/fuse.min.js"></script>
+
+<script type="application/javascript">
+
+function getMeta(metaName) {
+  var metas = document.getElementsByTagName('meta');
+  for (let i = 0; i < metas.length; i++) {
+    if (metas[i].getAttribute('name') === metaName) {
+      return metas[i].getAttribute('content');
+    }
+  }
+  return '';
+}
+
+function offsetURL(url) {
+  var offset = getMeta('distill:offset');
+  return offset ? offset + '/' + url : url;
+}
+
+function createFuseIndex() {
+
+  // create fuse index
+  var options = {
+    keys: [
+      { name: 'title', weight: 20 },
+      { name: 'categories', weight: 15 },
+      { name: 'description', weight: 10 },
+      { name: 'contents', weight: 5 },
+    ],
+    ignoreLocation: true,
+    threshold: 0
+  };
+  var fuse = new window.Fuse([], options);
+
+  // fetch the main search.json
+  return fetch(offsetURL('search.json'))
+    .then(function(response) {
+      if (response.status == 200) {
+        return response.json().then(function(json) {
+          // index main articles
+          json.articles.forEach(function(article) {
+            fuse.add(article);
+          });
+          // download collections and index their articles
+          return Promise.all(json.collections.map(function(collection) {
+            return fetch(offsetURL(collection)).then(function(response) {
+              if (response.status === 200) {
+                return response.json().then(function(articles) {
+                  articles.forEach(function(article) {
+                    fuse.add(article);
+                  });
+                })
+              } else {
+                return Promise.reject(
+                  new Error('Unexpected status from search index request: ' +
+                            response.status)
+                );
+              }
+            });
+          })).then(function() {
+            return fuse;
+          });
+        });
+
+      } else {
+        return Promise.reject(
+          new Error('Unexpected status from search index request: ' +
+                      response.status)
+        );
+      }
+    });
+}
+
+window.document.addEventListener("DOMContentLoaded", function (event) {
+
+  // get search element (bail if we don't have one)
+  var searchEl = window.document.getElementById('distill-search');
+  if (!searchEl)
+    return;
+
+  createFuseIndex()
+    .then(function(fuse) {
+
+      // make search box visible
+      searchEl.classList.remove('hidden');
+
+      // initialize autocomplete
+      var options = {
+        autoselect: true,
+        hint: false,
+        minLength: 2,
+      };
+      window.autocomplete(searchEl, options, [{
+        source: function(query, callback) {
+          const searchOptions = {
+            isCaseSensitive: false,
+            shouldSort: true,
+            minMatchCharLength: 2,
+            limit: 10,
+          };
+          var results = fuse.search(query, searchOptions);
+          callback(results
+            .map(function(result) { return result.item; })
+          );
+        },
+        templates: {
+          suggestion: function(suggestion) {
+            var img = suggestion.preview && Object.keys(suggestion.preview).length > 0
+              ? `<img src="${offsetURL(suggestion.preview)}"</img>`
+              : '';
+            var html = `
+              <div class="search-item">
+                <h3>${suggestion.title}</h3>
+                <div class="search-item-description">
+                  ${suggestion.description || ''}
+                </div>
+                <div class="search-item-preview">
+                  ${img}
+                </div>
+              </div>
+            `;
+            return html;
+          }
+        }
+      }]).on('autocomplete:selected', function(event, suggestion) {
+        window.location.href = offsetURL(suggestion.path);
+      });
+      // remove inline display style on autocompleter (we want to
+      // manage responsive display via css)
+      $('.algolia-autocomplete').css("display", "");
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+
+});
+
+</script>
+
+<style type="text/css">
+
+.nav-search {
+  font-size: x-small;
+}
+
+/* Algolioa Autocomplete */
+
+.algolia-autocomplete {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: sub;
+  background-color: white;
+  color: black;
+  padding: 6px;
+  padding-top: 8px;
+  padding-bottom: 0;
+  border-radius: 6px;
+  border: 1px #0F2E3D solid;
+  width: 180px;
+}
+
+
+@media screen and (max-width: 768px) {
+  .distill-site-nav .algolia-autocomplete {
+    display: none;
+    visibility: hidden;
+  }
+  .distill-site-nav.responsive .algolia-autocomplete {
+    display: inline-block;
+    visibility: visible;
+  }
+  .distill-site-nav.responsive .algolia-autocomplete .aa-dropdown-menu {
+    margin-left: 0;
+    width: 400px;
+    max-height: 400px;
+  }
+}
+
+.algolia-autocomplete .aa-input, .algolia-autocomplete .aa-hint {
+  width: 90%;
+  outline: none;
+  border: none;
+}
+
+.algolia-autocomplete .aa-hint {
+  color: #999;
+}
+.algolia-autocomplete .aa-dropdown-menu {
+  width: 550px;
+  max-height: 70vh;
+  overflow-x: visible;
+  overflow-y: scroll;
+  padding: 5px;
+  margin-top: 3px;
+  margin-left: -150px;
+  background-color: #fff;
+  border-radius: 5px;
+  border: 1px solid #999;
+  border-top: none;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
+  cursor: pointer;
+  padding: 5px 4px;
+  border-bottom: 1px solid #eee;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion:last-of-type {
+  border-bottom: none;
+  margin-bottom: 2px;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item {
+  overflow: hidden;
+  font-size: 0.8em;
+  line-height: 1.4em;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item h3 {
+  font-size: 1rem;
+  margin-block-start: 0;
+  margin-block-end: 5px;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-description {
+  display: inline-block;
+  overflow: hidden;
+  height: 2.8em;
+  width: 80%;
+  margin-right: 4%;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview {
+  display: inline-block;
+  width: 15%;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img {
+  height: 3em;
+  width: auto;
+  display: none;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img[src] {
+  display: initial;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
+  background-color: #eee;
+}
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
+  font-weight: bold;
+  font-style: normal;
+}
+
+</style>
+
+
+<!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+
+<style type="text/css">
+
+body {
+  background-color: white;
+}
+
+.pandoc-table {
+  width: 100%;
+}
+
+.pandoc-table>caption {
+  margin-bottom: 10px;
+}
+
+.pandoc-table th:not([align]) {
+  text-align: left;
+}
+
+.pagedtable-footer {
+  font-size: 15px;
+}
+
+d-byline .byline {
+  grid-template-columns: 2fr 2fr;
+}
+
+d-byline .byline h3 {
+  margin-block-start: 1.5em;
+}
+
+d-byline .byline .authors-affiliations h3 {
+  margin-block-start: 0.5em;
+}
+
+.authors-affiliations .orcid-id {
+  width: 16px;
+  height:16px;
+  margin-left: 4px;
+  margin-right: 4px;
+  vertical-align: middle;
+  padding-bottom: 2px;
+}
+
+d-title .dt-tags {
+  margin-top: 1em;
+  grid-column: text;
+}
+
+.dt-tags .dt-tag {
+  text-decoration: none;
+  display: inline-block;
+  color: rgba(0,0,0,0.6);
+  padding: 0em 0.4em;
+  margin-right: 0.5em;
+  margin-bottom: 0.4em;
+  font-size: 70%;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 3px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+d-article table.gt_table td,
+d-article table.gt_table th {
+  border-bottom: none;
+}
+
+.html-widget {
+  margin-bottom: 2.0em;
+}
+
+.l-screen-inset {
+  padding-right: 16px;
+}
+
+.l-screen .caption {
+  margin-left: 10px;
+}
+
+.shaded {
+  background: rgb(247, 247, 247);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.shaded .html-widget {
+  margin-bottom: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.shaded .shaded-content {
+  background: white;
+}
+
+.text-output {
+  margin-top: 0;
+  line-height: 1.5em;
+}
+
+.hidden {
+  display: none !important;
+}
+
+d-article {
+  padding-top: 2.5rem;
+  padding-bottom: 30px;
+}
+
+d-appendix {
+  padding-top: 30px;
+}
+
+d-article>p>img {
+  width: 100%;
+}
+
+d-article h2 {
+  margin: 1rem 0 1.5rem 0;
+}
+
+d-article h3 {
+  margin-top: 1.5rem;
+}
+
+d-article iframe {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 2.0em;
+  width: 100%;
+}
+
+/* Tweak code blocks */
+
+d-article div.sourceCode code,
+d-article pre code {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+d-article pre,
+d-article div.sourceCode,
+d-article div.sourceCode pre {
+  overflow: auto;
+}
+
+d-article div.sourceCode {
+  background-color: white;
+}
+
+d-article div.sourceCode pre {
+  padding-left: 10px;
+  font-size: 12px;
+  border-left: 2px solid rgba(0,0,0,0.1);
+}
+
+d-article pre {
+  font-size: 12px;
+  color: black;
+  background: none;
+  margin-top: 0;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+d-article pre a {
+  border-bottom: none;
+}
+
+d-article pre a:hover {
+  border-bottom: none;
+  text-decoration: underline;
+}
+
+d-article details {
+  grid-column: text;
+  margin-bottom: 0.8em;
+}
+
+@media(min-width: 768px) {
+
+d-article pre,
+d-article div.sourceCode,
+d-article div.sourceCode pre {
+  overflow: visible !important;
+}
+
+d-article div.sourceCode pre {
+  padding-left: 18px;
+  font-size: 14px;
+}
+
+d-article pre {
+  font-size: 14px;
+}
+
+}
+
+figure img.external {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+/* CSS for d-contents */
+
+.d-contents {
+  grid-column: text;
+  color: rgba(0,0,0,0.8);
+  font-size: 0.9em;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+  margin-bottom: 1em;
+  padding-left: 0.25em;
+  justify-self: start;
+}
+
+@media(min-width: 1000px) {
+  .d-contents.d-contents-float {
+    height: 0;
+    grid-column-start: 1;
+    grid-column-end: 4;
+    justify-self: center;
+    padding-right: 3em;
+    padding-left: 2em;
+  }
+}
+
+.d-contents nav h3 {
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.d-contents li {
+  list-style-type: none
+}
+
+.d-contents nav > ul {
+  padding-left: 0;
+}
+
+.d-contents ul {
+  padding-left: 1em
+}
+
+.d-contents nav ul li {
+  margin-top: 0.6em;
+  margin-bottom: 0.2em;
+}
+
+.d-contents nav a {
+  font-size: 13px;
+  border-bottom: none;
+  text-decoration: none
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.d-contents nav a:hover {
+  text-decoration: underline solid rgba(0, 0, 0, 0.6)
+}
+
+.d-contents nav > ul > li > a {
+  font-weight: 600;
+}
+
+.d-contents nav > ul > li > ul {
+  font-weight: inherit;
+}
+
+.d-contents nav > ul > li > ul > li {
+  margin-top: 0.2em;
+}
+
+
+.d-contents nav ul {
+  margin-top: 0;
+  margin-bottom: 0.25em;
+}
+
+.d-article-with-toc h2:nth-child(2) {
+  margin-top: 0;
+}
+
+
+/* Figure */
+
+.figure {
+  position: relative;
+  margin-bottom: 2.5em;
+  margin-top: 1.5em;
+}
+
+.figure img {
+  width: 100%;
+}
+
+.figure .caption {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+  line-height: 1.5em;
+}
+
+.figure img.external {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.figure .caption a {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.figure .caption b,
+.figure .caption strong, {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 1.0);
+}
+
+/* Citations */
+
+d-article .citation {
+  color: inherit;
+  cursor: inherit;
+}
+
+div.hanging-indent{
+  margin-left: 1em; text-indent: -1em;
+}
+
+/* Citation hover box */
+
+.tippy-box[data-theme~=light-border] {
+  background-color: rgba(250, 250, 250, 0.95);
+}
+
+.tippy-content > p {
+  margin-bottom: 0;
+  padding: 2px;
+}
+
+
+/* Tweak 1000px media break to show more text */
+
+@media(min-width: 1000px) {
+  .base-grid,
+  distill-header,
+  d-title,
+  d-abstract,
+  d-article,
+  d-appendix,
+  distill-appendix,
+  d-byline,
+  d-footnote-list,
+  d-citation-list,
+  distill-footer {
+    grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+    grid-column-gap: 16px;
+  }
+
+  .grid {
+    grid-column-gap: 16px;
+  }
+
+  d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+  }
+  figure .caption, .figure .caption, figure figcaption {
+    font-size: 13px;
+  }
+}
+
+@media(min-width: 1180px) {
+  .base-grid,
+  distill-header,
+  d-title,
+  d-abstract,
+  d-article,
+  d-appendix,
+  distill-appendix,
+  d-byline,
+  d-footnote-list,
+  d-citation-list,
+  distill-footer {
+    grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+    grid-column-gap: 32px;
+  }
+
+  .grid {
+    grid-column-gap: 32px;
+  }
+}
+
+
+/* Get the citation styles for the appendix (not auto-injected on render since
+   we do our own rendering of the citation appendix) */
+
+d-appendix .citation-appendix,
+.d-appendix .citation-appendix {
+  font-size: 11px;
+  line-height: 15px;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  padding-left: 18px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.02);
+  padding: 10px 18px;
+  border-radius: 3px;
+  color: rgba(150, 150, 150, 1);
+  overflow: hidden;
+  margin-top: -12px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Include appendix styles here so they can be overridden */
+
+d-appendix {
+  contain: layout style;
+  font-size: 0.8em;
+  line-height: 1.7em;
+  margin-top: 60px;
+  margin-bottom: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  color: rgba(0,0,0,0.5);
+  padding-top: 60px;
+  padding-bottom: 48px;
+}
+
+d-appendix h3 {
+  grid-column: page-start / text-start;
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 1em;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.65);
+}
+
+d-appendix h3 + * {
+  margin-top: 1em;
+}
+
+d-appendix ol {
+  padding: 0 0 0 15px;
+}
+
+@media (min-width: 768px) {
+  d-appendix ol {
+    padding: 0 0 0 30px;
+    margin-left: -30px;
+  }
+}
+
+d-appendix li {
+  margin-bottom: 1em;
+}
+
+d-appendix a {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+d-appendix > * {
+  grid-column: text;
+}
+
+d-appendix > d-footnote-list,
+d-appendix > d-citation-list,
+d-appendix > distill-appendix {
+  grid-column: screen;
+}
+
+/* Include footnote styles here so they can be overridden */
+
+d-footnote-list {
+  contain: layout style;
+}
+
+d-footnote-list > * {
+  grid-column: text;
+}
+
+d-footnote-list a.footnote-backlink {
+  color: rgba(0,0,0,0.3);
+  padding-left: 0.5em;
+}
+
+
+
+/* Anchor.js */
+
+.anchorjs-link {
+  /*transition: all .25s linear; */
+  text-decoration: none;
+  border-bottom: none;
+}
+*:hover > .anchorjs-link {
+  margin-left: -1.125em !important;
+  text-decoration: none;
+  border-bottom: none;
+}
+
+/* Social footer */
+
+.social_footer {
+  margin-top: 30px;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.67);
+}
+
+.disqus-comments {
+  margin-right: 30px;
+}
+
+.disqus-comment-count {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+#disqus_thread {
+  margin-top: 30px;
+}
+
+.article-sharing a {
+  border-bottom: none;
+  margin-right: 8px;
+}
+
+.article-sharing a:hover {
+  border-bottom: none;
+}
+
+.sidebar-section.subscribe {
+  font-size: 12px;
+  line-height: 1.6em;
+}
+
+.subscribe p {
+  margin-bottom: 0.5em;
+}
+
+
+.article-footer .subscribe {
+  font-size: 15px;
+  margin-top: 45px;
+}
+
+
+.sidebar-section.custom {
+  font-size: 12px;
+  line-height: 1.6em;
+}
+
+.custom p {
+  margin-bottom: 0.5em;
+}
+
+/* Styles for listing layout (hide title) */
+.layout-listing d-title, .layout-listing .d-title {
+  display: none;
+}
+
+/* Styles for posts lists (not auto-injected) */
+
+
+.posts-with-sidebar {
+  padding-left: 45px;
+  padding-right: 45px;
+}
+
+.posts-list .description h2,
+.posts-list .description p {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+.posts-list .description h2 {
+  font-weight: 700;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.posts-list h2.post-tag {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: 12px;
+}
+.posts-list {
+  margin-top: 60px;
+  margin-bottom: 24px;
+}
+
+.posts-list .post-preview {
+  text-decoration: none;
+  overflow: hidden;
+  display: block;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 24px 0;
+}
+
+.post-preview-last {
+  border-bottom: none !important;
+}
+
+.posts-list .posts-list-caption {
+  grid-column: screen;
+  font-weight: 400;
+}
+
+.posts-list .post-preview h2 {
+  margin: 0 0 6px 0;
+  line-height: 1.2em;
+  font-style: normal;
+  font-size: 24px;
+}
+
+.posts-list .post-preview p {
+  margin: 0 0 12px 0;
+  line-height: 1.4em;
+  font-size: 16px;
+}
+
+.posts-list .post-preview .thumbnail {
+  box-sizing: border-box;
+  margin-bottom: 24px;
+  position: relative;
+  max-width: 500px;
+}
+.posts-list .post-preview img {
+  width: 100%;
+  display: block;
+}
+
+.posts-list .metadata {
+  font-size: 12px;
+  line-height: 1.4em;
+  margin-bottom: 18px;
+}
+
+.posts-list .metadata > * {
+  display: inline-block;
+}
+
+.posts-list .metadata .publishedDate {
+  margin-right: 2em;
+}
+
+.posts-list .metadata .dt-authors {
+  display: block;
+  margin-top: 0.3em;
+  margin-right: 2em;
+}
+
+.posts-list .dt-tags {
+  display: block;
+  line-height: 1em;
+}
+
+.posts-list .dt-tags .dt-tag {
+  display: inline-block;
+  color: rgba(0,0,0,0.6);
+  padding: 0.3em 0.4em;
+  margin-right: 0.2em;
+  margin-bottom: 0.4em;
+  font-size: 60%;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 3px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.posts-list img {
+  opacity: 1;
+}
+
+.posts-list img[data-src] {
+  opacity: 0;
+}
+
+.posts-more {
+  clear: both;
+}
+
+
+.posts-sidebar {
+  font-size: 16px;
+}
+
+.posts-sidebar h3 {
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.sidebar-section {
+  margin-bottom: 30px;
+}
+
+.categories ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.categories li {
+  color: rgba(0, 0, 0, 0.8);
+  margin-bottom: 0;
+}
+
+.categories li>a {
+  border-bottom: none;
+}
+
+.categories li>a:hover {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.categories .active {
+  font-weight: 600;
+}
+
+.categories .category-count {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+
+@media(min-width: 768px) {
+  .posts-list .post-preview h2 {
+    font-size: 26px;
+  }
+  .posts-list .post-preview .thumbnail {
+    float: right;
+    width: 30%;
+    margin-bottom: 0;
+  }
+  .posts-list .post-preview .description {
+    float: left;
+    width: 45%;
+  }
+  .posts-list .post-preview .metadata {
+    float: left;
+    width: 20%;
+    margin-top: 8px;
+  }
+  .posts-list .post-preview p {
+    margin: 0 0 12px 0;
+    line-height: 1.5em;
+    font-size: 16px;
+  }
+  .posts-with-sidebar .posts-list {
+    float: left;
+    width: 75%;
+  }
+  .posts-with-sidebar .posts-sidebar {
+    float: right;
+    width: 20%;
+    margin-top: 60px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+}
+
+
+/* Improve display for browsers without grid (IE/Edge <= 15) */
+
+.downlevel {
+  line-height: 1.6em;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+}
+
+.downlevel .d-title {
+  padding-top: 6rem;
+  padding-bottom: 1.5rem;
+}
+
+.downlevel .d-title h1 {
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 1.1em;
+  margin: 0 0 0.5rem;
+}
+
+.downlevel .d-title p {
+  font-weight: 300;
+  font-size: 1.2rem;
+  line-height: 1.55em;
+  margin-top: 0;
+}
+
+.downlevel .d-byline {
+  padding-top: 0.8em;
+  padding-bottom: 0.8em;
+  font-size: 0.8rem;
+  line-height: 1.8em;
+}
+
+.downlevel .section-separator {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.downlevel .d-article {
+  font-size: 1.06rem;
+  line-height: 1.7em;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+
+
+.downlevel .d-appendix {
+  padding-left: 0;
+  padding-right: 0;
+  max-width: none;
+  font-size: 0.8em;
+  line-height: 1.7em;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.5);
+  padding-top: 40px;
+  padding-bottom: 48px;
+}
+
+.downlevel .footnotes ol {
+  padding-left: 13px;
+}
+
+.downlevel .base-grid,
+.downlevel .distill-header,
+.downlevel .d-title,
+.downlevel .d-abstract,
+.downlevel .d-article,
+.downlevel .d-appendix,
+.downlevel .distill-appendix,
+.downlevel .d-byline,
+.downlevel .d-footnote-list,
+.downlevel .d-citation-list,
+.downlevel .distill-footer,
+.downlevel .appendix-bottom,
+.downlevel .posts-container {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+@media(min-width: 768px) {
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+  padding-left: 150px;
+  padding-right: 150px;
+  max-width: 900px;
+}
+}
+
+.downlevel pre code {
+  display: block;
+  border-left: 2px solid rgba(0, 0, 0, .1);
+  padding: 0 0 0 20px;
+  font-size: 14px;
+}
+
+.downlevel code, .downlevel pre {
+  color: black;
+  background: none;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+.downlevel .posts-list .post-preview {
+  color: inherit;
+}
+
+
+
+</style>
+
+<script type="application/javascript">
+
+function is_downlevel_browser() {
+  if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                 window.navigator.userAgent)) {
+    return true;
+  } else {
+    return window.load_distill_framework === undefined;
+  }
+}
+
+// show body when load is complete
+function on_load_complete() {
+
+  // add anchors
+  if (window.anchors) {
+    window.anchors.options.placement = 'left';
+    window.anchors.add('d-article > h2, d-article > h3, d-article > h4, d-article > h5');
+  }
+
+
+  // set body to visible
+  document.body.style.visibility = 'visible';
+
+  // force redraw for leaflet widgets
+  if (window.HTMLWidgets) {
+    var maps = window.HTMLWidgets.findAll(".leaflet");
+    $.each(maps, function(i, el) {
+      var map = this.getMap();
+      map.invalidateSize();
+      map.eachLayer(function(layer) {
+        if (layer instanceof L.TileLayer)
+          layer.redraw();
+      });
+    });
+  }
+
+  // trigger 'shown' so htmlwidgets resize
+  $('d-article').trigger('shown');
+}
+
+function init_distill() {
+
+  init_common();
+
+  // create front matter
+  var front_matter = $('<d-front-matter></d-front-matter>');
+  $('#distill-front-matter').wrap(front_matter);
+
+  // create d-title
+  $('.d-title').changeElementType('d-title');
+
+  // create d-byline
+  var byline = $('<d-byline></d-byline>');
+  $('.d-byline').replaceWith(byline);
+
+  // create d-article
+  var article = $('<d-article></d-article>');
+  $('.d-article').wrap(article).children().unwrap();
+
+  // move posts container into article
+  $('.posts-container').appendTo($('d-article'));
+
+  // create d-appendix
+  $('.d-appendix').changeElementType('d-appendix');
+
+  // flag indicating that we have appendix items
+  var appendix = $('.appendix-bottom').children('h3').length > 0;
+
+  // replace footnotes with <d-footnote>
+  $('.footnote-ref').each(function(i, val) {
+    appendix = true;
+    var href = $(this).attr('href');
+    var id = href.replace('#', '');
+    var fn = $('#' + id);
+    var fn_p = $('#' + id + '>p');
+    fn_p.find('.footnote-back').remove();
+    var text = fn_p.html();
+    var dtfn = $('<d-footnote></d-footnote>');
+    dtfn.html(text);
+    $(this).replaceWith(dtfn);
+  });
+  // remove footnotes
+  $('.footnotes').remove();
+
+  // move refs into #references-listing
+  $('#references-listing').replaceWith($('#refs'));
+
+  $('h1.appendix, h2.appendix').each(function(i, val) {
+    $(this).changeElementType('h3');
+  });
+  $('h3.appendix').each(function(i, val) {
+    var id = $(this).attr('id');
+    $('.d-contents a[href="#' + id + '"]').parent().remove();
+    appendix = true;
+    $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+  });
+
+  // show d-appendix if we have appendix content
+  $("d-appendix").css('display', appendix ? 'grid' : 'none');
+
+  // localize layout chunks to just output
+  $('.layout-chunk').each(function(i, val) {
+
+    // capture layout
+    var layout = $(this).attr('data-layout');
+
+    // apply layout to markdown level block elements
+    var elements = $(this).children().not('details, div.sourceCode, pre, script');
+    elements.each(function(i, el) {
+      var layout_div = $('<div class="' + layout + '"></div>');
+      if (layout_div.hasClass('shaded')) {
+        var shaded_content = $('<div class="shaded-content"></div>');
+        $(this).wrap(shaded_content);
+        $(this).parent().wrap(layout_div);
+      } else {
+        $(this).wrap(layout_div);
+      }
+    });
+
+
+    // unwrap the layout-chunk div
+    $(this).children().unwrap();
+  });
+
+  // remove code block used to force  highlighting css
+  $('.distill-force-highlighting-css').parent().remove();
+
+  // remove empty line numbers inserted by pandoc when using a
+  // custom syntax highlighting theme
+  $('code.sourceCode a:empty').remove();
+
+  // load distill framework
+  load_distill_framework();
+
+  // wait for window.distillRunlevel == 4 to do post processing
+  function distill_post_process() {
+
+    if (!window.distillRunlevel || window.distillRunlevel < 4)
+      return;
+
+    // hide author/affiliations entirely if we have no authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+    if (!have_authors)
+      $('d-byline').addClass('hidden');
+
+    // article with toc class
+    $('.d-contents').parent().addClass('d-article-with-toc');
+
+    // strip links that point to #
+    $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+
+    // add orcid ids
+    $('.authors-affiliations').find('.author').each(function(i, el) {
+      var orcid_id = front_matter.authors[i].orcidID;
+      if (orcid_id) {
+        var a = $('<a></a>');
+        a.attr('href', 'https://orcid.org/' + orcid_id);
+        var img = $('<img></img>');
+        img.addClass('orcid-id');
+        img.attr('alt', 'ORCID ID');
+        img.attr('src','data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==');
+        a.append(img);
+        $(this).append(a);
+      }
+    });
+
+    // hide elements of author/affiliations grid that have no value
+    function hide_byline_column(caption) {
+      $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+    }
+
+    // affiliations
+    var have_affiliations = false;
+    for (var i = 0; i<front_matter.authors.length; ++i) {
+      var author = front_matter.authors[i];
+      if (author.affiliation !== "&nbsp;") {
+        have_affiliations = true;
+        break;
+      }
+    }
+    if (!have_affiliations)
+      $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+
+    // published date
+    if (!front_matter.publishedDate)
+      hide_byline_column("Published");
+
+    // document object identifier
+    var doi = $('d-byline').find('h3:contains("DOI")');
+    var doi_p = doi.next().empty();
+    if (!front_matter.doi) {
+      // if we have a citation and valid citationText then link to that
+      if ($('#citation').length > 0 && front_matter.citationText) {
+        doi.html('Citation');
+        $('<a href="#citation"></a>')
+          .text(front_matter.citationText)
+          .appendTo(doi_p);
+      } else {
+        hide_byline_column("DOI");
+      }
+    } else {
+      $('<a></a>')
+         .attr('href', "https://doi.org/" + front_matter.doi)
+         .html(front_matter.doi)
+         .appendTo(doi_p);
+    }
+
+     // change plural form of authors/affiliations
+    if (front_matter.authors.length === 1) {
+      var grid = $('.authors-affiliations');
+      grid.children('h3:contains("Authors")').text('Author');
+      grid.children('h3:contains("Affiliations")').text('Affiliation');
+    }
+
+    // remove d-appendix and d-footnote-list local styles
+    $('d-appendix > style:first-child').remove();
+    $('d-footnote-list > style:first-child').remove();
+
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+
+    // hoverable references
+    $('span.citation[data-cites]').each(function() {
+      var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+      window.tippy(this, {
+        allowHTML: true,
+        content: refHtml,
+        maxWidth: 500,
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start'
+      });
+    });
+
+    // clear polling timer
+    clearInterval(tid);
+
+    // show body now that everything is ready
+    on_load_complete();
+  }
+
+  var tid = setInterval(distill_post_process, 50);
+  distill_post_process();
+
+}
+
+function init_downlevel() {
+
+  init_common();
+
+   // insert hr after d-title
+  $('.d-title').after($('<hr class="section-separator"/>'));
+
+  // check if we have authors
+  var front_matter = JSON.parse($("#distill-front-matter").html());
+  var have_authors = front_matter.authors && front_matter.authors.length > 0;
+
+  // manage byline/border
+  if (!have_authors)
+    $('.d-byline').remove();
+  $('.d-byline').after($('<hr class="section-separator"/>'));
+  $('.d-byline a').remove();
+
+  // remove toc
+  $('.d-contents').remove();
+
+  // move appendix elements
+  $('h1.appendix, h2.appendix').each(function(i, val) {
+    $(this).changeElementType('h3');
+  });
+  $('h3.appendix').each(function(i, val) {
+    $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+  });
+
+
+  // inject headers into references and footnotes
+  var refs_header = $('<h3></h3>');
+  refs_header.text('References');
+  $('#refs').prepend(refs_header);
+
+  var footnotes_header = $('<h3></h3');
+  footnotes_header.text('Footnotes');
+  $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+
+  // move appendix-bottom entries to the bottom
+  $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+  $('.appendix-bottom').remove();
+
+  // remove appendix if it's empty
+  if ($('.d-appendix').children().length === 0)
+    $('.d-appendix').remove();
+
+  // prepend separator above appendix
+  $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+
+  // trim code
+  $('pre>code').each(function(i, val) {
+    $(this).html($.trim($(this).html()));
+  });
+
+  // move posts-container right before article
+  $('.posts-container').insertBefore($('.d-article'));
+
+  $('body').addClass('downlevel');
+
+  on_load_complete();
+}
+
+
+function init_common() {
+
+  // jquery plugin to change element types
+  (function($) {
+    $.fn.changeElementType = function(newType) {
+      var attrs = {};
+
+      $.each(this[0].attributes, function(idx, attr) {
+        attrs[attr.nodeName] = attr.nodeValue;
+      });
+
+      this.replaceWith(function() {
+        return $("<" + newType + "/>", attrs).append($(this).contents());
+      });
+    };
+  })(jQuery);
+
+  // prevent underline for linked images
+  $('a > img').parent().css({'border-bottom' : 'none'});
+
+  // mark non-body figures created by knitr chunks as 100% width
+  $('.layout-chunk').each(function(i, val) {
+    var figures = $(this).find('img, .html-widget');
+    if ($(this).attr('data-layout') !== "l-body") {
+      figures.css('width', '100%');
+    } else {
+      figures.css('max-width', '100%');
+      figures.filter("[width]").each(function(i, val) {
+        var fig = $(this);
+        fig.css('width', fig.attr('width') + 'px');
+      });
+
+    }
+  });
+
+  // auto-append index.html to post-preview links in file: protocol
+  // and in rstudio ide preview
+  $('.post-preview').each(function(i, val) {
+    if (window.location.protocol === "file:")
+      $(this).attr('href', $(this).attr('href') + "index.html");
+  });
+
+  // get rid of index.html references in header
+  if (window.location.protocol !== "file:") {
+    $('.distill-site-header a[href]').each(function(i,val) {
+      $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+    });
+  }
+
+  // add class to pandoc style tables
+  $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+  $('.kable-table').children('table').addClass('pandoc-table');
+
+  // add figcaption style to table captions
+  $('caption').parent('table').addClass("figcaption");
+
+  // initialize posts list
+  if (window.init_posts_list)
+    window.init_posts_list();
+
+  // implmement disqus comment link
+  $('.disqus-comment-count').click(function() {
+    window.headroom_prevent_pin = true;
+    $('#disqus_thread').toggleClass('hidden');
+    if (!$('#disqus_thread').hasClass('hidden')) {
+      var offset = $(this).offset();
+      $(window).resize();
+      $('html, body').animate({
+        scrollTop: offset.top - 35
+      });
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (is_downlevel_browser())
+    init_downlevel();
+  else
+    window.addEventListener('WebComponentsReady', init_distill);
+});
+
+</script>
+
+<!--/radix_placeholder_distill-->
+  <script src="../../site_libs/header-attrs-2.11/header-attrs.js"></script>
+  <script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+  <script src="../../site_libs/popper-2.6.0/popper.min.js"></script>
+  <link href="../../site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="../../site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="../../site_libs/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="../../site_libs/anchor-4.2.2/anchor.min.js"></script>
+  <script src="../../site_libs/bowser-1.9.3/bowser.min.js"></script>
+  <script src="../../site_libs/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="../../site_libs/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+<!--/radix_placeholder_site_in_header-->
+
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness","description":"Gaussian processes. As narrated by an increasingly deranged man during a day of torrential rain.","authors":[],"publishedDate":"2021-10-16T00:00:00.000+00:00"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<header class="header header--fixed" role="banner">
+<nav class="distill-site-nav distill-site-header">
+<div class="nav-left">
+<a href="../../index.html" class="title">Un garçon pas comme les autres (Bayes)</a>
+<input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
+</div>
+<div class="nav-right">
+<a href="../../index.html">Home</a>
+<a href="../../about.html">About</a>
+<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
+</div>
+</nav>
+</header>
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness</h1>
+<!--radix_placeholder_categories-->
+<!--/radix_placeholder_categories-->
+<p><p>Gaussian processes. As narrated by an increasingly deranged man during a day of torrential rain.</p></p>
+</div>
+
+
+<div class="d-article">
+<p>I guess I’m going to talk about Gaussian processes now. This wasn’t the plan but who really expected a) there to be a plan or b) me to stick to the plan. I feel like writing about Gaussian processes and so I shall! It will be grand.</p>
+<h2 id="what-is-a-gaussian-process">What is a Gaussian process?</h2>
+<p>Well I could tell you that a Gaussian process is defined by it’s joint distribution <span class="math display">\[
+u \sim N(\mu, \Sigma),
+\]</span> where <span class="math inline">\(u_i = u(s_i)\)</span>, <span class="math inline">\(\mu_i = \mu(s_i)\)</span> and <span class="math inline">\(\Sigma_{ij} = c(s_i, s_j)\)</span> for some positive definite covariance (or kernel) function <span class="math inline">\(c(\cdot, \cdot)\)</span>.</p>
+<p>But that would be about as useful as presenting you with a dog that can bark “she’s a grand old flag”: perhaps good enough for a novelty hit, but there’s just no longevity in it.</p>
+<p>To understand a Gaussian process you need to <em>feel it</em> deep down within you where the fear and the detailed mathematical concepts live.</p>
+<p>So let’s try again.</p>
+<h2 id="were-gonna-have-a-you-know-what.-im-not-gonna-do-that.-but-i-am-going-to-define-this-stuff-three-times.-once-for-mum-once-for-dad-and-once-for-the-country.">We’re gonna have a … you know what. I’m not gonna do that. But I am going to define this stuff three times. Once for mum, once for dad, and once for the country.</h2>
+<p>You’ve got to wonder why anyone would introduce something three ways. There are some reasons. The first is, of course, that each definition gives you a different insight into different aspects of Gaussian processes (the operational, the boundless generality, the functional). And the second is because I’ve had to use all three of these ideas (and several more) over the years in order to understand how Gaussian processes work.</p>
+<p>I learnt about GPs from several sources (listed not in order):</p>
+<ul>
+<li><p><a href="https://www.ed.ac.uk/profile/professor-finn-lindgren">A Swede</a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> (so I will rant about random fields in the footnotes eventually);</p></li>
+<li><p>A book<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> that was introducing GPs in a very general way because they needed the concept in outrageous generality to answer questions about the distribution of the maximum of a Gaussian process;</p></li>
+<li><p>A book<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> written by a Russian who’s really only into measure theory and doesn’t believe anything is real if it isn’t at least happening on a Frechet space;</p></li>
+<li><p>And a book<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> by a different Russian who’s really only into generalised Markov properties and needed to work with Gaussian processes that are defined over <em>functions</em>.</p></li>
+</ul>
+<p>Of these, the most relevant is probably the first one. I was primarily taught this stuff by <a href="https://www.ed.ac.uk/profile/professor-finn-lindgren">Finn Lindgren</a>, who had the misfortune of having the office next to mine when we worked together in Trondheim a very long time ago. (We both had a lot more hair then.)</p>
+<p>One of the things that I learnt from him is that Gaussian processes can appear in all kinds of contexts, which means you need to understand them <em>as a model for an unknown function</em> rather than as a tool to be used in a specific context (like for Gaussian process regression or Gaussian process classification).</p>
+<p>It’s some effort to really get a good grip on the whole “Gaussian processes as a model for an unknown function” thing but once you relax into it<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>, it stops being alarming to see models where you are observing things that aren’t just <span class="math inline">\(u(s_k)\)</span>. It is not alarming when you are observing integrals of the GP over regions, or derivatives. And you (or your methods) don’t fall apart when presented with complex non-linear functions on the GP (as happens if you look at<br />
+Bayesian inverse problems literature<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>).</p>
+<h2 id="what-is-a-gaussian-process-version-1">What is a Gaussian process? (Version 1)</h2>
+<p>I’m going to start with the most common definition of a Gaussian process<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>. This is the definition that was alluded to in the first section and it’s also the definition operationalised in book’s like Rasmussen and Williams<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>, which is a bread and butter reference for most machine learners interested in GPs, use.</p>
+<p>The idea is pretty straightforward: I need to define a stochastic model for an unknown function <span class="math inline">\(u(s)\)</span> and I want it to be, in some sense, Gaussian. So how do I go about doing this?</p>
+<p>Firstly, I probably don’t care too much about the function as an abstract object. For example, if I’m using the Gaussian process to model something like temperature, I am only going to observe it at a fairly small number of places (even though I could choose any set of places I want). This means that for some <em>arbitrary</em> set set of <span class="math inline">\(K\)</span> locations <span class="math inline">\(s_1, s_2, \ldots, s_K\)</span>, I am most interested<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> in understanding the <em>joint distribution</em><a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a><span class="math display">\[
+(u(s_1), \dots, u(s_K))^T. 
+\]</span></p>
+<p>So how would we model the joint distribution? If we want the model to be tractable, we probably want a nice distribution. This is where the <em>Gaussian</em> part comes in. The Gaussian distribution is an extremely tractable<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> distributions in medium-to-high dimensions. So the choice to model our joint distribution (which could be any size <span class="math inline">\(K\)</span>) as <span class="math display">\[
+(u(s_1), \dots, u(s_K))^T \sim N\left(\mu_{s_1, \ldots, s_K}, \Sigma_{s_1, \ldots, s_K}\right),
+\]</span> makes sense from a purely mercenary position<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>.</p>
+<p>So how do we choose the mean and the covariance function? We will see that the mean can be selected as <span class="math inline">\([\mu_{s_1, \ldots, s_K}]_{k} = \mu(s_k)\)</span> for pretty much any function<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a> <span class="math inline">\(\mu(\cdot)\)</span>, but, when we come to write <span class="math display">\[
+[\Sigma_{s_1, \ldots, s_K}]_{ij} = c(s_i, s_j),
+\]</span> there will be some very strong restrictions on the <em>covariance function</em> <span class="math inline">\(c(\cdot, \cdot)\)</span>.</p>
+<p>So where do these restrictions come from?</p>
+<h3 id="oh-those-gay-russians">Oh those (gay) Russians!</h3>
+<p>As with all things in probability, all the good shit comes from the Soviets. Kolmogorov<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> was a leading light in the Soviet push to formalise probability and one of his many many many contributions is something called the <em>Kolmogorov extension theorem</em>, which gives the exact conditions under which we can go from declaring that the distributions of $(u(s_1), , u(s_K))^T (these are called finite dimensional distributions) are Gaussian to describing a legitimate random function <span class="math inline">\(u(s)\)</span>.</p>
+<p>There are essentially two conditions:</p>
+<ol type="1">
+<li>The order of the observations doesn’t matter in a material way. In our case changing the order just permutes the rows and columns of the mean vector and covariance matrix, which is perfectly ok.</li>
+<li>There is a consistent way to map between the distributions of <span class="math inline">\((u(s_1), \ldots, u(s_K), u(s_{K+1}))^T\)</span> and <span class="math inline">\((u(s_1), \ldots, u(s_K))^T\)</span>. This is the condition that puts a strong restriction on the covariance function.</li>
+</ol>
+<p>Essentially, we need to make sure that we have a consistent way to add rows and columns to our covariance matrix while ensuring that stays positive definite (that is, while all of the eigenvalues stay non-negative, which is the condition required for a multivariate normal distribution<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a>). The condition—which is really gross—is that for every positive integer <span class="math inline">\(K\)</span> and every set of points <span class="math inline">\(s_1, \ldots, s_k\)</span>, and for every <span class="math inline">\(a_1, \ldots, a_K\)</span> not all equal to zero, we require that <span class="math display">\[
+\sum_{i=1}^K \sum_{j = 1}^K a_ia_j c(s_i, s_j) \geq 0.
+\]</span></p>
+<p>This condition is obviously very difficult to check. This is why people typically choose their covariance function from a very short list<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> that is typically found in a book on Gaussian processes.</p>
+<h2 id="but-kolmogorov-said-a-little-bit-more">But Kolmogorov said a little bit more</h2>
+<p>There’s a weird thing in grad school in north america where they insist on teaching measure theoretic probability theory and then never ever ever ever ever using any of the subtleties. But Gaussian processes (and, in general, stochastic processes on uncountable index spaces) are a great example of when you need these details.</p>
+<p>Why? Because unlike discrete probability (where the set of events that we can compute the probability of is obvious) or even continuous random variables (where the events that we can’t compute the probability of are so weird we can truly just ignore them unless we are doing something truly exotic), for Gaussian processes,<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a> the set of allowable events is considerably smaller than the set of all things you might want probabilities of.</p>
+<p>The gist of it is that we have built up a random function <span class="math inline">\(u(s)\)</span> from a bunch of finite random vectors. This means that we can only assign probabilities to events that can be built up from events on finite random vectors. The resulting set of events (or <span class="math inline">\(\sigma\)</span>-algebra to use the adult term) is called the cylindrical<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a> <span class="math inline">\(\sigma\)</span>-algebra and can be roughly<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> thought of as the set of all events that can be evaluated by evaluating <span class="math inline">\(u(\cdot)\)</span> at most a countable number of times.</p>
+<h2 id="things-that-arent-measurable">Things that aren’t measurable</h2>
+<p>This will potentially become a problem if, for instance, you are working with a Gaussian process in a model that uses a Gaussian process in a weird way. When this happens, it is <em>not</em> guaranteed that, for instance, your likelihood is a measurable function, which would mean that you can’t normalise your probability distribution! (I mean, don’t worry. Unless you’re doing something fairly wild it will be, but it has come up especially in the inverse problems literature!)</p>
+<p>This limited set of measurable events even seems to preclude well studied “events” like “<span class="math inline">\(u\)</span> is continuous” or “<span class="math inline">\(u\)</span> is twice continuously differentiable” or “<span class="math inline">\(u\)</span> has a finite supremum”. All things that we a) want to know about a Gaussian process and b) things people frequently say about Gaussian processes. It is common for people to say that “Brownian motion is continuous” and similar things.</p>
+<p>As with all of mathematics, there are a lot of work arounds that we can use. For those three statements in particular, there is some really elegant mathematical work (due, again, to Kolmogorov and extended greatly by others). The idea is that we can build another function <span class="math inline">\(\tilde u(s)\)</span> such that <span class="math inline">\(\Pr(u(s) = \tilde u(s)) = 1\)</span> for <em>all</em><a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a> <span class="math inline">\(s\)</span> such that <span class="math inline">\(\tilde u(s)\)</span> is continuous (or differentiable or bounded).</p>
+<p>In the language of stochastic processes, <span class="math inline">\(\tilde u(s)\)</span> is called a <em>version</em> of <span class="math inline">\(u(s)\)</span> and the more correct, temperate language (aka the one least likely to find in the literature) is that <span class="math inline">\(u(s)\)</span> has a continuous/differentiable/bounded <em>version</em>.</p>
+<p>If you’re interested in seeing how a differentiable version of a Gaussian process is constructed, you basically have to dick around with dyads for a while. Martin Hairer’s lecture notes<a href="#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a> is a nice clear example.</p>
+<h3 id="where-are-the-limitations-of-this-definition">Where are the limitations of this definition?</h3>
+<p>There are a few. These are, of course, in the eye of the beer holder. The definition is workable in a lot of situations and, with some explanation can be broadened out a bit more. It’s less of a great definition when you’re trying to manipulate Gaussian processes as mathematical objects, but that’s what the next one is for.</p>
+<p>The first limitation is maybe not so much a limit of the definition as a bit of work you have to do to make it applicable. And that is: what happens if I am observing (or my likelihood depends on) averages like <span class="math display">\[
+\left(\int_S \ell_1(s) u(s)\,ds, \ldots, \int_S \ell_K(s) u(s)\,ds\right)^T
+\]</span> instead of simple point evaluations<a href="#fn22" class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a>.</p>
+<p>This might seem like a massively different problem, until we remember that integrals are just sums dressed up for Halloween, so we can approximate the integrals arbitrarily well by sums<a href="#fn23" class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a>. In fact, if we squint<a href="#fn24" class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a> a bit, we can see that the above vector will also be multivariate Gaussian with mean vector <span class="math display">\[
+[\mu]_k = \int_S \ell_k(s) \mu(s)\,ds
+\]</span> and covariance matrix with entries <span class="math display">\[
+[\Sigma]_{ij} = \int_{S \times S} \ell_i(s) \ell_j(s&#39;)c(s, s&#39;)\,dsds&#39;.
+\]</span> Similar formulas hold for derivative observations.</p>
+<p>Probably the bigger limitation is that in this way of seeing things, your view is tied very tightly to the covariance function. While it is a natural object for defining Gaussian processes, it is fucking inconvenient if you want to understand things like how well approximate Gaussian processes work.</p>
+<p>And let’s face it, a big chunk of Gaussian processes we see in practice are approximate because the computational burden on large data sets is too big to do anything but approximate.</p>
+<p>(Fun fact, when I was much much younger I wrote a paper that was a better title than a paper<a href="#fn25" class="footnote-ref" id="fnref25" role="doc-noteref"><sup>25</sup></a> called<a href="#fn26" class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a> <a href="https://onlinelibrary.wiley.com/doi/10.1002/env.1137"><em>In order to make spatial statistics computationally feasible, we need to abandon the covariance function.</em></a> I copped a lot of shit for it at the time [partly because the title was better than the paper, but partly because some people are dicks], but I think the subsequent 10 years largely proved me (or at least my title) right<a href="#fn27" class="footnote-ref" id="fnref27" role="doc-noteref"><sup>27</sup></a>.)</p>
+<p>The focus on the covariance function also hides the strong similarity between Gaussian process literature and the smoothing splines literature starting from Grace Wahba in the 1970s. It’s not that nobody notices this, but it’s <em>work</em> to get there!</p>
+<p>In a similar way, it hides the fundamental role the <em>reproducing kernel Hilbert space</em> (or Cameron-Martin space) is doing and the ways that Gaussian process regression is (and is not) like kernel smoothing in RKHSs. This, again, isn’t a <em>secret</em> per se—you can find this information if you want it—but it’s confusing to people and the lack of clarity leads to people missing useful connections (or sometimes leads to them drawing mistaken parallels).</p>
+<p>How many times have you seen someone say that realisations of a Gaussian process are in the RKHS associated with the covariance function? They are not. In fact, every realisation of a Gaussian process is rougher than any function in the RKHS (with probability 1)! Unfortunately, this means that your reason for choosing the kernel in a RKHS regression and for choosing the covariance function in a Gaussian process prior need to be subtly different. Or, to put it differently, a penalty is not a log-prior and interpreting the maximum a penalised likelihood is, in high dimensions, a very distant activity from interpreting a posterior distribution (even when the penalty is the log of the prior).</p>
+<h2 id="what-is-a-gaussian-process-version-2">What is a Gaussian process? (Version 2)</h2>
+<p>Ok. Let’s do this again. This definition lives in a considerably more mathematical space and while I’m gonna try to explain the key terms, I will fail. But hey. Who doesn’t like googling weird terms?</p>
+<p>A Gaussian process is a collection of random variables <span class="math inline">\(u(s)\)</span>, where <span class="math inline">\(s \in S\)</span> and <span class="math inline">\(S\)</span> is some set of things that isn’t too topologically disastrous<a href="#fn28" class="footnote-ref" id="fnref28" role="doc-noteref"><sup>28</sup></a>.</p>
+<p>But what makes it Gaussian? Here’s the general definition.</p>
+<blockquote>
+<p>A stochastic process/random field is <em>Gaussian</em> if and only if every continuous <em>linear functional</em> has a univariate Gaussian distribution.</p>
+</blockquote>
+<h3 id="well-thats-very-useful-daniel.-what-the-hell-is-a-linear-functional">Well that’s very useful Daniel. What the hell is a linear functional?</h3>
+<p>Great question angry man who lives inside my head! It is any function <span class="math inline">\(\ell(\cdot)\)</span> that takes the Gaussian process <span class="math inline">\(u(s)\)</span> and an input and spits out a real number that is is</p>
+<ol type="a">
+<li>Linear. Aka <span class="math inline">\(\alpha \ell(u) + \beta\ell(v) = \ell(\alpha u + \beta v)\)</span></li>
+<li>Bounded<a href="#fn29" class="footnote-ref" id="fnref29" role="doc-noteref"><sup>29</sup></a>.</li>
+</ol>
+<p><em>Great. Love a definition. Shall we try something more concrete?</em></p>
+<p>Point evaluation <span class="math inline">\(u(s_j)\)</span> (aka evaluating the function at a point) is a linear functional (<span class="math inline">\((u + v)(s)_j = u(s_j) + v(s_j)\)</span>). As is a definite integral over a set <span class="math inline">\(\int_A u(s)\,ds\)</span>.</p>
+<p>It’s a fun little exercise to convince yourself that this all implies that for any collection <span class="math inline">\(\ell_1(\cdot), \ldots, \ell_J(\cdot)\)</span> of continuous linear functionals, then <span class="math inline">\(u(s)\)</span> is a Gaussian process means that the vector <span class="math display">\[
+(\ell_1(u), \ldots \ell_J(u))^T
+\]</span> is multivariate Gaussian.</p>
+<p><em>Your idea of fun is not my idea of fun. Anyway. Keep talking.</em></p>
+<p>If <span class="math inline">\(u\)</span> lives in a Banach space<a href="#fn30" class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a> <span class="math inline">\(B\)</span>, then the set of all continuous/bounded linear functionals on <span class="math inline">\(B\)</span> is called the dual space and is denoted <span class="math inline">\(B^*\)</span>. <!-- A lot of time, it becomes inconvenient to write $\ell(u)$ and we write $$ --> <!-- \langle u, \ell \rangle. --> <!-- $$ This is called a _duality pairing_ and the notation is reminiscent of an inner  --> <!-- product because of an inner product with one single striking difference: for an  --> <!-- inner product the thing on the left has the same _type_^[is in the same space] as --> <!-- the thing on the right, whereas for a duality pairing the thing on the left is always --> <!-- in $B$ while the thing on the right is always in $B^*$, which is _not_ the same as $B$  --> <!-- in general^[If $B$ has an inner product (aka it's a Hilbert space) the two spaces are   --> <!-- automatically "the same" and the duality pairing is "the same" as the inner product).]. --></p>
+<h3 id="i-mean-cool-i-guess-but-where-the-merry-hell-is-the-covariance-function">I mean, cool I guess but where the merry hell is the covariance function</h3>
+<p>In this context, the most important thing about <span class="math inline">\(B^*\)</span> is it does double duty: it is both a space of linear functionals <em>and</em> a space that can be identified with random variables.</p>
+<p><em>How the fuck do you do that?</em></p>
+<p>Well, the trick is to remember the definition! If <span class="math inline">\(\ell \in B^*\)</span>, then <span class="math inline">\(\ell(u)\)</span> is a Gaussian. Similarly, if we have two functionals <span class="math inline">\(\ell, \ell&#39; \in B^*\)</span> we consider the covariance of their associated random variables <span class="math display">\[
+C_u(\ell, \ell&#39;) = \mathbb{E}(\ell(u)\ell&#39;(u)).
+\]</span></p>
+<p><span class="math inline">\(C_u(\ell, \ell&#39;)\)</span> is a symmetric, positive definite bilinear form (aka good candidate for an inner product)!</p>
+<p>We can use this to add more functions to <span class="math inline">\(B^*\)</span>, particularly for any sequence <span class="math inline">\(b_n \in B^*\)</span> that is Cauchy with respect to the norm <span class="math inline">\(\|\ell\|_{R_u} = \sqrt{C_u(\ell, \ell)}\)</span> we append the limit to <span class="math inline">\(B^*\)</span> to complete the space. Once we take equivalence classes, we end up with a Hilbert space <span class="math inline">\(R_u\)</span> that, very unfortunately, probabilists have a tendency to call the reproducing kernel Hilbert space associated with <span class="math inline">\(u\)</span>.</p>
+<p>Why is this unfortunate? Well primarily because it’s not the exact same space that machine learners call the reproducing kernel Hilbert space, which is, to put it mildly, confusing. But we can build the machine learner’s RKHS (known to probabilists as the Cameron-Martin space).</p>
+<p><em>Why are you even telling me this? Is this a digression?</em></p>
+<p>Honestly. Yes. But regardless the space <span class="math inline">\(R_u\)</span> is quite useful to understand what’s going on. To start off, let’s do one example that shows just how different a Gaussian process is from a multivariate normal random vector. We will show that if we multiply a GP by a constant, we completely change its support<a href="#fn31" class="footnote-ref" id="fnref31" role="doc-noteref"><sup>31</sup></a>! Many a computational and inferential ship have come to grief on these sharp rocks.</p>
+<p>To do this, though, we need<a href="#fn32" class="footnote-ref" id="fnref32" role="doc-noteref"><sup>32</sup></a> to make an assumption on <span class="math inline">\(B\)</span>: We assume that <span class="math inline">\(B\)</span> is separable<a href="#fn33" class="footnote-ref" id="fnref33" role="doc-noteref"><sup>33</sup></a>. This isn’t an vacuous assumption, but in a lot of cases of practical interest, this is basically the same thing as assuming the set <span class="math inline">\(S\)</span> is a nice bounded domain or a friendly compact manifold (and not something like <span class="math inline">\(\mathbb{R}^d\)</span>)<a href="#fn34" class="footnote-ref" id="fnref34" role="doc-noteref"><sup>34</sup></a>.</p>
+<p>So. How do we use <span class="math inline">\(R_u\)</span> to show that Gaussian processes are evil? Well we begin by noting that <span class="math inline">\(R_u\)</span> is a separable<a href="#fn35" class="footnote-ref" id="fnref35" role="doc-noteref"><sup>35</sup></a> Hilbert space it contains an orthonormal basis <span class="math inline">\(e_n\)</span>, <span class="math inline">\(n=1, \ldots, \infty\)</span> (that is <span class="math inline">\(\|e_n\|_{R_u} = 1\)</span> and <span class="math inline">\(\langle e_n, e_m\rangle_{R_u} = 0\)</span> if <span class="math inline">\(n\neq m\)</span>). We can use this basis to show some really really weird stuff about <span class="math inline">\(u(s)\)</span>.</p>
+<p>In particular, consider another Gaussian process <span class="math inline">\(v(s) = c u(s)\)</span>, where <span class="math inline">\(c\)</span> is a non-zero constant. For this process we can build <span class="math inline">\(R_v\)</span> in an analogous way. The <span class="math inline">\(e_n\)</span> are still orthogonal in <span class="math inline">\(R_v\)</span> but now <span class="math inline">\(\|e_n\|_{R_v} = c^2\)</span>.</p>
+<p>Now consider the functional <span class="math inline">\(X_K(\cdot) = K^{-1}\sum_{k = 1}^Ke_i(\cdot)^2\)</span>. We are going to use this function to break stuff! To do this, we are going to define two disjoint sets of functions <span class="math inline">\(A_1 = \{u: \lim_{K\rightarrow \infty} X_K(u) = 1\}\)</span> and <span class="math inline">\(A_2 = \{u: \lim_{K\rightarrow \infty} X_K(u) = c^2\}\)</span>. Clearly <span class="math inline">\(A_1\)</span> and <span class="math inline">\(A_2\)</span> are disjoint if <span class="math inline">\(|c|\neq 1\)</span>.</p>
+<p>Because <span class="math inline">\(e_n(\cdot)\)</span> are orthonormal in <span class="math inline">\(R_u\)</span>, it follows that that <span class="math inline">\(u_n = e_n(u) \sim N(0,1)\)</span> are iid. Similarly, <span class="math inline">\(v_n = e_n(v) \sim N(0, c^2)\)</span> are also independent. Hence it follows from the properties of <span class="math inline">\(\chi^2\)</span> random variables (aka the mean plus the strong law of large numbers) that <span class="math inline">\(X_K(u) \rightarrow 1\)</span> and hence <span class="math inline">\(\Pr(u \in A_1) = 1\)</span>. On the other hand, <span class="math inline">\(X_K(v) \rightarrow c^2\)</span>, so <span class="math inline">\(\Pr(v \in A_2) = 1\)</span>. As <span class="math inline">\(A_1\)</span> and <span class="math inline">\(A_2\)</span> are disjoint, this means that unless <span class="math inline">\(|c|=1\)</span>, the processes <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> are mutually singular (aka they have no overlapping support).</p>
+<p>What does this mean? This means the distributions of <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> (which remember is just <span class="math inline">\(u\)</span> multiplied by a constant) are as different from each other as a normal distribution truncated to <span class="math inline">\((-\infty, 1)\)</span> and another normal distribution truncated to <span class="math inline">\((1, \infty)\)</span>! Or, more realistically<a href="#fn36" class="footnote-ref" id="fnref36" role="doc-noteref"><sup>36</sup></a>, as disjoint as a distribution over <span class="math inline">\(2\mathbb{Z}\)</span> and <span class="math inline">\((2\mathbb{Z} - 1)\)</span>.</p>
+<p>This is an example of the most annoying phenomena in Gaussian processes<a href="#fn37" class="footnote-ref" id="fnref37" role="doc-noteref"><sup>37</sup></a>: the slightest change in a Gaussian process can lead to a mutually singular process. In fact, this is not a particularly strange example. It can be shown that Gaussian processes over uncountable index spaces are either absolutely continuous or mutually singular. There is no half-arsing it!</p>
+<p>This has <em>a lot</em> of implications when it comes to computing<a href="#fn38" class="footnote-ref" id="fnref38" role="doc-noteref"><sup>38</sup></a>, setting priors on the parameters that control the properties of the covariance function<a href="#fn39" class="footnote-ref" id="fnref39" role="doc-noteref"><sup>39</sup></a>, and just generally inference<a href="#fn40" class="footnote-ref" id="fnref40" role="doc-noteref"><sup>40</sup></a>.</p>
+<h3 id="yes-but-wheres-our-reproducing-kernel-hilbert-space">Yes but where’s our reproducing kernel Hilbert space</h3>
+<p>We just saw that if <span class="math inline">\(u\)</span> is a Gaussian process than <span class="math inline">\(c u\)</span> will be a singular GP if <span class="math inline">\(|c| \neq 1\)</span>. What happens if we add things? Well, a result known as the Cameron-Martin theorem says that, for a deterministic <span class="math inline">\(h(s) \in B\)</span>, <span class="math inline">\(u(s) + h(s)\)</span> is absolutely continuous wrt <span class="math inline">\(u(s)\)</span> if and only if <span class="math inline">\(h(s)\)</span> is in the Cameron-Martin space <span class="math inline">\(H_u\)</span> (<em>this is the one that machine learners call the RKHS</em>!).</p>
+<p><em>But how do we find this mythical space? I find this quite stressful!</em></p>
+<p>Like, honey I do not know. But when a probabilist is in distress, we can calm them by screaming <em>characteristic function</em> at the top of our lungs right into their ear. Try it. It definitely works. You won’t be arrested.</p>
+<p>So let’s do that. The characteristic function of a univariate random variable <span class="math inline">\(X\)</span> is <span class="math display">\[
+\phi_X(t) = \mathbb{E}\left(e^{itX}\right),
+\]</span> which doesn’t <em>seem</em> like it’s going to be an amazingly useful thing, but it actually is. It’s how you prove the central limit theorem<a href="#fn41" class="footnote-ref" id="fnref41" role="doc-noteref"><sup>41</sup></a>, and a few other shiny things.</p>
+<p>When we are dealing with more complex random things, like random vectors and Gaussian processes, we can use characteristic functions, but we need to extend beyond the fact that they’re currently only defined for univariate random variables. Conveniently, we have some lying around. In particular, if <span class="math inline">\(\ell \in B^*\)</span>, we have the associated random variable <span class="math inline">\(\ell(u)\)</span> and we can compute its characteristic function<a href="#fn42" class="footnote-ref" id="fnref42" role="doc-noteref"><sup>42</sup></a>, which leads to the definition of a characteristic function of a stochastic process on <span class="math inline">\(B\)</span> <span class="math display">\[
+\phi_u(\ell) = \mathbb{E}(e^{i\ell(u)}), \quad \ell \in B^*.
+\]</span></p>
+<p>Now this <em>feels</em> quite different. It’s no longer a function of some real number <span class="math inline">\(t\)</span> but is instead a function of a linear functional <span class="math inline">\(\ell\)</span>, which feels weird but isn’t.</p>
+<p>Characteristic functions are immensely useful because if two Gaussian processes have same characteristic function they have the same distribution<a href="#fn43" class="footnote-ref" id="fnref43" role="doc-noteref"><sup>43</sup></a>.</p>
+<p>Because <span class="math inline">\(u(s)\)</span> is a Gaussian process, we can compute its characteristic function! We know that <span class="math inline">\(\ell(u)\)</span> is Gaussian so we can look up its characteristic function on Wikipedia and get that <span class="math display">\[
+\mathbb{E}(e^{i\ell(u)}) = \exp\left[{i \mu(\ell) - \frac{\sigma^2(\ell)}{2}}\right],
+\]</span> where <span class="math inline">\(\mu(\ell) = \mathbb{E}(\ell(u))\)</span> and <span class="math inline">\(\sigma^2(\ell) = \mathbb{E}(\ell(u) - \mu(\ell))^2\)</span>.</p>
+<p>We know that <span class="math display">\[
+\mu(\ell) = \mathbb{E}(\ell(u))
+\]</span> and <span class="math display">\[
+\sigma^2(\ell) = \mathbb{E}\left[(\ell(u) - \mu(\ell)^2\right],
+\]</span> the latter of which can be extended naturally to the aforementioned positive definite quadratic form <span class="math display">\[
+C_u(\ell, \ell&#39;) = \mathbb{E}\left[(\ell(u) - \mu(\ell)(\ell&#39;(u) - \mu(\ell&#39;))\right], \quad \ell, \ell&#39; \in B^*.
+\]</span></p>
+<p>This leads to the exact form of the characteristic function and to this theorem, which is true.</p>
+<blockquote>
+<p><strong>Theorem:</strong> A stochastic process <span class="math inline">\(u(\cdot)\)</span> is a Gaussian process if and only if <span class="math display">\[
+\phi_u(\ell) = \exp\left[i\mu(\ell) - \frac{1}{2}C_u(\ell, \ell)\right].
+\]</span></p>
+</blockquote>
+<p><em>So Alf is back. In pog form.</em></p>
+<p>Yes.</p>
+<p>In this case, we can define the covariance operator <span class="math inline">\(C_u: B^* \rightarrow B\)</span> as<a href="#fn44" class="footnote-ref" id="fnref44" role="doc-noteref"><sup>44</sup></a> <span class="math display">\[
+(C_u \ell) (\ell&#39;) = \mathbb{E}\left[(\ell(u) - \mu(\ell)(\ell&#39;(u) - \mu(\ell&#39;))\right].
+\]</span> The definition is cleaner when <span class="math inline">\(\mu(\ell) = 0\)</span> (which is why people tend to assume that when writing this shit down<a href="#fn45" class="footnote-ref" id="fnref45" role="doc-noteref"><sup>45</sup></a>), in which case we get <span class="math display">\[
+C_u\ell = \mathbb{E}(u\ell(u)) 
+\]</span> and <span class="math display">\[
+C_u(\ell, \ell&#39;) = \ell&#39;(C_u\ell)
+\]</span></p>
+<p><em>Great gowns, beautiful gowns.</em></p>
+<p>Wow. Shady.</p>
+<p>Anyway, the whole reason to introduce this is the following:</p>
+<blockquote>
+<p><strong>Theorem:</strong> Let <span class="math inline">\(v = x + h\)</span>. Then <span class="math display">\[
+\phi_v(\ell) = e^{i\ell(h)}\phi_u(\ell)
+\]</span></p>
+</blockquote>
+<p>This does not not help us answer the question of whether or not <span class="math inline">\(v\)</span> has the same support as <span class="math inline">\(u\)</span>. To do this, we construct a variable that <em>is</em> absolutely continuous with respect to <span class="math inline">\(u\)</span> (we guarantee this because we specify its density<a href="#fn46" class="footnote-ref" id="fnref46" role="doc-noteref"><sup>46</sup></a> wrt <span class="math inline">\(u\)</span>).</p>
+<p>To this end, take some <span class="math inline">\(g \in R_u\)</span> and define a stochastic process <span class="math inline">\(w\)</span> with density wrt<a href="#fn47" class="footnote-ref" id="fnref47" role="doc-noteref"><sup>47</sup></a> u <span class="math display">\[
+\rho(u) = \exp\left[iC_u(g, u) - \frac{1}{2}C_u(g,g)\right].
+\]</span></p>
+<p>From this, we can compute<a href="#fn48" class="footnote-ref" id="fnref48" role="doc-noteref"><sup>48</sup></a> the characteristic function of <span class="math inline">\(w\)</span> <span class="math display">\[\begin{align*}
+\phi_w(\ell) &amp;= \mathbb{E}_w\left(e^{i\ell(w)}\right) \\
+&amp;= \mathbb{E}_u\left(\rho(u) e^{i\ell(u)}\right) \\
+&amp;= \exp\left[iC_u(g,\ell) + i \mu(\ell)  - \frac{1}{2}C_u(\ell, \ell)\right]
+\end{align*}\]</span></p>
+<p>So we are fine if we can find some <span class="math inline">\(h \in B\)</span> such that <span class="math display">\[
+C_u(g, \ell) = \ell(h).
+\]</span> To do this, we note that <span class="math display">\[
+C_u(g, \ell) = \ell(C_u g), 
+\]</span> so for any <span class="math inline">\(g\)</span> we can find a <span class="math inline">\(h \in B\)</span> such that <span class="math inline">\(h = C_ug\)</span> and for such a <span class="math inline">\(h\)</span> <span class="math inline">\(v(s) = u(s) + h(s)\)</span> is absolutely continuous with respect to <span class="math inline">\(u(s)\)</span>.</p>
+<p>This gives us our definition of the Cameron-Martin space (aka the RKHS) associated with <span class="math inline">\(u\)</span>.</p>
+<blockquote>
+<p><strong>Definition: </strong> The Cameron-Martin space (or reproducing kernel Hilbert space, if you must) associated with a Gaussian process <span class="math inline">\(u\)</span> is the Hilbert space <span class="math inline">\(H_u = \{h\in B: h = C_uh^* \text{ for some } h^* \in R_u\}\)</span> equipped with the inner product <span class="math display">\[
+\langle h, h&#39;\rangle_{H_u} = C_u(h^*, (h&#39;)^*)
+\]</span></p>
+</blockquote>
+<p><em>Lord in heaven. Any chance of being a bit more concrete?</em></p>
+<p>Sure! Let’s consider the case where <span class="math inline">\(u \in \mathbb{R}^n\)</span> is a Gaussian random vector <span class="math display">\[
+u \sim N(\mu, \Sigma).
+\]</span> While all of this is horribly over-powered for this case, it does help get a grip on what the inner product on <span class="math inline">\(H_u\)</span> is.</p>
+<p>In this case, <span class="math inline">\(B^*\)</span> is row vectors like <span class="math inline">\(f^T\)</span>, <span class="math inline">\(f\in \mathbb{R}^n\)</span> and <span class="math display">\[
+C_u(f^T, g^T) = \operatorname{Cov}(f^Tu, g^Tu) = f^T\Sigma g.
+\]</span></p>
+<p>Furthermore, <!-- the space $R_u$, which is generated by functionals of the form --> <!-- $(\ell - \mu(\ell))$, $\ell \in B^*$ now looks like^[] $$ --> <!-- R_u = \{f^T: f^T\mu = 0} --> <!-- $$ with the inner product $\langle f^T, g^T\rangle_{R_u} = f^T\Sigma g$. Finally, --> the operator <span class="math inline">\(C_u = \Sigma f\)</span> satisfies <span class="math inline">\(g^T(\Sigma f) = C_u(f^T,g^T)\)</span>.</p>
+<p>So what is <span class="math inline">\(H_u\)</span>? Well, <em>every</em> <span class="math inline">\(n\)</span> dimensional vector space can be represented as an <span class="math inline">\(n\)</span>-dimensional vector, so what we really need to do is identify <span class="math inline">\(h^*\)</span> from <span class="math inline">\(h\)</span>. To do this, we use the relationship <span class="math inline">\(C(h^*, \ell) = \ell(h)\)</span> for all <span class="math inline">\(\ell \in B^*\)</span>. Translating that to our finite dimensional case we get that <span class="math display">\[
+(h^*)^T\Sigma g = h^T g,\qquad g \in \mathbb{R}^n,
+\]</span> from which it follows that <span class="math inline">\(h^* = \Sigma^{-1}h\)</span>. Hence we get the inner product between <span class="math inline">\(h, k \in H_u\)</span> <span class="math display">\[\begin{align*}
+\langle h, k\rangle_{H_u} &amp;= \langle h^*, k^*\rangle_{R_h} \\
+&amp;= (\Sigma^{-1} h)^T \Sigma (\Sigma^{-1 k}) \\
+&amp;= h^T \Sigma^{-1} k.
+\end{align*}\]</span></p>
+<p><em>Ok! That’s cool!</em></p>
+<p>Yes! And the same thing holds in general, if you squint<a href="#fn49" class="footnote-ref" id="fnref49" role="doc-noteref"><sup>49</sup></a>. Just replace the covariance matrix <span class="math inline">\(\Sigma\)</span> with the covariance operator <span class="math display">\[
+(\mathcal{C}f)(s) = \int_S c(s, s&#39;) f(s&#39;) \, ds&#39;.
+\]</span></p>
+<p>This operator has (in a suitable sense) a symmetric<a href="#fn50" class="footnote-ref" id="fnref50" role="doc-noteref"><sup>50</sup></a> non-negative definite (left) (closed) inverse operator <span class="math inline">\(\mathcal{Q}\)</span>, which defines the RKHS inner product by <span class="math display">\[
+\langle f, g \rangle_{H_u} = \int_{S} f(s) (\mathcal{Q} g)(s) \,ds,
+\]</span> where <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> are smooth enough functions for this to make sense. In general, <span class="math inline">\(\mathcal{Q}\)</span> will be a (very) singular integral operator, but when <span class="math inline">\(u(s)\)</span> has the Markov property, <span class="math inline">\(\mathcal{Q}\)</span> is a differential operator. In all of these cases the RKHS is the set of functions that are smooth enough that <span class="math inline">\(\langle f, f \rangle_{H_u} &lt; \infty\)</span>.</p>
+<p>We sometimes call the operator <span class="math inline">\(\mathcal{Q}\)</span> the <em>precision operator</em> and it’s fundamental to thin plate spline theory as well as some nice ways to approximate GPs in 1-4 dimensions. I will blog about this later, probably, but for now if you’re interested <a href="https://arxiv.org/abs/2111.01084">Finn Lindgren, Håvard Rue, and David Bolin just released a really nice survey paper about the technique</a>.</p>
+<h3 id="tell-me-some-things-about-the-cameron-martin-space">Tell me some things about the Cameron-Martin space</h3>
+<p>Now that we’ve gone to the effort of finding it, I should probably tell you why it’s so important. So here are a collection of facts!</p>
+<p><strong>Fact 1:</strong> The Cameron-Martin space (the set of functions and the inner product) <em>determines</em> a<a href="#fn51" class="footnote-ref" id="fnref51" role="doc-noteref"><sup>51</sup></a> Gaussian process, in that if two Gaussian processes have the same mean and the the same Cameron-Martin space, they have the same distribution. In fact, the next definition of a Gaussian process is going to show this constructively.</p>
+<p>This is nice because it means you can define a Gaussian process without needing to specify its covariance function. You just (just!) need to specify a Hilbert space. It turns out that this is a <em>considerably</em> easier task than trying to find a positive definite covariance function if the domain <span class="math inline">\(S\)</span> is weird.</p>
+<p><strong>Fact 2:</strong> <span class="math inline">\(u(s)\)</span> is <em>never</em> in the RKHS. That is, <span class="math inline">\(\Pr(u \in H_u) = 0\)</span>. But<a href="#fn52" class="footnote-ref" id="fnref52" role="doc-noteref"><sup>52</sup></a> if, for any <span class="math inline">\(\epsilon&gt;0\)</span>, <span class="math inline">\(A_\epsilon \subset B\)</span> is any measurable set of functions with <span class="math inline">\(\Pr(u \in A) = \epsilon\)</span>, then <span class="math inline">\(\Pr(u \in A_\epsilon + H_u) = 1\)</span>, where <span class="math inline">\(A_\epsilon+H_u = \{a + h \in B: a\in A_\epsilon, h \in H_u\}\)</span>. Or to say it in words, although <span class="math inline">\(u\)</span> is never in <span class="math inline">\(H_u\)</span>, if you find a set <span class="math inline">\(A_\epsilon\)</span> that <span class="math inline">\(u\)</span> could be in (even if it’s extremely unlikely to be there), then <span class="math inline">\(u\)</span> is almost surely made up of a function in <span class="math inline">\(A_\epsilon\)</span> plus a function in <span class="math inline">\(H_u\)</span>.</p>
+<p>This is <em>wild</em>. It means that while <span class="math inline">\(u(\cdot)\)</span> is <em>never</em> in the RKHS, all you need to do is add a bit of rough to get all of the stuff out. Another characterisation of the RKHS that are related to this is that it is the intersection of all subsets of <span class="math inline">\(B\)</span> that have full measure under <span class="math inline">\(u\)</span> (aka all sets <span class="math inline">\(A\subset B\)</span> such that <span class="math inline">\(\Pr(u \in A) = 1\)</span>).</p>
+<p><strong>Fact 3:</strong> If we observe some data <span class="math inline">\(y = N(Tu, \Sigma_y)\)</span>, where <span class="math inline">\(Tu = (\ell_1(u),\ldots, \ell_n(u))^T\)</span> is some observation vector, then the posterior mean <span class="math inline">\(\mathbb{E}(u \mid y)\)</span> is in the RKHS and that posterior distribution of <span class="math inline">\(u\mid y\)</span> is a Gaussian process that’s absolutely continuous with respect to the prior GP u(s). This means that the posterior mean, which is our best point prediction under squared error loss, is <em>always</em> smoother than any of the posterior draws.</p>
+<p>This kinda makes sense: averaging things <em>smooths out</em> the rough edges. And so when we average a Gaussian process in this way, we make it smoother. But this is a thing that we need to be aware of! Our algorithms, our reasoning for choosing a kernel, and our interpretations of the posterior <em>need</em> to be aware that the space of posterior realizations <span class="math inline">\(B\)</span> is rougher than the space that contains the posterior mean.</p>
+<p>Frequentists / people who penalise likelihoods don’t have to worry about this shit.</p>
+<h2 id="so-what-have-we-learnt">So what have we learnt?</h2>
+<p>So so so so so so so much notation and weird maths shit.</p>
+<p>But there are three take aways here:</p>
+<ol type="1">
+<li>The importance of the Fourier transform (aka the characteristic function) when it comes to understanding Gaussian processes.</li>
+<li>The maths buys us understanding of some of the more delicate properties of a Gaussian process as a random object (in particular it’s joint properties)</li>
+<li>You can define a Gaussian process exclusively using the RKHS inner product. (You can also do all of the computations that way too, but we’ll cover that later). So you <em>do not need to explicitly specify a covariance function</em>. Grace Wahba started doing this with thin plate splines (and <span class="math inline">\(L\)</span>-splines) in 1974 and it worked out pretty well for her.</li>
+</ol>
+<p>So to finish off this post, let’s show one more way of constructing a Gaussian process. This time we will <em>explicitly</em> start from the RKHS.</p>
+<h2 id="what-is-a-gaussian-process-version-3">What is a Gaussian process? (Version 3)</h2>
+<p>Our final Gaussian process definition is going to centre the RKHS<a href="#fn53" class="footnote-ref" id="fnref53" role="doc-noteref"><sup>53</sup></a> as the <em>fundamental</em> object. This construction, which is known as an <em>abstract Wiener space<a href="#fn54" class="footnote-ref" id="fnref54" role="doc-noteref"><sup>54</sup></a></em> is less general<a href="#fn55" class="footnote-ref" id="fnref55" role="doc-noteref"><sup>55</sup></a> than our previous definition, but it covers most of the processes we are going to encounter in applications.</p>
+<p>This construction is by far the most abstract of the three (it is in the name after all). So buckle up.</p>
+<p>The jumping off point here is a separable Hilbert space <span class="math inline">\(H\)</span>. This has an inner-product <span class="math inline">\(\langle\cdot, \cdot \rangle_H\)</span> on it, and the associated notion of orthogonality and an orthogonal projector. Consider an <span class="math inline">\(n\)</span>-dimensional subspace <span class="math inline">\(V_n \subset H_u\)</span>. We can, without any trouble, define a Gaussian process on <span class="math inline">\(V_n\)</span> <span class="math inline">\(\tilde u_n\)</span> with characteristic function <span class="math display">\[
+\phi_{\tilde u_n}(h) = \exp\left(-\frac{1}{2}\langle h,h\rangle_H\right).
+\]</span> We hit no mathematical problems because <span class="math inline">\(V_n\)</span> is finite dimensional and nothing weird happens to Gaussians in finite dimensions.</p>
+<p>The thing is, we can do this for <em>any</em> finite dimensional subspace <span class="math inline">\(V_n\)</span> and, in particular, if we have a sequence of subspace <span class="math inline">\(V_1 \subset V_2 \subset \ldots\)</span>, where <span class="math inline">\(\operatorname{dim}(V_n) =n\)</span>, then we can build a <em>sequence</em> of finite dimensional Gaussian processes <span class="math inline">\(\tilde u_n\)</span> that are each supported in their respective <span class="math inline">\(V_n\)</span>.</p>
+<p>The question is: can we construct a Gaussian process <span class="math inline">\(\tilde{u}\)</span> supported<a href="#fn56" class="footnote-ref" id="fnref56" role="doc-noteref"><sup>56</sup></a> on <span class="math inline">\(H\)</span> such that <span class="math inline">\(P_n \tilde u \stackrel{d}{=} \tilde u_n\)</span>, where <span class="math inline">\(P_n\)</span> is the orthogonal projector from <span class="math inline">\(H\)</span> to <span class="math inline">\(V_n\)</span>?</p>
+<p>You would think the answer is yes. It is not. In fact, Komolgorov’s extension theorem says that we can build a Gaussian process this way, but it does not guarantee that the process will be supported on <span class="math inline">\(H\)</span>. And it is not.</p>
+<p>To see why this is, we need to look a bit more carefully at the covariance operator of a Gaussian process on a separable Hilbert space. The key mathematical feature of a separable Hilbert space is that it has an<a href="#fn57" class="footnote-ref" id="fnref57" role="doc-noteref"><sup>57</sup></a> orthonormal<a href="#fn58" class="footnote-ref" id="fnref58" role="doc-noteref"><sup>58</sup></a> basis <span class="math inline">\(e_n\)</span>. We can use the orthonormal basis to do a tonne of things, but the one we need right now is the idea of a <em>trace</em><a href="#fn59" class="footnote-ref" id="fnref59" role="doc-noteref"><sup>59</sup></a> <span class="math display">\[
+\operatorname{tr}(C_u) = \sum_{n = 1}^\infty C_u(e_i, e_i).
+\]</span></p>
+<p>For a (zero mean) Gaussian process <span class="math inline">\(u\)</span> supported on <span class="math inline">\(H\)</span>, we can see that <span class="math display">\[\begin{align*}
+\operatorname{tr}(C_u) &amp;= \sum_{n = 1}^\infty \mathbb{E}\left[(\langle e_n, u\rangle)^2\right] \\
+&amp;= \mathbb{E}\left[ \sum_{n = 1}^\infty\langle e_n, u\rangle_H^2\right] \\
+&amp;= \mathbb{E}\left[\langle u, u\rangle_H\right] &lt; \infty,
+\end{align*}\]</span> where the second line is just true because I say it is and the third line is Pythagoras’ theorem writ large (and is finite because Gaussian processes have a lot of moments<a href="#fn60" class="footnote-ref" id="fnref60" role="doc-noteref"><sup>60</sup></a>!).</p>
+<p>If we were to say this in words, we would say that the covariance operator of a Gaussian process supported on a separable Hilbert space is a trace-class operator (or has a finite trace).</p>
+<p>And this is where we rejoin the main narrative. You see, if <span class="math inline">\(\tilde{u}\)</span> was a stochastic process on <span class="math inline">\(H\)</span>, then its characteristic function would be <span class="math display">\[
+\phi_{\tilde u}(h) = \exp\left(-\frac{1}{2}\langle h, h \rangle_H\right).
+\]</span> <em>But it can’t be</em>! Because <span class="math inline">\(H\)</span> is infinite dimensional and the proposed covariance operator is the identity on <span class="math inline">\(H\)</span>, which is not trace class (its trace is clearly infinite).</p>
+<p>So whatever <span class="math inline">\(\tilde u\)</span> is<a href="#fn61" class="footnote-ref" id="fnref61" role="doc-noteref"><sup>61</sup></a>, it is emphatically <em>not</em> a Gaussian process on <span class="math inline">\(H\)</span>.</p>
+<h3 id="that-doesnt-seem-like-a-very-useful-trip-through-abstract-land">That doesn’t seem like a very useful trip through abstract land</h3>
+<p>Well, while we did not successful make a Gaussian process on <span class="math inline">\(H\)</span> we did actually build the guts of a Gaussian process on a different space. The trick is to use the same idea in reverse. We showed that <span class="math inline">\(\tilde u\)</span> was not a Gaussian process because its covariance operator wasn’t on trace class. It turns out that the reverse also holds: if <span class="math display">\[
+\phi_u(h) = \exp\left(-\frac{1}{2}\langle C_uh, h\rangle_{H&#39;}\right)
+\]</span> and <span class="math inline">\(C_u\)</span> is trace class on <span class="math inline">\(H&#39;\)</span>, then <span class="math inline">\(u\)</span> is a Gaussian process supported on <span class="math inline">\(H&#39;\)</span>.</p>
+<p>The hard part is going to be finding another Hilbert space <span class="math inline">\(H&#39; \supset H\)</span>.</p>
+<p>To do this, we need to recall a definition of a separable Hilbert space <span class="math inline">\(H\)</span> with orthonormal basis <span class="math inline">\(e_n\)</span>, <span class="math inline">\(n=1, \ldots, \infty\)</span>: <span class="math display">\[
+H = \left\{\sum_{n=1}^\infty a_n e_n: \sum_{n=1}^\infty a_n^2 &lt; \infty\right\}.
+\]</span> From this, we can build a larger separable Hilbert space <span class="math inline">\(H&#39;\)</span> as <span class="math display">\[
+H&#39; = \left\{\sum_{n=1}^\infty a_n e_n: \sum_{n=1}^\infty \frac{a_n^2}{n^2} &lt; \infty\right\}.
+\]</span> This is larger because there are sequences of <span class="math inline">\(a_n\)</span>s that are admissible for <span class="math inline">\(H&#39;\)</span> that aren’t admissible for <span class="math inline">\(H\)</span> (for example, <span class="math inline">\(a_n = \sqrt{n}\)</span>).</p>
+<p>We let <span class="math inline">\(j:H \rightarrow H&#39;\)</span> be the linear embedding that we get by considering an element <span class="math inline">\(h \in H\)</span> as an element of <span class="math inline">\(H&#39;\)</span>. If we let <span class="math inline">\(e_n&#39;\)</span> be an orthonormal basis on <span class="math inline">\(H&#39;\)</span> (note: this is <em>not</em> the same as <span class="math inline">\(e_n\)</span> as it needs to be re-scaled to have unit norm in <span class="math inline">\(H&#39;\)</span>), then we get <span class="math display">\[
+j\left(\sum_{n=1}^\infty \alpha_n e_n\right) = \sum_{n=1}^\infty  \frac{\alpha_n}{n} e_n&#39;.
+\]</span> Why? Because <span class="math inline">\(\|e_n\|_{H&#39;} = n^{-1}\)</span> which means that <span class="math inline">\(e_n&#39; = n e_n\)</span> is an orthonormal basis for <span class="math inline">\(H&#39;\)</span>. This means we have to divide the coefficients by <span class="math inline">\(n\)</span> when we move from <span class="math inline">\(H\)</span> to <span class="math inline">\(H&#39;\)</span>, otherwise we wouldn’t be representing the same function.</p>
+<p>With this machinery set up, we can ask if <span class="math inline">\(\tilde u\)</span> is a Gaussian process on <span class="math inline">\(H&#39;\)</span>. Or, more accurately, we can ask if <span class="math inline">\(u = j(\tilde u)\)</span> is a Gaussian process on <span class="math inline">\(H\)</span>.</p>
+<p>Well.</p>
+<p>Let’s compute its characteristic function. <span class="math display">\[\begin{align*}
+\phi_u(h&#39;) &amp;= \mathbb{E}\left(e^{i\left\langle u, h&#39; \right\rangle_{H&#39;}}\right) \\
+&amp;= \mathbb{E}\left[\exp\left(i\left\langle \sum_{n=1}^\infty \frac{\langle \tilde u, e_n\rangle_H}{n}e_n&#39;, \sum_{n=1}^\infty h_n&#39;e_n&#39; \right\rangle_{H&#39;}\right) \right] \\
+&amp;= \mathbb{E}\left[\exp\left(i \sum_{n=1}^\infty \frac{\langle \tilde u, e_n\rangle}{n} h_n\right) \right] \\
+&amp;= \exp\left(-\frac{1}{2} \sum_{n=1}^\infty \frac{h_n^2}{n^2}\right).
+\end{align*}\]</span> It follows that <span class="math inline">\(\phi_u(e_n&#39;) = e^{-1/(2n^2)}\)</span> and so<a href="#fn62" class="footnote-ref" id="fnref62" role="doc-noteref"><sup>62</sup></a> <span class="math display">\[
+\operatorname{tr}(C_u) = -2\sum_{n=1}^\infty \log \phi_u(e_n&#39;) = \sum_{n=1}^\infty \frac{1}{n^2} &lt; \infty,
+\]</span> <span class="math inline">\(C_u\)</span> is a trace class operator on <span class="math inline">\(H&#39;\)</span> and, therefore, <span class="math inline">\(u\)</span> is a Gaussian process on <span class="math inline">\(u\)</span>.</p>
+<p>But wait, there is more! To do the calculation above, we identified elements of <span class="math inline">\(H&#39;\)</span> as infinite sequences <span class="math inline">\(h&#39; = (h&#39;_1, h&#39;_2, \ldots)\)</span> that satisfy <span class="math inline">\(\sum_{n=1}^\infty n^{-2}h_n^2 &lt; \infty\)</span>. In this case the covariance operator is <span class="math inline">\(C_{u}\)</span> is diagonal, so the <span class="math inline">\(n\)</span>th entry of <span class="math inline">\(C_u h&#39; = n^{-2}h&#39;_n\)</span>. From this, and the reasoning in the previous section, we see that the Cameron-Martin space can be thought of as a subset of <span class="math inline">\(H&#39;\)</span>. The Cameron-Martin inner product can be constructed from the inverse of <span class="math inline">\(C_u\)</span>, which gives <span class="math display">\[
+\langle a, b\rangle_{H_u} = \sum_{i=1}^\infty n^2 a_n b_n.
+\]</span> Clearly, this will not be finite unless we put much much stronger restrictions on <span class="math inline">\(a_n\)</span> and <span class="math inline">\(b_n\)</span> than that <span class="math inline">\(\sum_{n\geq 1} n^{-2}a_n^2 &lt; \infty\)</span>.</p>
+<p>The Cameron Marin space is the subspace of <span class="math inline">\(H&#39;\)</span> consisting of all functions <span class="math inline">\(h&#39; = \sum_{n=1}^\infty a_n e_n&#39;\)</span> such that <span class="math display">\[
+ \sum_{n=1}^\infty n^2a_n^2 &lt; \infty.
+\]</span> This is (isomorphic to) <span class="math inline">\(H\)</span>!</p>
+<p>To see this, we note that the condition is only going to hold if <span class="math inline">\(a_n = n^{-1}\alpha_n\)</span> for some sequence <span class="math inline">\(\alpha_n\)</span> such that <span class="math inline">\(\sum_{n\geq 1} \alpha_n^2 &lt; \infty\)</span>. Remembering that <span class="math inline">\(e_n&#39; = n e_n\)</span>, it follows that <span class="math inline">\(h \in H_u\)</span> if and only if <span class="math display">\[\begin{align*}
+h &amp;= \sum_{n=1}^n\frac{\alpha_n}{n} e_n&#39; \\
+&amp;=\sum_{n=1}^n\frac{\alpha_n}{n} n e_n \\
+&amp;=\sum_{n=1}^n \alpha_n e_n,
+\end{align*}\]</span> which is <em>exactly</em> the definition of <span class="math inline">\(H\)</span>.</p>
+<h3 id="are-you-actually-trying-to-kill-me">Are you actually trying to kill me?</h3>
+<p>Yes.</p>
+<p>So let’s recap what we just did: We took a separable Hilbert space <span class="math inline">\(H\)</span> and used it to construct a Gaussian process on a larger space <span class="math inline">\(H&#39;\)</span> with <span class="math inline">\(H\)</span> as its Cameron-Martin space. And we did all of this without ever touching a covariance function. This is an abstract Wiener space construction of a Gaussian process.</p>
+<p>The thing is that this construction is <em>a lot</em> more general than this. The following is a (simplified<a href="#fn63" class="footnote-ref" id="fnref63" role="doc-noteref"><sup>63</sup></a>) version of the abstract Wiener space theorem.</p>
+<blockquote>
+<p><strong>Theorem:</strong> Let <span class="math inline">\(H\)</span> be a separable Hilbert space and let <span class="math inline">\(B\)</span> be a separable Banach space. Furthermore, we assume that <span class="math inline">\(H\)</span> is dense in <span class="math inline">\(B\)</span>. Then there is a unique Gaussian process <span class="math inline">\(u\)</span> with <span class="math inline">\(\Pr(u \in B) = 1\)</span> and <span class="math inline">\(H_u = H\)</span>. It can be constructed from the canonical cylindrical Gaussian process <span class="math inline">\(\tilde u\)</span> on <span class="math inline">\(H\)</span> by <span class="math inline">\(u = j(\tilde u)\)</span>, where <span class="math inline">\(j:H \rightarrow E\)</span> is the natural embedding.</p>
+</blockquote>
+<h3 id="was-there-any-point-to-doing-that">Was there any point to doing that?</h3>
+<p>I mean, probably not. The main thing we did here was see that you can take the RKHS as the primal object when building a Gaussian process. Why that may be a useful observation was not covered.</p>
+<p>We also saw that there are some restrictions required on the covariance operator to ensure that a Gaussian process is a proper stochastic process on a given space. (For the tech-heads, the problem with <span class="math inline">\(\tilde u\)</span> is that it’s associated probability measure is not countably additive. That is a bad thing, so we do not allow it.)<br />
+</p>
+<p>The restrictions are very clear for covariance operators on separable Hilbert spaces (they must be trace class). Unfortunately, there isn’t any clean characterization of all allowable covariance operators on more complex spaces like Banach spaces<a href="#fn64" class="footnote-ref" id="fnref64" role="doc-noteref"><sup>64</sup></a>.</p>
+<h2 id="where-do-we-go-now-but-nowhere">Where do we go now but nowhere</h2>
+<p>And with that I have finished my task. I have defined Gaussian processes three different ways and if anyone is still reading at this point: you’re a fucking champion.</p>
+<p>I probably want to talk about other stuff eventually:</p>
+<ul>
+<li>Using all this technology to work out what happens to a posterior when we approximate a Gaussian process (which we usually do for computational reasons)</li>
+<li>Understanding how singularity/absolute continuity of Gaussian measures can help you set priors for the parameters in a covariance function</li>
+<li>The Markov property in space: what is it and how do you use it</li>
+<li>Show how we can use methods for solving PDEs to approximate Gaussian processes.</li>
+</ul>
+<p>The last one has gotten a lot less urgent because <a href="https://arxiv.org/abs/2111.01084">Finn, David and Håvard just released a lovely survey paper</a>.</p>
+<p>Maybe by the time I am finished with these things (if that ever happens, I don’t rate my chances), I will have justified all of this technicality. But for now, I am done.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>Not the root vegetable.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>The first 5 chapters of <a href="https://link.springer.com/book/10.1007/978-0-387-48116-6">Adler and Taylor’s masterpiece</a> s are glorious<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>Not gonna lie. <a href="https://bookstore.ams.org/surv-62">Bogachev’s Gaussian Measures</a> is only recommended if you believe in intercessory prayer.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>Rozanov’s <a href="https://link.springer.com/book/10.1007/978-1-4613-8190-7">Markov Random Fields</a>, which is freely available from that link and is so beautiful you will cry when it turns the whole question into one about function space embeddings. It will be a moist old time. Bring tissues.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>I recomend some video head cleaner<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p>which spent an embarrassing amount of time essentially divorced from the mainstream statistical literature<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7" role="doc-endnote"><p>This is the nomenclature that machine learners thrust upon us and it’s annoying and I hate it. Traditionally, a stochastic process was indexed by time (so in this case it would be a one-dimensional Gaussian process and when it was indexed by any other set it was referred to as a <em>random field</em>. So I would much rather be talking about Gaussian random fields. Why? Because there’s a bunch of shit that is only true in 1D and I’m not interested in talking about that)<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8" role="doc-endnote"><p>Great book. Great reference. No shade whatsoever<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9" role="doc-endnote"><p>Maybe? But maybe I’m most interested in the average temperature over a region. This is why we are going to need to think about things more general than just evaluating Gaussian processes at a location.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10" role="doc-endnote"><p>Why the joint? Well because it’s likely that nearby temperature measurements will be similar, while measurements that are far apart are more likely to be (almost) independent (maybe after adjusting for season, time of day, etc).<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11" role="doc-endnote"><p>in the sense that we have formulas for almost everything we want to have formulas for<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12" role="doc-endnote"><p>We can also play games with multivariate Gaussians (like building deep Gaussian processes or putting stochastic models on the covariance structure) that markedly increase their flexibility.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13" role="doc-endnote"><p>Usually this involves covariates!<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14" role="doc-endnote"><p>Wikipedia edit war aside (have a gander, it’s a blast), there’s evidence that Kolmogorov had a long-term relationship with Aleksandrov that was a) known at the time and b) used by the Soviets to blackmail them. So that’s fun.<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15" role="doc-endnote"><p>to be proper on some subspace. We are allowed zero eigenvalues for technical reasons and it actually turns out to be useful later, making things like thin plate splines a type of Gaussian process. Grace Wahba had to do all this without Google.<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16" role="doc-endnote"><p>Exponential, Mat'{e}rn, and squared-exponential are the common ones on <span class="math inline">\(\mathbb{R}^d\)</span>. After that shit gets exotic.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17" role="doc-endnote"><p>and any other process built from Kolmogorov’s extension theorem<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18" role="doc-endnote"><p>so named because a set <span class="math inline">\(A = \{u(\cdot): u(s_1, \ldots, u(s_K)) \in B;\; B\in \mathcal{B}(\mathbb{R}^K)\}\)</span> is called a <em>cylinder set</em><a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19" role="doc-endnote"><p>the exact definition is the smallest <span class="math inline">\(\sigma\)</span>-algebra for which all continuous linear functionals are measurable<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20" role="doc-endnote"><p>The all part is important here. Consider the function <span class="math inline">\(u(s) = 1_{A}(s)\)</span> where <span class="math inline">\(A\)</span> is uniformly distributed on <span class="math inline">\(S\)</span> and <span class="math inline">\(1_A(s)\)</span> is 1 when <span class="math inline">\(s=A\)</span> and zero otherwise. This function is equal to <span class="math inline">\(0\)</span> for almost every <span class="math inline">\(s\)</span> (rather than for every <span class="math inline">\(s\)</span>), but the random function <span class="math inline">\(u(s)\)</span> is definitely <em>not</em> the zero function (it is always non-zero at exactly one point).<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21" role="doc-endnote"><p><a href="http://www.hairer.org/notes/SPDEs.pdf">Bottom of page 12 through page 14 here</a><a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn22" role="doc-endnote"><p>This is a straight generalisation. If <span class="math inline">\(\ell_k(s) = \delta_{s_k}(s)\)</span> then it’s the exact situation we were in before.<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn23" role="doc-endnote"><p>In the technical language of the next section, the set of delta functions is dense in the space of bounded linear functionals<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24" role="doc-endnote"><p>aka replace integrals with sums, compute the joint distribution of the sums, and then send everything to infinity, which is ok when <span class="math inline">\(\ell_k\)</span> are bounded<a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn25" role="doc-endnote"><p>The paper is pretty good and I think it’s a nice contribution. But the title was perfect.<a href="#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn26" role="doc-endnote"><p>Sorry for the pay wall. It’s from so long ago it’s not on arXiv.<a href="#fnref26" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn27" role="doc-endnote"><p>Yes. NN-GPs, Vecchia approximations, fixed-rank Kriging, variational GPs, and all of the methods I haven’t specifically done work on, all abandon some or all of the covariance function. Whether the people who work on those methods think they’re abandoning the covariance function is between them an Cher.<a href="#fnref27" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn28" role="doc-endnote"><p>I say this, but you can make this work over pretty bonkers spaces. If we want to be general, if <span class="math inline">\(E\)</span> is a linear space and <span class="math inline">\(F\)</span> is a space of functionals on <span class="math inline">\(E\)</span> that separates the points of <span class="math inline">\(F\)</span>, then <span class="math inline">\(u(s)\)</span> is defined as a Gaussian process (wrt the appropriate cylindrical <span class="math inline">\(\sigma\)</span>-algebra) if <span class="math inline">\(f(u)\)</span> is Gaussian for all <span class="math inline">\(f\in F\)</span>. Which is fairly general but also, like, at this point I am just really showing off my maths degree.<a href="#fnref28" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn29" role="doc-endnote"><p>It is very convenient that continuous linear functionals and bounded linear functionals are the same thing.<a href="#fnref29" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn30" role="doc-endnote"><p>it’s the one with a norm<a href="#fnref30" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn31" role="doc-endnote"><p>The support of <span class="math inline">\(u\)</span> is a set <span class="math inline">\(A \subset B\)</span> such that <span class="math inline">\(\Pr(u \in A) = 1\)</span>.<a href="#fnref31" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn32" role="doc-endnote"><p>need is a big word here. We don’t need to do this, but not doing it makes things more technical. The assumption we are about to make let’s us breeze past a lot of edge cases as we sail from the unfettered Chapter 2 of Bogachev to the more staid and calm Chapter 3 of Bogachev.<a href="#fnref32" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn33" role="doc-endnote"><p>That it contains a countable dense set. Somewhat surprisingly, this implies that the Gaussian process is <em>separable</em> (or alternatively that it’s law is a Radon measure), which is a wildly technical condition that just makes everything about 80% less technical<a href="#fnref33" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn34" role="doc-endnote"><p>There are separable spaces on the whole space too, but, like, leave me alone.<a href="#fnref34" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn35" role="doc-endnote"><p>I’ve made a<a href="#fnref35" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn36" role="doc-endnote"><p>These sets don’t overlap, but they’re probably not very far apart from each other? Honestly I can’t be arsed checking but this is my feeling.<a href="#fnref36" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn37" role="doc-endnote"><p>and continuously index stochastic processes/random fields in general<a href="#fnref37" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn38" role="doc-endnote"><p><a href="https://arxiv.org/pdf/1202.0709.pdf">see Simon Cotter and Friends</a><a href="#fnref38" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn39" role="doc-endnote"><p><a href="https://arxiv.org/abs/1503.00256">see Geir-Arne Fuglstad and friends</a><a href="#fnref39" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn40" role="doc-endnote"><p>Zhang, H. (2004). Inconsistent estimation and asymptotically equal interpolations in model-based geostatistics. Journal of the American Statistical Association, 99(465):250–261.<a href="#fnref40" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn41" role="doc-endnote"><p>Everyone who’s ever suffered through that inexplicable grad-level measure-valued probability course that builds up this really fucking intense mathematical system and then essentially never uses it to do anything interesting should be well aware of the many many many many ways to prove the central limit theorem.<a href="#fnref41" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn42" role="doc-endnote"><p>well, the characteristic function when <span class="math inline">\(t=1\)</span> because if <span class="math inline">\(\ell \in B^*\)</span>, <span class="math inline">\(t\ell \in B^*\)</span>.<a href="#fnref42" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn43" role="doc-endnote"><p>In a locally convex space, this is true as measures over the cylindrical <span class="math inline">\(\sigma\)</span>-algebra, but for separable spaces it’s true over the Borel <span class="math inline">\(\sigma\)</span>-algebra (aka all open sets), which is an enormous improvement. (This happens because for separable spaces these two <span class="math inline">\(\sigma\)</span>-algebras coincide.) That we have to make these sorts of distinctions (between Baire and Borel measures) at all is an important example of when you really need the measure theoretic machinery to do probability theory. Unfortunately, this is beyond the machinery that’s typically covered in that useless fucking grad probability course.<a href="#fnref43" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn44" role="doc-endnote"><p>It is not <em>at all</em> clear that the range of this operator is contained in <span class="math inline">\(B\)</span>. It should be mapping to <span class="math inline">\(B^{**}\)</span>, but that separability really really helps! Check out the Hairer notes.<a href="#fnref44" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn45" role="doc-endnote"><p>Or they define it on the set <span class="math inline">\(\{\ell - \mu(\ell): \ell \in B^*\}\)</span>, the completion of which is the general definition of <span class="math inline">\(R_u\)</span>.<a href="#fnref45" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn46" role="doc-endnote"><p>Radon-Nikodym derivative<a href="#fnref46" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn47" role="doc-endnote"><p>A true pain in the arse when working on infinite dimensional spaces is that there’s no natural equivalent of a Lebesgue measure, so we don’t have a universal default measure to take the density against. So we have to take it against an existing probability measure. In this case, the most convenient one is the distribution of <span class="math inline">\(u\)</span>. In finite dimensions, the density <span class="math inline">\(\rho(u)\)</span> would satisfy <span class="math inline">\(p_w(x) = \rho(x)p_u(x)\)</span> where <span class="math inline">\(p_w(\cdot)\)</span> is the density of <span class="math inline">\(w\)</span>.<a href="#fnref47" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn48" role="doc-endnote"><p>I’m skipping the actual computation because I’m lazy.<a href="#fnref48" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn49" role="doc-endnote"><p>or if you’re working on a separable Hilbert space<a href="#fnref49" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn50" role="doc-endnote"><p>self-adjoint<a href="#fnref50" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn51" role="doc-endnote"><p>separable<a href="#fnref51" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn52" role="doc-endnote"><p>This next thing is a consequence of Borel’s inequality: <span class="math inline">\(\mathbb{B}(t, H_u)\)</span> is the <span class="math inline">\(t\)</span> ball in <span class="math inline">\(H_u\)</span> and a <span class="math inline">\(A\)</span> is any measurable subset of <span class="math inline">\(B\)</span> with <span class="math inline">\(\Pr(u \in A) = \Phi(\alpha)\)</span>, then <span class="math inline">\(\Pr(u \in A + \mathbb{B}(t, H_u)) \geq \Phi(\alpha + t)\)</span>, where <span class="math inline">\(\Phi\)</span> is the CDF of the standard normal distribution. Just take <span class="math inline">\(t\rightarrow \infty\)</span>.<a href="#fnref52" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn53" role="doc-endnote"><p>At some point while writing this I’ve started using RKHS and Cameron-Martin space interchangeably for the one that is a subset of <span class="math inline">\(B\)</span>. We’re all just gonna have to be ok with that.<a href="#fnref53" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn54" role="doc-endnote"><p>You can get references for this from the Bogachev book, but I actually quite like <a href="https://maths.anu.edu.au/files/CMAproc44-vanNeerven-href.pdf">this survey from Jan van Neervaen</a>, even though it’s almost comically general.<a href="#fnref54" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn55" role="doc-endnote"><p>Although I made the big, ugly assumption that <span class="math inline">\(B\)</span> was separable halfway through the last definition, almost everything is true without that. Just with more caveats. Whereas, the abstract Wiener space construction really fundamentally uses the separability of <span class="math inline">\(H_u\)</span> and <span class="math inline">\(B\)</span> as a place to start.<a href="#fnref55" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn56" role="doc-endnote"><p>ie with <span class="math inline">\(\Pr(\tilde u \in H) = 1\)</span><a href="#fnref56" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn57" role="doc-endnote"><p>It has lots of them but everything we’re about to talk about is independent of the choice of orthonormal basis.<a href="#fnref57" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn58" role="doc-endnote"><p><span class="math inline">\(\|e_n\|_H = 1\)</span> and <span class="math inline">\(\langle e_n, e_m \rangle = 0\)</span> for <span class="math inline">\(m\neq n\)</span>.<a href="#fnref58" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn59" role="doc-endnote"><p>This is the trace of the operator <span class="math inline">\(C_u\)</span> and I would usually write this as <span class="math inline">\(\sum_{n\geq 1} \langle Ce_i, e_i\rangle\)</span>, but it makes no difference here.<a href="#fnref59" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn60" role="doc-endnote"><p>There’s a result called Fernique’s theorem that implies that Gaussian processes have all polynomial and exponential moments.<a href="#fnref60" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn61" role="doc-endnote"><p>It’s called an iso-normal process and is <em>strongly</em> related to the idea of white noise and I’ll probably talk about that at some point. But the key thing is it is <em>definitely</em> not a Gaussian process in the ordinary sense on <span class="math inline">\(H\)</span>. We typically call it a generalized Gaussian process or a Generalized Gaussian random field and it is a Gaussian process <em>indexed</em> by <span class="math inline">\(H\)</span>. Life is pain.<a href="#fnref61" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn62" role="doc-endnote"><p>You can convince yourself this is true. I’m not doing all the work for you<a href="#fnref62" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn63" role="doc-endnote"><p>If you want more, read Bogachev or that Radonification paper<a href="#fnref63" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn64" role="doc-endnote"><p><a href="https://maths.anu.edu.au/files/CMAproc44-vanNeerven-href.pdf">The best reference I have is this survey</a><a href="#fnref64" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+<!--radix_placeholder_article_footer-->
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom">
+  <h3 id="updates-and-corrections">Corrections</h3>
+  <p>If you see mistakes or want to suggest changes, please <a href="https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/issues/new">create an issue</a> on the source repository.</p>
+  <h3 id="reuse">Reuse</h3>
+  <p>Text and figures are licensed under Creative Commons Attribution <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>. Source code is available at <a href="https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness">https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness</a>, unless otherwise noted. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: "Figure from ...".</p>
+</div>
+<!--/radix_placeholder_appendices-->
+<!--radix_placeholder_navigation_after_body-->
+<!--/radix_placeholder_navigation_after_body-->
+
+</body>
+
+</html>

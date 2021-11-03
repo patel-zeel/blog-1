@@ -1,0 +1,914 @@
+---
+title: "Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness"
+description: |
+  Gaussian processes. As narrated by an increasingly deranged man during a day of torrential rain.
+date: 10-16-2021
+twitter:
+  creator: "@dan_p_simpson"
+creative_commons: CC BY-NC
+repository_url: https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+I guess I'm going to talk about Gaussian processes now. This wasn't the plan but who really expected a) there to be a plan or b) me to stick to the plan. I feel like writing about Gaussian processes and so I shall! It will be grand.
+
+## What is a Gaussian process?
+
+Well I could tell you that a Gaussian process is defined by it's joint distribution $$
+u \sim N(\mu, \Sigma),
+$$
+where $u_i = u(s_i)$, $\mu_i = \mu(s_i)$ and $\Sigma_{ij} = c(s_i, s_j)$ for some positive definite covariance (or kernel) function $c(\cdot, \cdot)$. 
+
+But that would be about as useful as presenting you with a dog that can bark "she's a grand old flag": perhaps good enough for a novelty hit, but there's just no longevity in it.
+
+To understand a Gaussian process you need to _feel it_ deep down within you where the fear and the detailed mathematical concepts live.
+
+So let's try again.
+
+## We're gonna have a ... you know what. I'm not gonna do that. But I am going to define this stuff three times. Once for mum, once for dad, and once for the country.
+
+You've got to wonder why anyone would introduce something three ways. There are some
+reasons. The first is, of course, that each definition gives you a different insight into
+different aspects of Gaussian processes (the operational, the boundless generality,
+the functional). And the second is because I've had to use all three of these 
+ideas (and several more) over the years in order to understand how Gaussian
+processes work.
+
+I learnt about GPs from several sources (listed not in order): 
+
+- [A Swede](https://www.ed.ac.uk/profile/professor-finn-lindgren)^[Not the root vegetable.] (so I will rant about random fields in the footnotes eventually);
+
+- A book^[The first 5 chapters of [Adler and Taylor's masterpiece](https://link.springer.com/book/10.1007/978-0-387-48116-6) s are glorious] 
+that was introducing GPs in a very general way because they needed the concept in outrageous generality to answer questions about the distribution of the maximum of a Gaussian process;
+
+- A book^[Not gonna lie. [Bogachev's Gaussian Measures](https://bookstore.ams.org/surv-62) is only recommended if you believe in intercessory prayer.] written by a Russian who's really only into measure theory and doesn't believe anything is real if it isn't at least happening on a Frechet space;
+
+- And a book^[Rozanov's [Markov Random Fields](https://link.springer.com/book/10.1007/978-1-4613-8190-7), which  is freely available from that link and is so beautiful you will cry when it turns the whole question into one about function space embeddings. It will be a moist old time. Bring tissues.] by a different Russian who's really only into generalised Markov properties and needed to work with Gaussian processes that are defined over _functions_.
+
+Of these, the most relevant is probably the first one. I was primarily taught this stuff
+by [Finn Lindgren](https://www.ed.ac.uk/profile/professor-finn-lindgren), who had the misfortune of having the office next to mine when we
+worked together in Trondheim a very long time ago. (We both had a lot more hair then.)
+
+One of the things that I learnt 
+from him is that Gaussian processes can appear in all kinds of contexts, which means you need
+to understand them _as a model for an unknown function_ rather than as a tool to be used
+in a specific context (like for Gaussian process regression or Gaussian process 
+classification).
+
+It's some effort to really get a good grip on the whole "Gaussian processes as a model 
+for an unknown function" thing but once you relax into it^[I recomend some video head cleaner], 
+it stops being alarming to see models where you are observing things that aren't just
+$u(s_k)$. It is not alarming when you are observing integrals of the GP over regions, or
+derivatives. And you (or your methods) don't fall apart when presented with
+complex non-linear functions on the GP (as happens if you look at  
+Bayesian inverse problems literature^[which spent an embarrassing amount of time
+essentially divorced from the mainstream statistical literature]).
+
+
+## What is a Gaussian process? (Version 1)
+
+I'm going to start with the most common definition of a Gaussian process^[This 
+is the nomenclature that machine learners thrust upon us and it's annoying and 
+I hate it. Traditionally, a stochastic process was indexed by time (so in 
+this case it would be a one-dimensional Gaussian process and when it was indexed 
+by any other set it was referred to as a _random field_. So I would much rather
+be talking about Gaussian random fields. Why? Because there's a bunch of shit 
+that is only true in 1D and I'm not interested in talking about that)]. This 
+is the definition that was alluded to in the first section and it's also the
+definition operationalised in book's like Rasmussen and Williams^[Great book. 
+Great reference. No shade whatsoever], which is a bread and butter reference for 
+most machine learners interested in GPs, use.
+
+The idea is pretty straightforward: I need to define a stochastic model for an
+unknown function $u(s)$ and I want it to be, in some sense, Gaussian. 
+So how do I go about doing this?
+
+Firstly, I probably don't care too much about the function as an abstract object.
+For example, if I'm using the Gaussian process to model something like 
+temperature, I am only going to observe it at a fairly small number of places 
+(even though I could choose any set of places I want). This means that for 
+some _arbitrary_ set set of $K$ locations $s_1, s_2, \ldots, s_K$, I am most 
+interested^[Maybe? But 
+maybe I'm most interested in the average temperature over a region. This is 
+why we are going to need to think about things more general than just evaluating
+Gaussian processes at a location.] in understanding the _joint distribution_^[Why the joint?
+Well because it's likely that nearby temperature measurements will be similar, 
+while measurements that are far apart are more likely to be (almost) independent
+(maybe after adjusting for season, time of day, etc).]$$
+(u(s_1), \dots, u(s_K))^T. 
+$$
+
+So how would we model the joint distribution? If we want the model to be tractable,
+we probably want a nice distribution. This is where the _Gaussian_ part comes in. 
+The Gaussian distribution is an extremely tractable^[in the sense that we have 
+formulas for almost everything we want to have formulas for] distributions in 
+medium-to-high dimensions. So the choice to model our joint distribution (which 
+could be any size $K$) as $$
+(u(s_1), \dots, u(s_K))^T \sim N\left(\mu_{s_1, \ldots, s_K}, \Sigma_{s_1, \ldots, s_K}\right),
+$$
+makes sense from a purely mercenary position^[We can also play games with multivariate
+Gaussians (like building deep Gaussian processes or putting stochastic
+models on the covariance structure) that markedly increase their flexibility.].
+
+So how do we choose the mean and the covariance function? We will see 
+that the mean can be selected as $[\mu_{s_1, \ldots, s_K}]_{k} = \mu(s_k)$ for 
+pretty much any function^[Usually this involves covariates!] $\mu(\cdot)$,
+but, when we come to write $$
+[\Sigma_{s_1, \ldots, s_K}]_{ij} = c(s_i, s_j),
+$$ there will be some very strong restrictions on the _covariance function_
+$c(\cdot, \cdot)$.
+
+So where do these restrictions come from? 
+
+### Oh those (gay) Russians!
+
+As with all things in probability, all the good shit comes from the Soviets.
+Kolmogorov^[Wikipedia edit war aside (have a gander, it's a blast), there's 
+evidence that Kolmogorov had a long-term relationship with Aleksandrov that was
+a) known at the time and b) used by the Soviets to blackmail them. So that's fun.]
+was a leading light in the Soviet push to formalise probability and one of his
+many many many contributions is something called the _Kolmogorov extension theorem_,
+which gives the exact conditions under which we can go from declaring that 
+the distributions of $(u(s_1), \ldots, u(s_K))^T (these are called 
+finite dimensional distributions) are Gaussian to describing a legitimate 
+random function $u(s)$.
+
+There are essentially two conditions:
+
+1. The order of the observations doesn't matter in a material way. In our case
+changing the order just permutes the rows and columns of the mean vector and 
+covariance matrix, which is perfectly ok.
+1. There is a consistent way to map between the distributions of $(u(s_1), \ldots, u(s_K), u(s_{K+1}))^T$ and $(u(s_1), \ldots, u(s_K))^T$. This is the condition that puts a 
+strong restriction on the covariance function.
+
+Essentially, we need to make sure that we have a consistent way to add rows 
+and columns to our covariance matrix while ensuring that stays positive definite 
+(that is, while all of the eigenvalues stay non-negative, which is the condition
+required for a multivariate normal distribution^[to be proper on some subspace. 
+We are allowed zero eigenvalues for technical reasons and it actually turns out
+to be useful later, making things like thin plate splines a type of Gaussian process.
+Grace Wahba had to do all this without Google.]). The condition---which is really
+gross---is that for every positive integer $K$ and every set of points $s_1, \ldots, s_k$,
+and for every $a_1, \ldots, a_K$ not all equal to zero,
+we require that $$
+\sum_{i=1}^K \sum_{j = 1}^K a_ia_j c(s_i, s_j) \geq 0.
+$$
+
+This condition is obviously very difficult to check. This is why people typically
+choose their covariance function from a very short list^[Exponential, Mat\'{e}rn, and squared-exponential are the common ones on $\mathbb{R}^d$. After that shit gets exotic.]
+that is typically found in a book on Gaussian processes.
+
+## But Kolmogorov said a little bit more
+
+There's a weird thing in grad school in north america where they insist on 
+teaching measure theoretic probability theory and then never ever ever ever ever
+using any of the subtleties. But Gaussian processes (and, in general, stochastic 
+processes on uncountable index spaces) are a great example of when you need these 
+details.
+
+Why? Because unlike discrete probability (where the set of events that we can compute the 
+probability of is obvious) or even continuous random variables (where the events that we 
+can't compute the probability of are so weird we can truly just ignore them
+unless we are doing something truly exotic), for Gaussian processes,^[and any other
+process built from Kolmogorov's extension theorem] the set of allowable events 
+is considerably smaller than the set of all things you might want probabilities of.
+
+The gist of it is that we have built up a random function $u(s)$ from a bunch of
+finite random vectors. This means that we can only assign probabilities to events 
+that can be built up from events on finite random vectors. The resulting set of 
+events (or $\sigma$-algebra to use the adult term) is called the cylindrical^[so named 
+because a set $A = \{u(\cdot): u(s_1, \ldots, u(s_K)) \in B;\; B\in \mathcal{B}(\mathbb{R}^K)\}$
+is called a _cylinder set_] $\sigma$-algebra and can be roughly^[the exact definition
+is the smallest $\sigma$-algebra for which all continuous linear functionals are measurable]
+thought of as the set of all events that can be evaluated by evaluating $u(\cdot)$ at most
+a countable number of times.
+
+## Things that aren't measurable
+
+This will potentially become a problem if, for instance, you are working with
+a Gaussian process in a model that uses a Gaussian process in a weird way. 
+When this happens, it is _not_ guaranteed that, for instance, your likelihood is
+a measurable function, which would mean that you can't normalise your probability
+distribution! (I mean, don't worry. Unless you're doing something fairly
+wild it will be, but it has come up especially in the inverse problems literature!) 
+
+This limited set of measurable events even seems to preclude well
+studied "events" like "$u$ is continuous" or "$u$ is
+twice continuously differentiable" or "$u$ has a finite supremum". All things 
+that we a) want to know about a Gaussian process and b) things people frequently
+say about Gaussian processes. It is common for people to say that "Brownian motion 
+is continuous" and similar things.
+
+As with all of mathematics, there are a lot of work arounds that we can use.
+For those three statements in particular, there is some really elegant mathematical
+work (due, again, to Kolmogorov and extended greatly by others). The idea is that 
+we can build another function $\tilde u(s)$ such that $\Pr(u(s) = \tilde u(s)) = 1$ 
+for _all_^[The all part is important here. Consider the function $u(s) = 1_{A}(s)$ 
+where $A$ is uniformly distributed on $S$ and $1_A(s)$ is 1 when $s=A$ and zero otherwise. 
+This function is equal to $0$ for almost every $s$ (rather than for every $s$), 
+but the random function $u(s)$ is definitely _not_ the zero function (it is always
+non-zero at exactly one point).] $s$ such that $\tilde u(s)$ is continuous (or 
+differentiable or bounded). 
+
+In the language of stochastic processes, $\tilde u(s)$ 
+is called a _version_ of $u(s)$ and the more correct, temperate language (aka the
+one least likely to find in the literature) is that $u(s)$ has a
+continuous/differentiable/bounded _version_. 
+
+If you're interested in seeing how a differentiable version of a Gaussian process is 
+constructed, you basically have to dick around with dyads for a while. Martin Hairer's
+lecture notes^[[Bottom of page 12 through page 14 here](http://www.hairer.org/notes/SPDEs.pdf)]
+is a nice clear example.
+
+
+
+### Where are the limitations of this definition?
+
+There are a few. These are, of course, in the eye of the beer holder. The definition
+is workable in a lot of situations and, with some explanation can be broadened out
+a bit more. It's less of a great definition when you're trying to manipulate 
+Gaussian processes as mathematical objects, but that's what the next one is for.
+
+The first limitation is maybe not so much a limit of the definition as 
+a bit of work you have to do to make it applicable. And that is: what happens
+if I am observing (or my likelihood depends on) averages like $$
+\left(\int_S \ell_1(s) u(s)\,ds, \ldots, \int_S \ell_K(s) u(s)\,ds\right)^T
+$$ instead of simple point evaluations^[This is a straight generalisation. If $\ell_k(s) = \delta_{s_k}(s)$ then it's the exact situation we were in before.].
+
+This might seem like a massively different problem, until we remember that 
+integrals are just sums dressed up for Halloween, so we can approximate the integrals
+arbitrarily well by sums^[In the technical language of the next section, the set of 
+delta functions is dense in the space of bounded linear functionals]. In fact, if we squint^[aka replace integrals with sums, compute the joint distribution of the sums, and then send everything to infinity, which is ok when $\ell_k$ are bounded] a bit, we can see that the 
+above vector will also be multivariate Gaussian with mean vector $$
+[\mu]_k = \int_S \ell_k(s) \mu(s)\,ds
+$$
+and covariance matrix with entries $$
+[\Sigma]_{ij} = \int_{S \times S} \ell_i(s) \ell_j(s')c(s, s')\,dsds'.
+$$
+Similar formulas hold for derivative observations.
+
+Probably the bigger limitation is that in this way of seeing things, your view
+is tied very tightly to the covariance function. While it is a natural object
+for defining Gaussian processes, it is fucking inconvenient if you want to understand
+things like how well approximate Gaussian processes work.
+
+And let's face it, a big chunk of Gaussian processes we see in practice are approximate
+because the computational burden on large data sets is too big to do anything but approximate.
+
+(Fun fact, when I was much much younger I wrote a paper that was a better title than 
+a paper^[The paper is pretty good and I think it's a nice contribution. But the title
+was perfect.] 
+called^[Sorry for the pay wall. It's from so long ago it's not on arXiv.]
+[_In order to make spatial statistics computationally feasible, we need to abandon the 
+covariance function._](https://onlinelibrary.wiley.com/doi/10.1002/env.1137)  I copped a lot of shit for it at the time [partly because 
+the title was better than the paper, but partly because some people are dicks], 
+but I think the subsequent 10 years largely proved me (or at least my title) 
+right^[Yes. NN-GPs, Vecchia approximations, fixed-rank Kriging, variational GPs,
+and all of the methods I haven't specifically done work on,  all abandon
+some or all of the covariance function. Whether the people who work on those
+methods think they're abandoning the covariance function is between them an Cher.].)
+
+The focus on the covariance function also hides the strong similarity between 
+Gaussian process literature and the smoothing splines literature starting from
+Grace Wahba in the 1970s. It's not that nobody notices this, but it's _work_ to 
+get there!
+
+In a similar way, it hides the fundamental role the _reproducing kernel Hilbert space_
+(or Cameron-Martin space) is doing and the ways that Gaussian process regression
+is (and is not) like kernel smoothing in RKHSs. This, again, isn't a _secret_ per se---you can find this information if you want it---but it's confusing to people 
+and the lack of clarity leads to people missing useful connections (or sometimes
+leads to them drawing mistaken parallels).
+
+How many times have you seen someone say that realisations of a Gaussian process
+are in the RKHS associated with the covariance function? They are not.
+In fact, every realisation of a Gaussian process is rougher than any function in 
+the RKHS (with probability 1)! Unfortunately, this means that your reason for 
+choosing the kernel in a RKHS regression and for choosing the covariance function
+in a Gaussian process prior need to be subtly different. Or, to put it differently,
+a penalty is not a log-prior and interpreting the maximum a penalised likelihood is, in high
+dimensions, a very distant activity from interpreting a posterior distribution (even when
+the penalty is the log of the prior).
+
+## What is a Gaussian process? (Version 2)
+
+Ok. Let's do this again. This definition lives in a considerably more mathematical
+space and while I'm gonna try to explain the key terms, I will fail. But hey.
+Who doesn't like googling weird terms?
+
+A Gaussian process is a collection of random variables $u(s)$, where $s \in S$ and $S$ is some set of things that isn't too topologically disastrous^[I say this, but you can make this work over pretty bonkers spaces. If we want to be general, if $E$ is a linear space and $F$ is a space of functionals on $E$ that separates the points of $F$, then $u(s)$ is defined as a Gaussian process (wrt the appropriate cylindrical $\sigma$-algebra) if $f(u)$ is Gaussian for all $f\in F$. Which is fairly general but also, like, at this point I am just really showing off my maths degree.].  
+
+But what makes it Gaussian? Here's the general definition. 
+
+> A stochastic process/random field is _Gaussian_ if and only if every continuous _linear functional_ has a univariate Gaussian distribution. 
+
+
+
+### Well that's very useful Daniel. What the hell is a linear functional?
+
+Great question angry man who lives inside my head! 
+It is any function $\ell(\cdot)$ that takes the 
+Gaussian process $u(s)$ and an input and spits out a real number that is is
+
+a. Linear. Aka $\alpha \ell(u) + \beta\ell(v) = \ell(\alpha u + \beta v)$
+b. Bounded^[It is very convenient that continuous linear functionals and bounded linear functionals are the same thing.]. 
+
+_Great. Love a definition. Shall we try something more concrete?_
+
+Point evaluation $u(s_j)$ (aka evaluating the function at a point) is a linear functional
+($(u + v)(s)_j = u(s_j) + v(s_j)$). As is a definite integral over a set $\int_A u(s)\,ds$.
+
+
+It's a fun little exercise to convince yourself that this all implies that for any 
+collection $\ell_1(\cdot), \ldots, \ell_J(\cdot)$ of continuous linear functionals,
+then $u(s)$ is a Gaussian process means that the vector $$
+(\ell_1(u), \ldots \ell_J(u))^T
+$$ is multivariate Gaussian.
+
+_Your idea of fun is not my idea of fun. Anyway. Keep talking._
+
+If $u$ lives in a Banach space^[it's the one with a norm] $B$, then the set of all
+continuous/bounded linear functionals on $B$ is called the dual space and is denoted 
+$B^*$. 
+<!-- A lot of time, it becomes inconvenient to write $\ell(u)$ and we write $$ -->
+<!-- \langle u, \ell \rangle. -->
+<!-- $$ This is called a _duality pairing_ and the notation is reminiscent of an inner  -->
+<!-- product because of an inner product with one single striking difference: for an  -->
+<!-- inner product the thing on the left has the same _type_^[is in the same space] as -->
+<!-- the thing on the right, whereas for a duality pairing the thing on the left is always -->
+<!-- in $B$ while the thing on the right is always in $B^*$, which is _not_ the same as $B$  -->
+<!-- in general^[If $B$ has an inner product (aka it's a Hilbert space) the two spaces are   -->
+<!-- automatically "the same" and the duality pairing is "the same" as the inner product).]. -->
+
+### I mean, cool I guess but where the merry hell is the covariance function
+
+In this context, the most important thing about $B^*$ is it does double duty:
+it is both a space of linear functionals _and_ a space that can be identified 
+with random variables. 
+
+_How the fuck do you do that?_ 
+
+Well, the trick is to remember the definition! If $\ell \in B^*$, then $\ell(u)$
+is a Gaussian. Similarly, if we have two functionals $\ell, \ell' \in B^*$ we 
+consider the covariance of their associated random variables $$
+C_u(\ell, \ell') = \mathbb{E}(\ell(u)\ell'(u)).
+$$
+
+$C_u(\ell, \ell')$ is a symmetric, positive definite bilinear form (aka good candidate
+for an inner product)! 
+
+We can use this to add more functions to $B^*$, particularly
+for any sequence $b_n \in B^*$ that is Cauchy with respect to the norm 
+$\|\ell\|_{R_u} = \sqrt{C_u(\ell, \ell)}$ we append the limit to $B^*$ to complete the space.
+Once we take equivalence classes, we end up with a Hilbert space $R_u$ that, very 
+unfortunately, probabilists have a tendency to call the reproducing kernel Hilbert
+space associated with $u$.
+
+Why is this unfortunate? Well primarily because it's not the exact same space that 
+machine learners call the reproducing kernel Hilbert space, which is, to put it mildly,
+ confusing. But we can build the machine learner's RKHS (known to 
+probabilists as the Cameron-Martin space).
+
+_Why are you even telling me this? Is this a digression?_
+
+Honestly. Yes. But regardless the space $R_u$ is quite useful to understand what's going on.
+To start off, let's do one example that shows just how different a Gaussian process is 
+from a multivariate normal random vector. We will show that if we multiply a GP by a 
+constant, we completely change its support^[The support of $u$ is a set $A \subset B$ such that $\Pr(u \in A) = 1$.]! Many a computational and inferential ship have come to grief on these sharp rocks.
+
+To do this, though, we need^[need is a big word here. We don't need to do this, but
+not doing it makes things more technical. The assumption we are about to make
+let's us breeze past a lot of edge cases as we sail 
+from the unfettered Chapter 2 of Bogachev to the more staid and calm Chapter 3 of
+Bogachev.] to make an assumption on $B$: We assume that $B$ is separable^[That it contains
+a countable dense set. Somewhat surprisingly, this implies that the Gaussian process is
+_separable_ (or alternatively that it's law is a Radon measure), which is a wildly technical
+condition that just makes everything about 80% less technical]. 
+This isn't an vacuous assumption, but in a lot of cases of 
+practical interest, this is basically the same thing as assuming the set $S$ is a nice bounded domain or a friendly compact manifold (and not something like $\mathbb{R}^d$)^[There are separable spaces on the whole space too, but, like, leave me alone.]. 
+
+
+So. How do we use $R_u$ to show that Gaussian processes are evil? Well we begin by 
+noting that $R_u$ is a separable^[I've made a] Hilbert space it contains an orthonormal
+basis $e_n$, $n=1, \ldots, \infty$ (that is $\|e_n\|_{R_u} = 1$ and 
+$\langle e_n, e_m\rangle_{R_u} = 0$ if $n\neq m$). We can use this basis to show 
+some really really weird stuff about $u(s)$.
+
+In particular, consider another Gaussian process $v(s) = c u(s)$, where $c$ is a non-zero
+constant. For this process we can build $R_v$ in an analogous way. The $e_n$ are still
+orthogonal in $R_v$ but now $\|e_n\|_{R_v} = c^2$.
+
+Now consider the functional $X_K(\cdot) = K^{-1}\sum_{k = 1}^Ke_i(\cdot)^2$. 
+We are going to use this function to break stuff!
+To do this, we are going to define two disjoint sets of functions 
+$A_1 = \{u: \lim_{K\rightarrow \infty} X_K(u) = 1\}$ and 
+$A_2 =  \{u: \lim_{K\rightarrow \infty} X_K(u) = c^2\}$. 
+Clearly $A_1$ and $A_2$ are disjoint if $|c|\neq 1$. 
+
+Because $e_n(\cdot)$ are orthonormal in $R_u$, it follows that that $u_n = e_n(u) \sim N(0,1)$ are iid. Similarly, $v_n = e_n(v) \sim N(0, c^2)$ are also independent. Hence it follows
+from the properties of $\chi^2$ random variables (aka the mean plus the strong law 
+of large numbers) that $X_K(u) \rightarrow 1$ and hence $\Pr(u \in A_1) = 1$. On the other 
+hand, $X_K(v) \rightarrow c^2$, so $\Pr(v \in A_2) = 1$. As $A_1$ and $A_2$ are disjoint, 
+this means that unless $|c|=1$, the processes $u$ and $v$ are mutually singular (aka they
+have no overlapping support). 
+
+What does this mean? This means the distributions of $u$ and $v$ (which remember is just $u$ multiplied by a constant) are as different from each other as a normal distribution truncated
+to $(-\infty, 1)$ and another normal distribution truncated to $(1, \infty)$! Or,
+more realistically^[These sets don't overlap, but they're probably not very far apart from each other? Honestly I can't be arsed checking but this is my feeling.], as disjoint as a distribution over $2\mathbb{Z}$ and $(2\mathbb{Z} - 1)$.
+
+This is an example of the most annoying phenomena in Gaussian processes^[and continuously
+index stochastic processes/random fields in general]: the slightest change in 
+a Gaussian process can lead to a mutually singular process. In fact, this is not
+a particularly strange example. It can be shown that Gaussian processes over 
+uncountable index spaces are either absolutely continuous or mutually singular. There
+is no half-arsing it!
+
+This has _a lot_ 
+of implications when it comes to computing^[[see Simon Cotter and Friends](https://arxiv.org/pdf/1202.0709.pdf)], setting priors on the parameters
+that control the properties of the covariance function^[[see Geir-Arne Fuglstad and friends](https://arxiv.org/abs/1503.00256)], and just generally inference^[Zhang, H. (2004). Inconsistent estimation and asymptotically equal interpolations in model-based geostatistics. Journal of the American Statistical Association, 99(465):250–261.]. 
+
+### Yes but where's our reproducing kernel Hilbert space
+
+We just saw that if $u$ is a Gaussian process than $c u$ will be a singular 
+GP if $|c| \neq 1$. What happens if we add things? Well, a result known 
+as the Cameron-Martin theorem says that, for a deterministic $h(s) \in B$, $u(s) + h(s)$ is
+absolutely continuous wrt $u(s)$ if and only if $h(s)$ is in the Cameron-Martin space $H_u$ (_this is the one that machine learners call the RKHS_!).
+
+_But how do we find this mythical space? I find this quite stressful!_
+
+Like, honey I do not know. But when a probabilist is in distress, we can calm
+them by screaming _characteristic function_ at the top of our lungs right into
+their ear. Try it. It definitely works. You won't be arrested.
+
+So let's do that. The characteristic function of a univariate random variable $X$ 
+is $$
+\phi_X(t) = \mathbb{E}\left(e^{itX}\right),
+$$ 
+which doesn't _seem_ like it's going to be an amazingly useful thing, but 
+it actually is. It's how you prove the central limit theorem^[Everyone who's ever suffered through that inexplicable grad-level measure-valued 
+probability course that builds up this really fucking intense mathematical system
+and then essentially never uses it to do anything interesting should be well aware
+of the many many many many ways to prove the central limit theorem.], and a few other 
+shiny things. 
+
+When we are dealing with more complex random things, like random vectors and 
+Gaussian processes, we can use characteristic functions, but we need to extend
+beyond the fact that they're currently only defined for univariate random variables.
+Conveniently, we have some lying around. In particular, if $\ell \in B^*$, we 
+have the associated random variable $\ell(u)$ and we can compute its  characteristic
+function^[well, the characteristic function when $t=1$ because if $\ell \in B^*$, $t\ell \in B^*$.], which leads to the definition of a characteristic function of a stochastic
+process on $B$ $$
+\phi_u(\ell) = \mathbb{E}(e^{i\ell(u)}), \quad \ell \in B^*.
+$$
+
+Now this _feels_ quite different. It's no longer a function of some real number $t$
+but is instead a function of a linear functional $\ell$, which feels weird but 
+isn't. 
+
+Characteristic functions are immensely useful because if two Gaussian processes
+have same characteristic function they have the same distribution^[In a locally 
+convex space, this is true as measures over the cylindrical $\sigma$-algebra,
+but for separable spaces it's true over the Borel $\sigma$-algebra (aka all open
+sets), which is an enormous improvement. (This happens because for separable
+spaces these two $\sigma$-algebras coincide.) That we have to make these 
+sorts of distinctions (between Baire and Borel measures) at all is an important
+example of when you really need the measure theoretic machinery to do probability
+theory. Unfortunately, this is beyond the machinery that's typically covered
+in that useless fucking grad probability course.].
+
+Because $u(s)$ is a Gaussian process, we can compute its characteristic function!
+We know that $\ell(u)$ is 
+Gaussian so we can look up its characteristic function on Wikipedia and get 
+that $$
+\mathbb{E}(e^{i\ell(u)}) = \exp\left[{i \mu(\ell) - \frac{\sigma^2(\ell)}{2}}\right],
+$$ where $\mu(\ell) = \mathbb{E}(\ell(u))$ and $\sigma^2(\ell) = \mathbb{E}(\ell(u) - \mu(\ell))^2$.
+
+We know that $$
+\mu(\ell) = \mathbb{E}(\ell(u))
+$$ and $$
+\sigma^2(\ell) = \mathbb{E}\left[(\ell(u) - \mu(\ell)^2\right],
+$$ the latter of which can be extended naturally to the aforementioned positive definite quadratic form $$
+C_u(\ell, \ell') = \mathbb{E}\left[(\ell(u) - \mu(\ell)(\ell'(u) - \mu(\ell'))\right], \quad \ell, \ell' \in B^*.
+$$
+
+This leads to the exact form of the characteristic function and to this theorem, which 
+is true.
+
+> **Theorem:** A stochastic process $u(\cdot)$ is a Gaussian process if and only
+if $$
+\phi_u(\ell) = \exp\left[i\mu(\ell) - \frac{1}{2}C_u(\ell, \ell)\right].
+$$
+
+_So Alf is back. In pog form._
+
+Yes.
+
+
+In this case, we can define the covariance operator $C_u: B^* \rightarrow B$ as^[It is not _at all_ clear that the range of this operator is contained in $B$. It should be mapping to $B^{**}$, 
+but that separability really really helps! Check out the Hairer notes.] $$
+(C_u \ell) (\ell') = \mathbb{E}\left[(\ell(u) - \mu(\ell)(\ell'(u) - \mu(\ell'))\right].
+$$
+The definition is cleaner when $\mu(\ell) = 0$ (which is why people tend to assume
+that when writing this shit down^[Or they define it on the set $\{\ell - \mu(\ell): \ell \in B^*\}$, the completion of which is the general definition of $R_u$.]), in which case we get 
+$$
+C_u\ell = \mathbb{E}(u\ell(u)) 
+$$ 
+and
+$$
+C_u(\ell, \ell') = \ell'(C_u\ell)
+$$
+
+
+_Great gowns, beautiful gowns._
+
+Wow. Shady.
+
+Anyway, the whole reason to introduce this is the following: 
+
+> **Theorem:** Let $v = x + h$. Then $$
+\phi_v(\ell) = e^{i\ell(h)}\phi_u(\ell)
+$$
+
+This does not not help us answer the question of whether or not $v$ has the same
+support as $u$. To do this, we construct a variable that _is_ absolutely continuous
+with respect to $u$ (we guarantee this because we specify its density^[Radon-Nikodym derivative] wrt $u$).
+
+To this end, take some $g \in R_u$ and define a stochastic process $w$ with density 
+wrt^[A true pain in the arse when working on infinite dimensional spaces is that there's 
+no natural equivalent of a Lebesgue measure, so we don't have a universal default 
+measure to take the density against. So we have to take it against an existing
+probability measure. In this case, the most convenient one is the distribution of $u$. 
+In finite dimensions, the density $\rho(u)$ would satisfy $p_w(x) = \rho(x)p_u(x)$ where $p_w(\cdot)$ is the density of $w$.] u $$
+\rho(u) = \exp\left[iC_u(g, u) - \frac{1}{2}C_u(g,g)\right].
+$$
+
+From this, we can compute^[I'm skipping the actual computation because I'm lazy.] 
+the characteristic function of $w$ 
+\begin{align*}
+\phi_w(\ell) &= \mathbb{E}_w\left(e^{i\ell(w)}\right) \\
+&= \mathbb{E}_u\left(\rho(u) e^{i\ell(u)}\right) \\
+&= \exp\left[iC_u(g,\ell) + i \mu(\ell)  - \frac{1}{2}C_u(\ell, \ell)\right]
+\end{align*}
+
+So we are fine if we can find some $h \in B$ such that $$
+C_u(g, \ell) = \ell(h).
+$$  To do this, we note that $$
+C_u(g, \ell) = \ell(C_u g), 
+$$ so for any $g$ we can find a $h \in B$ such that $h = C_ug$ and for such a $h$
+$v(s) = u(s) + h(s)$ is absolutely continuous with respect to $u(s)$.
+
+This gives us our definition of the Cameron-Martin space (aka the RKHS) associated 
+with $u$.
+
+> **Definition: ** The Cameron-Martin space (or reproducing kernel Hilbert space, 
+if you must) associated with a Gaussian process $u$ is the Hilbert space 
+$H_u = \{h\in B: h = C_uh^* \text{ for some } h^* \in R_u\}$ equipped with the 
+inner product $$
+\langle h, h'\rangle_{H_u} = C_u(h^*, (h')^*)
+$$
+
+_Lord in heaven. Any chance of being a bit more concrete?_
+
+Sure! Let's consider the case where $u \in \mathbb{R}^n$ is a Gaussian random vector $$
+u \sim N(\mu, \Sigma).
+$$
+While all of this is horribly over-powered for this case, it does help get a grip on what
+the inner product on $H_u$ is.
+
+In this case, $B^*$ is row vectors like $f^T$, $f\in \mathbb{R}^n$ and $$
+C_u(f^T, g^T) = \operatorname{Cov}(f^Tu, g^Tu) = f^T\Sigma g.
+$$ 
+
+Furthermore,
+<!-- the space $R_u$, which is generated by functionals of the form -->
+<!-- $(\ell - \mu(\ell))$, $\ell \in B^*$ now looks like^[] $$ -->
+<!-- R_u = \{f^T: f^T\mu = 0} -->
+<!-- $$ with the inner product $\langle f^T, g^T\rangle_{R_u} = f^T\Sigma g$. Finally, -->
+the operator $C_u = \Sigma f$ satisfies $g^T(\Sigma f) = C_u(f^T,g^T)$.
+
+So what is $H_u$? Well, _every_ $n$ dimensional vector space can be represented as 
+an $n$-dimensional vector, so what we really need to do is identify $h^*$ from 
+$h$. To do this, we use the relationship $C(h^*, \ell) = \ell(h)$ for all $\ell \in B^*$.
+Translating that to our finite dimensional case we get that $$
+(h^*)^T\Sigma g = h^T g,\qquad g \in \mathbb{R}^n,
+$$ from which it follows that $h^* = \Sigma^{-1}h$.  Hence we get the inner product
+between $h, k \in H_u$
+\begin{align*}
+\langle h, k\rangle_{H_u} &= \langle h^*, k^*\rangle_{R_h} \\
+&= (\Sigma^{-1} h)^T \Sigma (\Sigma^{-1 k}) \\
+&= h^T \Sigma^{-1} k.
+\end{align*}
+
+_Ok! That's cool!_
+
+Yes! And the same thing holds in general, if you squint^[or if you're working on 
+a separable Hilbert space]. Just replace the covariance matrix $\Sigma$ with the 
+covariance operator $$
+(\mathcal{C}f)(s) = \int_S c(s, s') f(s') \, ds'.
+$$
+
+This operator has (in a suitable sense) a symmetric^[self-adjoint] non-negative definite (left)  (closed) inverse operator $\mathcal{Q}$, which 
+defines the RKHS inner product by $$
+\langle f, g \rangle_{H_u} = \int_{S} f(s) (\mathcal{Q} g)(s) \,ds,
+$$ where $f$ and $g$ are smooth enough functions for this to make sense. In general,
+$\mathcal{Q}$ will be a (very) singular integral operator, but when $u(s)$ has the 
+Markov property, $\mathcal{Q}$ is a differential operator. In all of these cases the 
+RKHS is the set of functions that are smooth enough that $\langle f, f \rangle_{H_u} < \infty$.
+
+We sometimes call the operator $\mathcal{Q}$ the _precision operator_ and it's 
+fundamental to thin plate spline theory as well as some nice ways to approximate 
+GPs in 1-4 dimensions. I will blog about this later, probably, but for now if you're 
+interested [Finn Lindgren, Håvard Rue, and David Bolin just released a really nice
+survey paper about the technique](https://arxiv.org/abs/2111.01084).
+
+### Tell me some things about the Cameron-Martin space
+
+Now that we've gone to the effort of finding it, I should probably tell you why
+it's so important. So here are a collection of facts!
+
+**Fact 1:** The Cameron-Martin space (the set of functions and the inner product) 
+_determines_ a^[separable] Gaussian process, in that if two Gaussian processes have the 
+same mean and the the same Cameron-Martin space, they have the same distribution. 
+In fact, the next definition of a Gaussian process is going to show this constructively.
+
+This is nice because it means you can define a Gaussian process without needing to
+specify its covariance function. You just (just!) need to specify a Hilbert space.
+It turns out that this is a _considerably_ easier task than trying to find a 
+positive definite covariance function if the domain $S$ is weird. 
+
+**Fact 2:** $u(s)$ is _never_ in the RKHS. 
+That is, $\Pr(u \in H_u) = 0$. But^[This next thing is a consequence of Borel's
+inequality: $\mathbb{B}(t, H_u)$ is the $t$ ball in $H_u$ and a $A$ is any 
+measurable subset of $B$ with $\Pr(u \in A) = \Phi(\alpha)$, then 
+$\Pr(u \in A + \mathbb{B}(t, H_u)) \geq \Phi(\alpha + t)$, where $\Phi$ is 
+the CDF of the standard normal distribution. Just take $t\rightarrow \infty$.] 
+if, for any $\epsilon>0$, $A_\epsilon \subset B$ 
+is any measurable set of functions with $\Pr(u \in A) = \epsilon$, then 
+$\Pr(u \in A_\epsilon + H_u) = 1$, where 
+$A_\epsilon+H_u = \{a + h \in B: a\in A_\epsilon, h \in H_u\}$. Or to say it in 
+words, although $u$ is never in $H_u$, if you find a set $A_\epsilon$ that $u$ 
+could be in (even if it's extremely unlikely to be there), then $u$ is almost 
+surely made up of a function in $A_\epsilon$ plus a function in $H_u$.
+
+This is _wild_. It means that while $u(\cdot)$ is _never_ in the RKHS, all you
+need to do is add a bit of rough to get all of the stuff out. Another characterisation
+of the RKHS that are related to this is that it is the intersection of all subsets
+of $B$ that have full measure under $u$ (aka all sets $A\subset B$ such that 
+$\Pr(u \in A) = 1$).
+
+**Fact 3:** If we observe some data $y = N(Tu, \Sigma_y)$, where 
+$Tu = (\ell_1(u),\ldots, \ell_n(u))^T$ is some observation vector, then
+the posterior mean $\mathbb{E}(u \mid y)$ is in the RKHS and that posterior 
+distribution of $u\mid y$ is a Gaussian process that's absolutely continuous 
+with respect to the prior GP u(s). This means that 
+the posterior mean, which is our best point prediction under squared error loss, 
+is _always_ smoother than any of the posterior draws.
+
+This kinda makes sense: averaging things _smooths out_ the rough edges. And so
+when we average a Gaussian process in this way, we make it smoother. But this
+is a thing that we need to be aware of! Our algorithms, our reasoning for choosing 
+a kernel, and our interpretations of the posterior _need_ to be aware that the 
+space of posterior realizations $B$ is rougher than the space that contains the 
+posterior mean. 
+
+Frequentists / people who penalise likelihoods don't have to worry about this shit.
+
+## So what have we learnt?
+
+So so so so so so so much notation and weird maths shit.
+
+But there are three take aways here:
+
+1. The importance of the Fourier transform (aka the characteristic function) when
+it comes to understanding Gaussian processes.
+1. The maths buys us understanding of some of the more delicate properties of a 
+Gaussian process as a random object (in particular it's joint properties)
+1. You can define a Gaussian process exclusively using the RKHS inner product. 
+(You can also do all of the computations that way too, but we'll cover that later). 
+So you _do not need to explicitly specify a covariance function_. Grace Wahba 
+started doing this with thin plate splines (and $L$-splines) in 1974 and 
+it worked out pretty well for her.
+
+So to finish off this post, let's show one more way of constructing a Gaussian 
+process. This time we will _explicitly_ start from the RKHS.
+
+## What is a Gaussian process? (Version 3)
+
+Our final Gaussian process definition is going to centre the RKHS^[At some point
+while writing this I've started using RKHS and Cameron-Martin space interchangeably
+for the one that is a subset of $B$. We're all just gonna have to be ok with that.]
+as the _fundamental_ object. This construction, which is known as an 
+_abstract Wiener space^[You can get references for this from the Bogachev book, 
+but I actually quite like [this survey from Jan van
+Neervaen](https://maths.anu.edu.au/files/CMAproc44-vanNeerven-href.pdf), even though
+it's almost comically general.]_ is less general^[Although I made the big, ugly assumption that
+$B$ was separable halfway through the last definition, almost everything is true
+without that. Just with more caveats. Whereas, the abstract Wiener space construction
+really fundamentally uses the separability of $H_u$ and $B$ as a place to start.] than our previous definition, but it covers most of the processes we are going to encounter in
+applications.
+
+This construction is by far the most abstract of the three (it is in the name after all). 
+So buckle up.
+
+The jumping off point here is a separable Hilbert space $H$. This has an inner-product 
+$\langle\cdot, \cdot \rangle_H$ 
+on it, and the associated notion of orthogonality and an orthogonal projector. Consider
+an $n$-dimensional subspace $V_n \subset H_u$. We can, without any trouble, define
+a Gaussian process on $V_n$ $\tilde u_n$ with characteristic function $$
+\phi_{\tilde u_n}(h) = \exp\left(-\frac{1}{2}\langle h,h\rangle_H\right).
+$$ We hit no mathematical problems because $V_n$ is finite dimensional and nothing weird
+happens to Gaussians in finite dimensions.
+
+The thing is, we can do this for _any_ finite dimensional subspace $V_n$ and, 
+in particular, if we have a sequence of subspace $V_1 \subset V_2 \subset \ldots$,
+where $\operatorname{dim}(V_n) =n$, then we can build a _sequence_ of finite 
+dimensional Gaussian processes $\tilde u_n$ that are each supported in their 
+respective $V_n$.
+
+The question is: can we construct a Gaussian process $\tilde{u}$ supported^[ie with $\Pr(\tilde u \in H) = 1$] on $H$ such that $P_n \tilde u \stackrel{d}{=} \tilde u_n$, where $P_n$ is 
+the orthogonal projector from $H$ to $V_n$?
+
+You would think the answer is yes. It is not. 
+In fact, Komolgorov's extension theorem says that we
+can build a Gaussian process this way, but it does not guarantee that the process
+will be supported on $H$. And it is not.
+
+To see why this is, we need to look a bit more carefully at the covariance 
+operator of a Gaussian process on a separable Hilbert space. The key mathematical
+feature of a separable Hilbert space is that it has an^[It has lots of them 
+but everything we're about to talk about is independent of the choice of orthonormal
+basis.] orthonormal^[$\|e_n\|_H = 1$ and $\langle e_n, e_m \rangle = 0$ for $m\neq n$.] basis $e_n$. We can use the orthonormal basis to do a tonne of things, but the one we need right
+now is the idea of a _trace_^[This is the trace of the operator $C_u$ and I would usually
+write this as $\sum_{n\geq 1} \langle Ce_i, e_i\rangle$, but it makes no difference here.] $$
+\operatorname{tr}(C_u) = \sum_{n = 1}^\infty C_u(e_i, e_i).
+$$
+
+For a (zero mean) Gaussian process $u$ supported on $H$, we can see that
+\begin{align*}
+\operatorname{tr}(C_u) &= \sum_{n = 1}^\infty \mathbb{E}\left[(\langle e_n, u\rangle)^2\right] \\
+&= \mathbb{E}\left[ \sum_{n = 1}^\infty\langle e_n, u\rangle_H^2\right] \\
+&= \mathbb{E}\left[\langle u, u\rangle_H\right] < \infty,
+\end{align*}
+where the second line is just true because I say it is and the third line is
+Pythagoras' theorem writ large (and is finite because Gaussian processes have a 
+lot of moments^[There's a result called Fernique's theorem that implies that 
+Gaussian processes have all polynomial and exponential moments.]!). 
+
+If we were to say this in words, we would say that the covariance operator
+of a Gaussian process supported on a separable Hilbert space is a trace-class 
+operator (or has a finite trace).
+
+And this is where we rejoin the main narrative. You see, if $\tilde{u}$ was a 
+stochastic process on $H$, then its characteristic function would be $$
+\phi_{\tilde u}(h) = \exp\left(-\frac{1}{2}\langle h, h \rangle_H\right).
+$$
+_But it can't be_! Because $H$ is infinite dimensional and the proposed covariance 
+operator is the identity on $H$, which is not trace class (its trace is clearly
+infinite).
+
+So whatever $\tilde u$ is^[It's called an iso-normal process and is _strongly_ related 
+to the idea of white noise and I'll probably talk about that at some point. But the key thing
+is it is _definitely_ not a Gaussian process in the ordinary sense on $H$. We typically
+call it a generalized Gaussian process or a Generalized Gaussian random field and it
+is a Gaussian process _indexed_ by $H$. Life is pain.], it is emphatically _not_ a 
+Gaussian process on $H$.
+
+
+
+### That doesn't seem like a very useful trip through abstract land
+
+Well, while we did not successful make a Gaussian process on $H$ we did actually
+build the guts of a Gaussian process on a different space. The trick is to use 
+the same idea in reverse. We showed that $\tilde u$ was not a Gaussian process
+because its covariance operator wasn't on trace class. It turns out that the 
+reverse also holds: if $$
+\phi_u(h) = \exp\left(-\frac{1}{2}\langle C_uh, h\rangle_{H'}\right)
+$$ and $C_u$ is trace class on $H'$, then $u$ is a Gaussian process supported on $H'$.
+
+The hard part is going to be finding another Hilbert space $H' \supset H$. 
+
+To do this, we need to recall a definition of a separable Hilbert space $H$ with 
+orthonormal basis $e_n$, $n=1, \ldots, \infty$:
+$$
+H = \left\{\sum_{n=1}^\infty a_n e_n: \sum_{n=1}^\infty a_n^2 < \infty\right\}.
+$$
+From this, we can build a larger separable Hilbert space $H'$ as 
+$$
+H' = \left\{\sum_{n=1}^\infty a_n e_n: \sum_{n=1}^\infty \frac{a_n^2}{n^2} < \infty\right\}.
+$$
+This is larger because there are sequences of $a_n$s that are admissible for $H'$ that
+aren't admissible for $H$ (for example, $a_n = \sqrt{n}$).
+
+We let $j:H \rightarrow H'$ be the linear embedding that we get by considering an element 
+$h \in H$ as an element of $H'$. If we let $e_n'$ be an orthonormal basis on $H'$ (note: 
+this is _not_ the same as $e_n$ as it needs to be re-scaled to have unit norm in $H'$), then
+we get $$
+j\left(\sum_{n=1}^\infty \alpha_n e_n\right) = \sum_{n=1}^\infty  \frac{\alpha_n}{n} e_n'.
+$$
+Why? Because $\|e_n\|_{H'} = n^{-1}$ which means that $e_n' = n e_n$ is an orthonormal
+basis for $H'$. This means we have to divide the coefficients by $n$ when we move from
+$H$ to $H'$, otherwise we wouldn't be representing the same function.
+
+With this machinery set up, we can ask if $\tilde u$ is a Gaussian process on $H'$.
+Or, more accurately, we can ask if $u = j(\tilde u)$ is a Gaussian process on $H$.
+
+Well. 
+
+Let's compute its characteristic function.
+\begin{align*}
+\phi_u(h') &= \mathbb{E}\left(e^{i\left\langle u, h' \right\rangle_{H'}}\right) \\
+&= \mathbb{E}\left[\exp\left(i\left\langle \sum_{n=1}^\infty \frac{\langle \tilde u, e_n\rangle_H}{n}e_n', \sum_{n=1}^\infty h_n'e_n' \right\rangle_{H'}\right) \right] \\
+&= \mathbb{E}\left[\exp\left(i \sum_{n=1}^\infty \frac{\langle \tilde u, e_n\rangle}{n} h_n\right) \right] \\
+&= \exp\left(-\frac{1}{2} \sum_{n=1}^\infty \frac{h_n^2}{n^2}\right).
+\end{align*}
+It follows that $\phi_u(e_n') = e^{-1/(2n^2)}$ and so^[You can convince yourself 
+this is true. I'm not doing all the work for you] $$
+\operatorname{tr}(C_u) = -2\sum_{n=1}^\infty \log \phi_u(e_n') = \sum_{n=1}^\infty \frac{1}{n^2} < \infty,
+$$
+ $C_u$ is a trace class operator on $H'$ and, therefore, $u$ is a Gaussian process
+on $u$.
+
+But wait, there is more! To do the calculation above, we identified elements of 
+$H'$ as infinite sequences $h' = (h'_1, h'_2, \ldots)$ that satisfy 
+$\sum_{n=1}^\infty n^{-2}h_n^2 < \infty$. In this case the covariance
+operator is $C_{u}$ is diagonal, so the $n$th entry of $C_u h' = n^{-2}h'_n$.
+From this, and the reasoning in the previous section, we see that the
+Cameron-Martin space can be thought of as a subset of $H'$. The Cameron-Martin 
+inner product can be constructed from the inverse of $C_u$, which gives $$
+\langle a, b\rangle_{H_u} = \sum_{i=1}^\infty n^2 a_n b_n.
+$$
+Clearly, this will not be finite unless we put much much stronger restrictions on $a_n$ and $b_n$
+than that  $\sum_{n\geq 1} n^{-2}a_n^2 < \infty$.
+
+
+The Cameron Marin space is the subspace of $H'$ consisting of all functions $h' = \sum_{n=1}^\infty a_n e_n'$ such that $$
+ \sum_{n=1}^\infty n^2a_n^2 < \infty.
+$$ This is (isomorphic to) $H$!
+ 
+To see this, we note that the condition is only going to hold if 
+$a_n = n^{-1}\alpha_n$ for some sequence $\alpha_n$ such that 
+$\sum_{n\geq 1} \alpha_n^2 < \infty$. Remembering that $e_n' = n e_n$, it follows that
+$h \in H_u$ if and only if
+\begin{align*}
+h &= \sum_{n=1}^n\frac{\alpha_n}{n} e_n' \\
+&=\sum_{n=1}^n\frac{\alpha_n}{n} n e_n \\
+&=\sum_{n=1}^n \alpha_n e_n,
+\end{align*}
+which is _exactly_ the definition of $H$.
+
+### Are you actually trying to kill me?
+
+Yes.
+
+So let's recap what we just did: We took a separable Hilbert space $H$ and used
+it to construct a Gaussian process on a larger space $H'$ with $H$ as its Cameron-Martin
+space. And we did all of this without ever touching a covariance function. This is
+an abstract Wiener space construction of a Gaussian process.
+
+The thing is that this construction is _a lot_ more general than this. The following
+is a (simplified^[If you want more, read Bogachev or that Radonification paper])
+version of the abstract Wiener space theorem.
+
+> **Theorem:** Let $H$ be a separable Hilbert space and let $B$ be a separable
+Banach space. Furthermore, we assume that $H$ is dense in $B$. Then there is 
+a unique Gaussian process $u$ with $\Pr(u \in B) = 1$ and $H_u = H$. It can be 
+constructed from the canonical cylindrical Gaussian process $\tilde u$ on $H$ 
+by $u = j(\tilde u)$, where $j:H \rightarrow E$ is the natural embedding.
+
+
+### Was there any point to doing that?
+
+I mean, probably not. The main thing we did here was see that you can take the RKHS
+as the primal object when building a Gaussian process. Why that may be a useful
+observation was not covered.
+
+We also saw that there are some restrictions required on the covariance operator
+to ensure that a Gaussian process is a proper stochastic process on a given space.
+(For the tech-heads, the problem with $\tilde u$ is that it's associated probability
+measure is not countably additive. That is a bad thing, so we do not allow it.)\
+
+The restrictions are very clear for covariance operators on separable Hilbert spaces
+(they must be trace class). Unfortunately, there isn't any clean characterization 
+of all allowable covariance operators on more complex spaces like Banach 
+spaces^[[The best reference I have is this survey](https://maths.anu.edu.au/files/CMAproc44-vanNeerven-href.pdf)].
+
+## Where do we go now but nowhere
+And with that I have finished my task. I have defined Gaussian processes three
+different ways and if anyone is still reading at this point: you're a fucking champion.
+
+I probably want to talk about other stuff eventually:
+
+- Using all this technology to work out what happens to a posterior when we 
+approximate a Gaussian process (which we usually do for computational reasons)
+- Understanding how singularity/absolute continuity of Gaussian measures can 
+help you set priors for the parameters in a covariance function
+- The Markov property in space: what is it and how do you use it
+- Show how we can use methods for solving PDEs to approximate Gaussian processes. 
+
+The last one has gotten a lot less urgent because [Finn, David and Håvard just released
+a lovely survey paper](https://arxiv.org/abs/2111.01084).
+
+Maybe by the time I am finished with these things (if that ever happens, I don't 
+rate my chances), I will have justified all of this technicality.
+But for now, I am done.
