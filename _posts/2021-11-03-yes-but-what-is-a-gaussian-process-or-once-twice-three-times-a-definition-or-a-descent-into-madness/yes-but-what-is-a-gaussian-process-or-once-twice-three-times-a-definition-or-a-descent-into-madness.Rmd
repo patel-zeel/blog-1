@@ -568,6 +568,12 @@ inner product $$
 \langle h, h'\rangle_{H_u} = C_u(h^*, (h')^*)
 $$
 
+A fun note is that the _reason_ the probabilists don't call the Cameron-Martin
+space the reproducing kernel Hilbert space is that there is no earthly reason
+to think that point evaluation will be bounded in general. So it become a 
+problematique name. (And no, I don't know why they're ok with calling $R_u$ that
+some things are just mysterious.)
+
 _Lord in heaven. Any chance of being a bit more concrete?_
 
 Sure! Let's consider the case where $u \in \mathbb{R}^n$ is a Gaussian random vector $$
