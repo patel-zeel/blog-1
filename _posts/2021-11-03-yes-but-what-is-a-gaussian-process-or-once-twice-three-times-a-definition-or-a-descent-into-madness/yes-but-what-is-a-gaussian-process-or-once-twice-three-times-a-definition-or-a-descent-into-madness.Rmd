@@ -2,7 +2,7 @@
 title: "Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness"
 description: |
   Gaussian processes. As narrated by an increasingly deranged man during a day of torrential rain.
-date: 10-16-2021
+date: 11-03-2021
 twitter:
   creator: "@dan_p_simpson"
 creative_commons: CC BY-NC
