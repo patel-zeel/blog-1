@@ -16,7 +16,7 @@ I guess I'm going to talk about Gaussian processes now. This wasn't the plan but
 
 ## What is a Gaussian process?
 
-Well I could tell you that a Gaussian process is defined by it's joint distribution $$
+Well I could tell you that a Gaussian process is defined by its joint distribution $$
 u \sim N(\mu, \Sigma),
 $$
 where $u_i = u(s_i)$, $\mu_i = \mu(s_i)$ and $\Sigma_{ij} = c(s_i, s_j)$ for some positive definite covariance (or kernel) function $c(\cdot, \cdot)$. 
