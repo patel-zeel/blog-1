@@ -804,7 +804,7 @@ $$
 H' = \left\{\sum_{n=1}^\infty a_n e_n: \sum_{n=1}^\infty \frac{a_n^2}{n^2} < \infty\right\}.
 $$
 This is larger because there are sequences of $a_n$s that are admissible for $H'$ that
-aren't admissible for $H$ (for example, $a_n = \sqrt{n}$).
+aren't admissible for $H$ (for example^[chaos_reins.gif], $a_n = \sqrt{n}$).
 
 We let $j:H \rightarrow H'$ be the linear embedding that we get by considering an element 
 $h \in H$ as an element of $H'$. If we let $e_n'$ be an orthonormal basis on $H'$ (note: 
