@@ -1874,7 +1874,10 @@ function init_distill() {
 
     // hoverable references
     $('span.citation[data-cites]').each(function() {
-      var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+      var refs = $(this).attr('data-cites').split(" ");
+      var refHtml = refs.map(function(ref) {
+        return "<p>" + $('#ref-' + ref).html() + "</p>";
+      }).join("\n");
       window.tippy(this, {
         allowHTML: true,
         content: refHtml,
@@ -2066,7 +2069,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness","description":"Gaussian processes. As narrated by an increasingly deranged man during a day of torrential rain.","authors":[],"publishedDate":"2021-11-03T00:00:00.000+00:00"}
+{"title":"Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness","description":"Gaussian processes. As narrated by an increasingly deranged man during a day of torrential rain.","authors":[],"publishedDate":"2021-11-03T00:00:00.000+11:00"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2102,7 +2105,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="d-article">
 <p>I guess I’m going to talk about Gaussian processes now. This wasn’t the plan but who really expected a) there to be a plan or b) me to stick to the plan. I feel like writing about Gaussian processes and so I shall! It will be grand.</p>
 <h2 id="what-is-a-gaussian-process">What is a Gaussian process?</h2>
-<p>Well I could tell you that a Gaussian process is defined by it’s joint distribution <span class="math display">\[
+<p>Well I could tell you that a Gaussian process is defined by its joint distribution <span class="math display">\[
 u \sim N(\mu, \Sigma),
 \]</span> where <span class="math inline">\(u_i = u(s_i)\)</span>, <span class="math inline">\(\mu_i = \mu(s_i)\)</span> and <span class="math inline">\(\Sigma_{ij} = c(s_i, s_j)\)</span> for some positive definite covariance (or kernel) function <span class="math inline">\(c(\cdot, \cdot)\)</span>.</p>
 <p>But that would be about as useful as presenting you with a dog that can bark “she’s a grand old flag”: perhaps good enough for a novelty hit, but there’s just no longevity in it.</p>
@@ -2122,12 +2125,12 @@ u \sim N(\mu, \Sigma),
 <p>It’s some effort to really get a good grip on the whole “Gaussian processes as a model for an unknown function” thing but once you relax into it<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>, it stops being alarming to see models where you are observing things that aren’t just <span class="math inline">\(u(s_k)\)</span>. It is not alarming when you are observing integrals of the GP over regions, or derivatives. And you (or your methods) don’t fall apart when presented with complex non-linear functions on the GP (as happens if you look at<br />
 Bayesian inverse problems literature<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>).</p>
 <h2 id="what-is-a-gaussian-process-version-1">What is a Gaussian process? (Version 1)</h2>
-<p>I’m going to start with the most common definition of a Gaussian process<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>. This is the definition that was alluded to in the first section and it’s also the definition operationalised in book’s like Rasmussen and Williams<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>, which is a bread and butter reference for most machine learners interested in GPs, use.</p>
+<p>I’m going to start with the most common definition of a Gaussian process<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>. This is the definition that was alluded to in the first section and it’s also the definition operationalised in books like Rasmussen and Williams’<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>, which is a bread and butter reference for most machine learners interested in GPs, use.</p>
 <p>The idea is pretty straightforward: I need to define a stochastic model for an unknown function <span class="math inline">\(u(s)\)</span> and I want it to be, in some sense, Gaussian. So how do I go about doing this?</p>
 <p>Firstly, I probably don’t care too much about the function as an abstract object. For example, if I’m using the Gaussian process to model something like temperature, I am only going to observe it at a fairly small number of places (even though I could choose any set of places I want). This means that for some <em>arbitrary</em> set set of <span class="math inline">\(K\)</span> locations <span class="math inline">\(s_1, s_2, \ldots, s_K\)</span>, I am most interested<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> in understanding the <em>joint distribution</em><a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a><span class="math display">\[
 (u(s_1), \dots, u(s_K))^T. 
 \]</span></p>
-<p>So how would we model the joint distribution? If we want the model to be tractable, we probably want a nice distribution. This is where the <em>Gaussian</em> part comes in. The Gaussian distribution is an extremely tractable<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> distributions in medium-to-high dimensions. So the choice to model our joint distribution (which could be any size <span class="math inline">\(K\)</span>) as <span class="math display">\[
+<p>So how would we model the joint distribution? If we want the model to be tractable, we probably want a nice distribution. This is where the <em>Gaussian</em> part comes in. The Gaussian distribution is an extremely tractable<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> distribution in medium-to-high dimensions. So the choice to model our joint distribution (which could be any size <span class="math inline">\(K\)</span>) as <span class="math display">\[
 (u(s_1), \dots, u(s_K))^T \sim N\left(\mu_{s_1, \ldots, s_K}, \Sigma_{s_1, \ldots, s_K}\right),
 \]</span> makes sense from a purely mercenary position<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>.</p>
 <p>So how do we choose the mean and the covariance function? We will see that the mean can be selected as <span class="math inline">\([\mu_{s_1, \ldots, s_K}]_{k} = \mu(s_k)\)</span> for pretty much any function<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a> <span class="math inline">\(\mu(\cdot)\)</span>, but, when we come to write <span class="math display">\[
@@ -2135,7 +2138,7 @@ Bayesian inverse problems literature<a href="#fn6" class="footnote-ref" id="fnre
 \]</span> there will be some very strong restrictions on the <em>covariance function</em> <span class="math inline">\(c(\cdot, \cdot)\)</span>.</p>
 <p>So where do these restrictions come from?</p>
 <h3 id="oh-those-gay-russians">Oh those (gay) Russians!</h3>
-<p>As with all things in probability, all the good shit comes from the Soviets. Kolmogorov<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> was a leading light in the Soviet push to formalise probability and one of his many many many contributions is something called the <em>Kolmogorov extension theorem</em>, which gives the exact conditions under which we can go from declaring that the distributions of $(u(s_1), , u(s_K))^T (these are called finite dimensional distributions) are Gaussian to describing a legitimate random function <span class="math inline">\(u(s)\)</span>.</p>
+<p>As with all things in probability, all the good shit comes from the Soviets. Kolmogorov<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> was a leading light in the Soviet push to formalise probability and one of his many many many contributions is something called the <em>Kolmogorov extension theorem</em>, which gives the exact conditions under which we can go from declaring that the distributions of <span class="math inline">\((u(s_1), \ldots, u(s_K))^T\)</span> (these are called finite dimensional distributions) are Gaussian to describing a legitimate random function <span class="math inline">\(u(s)\)</span>.</p>
 <p>There are essentially two conditions:</p>
 <ol type="1">
 <li>The order of the observations doesn’t matter in a material way. In our case changing the order just permutes the rows and columns of the mean vector and covariance matrix, which is perfectly ok.</li>
@@ -2146,7 +2149,7 @@ Bayesian inverse problems literature<a href="#fn6" class="footnote-ref" id="fnre
 \]</span></p>
 <p>This condition is obviously very difficult to check. This is why people typically choose their covariance function from a very short list<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> that is typically found in a book on Gaussian processes.</p>
 <h2 id="but-kolmogorov-said-a-little-bit-more">But Kolmogorov said a little bit more</h2>
-<p>There’s a weird thing in grad school in north america where they insist on teaching measure theoretic probability theory and then never ever ever ever ever using any of the subtleties. But Gaussian processes (and, in general, stochastic processes on uncountable index spaces) are a great example of when you need these details.</p>
+<p>There’s a weird thing in grad school in North America where they insist on teaching measure theoretic probability theory and then never ever ever ever ever using any of the subtleties. But Gaussian processes (and, in general, stochastic processes on uncountable index spaces) are a great example of when you need these details.</p>
 <p>Why? Because unlike discrete probability (where the set of events that we can compute the probability of is obvious) or even continuous random variables (where the events that we can’t compute the probability of are so weird we can truly just ignore them unless we are doing something truly exotic), for Gaussian processes,<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a> the set of allowable events is considerably smaller than the set of all things you might want probabilities of.</p>
 <p>The gist of it is that we have built up a random function <span class="math inline">\(u(s)\)</span> from a bunch of finite random vectors. This means that we can only assign probabilities to events that can be built up from events on finite random vectors. The resulting set of events (or <span class="math inline">\(\sigma\)</span>-algebra to use the adult term) is called the cylindrical<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a> <span class="math inline">\(\sigma\)</span>-algebra and can be roughly<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> thought of as the set of all events that can be evaluated by evaluating <span class="math inline">\(u(\cdot)\)</span> at most a countable number of times.</p>
 <h2 id="things-that-arent-measurable">Things that aren’t measurable</h2>
@@ -2404,7 +2407,7 @@ h &amp;= \sum_{n=1}^n\frac{\alpha_n}{n} e_n&#39; \\
 <li id="fn2" role="doc-endnote"><p>The first 5 chapters of <a href="https://link.springer.com/book/10.1007/978-0-387-48116-6">Adler and Taylor’s masterpiece</a> s are glorious<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3" role="doc-endnote"><p>Not gonna lie. <a href="https://bookstore.ams.org/surv-62">Bogachev’s Gaussian Measures</a> is only recommended if you believe in intercessory prayer.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4" role="doc-endnote"><p>Rozanov’s <a href="https://link.springer.com/book/10.1007/978-1-4613-8190-7">Markov Random Fields</a>, which is freely available from that link and is so beautiful you will cry when it turns the whole question into one about function space embeddings. It will be a moist old time. Bring tissues.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5" role="doc-endnote"><p>I recomend some video head cleaner<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>I recommend some video head cleaner<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6" role="doc-endnote"><p>which spent an embarrassing amount of time essentially divorced from the mainstream statistical literature<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn7" role="doc-endnote"><p>This is the nomenclature that machine learners thrust upon us and it’s annoying and I hate it. Traditionally, a stochastic process was indexed by time (so in this case it would be a one-dimensional Gaussian process and when it was indexed by any other set it was referred to as a <em>random field</em>. So I would much rather be talking about Gaussian random fields. Why? Because there’s a bunch of shit that is only true in 1D and I’m not interested in talking about that)<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn8" role="doc-endnote"><p>Great book. Great reference. No shade whatsoever<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>

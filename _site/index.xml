@@ -7,7 +7,14 @@
     <description>Nobody asked for this. There is no reason for this to exist.
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Wed, 03 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 24 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Getting into the subspace; or what happens when you approximate a Gaussian process</title>
+      <link>https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace</link>
+      <description>Fuck man, I don't know about this one. A lot of stuff happens. At some point there's a lot of PDEs. There are proofs. Back away.</description>
+      <guid>https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace</guid>
+      <pubDate>Wed, 24 Nov 2021 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness</title>
       <link>https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness</link>

@@ -10,6 +10,7 @@ repository_url: https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-03-
 output:
   distill::distill_article:
     self_contained: false
+    
 ---
 
 I guess I'm going to talk about Gaussian processes now. This wasn't the plan but who really expected a) there to be a plan or b) me to stick to the plan. I feel like writing about Gaussian processes and so I shall! It will be grand.
