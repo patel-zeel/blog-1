@@ -91,6 +91,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   <meta property="description" itemprop="description" content="Fuck man, I don&#39;t know about this one. A lot of stuff happens. At some point there&#39;s a lot of PDEs. There are proofs. Back away."/>
 
+  <link rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"/>
 
   <!--  https://schema.org/Article -->
   <meta property="article:published" itemprop="datePublished" content="2021-11-24"/>
@@ -106,12 +107,13 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <meta property="twitter:card" content="summary"/>
   <meta property="twitter:title" content="Getting into the subspace; or what happens when you approximate a Gaussian process"/>
   <meta property="twitter:description" content="Fuck man, I don&#39;t know about this one. A lot of stuff happens. At some point there&#39;s a lot of PDEs. There are proofs. Back away."/>
+  <meta property="twitter:creator" content="@dan_p_simpson"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Getting into the subspace; or what happens when you approximate a Gaussian process"]},{"type":"character","attributes":{},"value":["Fuck man, I don't know about this one. A lot of stuff happens. At some point there's a lot of PDEs. There are proofs. Back away.\n"]},{"type":"character","attributes":{},"value":["11-24-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","pandoc_args"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["--lua-filter","/Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/library/rmdfiltr/wordcount.lua"]}]}]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","date","output","twitter","creative_commons","repository_url"]}},"value":[{"type":"character","attributes":{},"value":["Getting into the subspace; or what happens when you approximate a Gaussian process"]},{"type":"character","attributes":{},"value":["Fuck man, I don't know about this one. A lot of stuff happens. At some point there's a lot of PDEs. There are proofs. Back away.\n"]},{"type":"character","attributes":{},"value":["11-24-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","pandoc_args"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["--lua-filter","/Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/library/rmdfiltr/wordcount.lua"]}]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creator"]}},"value":[{"type":"character","attributes":{},"value":["@dan_p_simpson"]}]},{"type":"character","attributes":{},"value":["CC BY-NC"]},{"type":"character","attributes":{},"value":["https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-24-getting-into-the-subspace"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   
@@ -1777,13 +1779,19 @@ a({z}^{(m)}, \phi) = \int_\Omega f_n(s) \phi(s)\,ds \quad \forall \phi \in H^{1}
 <h2 id="wrapping-it-up">Wrapping it up</h2>
 <p>So. That was quite a lot. I enjoyed it, but I’m weird like that. This has mostly been me trying to remember what I did in 2015. Why? Because I felt like it.</p>
 <p>I also think that there’s some value in this way of thinking about Gaussian processes and it’s nice to show off some ways to use all of that weird shit in <a href="https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/">the last post</a>.</p>
+<p>All of these words can be boiled down to this take away:</p>
+<blockquote>
+<p>If your finite dimensional GP <span class="math inline">\(u_m\)</span> is linked to a GP <span class="math inline">\(u\)</span> by some (potentially non-linear relationship) <span class="math inline">\(u_m= R_m u\)</span>, then the posterior error will be controlled by how well you can approximate a function <span class="math inline">\(v\)</span> that <em>could</em> be a realisation of the GP by <span class="math inline">\(R_m v\)</span>.</p>
+</blockquote>
+<p>This is a very intuitive result if you are already thinking of GP approximation as approximating a random function. But a lot of the literature takes a view that we are approximating a covariance matrix or a multivariate normal. This might be enough to approximate a maximum likelihood estimator, but it’s insufficient for approximating a posterior<a href="#fn77" class="footnote-ref" id="fnref77" role="doc-noteref"><sup>77</sup></a></p>
+<p>Furthermore, because most of the constants in the bounds don’t depend too heavily on the specific finite dimensional approximation (except through <span class="math inline">\(A_m\)</span>), we can roughly say that if we have two methods for approximating a GP, the one that does a better job at approximating functions will be the better choice.</p>
 <p>As long as it was, this isn’t a complete discussion of the problem. We have not considered hyper-parameters! This is a little bit tricky because if <span class="math inline">\(\mu_0\)</span> depends on parameters <span class="math inline">\(\theta\)</span>, then <span class="math inline">\(R_m\)</span> will also depend on parameters (and for subset of regressors, <span class="math inline">\(V_m\)</span> also depends on the parameters).</p>
 <p>In theory, we could use this to bound the error in the posterior <span class="math inline">\(p(\theta \mid y)\)</span>. To see how we would do that, let’s consider the case where we have Gaussian observations.</p>
 <p>Then we get <span class="math display">\[\begin{align*}
 p(\theta \mid y) &amp; \frac{\exp(-\Phi(u;y))}{p(y)} \left[\frac{d\mu_y}{d\mu_0}\right]^{-1} p(\theta) \\
 &amp;= \frac{Z(\theta) p(\theta)}{\int_\Theta Z(\theta)p(\theta)\,d\theta},
 \end{align*}\]</span> where <span class="math inline">\(Z(\theta) = \mathbb{E}_{\mu_0}\left(e^{-\Phi(u;y)}\right)\)</span>.</p>
-<p>We could undoubtedly bound the error in this using similar techniques to the ones we’ve already covered. And then it would just be a matter of piecing it all together.</p>
+<p>We could undoubtedly bound the error in this using similar techniques to the ones we’ve already covered (in fact, we’ve already got a bound on <span class="math inline">\(|Z - Z_m|\)</span>). And then it would just be a matter of piecing it all together.</p>
 <p><a href="https://www.youtube.com/watch?v=bZvNmcU_pUM">But I’m tired and I just want to cry for me.</a></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <section class="footnotes" role="doc-endnotes">
@@ -1865,6 +1873,7 @@ p(\theta \mid y) &amp; \frac{\exp(-\Phi(u;y))}{p(y)} \left[\frac{d\mu_y}{d\mu_0}
 <li id="fn74" role="doc-endnote"><p>This is how fancy people define solutions to PDEs. We’re fancy.<a href="#fnref74" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn75" role="doc-endnote"><p>Also everyone else’s, but it’s so elegantly deployed here. This is what I stole from <a href="https://www.jstor.org/stable/2005390">Scott 1976)</a><a href="#fnref75" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn76" role="doc-endnote"><p>Real talk. I can sorta see where this argument is in the Scott paper, but I must’ve been really in the pocket when I wrote this because phew it is not an obvious transposition.<a href="#fnref76" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn77" role="doc-endnote"><p>Unless the approximation is very, very good. If we want to be pedantic, we’re approximating everything by floating point arithmetic. But we’re usually doing a good job.<a href="#fnref77" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 <!--radix_placeholder_article_footer-->
@@ -1887,7 +1896,12 @@ p(\theta \mid y) &amp; \frac{\exp(-\Phi(u;y))}{p(y)} \left[\frac{d\mu_y}{d\mu_0}
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->
 <!--radix_placeholder_appendices-->
-<div class="appendix-bottom"></div>
+<div class="appendix-bottom">
+<h3 id="updates-and-corrections">Corrections</h3>
+<p>If you see mistakes or want to suggest changes, please <a href="https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-24-getting-into-the-subspace/issues/new">create an issue</a> on the source repository.</p>
+<h3 id="reuse">Reuse</h3>
+<p>Text and figures are licensed under Creative Commons Attribution <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>. Source code is available at <a href="https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-24-getting-into-the-subspace">https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-24-getting-into-the-subspace</a>, unless otherwise noted. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: "Figure from ...".</p>
+</div>
 <!--/radix_placeholder_appendices-->
 <!--radix_placeholder_navigation_after_body-->
 <!--/radix_placeholder_navigation_after_body-->

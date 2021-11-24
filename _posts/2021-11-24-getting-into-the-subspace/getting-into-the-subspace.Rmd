@@ -8,6 +8,10 @@ output:
   distill::distill_article:
     self_contained: false
     pandoc_args: !expr rmdfiltr::add_wordcount_filter()
+twitter:
+  creator: "@dan_p_simpson"
+creative_commons: CC BY-NC
+repository_url: https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-24-getting-into-the-subspace
 ---
 
 
@@ -979,6 +983,14 @@ I also think that there's some value in this way of thinking about Gaussian
 processes and it's nice to show off some ways to use all of that 
 weird shit in [the last post](https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/).
 
+All of these words can be boiled down to this take away:
+
+> If your finite dimensional GP $u_m$ is linked to a GP $u$ by some (potentially non-linear relationship) $u_m= R_m u$, then the posterior error will be controlled by how well you can approximate a function $v$ that _could_ be a realisation of the GP by $R_m v$.
+
+This is a very intuitive result if you are already thinking of GP approximation as approximating a random function. But a lot of the literature takes a view that we are approximating a covariance matrix or a multivariate normal. This might be enough to approximate a maximum likelihood estimator, but it's insufficient for approximating a posterior^[Unless the approximation is very, very good. If we want to be pedantic, we're approximating everything by floating point arithmetic. But we're usually doing a good job.]
+
+Furthermore, because most of the constants in the bounds don't depend too heavily on the specific finite dimensional approximation (except through $A_m$), we can roughly say that if we have two methods for approximating a GP, the one that does a better job at approximating functions will be the better choice.
+
 As long as it was, this isn't a complete discussion of the problem. We
 have not considered hyper-parameters! This is a little bit tricky because
 if $\mu_0$ depends on parameters $\theta$, then $R_m$ will also depend on parameters
@@ -996,7 +1008,7 @@ p(\theta \mid y) & \frac{\exp(-\Phi(u;y))}{p(y)} \left[\frac{d\mu_y}{d\mu_0}\rig
 where $Z(\theta) = \mathbb{E}_{\mu_0}\left(e^{-\Phi(u;y)}\right)$.
 
 We could undoubtedly bound the error in this using similar techniques 
-to the ones we've already covered. And then it would just 
+to the ones we've already covered (in fact, we've already got a bound on $|Z - Z_m|$). And then it would just 
 be a matter of piecing it all together.
 
 [But I'm tired and I just want to cry for me.](https://www.youtube.com/watch?v=bZvNmcU_pUM)
