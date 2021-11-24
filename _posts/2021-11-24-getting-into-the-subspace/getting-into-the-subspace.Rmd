@@ -484,22 +484,22 @@ so that it's not necessarily true that $V_m \subset V$. Don't hate me because I'
 
 
 There is a prototypical example of $R_m$. Every Gaussian process on a separable
-Banach space admits a Karhunen-Lo\'{e}ve representation $$
+Banach space admits a Karhunen-Loève representation $$
 u = \sum_{k = 0}^\infty \lambda_k^{1/2} z_k \phi_k,
 $$ $z_k$ are iid standard normal random variables and $(\lambda_k, \phi_k)$ are the 
-eigenpairs^{On $L^2$, which is a Hilbert space so the basis really is countable. 
-The result is a shit-tonne easier to parse of we make $B$ a separable
+eigenpairs^[On $L^2$, which is a Hilbert space so the basis really is countable. 
+The result is a shit-tonne easier to parse if we make $B$ a separable
 Hilbert space but I'm feeling perverse. If you want the most gloriously 
 psychotic expression of this theorem, check out Theorem 7.3
-[here](https://maths.anu.edu.au/files/CMAproc44-vanNeerven-href.pdf)} of the 
+[here](https://maths.anu.edu.au/files/CMAproc44-vanNeerven-href.pdf)] of the 
 covariance operator $C_u$. The natural restriction operator is then $$
 R_m f = \sum_{j=0}^m \langle f, \phi_j\rangle_{L^2}\phi_j.
 $$
 This was the case considered by Dashti and Stuart in their 2011 paper. Although
-it's prototypical, we typically do not work with the Karhunen-Lo\'{e}ve basis
+it's prototypical, we typically do not work with the Karhunen-Loève basis
 directly, as it tends to commit us to a domain $\Omega$. (Also because we 
 almost^[There are tonnes of examples where people do actually use the 
-Karhunen-L\'{o}eve basis or some other orthogonal basis expansion. 
+Karhunen-Loève basis or some other orthogonal basis expansion. 
 Obviously all of this theory holds over there.]
 never know what the $\phi_j$ are.)
 
@@ -545,7 +545,7 @@ general situation.
 ### Example 3: The SPDE method
 
 My personal favourite way to approximate Gaussian processes works when they
-are _Markovian_. The Markov property, in general, says that if you for every^[Not every. You do this for nice sets. See Rozanov's book on Markov random fields if you care.] set of 
+are _Markovian_. The Markov property, in general, says that if, for every^[Not every. You do this for nice sets. See Rozanov's book on Markov random fields if you care.] set of 
 disjoint open domains $S_1$ and $S_2 = \Omega \backslash \bar S_1$ such that $S_1 \cup \Gamma \cup S_2$, where $\Gamma$ is the _boundary_ between $S_1$ and $S_2$, then $$
 \Pr(A_1 \cup A_2 \mid B_\epsilon) = \Pr(A_1 \mid B_\epsilon) \Pr(A_2 \mid B_\epsilon),
 $$ where $A_j \in \sigma\left(\{u(s), s \in S_j\}\right)$ and^[$d(s, A) = \inf_{s'\in A} \|s - s'\|$] $B_\epsilon \in \sigma\left(\{u(s); d(s, \Gamma) < \epsilon\}\right)$ and $\epsilon>0$.
@@ -606,7 +606,7 @@ To do this, we define $L_m$ as the operator defined implicitly through the
 equation $$
 \langle \phi, L\psi\rangle_{L^2} = \langle \phi, L_m\psi\rangle_{L^2}, \quad \forall \phi,\psi \in V_m.
 $$
-This is often called the Galerkin projection^[We're assuming $V_m\subset L^2(\Omega)$, which is not a big deal.] It is at the heart of the finite element method for solving elliptic partial differential equations. 
+This is often called the Galerkin projection^[We're assuming $V_m\subset L^2(\Omega)$, which is not a big deal.]. It is at the heart of the finite element method for solving elliptic partial differential equations. 
 
 We can use $L_m$ to construct a Gaussian process with covariance function $$
 \mathcal{C}_m = (L_m^*L_m)^\dagger,
@@ -626,7 +626,7 @@ but it isn't. The main thing that changes if your PDE is hyperbolic or
 parabolic or hypo-elliptic is how you do the discretisation. As long as
 the PDE is _linear_, this whole thing works in principle.] PDE $$
 Lu = -\sum_{i,j = 1}^d\frac{\partial}{\partial s_j}\left(a_{ij}(s) \frac{\partial u}{\partial s_i} \right) +\sum_{i=1}^d b_i\frac{\partial u}{\partial s_i} + b_0(s)u(s),
-$$ where all of the $a_{ij}(s)$ and $b_j(s)$ are $L^\infty(\Omega)$ and the uniform ellipticity condition^[For some $\alpha>0$, $\sum_{i,j=1}^d w_iw_ja_{ij}(s) \geq \alpha \sum_{i=1}^d w_i^2]$ holds for all $s \in \Omega$.] holds.
+$$ where all of the $a_{ij}(s)$ and $b_j(s)$ are $L^\infty(\Omega)$ and the uniform ellipticity condition^[For some $\alpha>0$, $\sum_{i,j=1}^d w_iw_ja_{ij}(s) \geq \alpha \sum_{i=1}^d w_i^2$ holds for all $s \in \Omega$.] holds.
 
 These operators induce (potentially non-stationary) Gaussian processes
 that have continuous versions as long as^[For this construction to work
@@ -653,7 +653,7 @@ not continuously differentiable, while the sample paths of $u$ almost
 surely are^[Modulo some smoothness requirements on $\Omega$ and $a_{ij}(s)$.]. This means that $V_m$ isn't necessarily a subset of $B$ as we
 would naturally define it. In this case, we need to inflate $B$ to 
 be big enough to contain the $V_m$. So instead of taking $B = C^1(\Omega)$, 
-we need to take $B = C(\Omega)$ or $B = L^2(\Omega)$).
+we need to take $B = C(\Omega)$ or $B = L^2(\Omega)$.
 
 This has implications on the smoothness assumptions on $\Phi(u;y)$, which
 will need to hold uniformly over $B$ and $V_m$ if $V_m \not \subset B$ and
@@ -722,21 +722,21 @@ $$
 \Phi(u;y) \leq C_2
 $$
 
-3. For every $\max \{\|u_1\|_V, \|u_2\|_B, \|y\|Y\} < r$,
+3. For every $\max \{\|u_1\|_V, \|u_2\|_B, \|y\|_Y\} < r$,
 $$
 |\Phi(u_1; y) - \Phi(u_2; y )| \leq \exp\left(\epsilon\max\{\|u_1\|_V^2, \|u_2\|_B^2\} - C_3\right) \|u_1 - u_2\|_B
 $$
 
-4. For every $u\in B$ and $\max \{\|y_1\|_Y, \|y_2\|Y\} < r$,
+4. For every $u\in B$ and $\max \{\|y_1\|_Y, \|y_2\|_Y\} < r$,
 $$
 |\Phi(u; y_1) - \Phi(u; y_2) | \leq  \exp\left(\epsilon \|u\|^2 + C_4\right)\|y_1 - y_2\|_Y
 $$
 
 These restrictions are pretty light and are basically what are needed to make
-sure the posteriors exist. The first one say "don't grow too fast" too the
+sure the posteriors exist. The first one say "don't grow too fast" to the
 likelihood and is best explained while humming ABBA's [Slipping Through My
 Fingers](https://www.youtube.com/watch?v=hRr7qRb-7k4). The second one makes
-sure the isn't [zero](https://www.youtube.com/watch?v=3wk7C64kaP4). The third
+sure the likelihood isn't [zero](https://www.youtube.com/watch?v=3wk7C64kaP4). The third
 and fourth are [Lipschitz
 conditions](https://www.youtube.com/watch?v=0Z-Orh7dpKU) that basically make
 sure that a small change in $u$ (or $y$) doesn't make a big change in the
@@ -746,7 +746,7 @@ posteriors wouldn't be close.
 We are also going to need some conditions on our test functions. Once again,
 we need them to apply over $V$ and $B$ when no space is specified for the norm.
 
-1. For all $u \in V$, $G(u) = \exp(\epsilon \|u\|^2_V+ C_5)  
+1. For all $u \in V$, $G(u) = \exp(\epsilon \|u\|^2_V+ C_5)$
 
 2. For all $u_1 \in V$, $u_2 \in V_m$, $$
 |G(u_1) - G(u_2)| \leq \exp(\epsilon\max\{\|u_1\|^2_V, \|u_2\|^2_B\})\|u_1 - u_2\|_B.
@@ -804,8 +804,8 @@ ZB_1 \leq & \mathbb{E}_{\lambda_0}\left(|G(u)|\left|\exp(-\Phi(u;y)) -\exp(\Phi(
 & \quad +\mathbb{E}_{\lambda_0}\left(\mathrm{e}^{\epsilon A_m\|u\|_V^2 - C_1}\mathrm{e}^{\epsilon\max\{1,A_m\}\|u\|_V^2 + C_6}\|u - u_m\|_V\right) \\
 &\leq \sup_{f \in V}\left(\frac{\|f - R_m f\|_B}{\|f\|_V}\right) 
 \mathrm{e}^{C_3 + C_5 + C_6 -2 C_1}\mathbb{E}_{\mu_0}\left(\|u\|_V\mathrm{e}^{(1+3\max\{1,A_m\} + A_m)\epsilon \|u\|_V^2}\right)\\
-&\leq C_7 \sup_{f \in V}\left(\frac{\|f - R_m f\|_B}{\|f\|_V}\right) 
-\end{align*},
+&\leq C_7 \sup_{f \in V}\left(\frac{\|f - R_m f\|_B}{\|f\|_V}\right),
+\end{align*}
 where the second inequality comes from using all of the assumptions on $\Phi$ and $G$ and noting that $\left|e^{-x} - e^{-y}\right| \leq e^{-\min\{x,y\}}|x-y|$; and the final inequality comes from Fernique's theorem, which implies that expectation is finite.
 
 We can also bound $B_2$ by noting that 
@@ -843,7 +843,7 @@ as the triangle diameter if you want.]. This is roughly what you'd expect,
 there's a loss of $\epsilon$ from the ordinary interpolation rate which may
 or may not be a result of me being a bit shit at maths.
 
-The argument that gets us here is really cute so I'll sketch it below.
+The argument that gets us here is really cute so I'll sketch it below. This is here for two reasons: firstly, because I think it's cool and secondly because the paper is so compressed it's hard to completely follow the argument, so I thought it would be nice to put on here. (It also took me a whole afternoon to decipher the proof in the paper, which is usually a sign that it could do with a bit of a re-write. How successfully I clarified it is something I will leave up to others to decide.)
 
 <details>
 
@@ -886,13 +886,7 @@ $\mathcal{T}_m$.
 We define the projection of the function  $f \in H^{-1-\epsilon}(\Omega)$ 
 onto $V_m$ as the unique function $f_m \in V_m$ such that^[$f$ is a 
 generalised function so we are interpreting the integrals as duality 
-pairings. This makes sense because^[I said before that $V_m$ wasn't smooth
-enough. Now I'm saying it is. What gives? The answer will surprise
-and alarm you! The problem is that the natural embedding degrades as $m$ 
-grows. We use below that $\|v_m\|_{H^{1+\epsilon}} \leq C
-h^{-1-\epsilon}\|v\|_{L^2}$, where $h$ is inversely related to $m$. This 
-means that we can't get nice uniform-in-$m$ bounds 
-on anything and life would be very hard. So we use $B = L^2$.] 
+pairings. This makes sense because $V_m \subset H^{1+\epsilon}$ if we allow for a mesh-dependent embedding constant (this is why we don't use $B = H^{1+\epsilon}$)]
 $$
 \int_\Omega f_n(s) v_n(s)\,ds = \int f(s) v_n(s)\,ds, \quad \forall v_n \in V_n.
 $$
@@ -941,7 +935,7 @@ our previous estimate to give $$
 \|z^{(m)} - u_m\|_{L^2} \leq Ch^{1-\epsilon} \|f_n\|_{L^2}.
 $$
 
-Finally, to bound $\|u - z^{(m)}\|_{L^2}$ use one of my favourite arguments.
+Finally, to bound $\|u - z^{(m)}\|_{L^2}$ we are going to use one of my^[Also everyone else's, but it's so elegantly deployed here. This is what I stole from [Scott 1976)](https://www.jstor.org/stable/2005390)] favourite arguments.
 Fix $w \in L^2$ and let $W$ be the solution of the _dual_ equation $a(\phi, W) = \int_\Omega \phi(s)w(s)\,ds$. It then follows that, for any $v_m \in V_m$,
 \begin{align*}
 \left|\int_\Omega (u(s) - z^{(m)}(s))w(s)\,ds\right| &= \left|a(u - z^{(m)}, W)\right| \\
