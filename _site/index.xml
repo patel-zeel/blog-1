@@ -7,7 +7,15 @@
     <description>Nobody asked for this. There is no reason for this to exist.
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Wed, 08 Dec 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 09 Dec 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Why won't you cheat with me? (Repost)</title>
+      <link>https://dansblog.netlify.app/posts/2021-12-08-why-wont-you-cheat-with-me-repost</link>
+      <description>A repost from Andrew's blog about how design information infects multivariate priors.
+(Lightly edited.) Original posted 5 November, 2017.</description>
+      <guid>https://dansblog.netlify.app/posts/2021-12-08-why-wont-you-cheat-with-me-repost</guid>
+      <pubDate>Thu, 09 Dec 2021 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>The king must die (repost)</title>
       <link>https://dansblog.netlify.app/posts/2021-12-08-the-king-must-die-repost</link>
@@ -15,14 +23,6 @@
       <guid>https://dansblog.netlify.app/posts/2021-12-08-the-king-must-die-repost</guid>
       <pubDate>Wed, 08 Dec 2021 00:00:00 +0000</pubDate>
       <media:content url="https://dansblog.netlify.app/posts/2021-12-08-the-king-must-die-repost/the-king-must-die-repost_files/figure-html5/unnamed-chunk-1-1.png" medium="image" type="image/png" width="1248" height="768"/>
-    </item>
-    <item>
-      <title>Why won't you cheat with me? (Repost)</title>
-      <link>https://dansblog.netlify.app/posts/2021-12-08-why-wont-you-cheat-with-me-repost</link>
-      <description>A repost from Andrew's blog about how design information infects multivariate priors.
-(Lightly edited.) Original posted 5 November, 2017.</description>
-      <guid>https://dansblog.netlify.app/posts/2021-12-08-why-wont-you-cheat-with-me-repost</guid>
-      <pubDate>Wed, 08 Dec 2021 00:00:00 +0000</pubDate>
     </item>
     <item>
       <title>Getting into the subspace; or what happens when you approximate a Gaussian process</title>
