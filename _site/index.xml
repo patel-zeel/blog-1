@@ -7,13 +7,21 @@
     <description>Nobody asked for this. There is no reason for this to exist.
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Tue, 23 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 08 Dec 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>The king must die (repost)</title>
+      <link>https://dansblog.netlify.app/posts/2021-12-08-the-king-must-die-repost</link>
+      <description>A repost (with edits, revisions, and footnotes) from Andrew's blog about how much I hate the Bayesian Lasso. Originally published 2nd November, 2017.</description>
+      <guid>https://dansblog.netlify.app/posts/2021-12-08-the-king-must-die-repost</guid>
+      <pubDate>Wed, 08 Dec 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://dansblog.netlify.app/posts/2021-12-08-the-king-must-die-repost/the-king-must-die-repost_files/figure-html5/unnamed-chunk-1-1.png" medium="image" type="image/png" width="1248" height="768"/>
+    </item>
     <item>
       <title>Getting into the subspace; or what happens when you approximate a Gaussian process</title>
       <link>https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace</link>
       <description>Fuck man, I don't know about this one. A lot of stuff happens. At some point there's a lot of PDEs. There are proofs. Back away.</description>
       <guid>https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace</guid>
-      <pubDate>Tue, 23 Nov 2021 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 24 Nov 2021 00:00:00 +0000</pubDate>
     </item>
     <item>
       <title>Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness</title>
