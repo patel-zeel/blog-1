@@ -1,0 +1,335 @@
+---
+title: "Why won't you cheat with me? (Repost)"
+description: |
+  A repost from Andrew's blog about how design information infects multivariate priors.
+  (Lightly edited.) Original posted 5 November, 2017.
+
+date: 2021-12-09
+output:
+  bookdown::html_document2:
+    base_format: distill::distill_article
+    self_contained: false
+twitter:
+  creator: "@dan_p_simpson"
+creative_commons: CC BY-NC
+repository_url: https://github.com/dpsimpson/blog/tree/master/_posts/2021-12-08-why-wont-you-cheat-with-me-repost/
+---
+
+> But I got some ground rules\ 
+I've found to be sound rules \
+and you're not the one I'm exempting.\
+Nonetheless, I confess it's tempting. \
+– [Jenny Toomey sings Franklin Bruno](https://www.youtube.com/watch?v=K2sPdIsr7jY)
+
+It turns out that I did something a little controversial in [last week's](https://dansblog.netlify.app/posts/2021-12-08-the-king-must-die-repost/)^[Imagine it's November 2017.] post. As these things always go, it wasn't the thing I was expecting to get push back from, but rather what I thought was a fairly innocuous scaling of the prior. [One commenter](http://statmodeling.stat.columbia.edu/2017/11/02/king-must-die/#comment-601142) (and a few other people on other communication channels) pointed out that the dependence of the prior on the design didn't seem kosher.  Of course, we (Andrew, Mike and I) wrote a paper that was sort of about this a [few months ago](http://www.stat.columbia.edu/~gelman/research/published/entropy-19-00555-v2.pdf)^[Again, 2017.], but it's one of those really interesting topics that we can probably all deal with thinking more about.
+
+So in this post, I'm going to go into a couple of situations where it makes sense to scale the prior based on fixed information about the experiment. (The emerging theme for these posts is "things I think are interesting and useful but are probably not publishable" interspersed with "weird digressions into musical theatre / the personal mythology of Patti LuPone".)
+
+If you haven't clicked yet, this particular post is going to be drier than Eve Arden in Mildred Pierce.  If you'd rather be entertained, I'd recommend [Tempting: Jenny Toomey sings the songs of Franklin Bruno](https://open.spotify.com/album/2qY9GSG0nLoJdcQNmYxMGE). (Franklin Bruno is today's stand in for Patti, because I'm still sad that War Paint closed^[2021: I am still sad War Paint closed.]. I only got to see it twice.)
+
+(Jenny Toomey was one of the most exciting American indie musicians in the 90s both through her bands [Tsunami was the notable one, but there were others] and her work with Simple Machines, the label she co-founded. These days she's working in musician advocacy and hasn't released an album since the early 2000s. Bruno's current band is called The Human Hearts. He has had a long solo career and was also in an excellent powerpop band called Nothing Painted Blue, who had an album called The Monte Carlo Method. And, now^[2017] that I live in Canada, I should say that that album has a fabulous cover of Mark Szabo's I Should Be With You. To be honest, the only reason I work with Andrew and the Stan crew is that I figure if I'm in New York often enough I'll eventually coincide with a Human Hearts concert^[I eventually did coincide with a Human Hearts concert and, to my extreme joy, Jenny Toomey did two songs with the band! They were supporting [Gramercy Arms](https://www.youtube.com/watch?v=oBwd4rAr3Rc), who I'd never heard before that night but have several perfect albums.].)
+
+## Sparsity
+
+> Why won't you cheat with me? You and I both know you've done it before. – [Jenny Toomey sings Franklin Bruno](https://www.youtube.com/watch?v=dL-4ZQthJ5w)
+
+The first object of our affliction are priors that promote sparsity in high-dimensional models.  There has been a lot of work on this topic, but the cheaters guide is basically this:
+
+> While spike-and-slab models can exactly represent sparsity and have excellent theoretical properties, they are basically useless from a computational point of view. So we use scale-mixture of normal priors (also known as local-global priors) to achieve approximate sparsity, and then use some sort of decision rule to take our approximately sparse signal and make it exactly sparse.
+
+
+What is a scale-mixture of normals?  Well it has the general form $$
+\beta_j \sim N(0, \tau^2 \psi^2_j),
+$$
+where $\tau$ is a global standard deviation parameter, controlling how large the $\beta_j$ parameters are in general^[This is like the standard deviation we'd use in an iid normal prior for a non-sparse model.], while the local standard deviation parameters $\psi_j$ control how big $\beta_j$ is _relative_ to the other $\beta$s.  
+
+The priors for $\tau$ and the $\psi_j$ are typically set to be independent.  A lot of theoretical work just treats $\tau$ as fixed (or as otherwise less important than the local parameters), but [this is wrong](https://arxiv.org/abs/1610.05559).
+
+_Pedant's corner:_ Andrew likes define mathematical statisticians as those who use $x$ for their data rather than $y$. I prefer to characterise them by those who think it's a good idea to put a prior on variance (an un-elicitable quantity) rather than standard deviation (which is easy to have opinions about). Please people just stop doing this. You're not helping yourselves!
+
+Actually, maybe that last point isn't for Pedant's Corner after all.  Because if you parameterise by standard deviation it's pretty easy to work out what the marginal prior on $\beta_j$ (with $\tau$ fixed) is.  
+
+This is quite useful because, with the notable exception of the "Bayesian" "Lasso" [which-does-not-work-but-will-never-die-because-it-was-inexplicably-published-in-the leading-stats-journal-by-prominent-statisticians-and-has-the-word-Lasso-in-the-title-even-though-a-back-of-the-envelope-calculation-or-I-don't-know-a-fairly-straightforward-simulation-by-the-reviewers-should-have-nixed-it](https://dansblog.netlify.app/posts/2021-12-08-the-king-must-die-repost/) (to use its married name), we can't compute the marginal prior for most scale-mixtures of normals.  
+
+The following result, which was killed by reviewers at some point during the PC prior papers long review process, but lives forever [in the arXiv'd first version](https://arxiv.org/abs/1403.4630v1), tells you everything you need to know.  It's a picture because frankly I've had a glass of wine and I'm not bloody typing it all again.
+
+```{theorem, echo = TRUE}
+Let $\pi_d(r)$ be a prior on the standard deviation of  $v \sim
+{\mathcal N}(0,r^2)$.  The induced prior
+$$
+\pi(v) = \int_0^\infty
+\frac{1}{2\pi r}\exp\left({-\frac{v^2}{2r^2}}\right)\pi_d(r)\,dr
+$$
+has the following properties.  Fix $\delta> 0$.
+
+1. If $\pi_d(r) \leq Cr^t$ for all $r \in [0,\delta]$ and for
+some $C,t >0$, then $\pi(v)$ is finite at
+$v=0$. 
+
+2. If $\pi_d(r) \in (0,\infty)$ for every $r \in
+[0,\delta]$, then $\pi(v)$ has a weak logarithmic spike at zero,
+that is
+$$
+\pi(v) = \mathcal{O}\left[\log\left(1 +
+                                      \frac{\delta^2}{v^2}\right)\right], \qquad v \rightarrow 0.
+$$
+
+3. If $\int_0^\delta \frac{1}{2\pi
+  r}\exp\left({-\frac{v^2}{2r^2}}\right)\pi_d(r)\,dr <
+  \infty$, then
+$$
+\pi(v) \geq
+\mathcal{O}\left(v^{-2}\exp\left(-\frac{v^2}{2\delta^2}\right)\right),
+\qquad |v| \rightarrow \infty.
+$$
+
+4. If $\pi_d(r) {\leq}({\geq}) Cr^{-t}$ for all
+$r \in [0,\delta]$ and for some $C,t >0$, then $$
+\pi(v)
+{\leq}({\geq}) \mathcal{O}(|v|^{-t}),\qquad v \rightarrow 0.
+$$
+
+5. If $\pi_d(r) {\leq}({\geq}) Cr^{-t}$ for all
+$r >\delta$ and for some $C,t >0$, then
+$$
+\pi(v)
+{\leq}({\geq}) \mathcal{O}(|v|^{-t}),\qquad |v| \rightarrow
+\infty.
+$$
+```
+<details><summary>The proof is here.</summary>
+
+ For any $\delta > 0$,
+$$
+\pi(v) =
+\int_0^\delta\frac{1}{2\pi r}
+\exp\left({-\frac{v^2}{2r^2}}\right)
+\pi_d(r)\,dr +
+\int_\delta^\infty\frac{1}{2\pi
+r}\exp\left({-\frac{v^2}{2r^2}}\right)
+\pi_d(r)\,dr = I_1 + I_2.
+$$
+Examining this splitting, we note that $I_1$ will control the
+behaviour of $\pi(v)$ near zero, while $I_2$ will control the
+tails.
+
+
+Assuming that $\int_\delta^\infty r^{-1}\pi_d(r)\,dr < \infty$, we
+can bound $I_2$ as
+$$
+\frac{1}{2\pi }\exp\left({-\frac{v^2}{2\delta^2}}\right)
+\int_\delta^\infty r^{-1}\pi_d(r)\,dr \leq I_2 \leq \frac{1}{2\pi}
+\int_\delta^\infty r^{-1}\pi_d(r)\,dr.
+$$
+
+To prove part 1, let $\pi_d(r) \leq Cr^t$, $r \in
+[0,\delta]$ for some $t>0$. Substituting this into $I_1$ and
+computing the resulting integral using Maple^[Yes. No open source for me!], we get
+\begin{align*}
+I_1 &\leq - \frac{C}{2\pi t}\left( {2}^{-1/2\,t}{|v|}^{t}\Gamma
+\left( 1-1/2\,t,1/2\,{\frac {v^2}{{\delta}^{2}}} \right) -{{\rm
+e}^{-1/2\,{\frac {v^2}{{\delta}^{2}}}} }{\delta}^{t}
+\right) = \mathcal{O}(1),
+\end{align*}
+where $\Gamma(a,x) = \int_x^\infty
+\exp\left({-t}\right)t^{a-1}\,dt$ is the incomplete Gamma
+function.
+
+To prove parts 2 and 3, we bound $I_1$ as
+follows.
+\begin{align*}
+\left(\inf_{r\in[0,\delta]} \pi_d(r)
+\right)\int_0^\delta\frac{1}{2\pi
+r}\exp\left({-\frac{v^2}{2r^2}}\right) \,dr &\leq I_1 \leq
+\left(\sup_{r\in[0,\delta]} \pi_d(r)
+\right)\int_0^\delta\frac{1}{2\pi r}\exp\left({-\frac{v^2}{2r^2}}\right) \\
+\frac{1}{4\pi}\left(\inf_{r\in[0,\delta]} \pi_d(r)\right)
+\text{E}_1\left(\frac{v^2}{2\delta^2}\right) & \leq I_1 \leq
+\frac{1}{4\pi}\left(\sup_{r\in[0,\delta]} \pi_d(r)\right)
+\text{E}_1\left(\frac{v^2}{2\delta^2}\right) \\
+\frac{1}{8\pi}\left(\inf_{r\in[0,\delta]} \pi_d(r)\right)
+\exp\left({-\frac{v^2}{2\delta^2}}\right)\log\left( 1 +
+\frac{4\delta^2}{v^2}\right) &\leq I_1
+\leq\frac{1}{4\pi}\left(\sup_{r\in[0,\delta]} \pi_d(r)\right)
+\exp\left({-\frac{v^2}{2\delta^2}}\right)\log\left( 1 +
+\frac{2\delta^2}{v^2}\right),
+\end{align*}
+where $\text{E}_1(x) = \int_1^\infty t^{-1}\exp\left({-tx}\right)\,dt$ and the
+third line of inequalities follows using standard bounds in the
+exponential integral^[Abramowitz, M. and Stegun, I. (1972). Handbook of Mathematical Functions. Formula 5.1.20].
+
+Combining the lower and upper bounds, it follows that if $0
+<\inf_{r\in[0,\delta]} \pi_d(r) \leq \sup_{r\in[0,\delta]}
+\pi_d(r) < \infty$, then $\pi(v)$ has a logarithmic spike near
+zero. Similarly, the lower bounds show that $\pi(v) \geq C
+v^{-2}\exp\left(-\frac{v^2}{2\delta^2}\right)$ as $v\rightarrow \infty$.
+
+Part 4 follows by considering let $\pi_d(r) = Cr^{-t}$,
+$r \in [0,\delta]$ for some $t>0$.  Substituting this into $I_1$
+and computing the resulting integral using Maple, we get
+\begin{align*}
+I_1 & = \frac{C}{2\pi t}\left( {|v|}^{-t}\Gamma \left(
+1+1/2\,t,1/2\,{\frac {v^2}{{\delta}^{2}}} \right)
+{2}^{t/2}-{\delta}^{-t}{{\rm e}^{-1/2\,{\frac
+{v^2}{{\delta}^{2}}}}} \right) \sim
+\mathcal{O}(v^{-t})
+\end{align*}
+as $v \rightarrow 0$.  We note that $I_1 =
+\mathcal{O}\left(\exp\left(-v^2/(2\delta^2)\right)\right)$ as $|v|
+\rightarrow \infty$.
+
+To prove part 5, let $\pi_d(r) = Cr^{-t}$, $r \in
+(\delta,\infty)$ for some $t>0$.  Substituting this into $I_2$, we
+get
+\begin{align*}
+I_2 = \frac{C}{8\pi^2}\,{2}^{1/2\,t}{|v|}^{-t} \left( \Gamma
+\left( 1/2\,t \right) - \Gamma \left( 1/2\,t,1/2\,{\frac
+{{v}^{2}}{{\delta}^{2}}} \right) \right) =
+\mathcal{O}(|v|^{-t}),
+\end{align*}
+where we used the identity $$
+\Gamma \left( 1/2\,t \right) - \Gamma
+\left( 1/2\,t,1/2\,{\frac {{v}^{2}}{{\delta}^{2}}} \right)
+\rightarrow \Gamma\left( 1/2\,t \right) $$ 
+as $|v|\rightarrow
+\infty$.
+
+**Done.**
+</details>
+
+
+
+All of this basically says the following:
+
+- If the density of the prior on the standard deviation is finite at zero, then the implied prior on $\beta_j$ has a logarithmic spike at zero.
+
+- If the density of the prior on the standard has a polynomial tail, then the implied prior on $\beta_j$ has the same polynomial tail.
+
+- Not in the result, but computed at the time: if the prior on the standard deviation is exponential, the prior on $\beta_j$ still has Gaussian-ish tails.  I couldn't work out what happened in the hinterland between exponential tails and polynomial tails, but I suspect at some point the tail on the standard deviation does eventually get heavy enough to be seen in the marginal, but I can't tell you when.)
+
+With this sort of information, you can compute the equivalent of the bounds that I did on the Laplace prior for the general case (or, actually, for the case that will have at least a little bit of a chance, which is the monotonically decreasing priors on the standard deviation).
+
+In particular, [if you run the argument from the last post](https://dansblog.netlify.app/posts/2021-12-08-the-king-must-die-repost/), you see that you need a quite heavy tail on the standard deviation prior to get a reasonable prior on the implied sparsity. In particular, [we showed](https://arxiv.org/pdf/1403.4630v4.pdf) that applying this reasoning to the horseshoe prior, where the prior on the local standard deviation is half-Cauchy, you can see that there
+is a $\lambda$ that gives _a priori_ weight on $p^{-1}$-sparse signals, while also letting you have a few very large $\beta_j$s.
+
+### The design-scaling in these priors links directly to an implied decision process
+
+> You’d look better if your shadow didn’t follow you around, but it looks as though you’re tethered to the ground, just like every pound of flesh I’ve ever found. – [Franklin Bruno in a sourceless light](https://www.youtube.com/watch?v=mIp4X7_cA3g).
+
+For a very simple decision process (the deterministic threshold process described in the previous post), you can work out exactly how the threshold needs to interact with the prior.  In particular, we can see that if we’re trying to detect a true signal that is exactly zero (no components are active), then we know that $latex \| \mathbf{X} \boldsymbol{\beta} \| = 0$.  This is not possible for these scale-mixture models, but we can require that in this case all of the components are at most $latex \epsilon$, in which case $$
+\| \mathbf{X}\boldsymbol{\beta} \| \leq \epsilon \| \mathbf{X} \|,
+$$
+which suggests we want $\epsilon \ll \| \mathbf{X} \|_\infty^{-1}$. The calculation in the previous post shows that if we want this sort of almost zero signal to have any mass at all under the prior, we need to scale $\lambda$ using information about $\mathbf{X}$.
+
+Of course, this is a very very simple decision process.  I have absolutely no idea how to repeat these arguments for actually good decision processes, like the predictive loss minimization [favoured by Aki](https://arxiv.org/abs/1707.01694). But I’d still expect that we’d need to make sure there was a priori enough mass in the areas of the parameter space where the decision process is firmly one way or another (as well as [mass in the indeterminate region](https://statmodeling.stat.columbia.edu/2017/10/29/contour-as-a-verb/)).  I doubt that the Bayesian Lasso would magically start to work under these more complex losses.
+
+## Models specified through their full conditionals
+
+> Why won't you cheat with me? You and I both know that he's done the same. – [Franklin Bruno](https://www.youtube.com/watch?v=Ozsc2AQqYKw)
+
+So we can view the design dependence of sparsity priors as preparation for the forthcoming decision process. (Those of you who just mentally broke into [Prepare Ye The Way Of The Lord](https://www.youtube.com/watch?v=c1SiaCV26aQ) from Godspell, please come to the front of the class. You are my people.)  Now let's talk about a case where this isn't true.
+
+To do this, we need to cast our minds back to a time when people really did have the original cast recording of Godspell on their mind.  In particular, we need to think about [Julian Besag](https://www.youtube.com/watch?v=pqoeM18vCaU) (who I'm sure was really into musicals about Jesus. I have no information to the contrary, so I'm just going to assume it's true.) who wrote a series of important papers, one in [1974](https://www.jstor.org/stable/2984812) and one in [1975](https://www.jstor.org/stable/2987782) (and several before and after, but I can't be arsed linking to them all.  We all have google.) about specifying models through conditional independence relations.
+
+These models have a special place in time series modelling (where we all know about discrete-time Markovian processes) and in spatial statistics. In particular, generalisations of Besag's (Gaussian) conditional autoregressive (CAR) models are w[idely used in spatial epidemiology](https://arxiv.org/abs/1601.01180).
+
+Mathematically, Gaussian CAR models (and more generally [Gaussian Markov random fields](https://www.routledge.com/Gaussian-Markov-Random-Fields-Theory-and-Applications/Rue-Held/p/book/9781584884323) on graphs) are defined through their precision matrix, that is the inverse of the covariance matrix as$$
+\mathbf{x} \sim N(\mathbf{0}, \tau^{-1}\mathbf{Q}^{-1}).
+$$
+
+For simple models, such as the popular CAR model, we assume $\mathbf{Q}$ is fixed, known, and sparse (i.e. it has a lot of zeros) and we typically interpret $\tau$ to be the inverse of the variance of $\mathbf{x}$.
+
+This interpretation of $\tau$ could not be more wrong.
+
+Why? Well, let's look at the marginal distribution $$
+x_j \sim N\left(0, \tau^{-1}[Q^{-1}]_{ii}\right).
+$$
+
+To interpet $\tau$ and the inverse variance, we need the diagonal elements of $\mathbf{Q}^{-1}$ to all be around 1. _This is never the case._
+
+A simple, mathematically tractable example is the first order random walk on a one-dimensional lattice, which can be written in terms of the increment process as $$
+x_{j+1} - x_j \sim N(0, \tau^{-1}), \qquad j = 1, \ldots J-1.
+$$
+
+Conditioned on a particular starting point, this process looks a lot like a discrete version of Brownian motion as you move the lattice points closer together. This is a useful model for rough non-linear random effects, such as the baseline hazard rate in a Cox proportional hazard model. A long and detailed (and quite general) discussion of these models can be found in [Rue and Held's book](https://www.routledge.com/Gaussian-Markov-Random-Fields-Theory-and-Applications/Rue-Held/p/book/9781584884323).
+
+I am bringing this case up because you can actually work out the size of the diagonal of $\mathbf{Q}^{-1}$. [Sørbye and Rue](https://www.sciencedirect.com/science/article/abs/pii/S2211675313000407) talk about this in detail, but for this model maybe the easiest way to understand it is that if we had a fixed lattice with $n$ points and we'd carefully worked out a sensible prior for $\tau$.  Now imagine that we've gotten some new data and instead of only $n$ points in the lattice, we got information at a finer scale, so now the same interval is covered by $nk$ equally spaced nodes.  We model this with the new first order random walk prior$$
+x'_{j+1} - x'_j \sim N(0,[\tau']^{-1}).
+$$
+
+It turns out that we can relate the inverse variances of these two increment processes as $\tau' = J \tau$.
+
+This strongly suggests that we should not use the same prior for $\tau$ as we should for $\tau'$, but that the prior should actually know about how many nodes there are on the lattice. Concrete suggestions are in the Sørbye and Rue paper linked above.
+
+### Design dependence for Markov random fields
+> Not to coin a phrase, but play it as it lays – [Franklin Bruno in Nothing Painted Blue](https://open.spotify.com/track/5gs7YbjVEjjKMNNO219iJe?si=e20a167de87a4dc4)
+
+This type of design dependence is a general problem for multivariate Gaussian models specified through their precision (so-called Gaussian Markov random fields).  The critical thing here is that, unlike the sparsity case, the design dependence does not come from some type of decision process.  It comes from the gap between the parameterisation (in terms of $\tau$ and $\mathbf{Q}$) and the elicitable quantity (the scale of the random effect).
+
+This is kinda a general lesson. _When specifying multivariate priors, you must always check the implications of your prior on the one- and two-dimensional quantities of interest. Because weird things happen in multivariate land!_
+
+## Gaussian process models
+
+> And it's not like we're tearing down a house of more than gingerbread.  It's not like we're calling down the wrath of heaven on our heads. –  [Jenny Toomey sings Franklin Bruno]((https://www.youtube.com/watch?v=dL-4ZQthJ5w))
+
+So the design dependence doesn't necessarily come in preparation for some kind of decision, it can also be because we have constructed (and therefore parameterised) our process in an inconvenient way.  Let's see if we can knock out another one before my bottle of wine dies.
+
+[Gaussian processes](https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/), the least exciting tool in the machine learner's toolbox, are another example where your priors need to be design dependent.  It will probably surprise you not a single sausage that in this case the need for design dependence comes from a completely different place.
+
+For simplicity let's consider a Gaussian process $f(t)$ in one dimension with isotropic covariance function $$
+c(s,t) =\sigma^2 (\kappa|s-t|)^\nu K_\nu(|\kappa|s-t|).
+$$
+
+This is the commonly encountered Whittle-Matérn family of covariance functions.  The distinguished members are the exponential covariance function when $\nu = 0.5$ and the squared exponential function $$ c(s,t)= \sigma^2\exp\left(\kappa |s-t|^2 \right),
+$$
+
+which is the limit as $\nu \rightarrow \infty$.
+
+One of the inconvenient features of Matérn models in 1-3 dimensions is that it is impossible to consistently recover all of the parameters by simply observing more and more of the random effect on a fixed interval.  You need to see new replicates in order to properly pin these down^[There's a recent paper (2021) in JRSSSB that says that these nuggets are identifiable under infill with a "nugget", which is equivalent to observing with iid noise that magically stays independent as you observe locations closer and closer together. I will let you judge how relevant this case is to your practice. But regardless, for a _finite_ set of data under any reasonable likelihood, you hit these identifiabiliy problems. And in my personal experience, they persevere even with a decent number of sites.].
+
+So one might expect that this non-identifiability would be the source of some problems.
+
+One would be wrong.
+
+The squared exponential covariance function does not have this pathology, but it's still very very hard to fit. Why? Well the problem is that you can interpret $\kappa$ as an inverse-range parameter.  Roughly, the interpretation is that if $$
+|s - t | > \frac{ \sqrt{ 8 \nu } }{\kappa}
+$$
+then the value of $u(s)$ is approximately independent of the value of $u(t)$.  
+
+This means that a fixed data set provides no information about $\kappa$ in large parts of the parameter space.  In particular if $\kappa^{-1}$ is bigger than the range of the measurement locations, then the data has almost no information about the parameter.  
+
+Similarly, if $\kappa^{-1}$ is smaller than the smallest distance between two data points (or for irregular data, this should be something like "smaller than some low quantile of the set of distances between points"), then the data will have nothing to say about the parameter.
+
+Of these two scenarios, it turns out that the inference is much less sensitive to the prior on small values of $\kappa$ (ie ranges longer than the data) than it is on small values of $\kappa$ (ie ranges shorter than the data).
+
+Currently, we have two recommendations: one based around [PC priors](https://arxiv.org/abs/1503.00256) and a very similar one based around [inverse gamma priors](https://mc-stan.org/docs/2_28/stan-users-guide/fit-gp.html#priors-gp.section). But both of these require you to specify the design-dependent quantity of a "minimum length scale we expect this data set to be informative about".
+
+### Design for Gaussian processes (I'd say "Designing Women", but I'm aware of the demographics)
+
+> I'm a disaster, you're a disaster, we're a disaster area. – Franklin Bruno in The Human Hearts (featuring alto extraordinaire and cabaret god Ms Molly Pope)
+
+So in this final example we hit our ultimate goal.  A case where design dependent priors are needed not because of a hacky decision process, or an awkward multivariate specification, but due to the limits of the data.  In this case, priors that do not recognise the limitation of the design of the experiment will lead to poorly behaving posteriors. This manifests as the Gaussian processes severely over-fitting the data.
+
+This is the ultimate expression of the point that we tried to make in the Entropy paper: [The prior can often only be understood in the context of the likelihood](http://www.stat.columbia.edu/~gelman/research/published/entropy-19-00555-v2.pdf).
+
+## Principles can only get you so far
+
+> I'm making scenes, you're constructing dioramas – [Franklin Bruno in Nothing Painted Blue](https://open.spotify.com/track/4ZsjitFg4P22jukvBCSxO8?si=4c7b551f72054d92)
+
+Just to round this off, I guess I should mention that the strong likelihood principle really does suggest that certain details of the design are not relevant to a fully Bayesian analysis. In particular, if the design only pops up in the normalising constant of the likelihood, it should not be relevant to a Bayesian. This seems at odds with everything I've said so far.
+
+But it's not.
+
+In each of these cases, the design was only invoked in order to deal with some external information. For sparsity, design was needed to properly infer a sparse signal and came in through the structure of the decision process.
+
+For the CAR models, the external information was that the elicitable quantity was the marginal standard deviation, which was a complicated function of the design and the standard parameter.
+
+For Gaussian processes, the same thing happened: the implicit decision criterion was that we wanted to make good predictions. The design told us which parts of the parameter space obstructed this goal, and a well specified prior removed the problem.
+
+There are also any number of cases in real practice where the decision at hand is stochastically dependent on the data gathering mechanism. This is why things like MRP exist.
+
+I guess this is the tl;dr version of this post (because apparently I'm too wordy for some people. I suggest they read other things. Of course suggesting this in the final paragraph of such a wordy post is very me.): 
+
+_Design matters even if you're Bayesian. Especially if you want to do something with your posterior that's more exciting than just sitting on it._
+
+**Edited from an [original blog, posted November 2017](https://statmodeling.stat.columbia.edu/2017/11/05/why-wont-you-cheat-with-me/).**
