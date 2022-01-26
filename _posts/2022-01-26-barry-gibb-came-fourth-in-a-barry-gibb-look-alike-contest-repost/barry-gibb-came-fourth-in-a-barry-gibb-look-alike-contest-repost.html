@@ -7,7 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
   <meta name="generator" content="distill" />
-  <link rel="alternate" type="application/rss+xml" href="https://dansblog.netlify.app/index.xml" />
 
   <style type="text/css">
   /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
@@ -88,635 +87,40 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
   <!--radix_placeholder_meta_tags-->
-  <title>Un garçon pas comme les autres (Bayes)</title>
+  <title>Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)</title>
 
+  <meta property="description" itemprop="description" content="A repost from Andrew&#39;s blog about comparing computational methods for performing a task. (Lightly edited.) Original posted 20 October, 2017."/>
 
+  <link rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"/>
 
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2022-01-26"/>
+  <meta property="article:created" itemprop="dateCreated" content="2022-01-26"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Un garçon pas comme les autres (Bayes)"/>
+  <meta property="og:title" content="Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)"/>
   <meta property="og:type" content="article"/>
+  <meta property="og:description" content="A repost from Andrew&#39;s blog about comparing computational methods for performing a task. (Lightly edited.) Original posted 20 October, 2017."/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="Un garçon pas comme les autres (Bayes)"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Un garçon pas comme les autres (Bayes)"/>
+  <meta property="twitter:title" content="Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)"/>
+  <meta property="twitter:description" content="A repost from Andrew&#39;s blog about comparing computational methods for performing a task. (Lightly edited.) Original posted 20 October, 2017."/>
+  <meta property="twitter:creator" content="@dan_p_simpson"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","site","listing"]}},"value":[{"type":"character","attributes":{},"value":["Un garçon pas comme les autres (Bayes)"]},{"type":"character","attributes":{},"value":["distill::distill_website"]},{"type":"character","attributes":{},"value":["posts"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","date","output","twitter","creative_commons","repository_url","draft"]}},"value":[{"type":"character","attributes":{},"value":["Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)"]},{"type":"character","attributes":{},"value":["A repost from Andrew's blog about comparing computational methods for performing a task. (Lightly edited.) Original posted 20 October, 2017.\n"]},{"type":"character","attributes":{},"value":["2022-01-26"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["bookdown::html_document2"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["base_format","self_contained"]}},"value":[{"type":"character","attributes":{},"value":["distill::distill_article"]},{"type":"logical","attributes":{},"value":[false]}]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creator"]}},"value":[{"type":"character","attributes":{},"value":["@dan_p_simpson"]}]},{"type":"character","attributes":{},"value":["CC BY-NC"]},{"type":"character","attributes":{},"value":["https://github.com/dpsimpson/blog/tree/master/_posts/2022-01-26-barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost"]},{"type":"logical","attributes":{},"value":[false]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/anchor-4.2.2/anchor.min.js","barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/bowser-1.9.3/bowser.min.js","barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/distill-2.2.21/template.v2.js","barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/header-attrs-2.11/header-attrs.js","barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/jquery-3.6.0/jquery-3.6.0.js","barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/jquery-3.6.0/jquery-3.6.0.min.js","barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/jquery-3.6.0/jquery-3.6.0.min.map","barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/popper-2.6.0/popper.min.js","barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/tippy-6.2.7/tippy-bundle.umd.min.js","barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/tippy-6.2.7/tippy-light-border.css","barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/tippy-6.2.7/tippy.css","barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/tippy-6.2.7/tippy.umd.min.js","barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/webcomponents-2.0.0/webcomponents.js"]}
+  </script>
   <!--radix_placeholder_navigation_in_header-->
-  <meta name="distill:offset" content=""/>
-
-  <script type="application/javascript">
-
-    window.headroom_prevent_pin = false;
-
-    window.document.addEventListener("DOMContentLoaded", function (event) {
-
-      // initialize headroom for banner
-      var header = $('header').get(0);
-      var headerHeight = header.offsetHeight;
-      var headroom = new Headroom(header, {
-        tolerance: 5,
-        onPin : function() {
-          if (window.headroom_prevent_pin) {
-            window.headroom_prevent_pin = false;
-            headroom.unpin();
-          }
-        }
-      });
-      headroom.init();
-      if(window.location.hash)
-        headroom.unpin();
-      $(header).addClass('headroom--transition');
-
-      // offset scroll location for banner on hash change
-      // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
-      window.addEventListener("hashchange", function(event) {
-        window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
-      });
-
-      // responsive menu
-      $('.distill-site-header').each(function(i, val) {
-        var topnav = $(this);
-        var toggle = topnav.find('.nav-toggle');
-        toggle.on('click', function() {
-          topnav.toggleClass('responsive');
-        });
-      });
-
-      // nav dropdowns
-      $('.nav-dropbtn').click(function(e) {
-        $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
-        $(this).parent().siblings('.nav-dropdown')
-           .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $("body").click(function(e){
-        $('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $(".nav-dropdown").click(function(e){
-        e.stopPropagation();
-      });
-    });
-  </script>
-
-  <style type="text/css">
-
-  /* Theme (user-documented overrideables for nav appearance) */
-
-  .distill-site-nav {
-    color: rgba(255, 255, 255, 0.8);
-    background-color: #0F2E3D;
-    font-size: 15px;
-    font-weight: 300;
-  }
-
-  .distill-site-nav a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .distill-site-nav a:hover {
-    color: white;
-  }
-
-  @media print {
-    .distill-site-nav {
-      display: none;
-    }
-  }
-
-  .distill-site-header {
-
-  }
-
-  .distill-site-footer {
-
-  }
-
-
-  /* Site Header */
-
-  .distill-site-header {
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 3;
-  }
-
-  .distill-site-header .nav-left {
-    display: inline-block;
-    margin-left: 8px;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header .nav-left {
-      margin-left: 0;
-    }
-  }
-
-
-  .distill-site-header .nav-right {
-    float: right;
-    margin-right: 8px;
-  }
-
-  .distill-site-header a,
-  .distill-site-header .title {
-    display: inline-block;
-    text-align: center;
-    padding: 14px 10px 14px 10px;
-  }
-
-  .distill-site-header .title {
-    font-size: 18px;
-    min-width: 150px;
-  }
-
-  .distill-site-header .logo {
-    padding: 0;
-  }
-
-  .distill-site-header .logo img {
-    display: none;
-    max-height: 20px;
-    width: auto;
-    margin-bottom: -4px;
-  }
-
-  .distill-site-header .nav-image img {
-    max-height: 18px;
-    width: auto;
-    display: inline-block;
-    margin-bottom: -3px;
-  }
-
-
-
-  @media screen and (min-width: 1000px) {
-    .distill-site-header .logo img {
-      display: inline-block;
-    }
-    .distill-site-header .nav-left {
-      margin-left: 20px;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 20px;
-    }
-    .distill-site-header .title {
-      padding-left: 12px;
-    }
-  }
-
-
-  .distill-site-header .nav-toggle {
-    display: none;
-  }
-
-  .nav-dropdown {
-    display: inline-block;
-    position: relative;
-  }
-
-  .nav-dropdown .nav-dropbtn {
-    border: none;
-    outline: none;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 16px 10px;
-    background-color: transparent;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    margin: 0;
-    margin-top: 1px;
-    z-index: 2;
-  }
-
-  .nav-dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 200px;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 4px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-    z-index: 1;
-    margin-top: 2px;
-    white-space: nowrap;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-
-  .nav-dropdown-content hr {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-dropdown-active {
-    display: block;
-  }
-
-  .nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
-    color: black;
-    padding: 6px 24px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-  }
-
-  .nav-dropdown-content .nav-dropdown-header {
-    display: block;
-    padding: 5px 24px;
-    padding-bottom: 0;
-    text-transform: uppercase;
-    font-size: 14px;
-    color: #999999;
-    white-space: nowrap;
-  }
-
-  .nav-dropdown:hover .nav-dropbtn {
-    color: white;
-  }
-
-  .nav-dropdown-content a:hover {
-    background-color: #ddd;
-    color: black;
-  }
-
-  .nav-right .nav-dropdown-content {
-    margin-left: -45%;
-    right: 0;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
-    .distill-site-header a.nav-toggle {
-      float: right;
-      display: block;
-    }
-    .distill-site-header .title {
-      margin-left: 0;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 0;
-    }
-    .distill-site-header {
-      overflow: hidden;
-    }
-    .nav-right .nav-dropdown-content {
-      margin-left: 0;
-    }
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header.responsive {position: relative; min-height: 500px; }
-    .distill-site-header.responsive a.nav-toggle {
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-    .distill-site-header.responsive a,
-    .distill-site-header.responsive .nav-dropdown {
-      display: block;
-      text-align: left;
-    }
-    .distill-site-header.responsive .nav-left,
-    .distill-site-header.responsive .nav-right {
-      width: 100%;
-    }
-    .distill-site-header.responsive .nav-dropdown {float: none;}
-    .distill-site-header.responsive .nav-dropdown-content {position: relative;}
-    .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
-      display: block;
-      width: 100%;
-      text-align: left;
-    }
-  }
-
-  /* Site Footer */
-
-  .distill-site-footer {
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-    z-index: 3;
-    margin-top: 30px;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    text-align: center;
-  }
-
-  /* Headroom */
-
-  d-title {
-    padding-top: 6rem;
-  }
-
-  @media print {
-    d-title {
-      padding-top: 4rem;
-    }
-  }
-
-  .headroom {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
-
-  .headroom--transition {
-    transition: all .4s ease-in-out;
-  }
-
-  .headroom--unpinned {
-    top: -100px;
-  }
-
-  .headroom--pinned {
-    top: 0;
-  }
-
-  /* adjust viewport for navbar height */
-  /* helps vertically center bootstrap (non-distill) content */
-  .min-vh-100 {
-    min-height: calc(100vh - 100px) !important;
-  }
-
-  </style>
-
-  <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-  <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
-  <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
-  <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
-  <script src="site_libs/autocomplete-0.37.1/autocomplete.min.js"></script>
-  <script src="site_libs/fuse-6.4.1/fuse.min.js"></script>
-
-  <script type="application/javascript">
-
-  function getMeta(metaName) {
-    var metas = document.getElementsByTagName('meta');
-    for (let i = 0; i < metas.length; i++) {
-      if (metas[i].getAttribute('name') === metaName) {
-        return metas[i].getAttribute('content');
-      }
-    }
-    return '';
-  }
-
-  function offsetURL(url) {
-    var offset = getMeta('distill:offset');
-    return offset ? offset + '/' + url : url;
-  }
-
-  function createFuseIndex() {
-
-    // create fuse index
-    var options = {
-      keys: [
-        { name: 'title', weight: 20 },
-        { name: 'categories', weight: 15 },
-        { name: 'description', weight: 10 },
-        { name: 'contents', weight: 5 },
-      ],
-      ignoreLocation: true,
-      threshold: 0
-    };
-    var fuse = new window.Fuse([], options);
-
-    // fetch the main search.json
-    return fetch(offsetURL('search.json'))
-      .then(function(response) {
-        if (response.status == 200) {
-          return response.json().then(function(json) {
-            // index main articles
-            json.articles.forEach(function(article) {
-              fuse.add(article);
-            });
-            // download collections and index their articles
-            return Promise.all(json.collections.map(function(collection) {
-              return fetch(offsetURL(collection)).then(function(response) {
-                if (response.status === 200) {
-                  return response.json().then(function(articles) {
-                    articles.forEach(function(article) {
-                      fuse.add(article);
-                    });
-                  })
-                } else {
-                  return Promise.reject(
-                    new Error('Unexpected status from search index request: ' +
-                              response.status)
-                  );
-                }
-              });
-            })).then(function() {
-              return fuse;
-            });
-          });
-
-        } else {
-          return Promise.reject(
-            new Error('Unexpected status from search index request: ' +
-                        response.status)
-          );
-        }
-      });
-  }
-
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-
-    // get search element (bail if we don't have one)
-    var searchEl = window.document.getElementById('distill-search');
-    if (!searchEl)
-      return;
-
-    createFuseIndex()
-      .then(function(fuse) {
-
-        // make search box visible
-        searchEl.classList.remove('hidden');
-
-        // initialize autocomplete
-        var options = {
-          autoselect: true,
-          hint: false,
-          minLength: 2,
-        };
-        window.autocomplete(searchEl, options, [{
-          source: function(query, callback) {
-            const searchOptions = {
-              isCaseSensitive: false,
-              shouldSort: true,
-              minMatchCharLength: 2,
-              limit: 10,
-            };
-            var results = fuse.search(query, searchOptions);
-            callback(results
-              .map(function(result) { return result.item; })
-            );
-          },
-          templates: {
-            suggestion: function(suggestion) {
-              var img = suggestion.preview && Object.keys(suggestion.preview).length > 0
-                ? `<img src="${offsetURL(suggestion.preview)}"</img>`
-                : '';
-              var html = `
-                <div class="search-item">
-                  <h3>${suggestion.title}</h3>
-                  <div class="search-item-description">
-                    ${suggestion.description || ''}
-                  </div>
-                  <div class="search-item-preview">
-                    ${img}
-                  </div>
-                </div>
-              `;
-              return html;
-            }
-          }
-        }]).on('autocomplete:selected', function(event, suggestion) {
-          window.location.href = offsetURL(suggestion.path);
-        });
-        // remove inline display style on autocompleter (we want to
-        // manage responsive display via css)
-        $('.algolia-autocomplete').css("display", "");
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-
-  });
-
-  </script>
-
-  <style type="text/css">
-
-  .nav-search {
-    font-size: x-small;
-  }
-
-  /* Algolioa Autocomplete */
-
-  .algolia-autocomplete {
-    display: inline-block;
-    margin-left: 10px;
-    vertical-align: sub;
-    background-color: white;
-    color: black;
-    padding: 6px;
-    padding-top: 8px;
-    padding-bottom: 0;
-    border-radius: 6px;
-    border: 1px #0F2E3D solid;
-    width: 180px;
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-nav .algolia-autocomplete {
-      display: none;
-      visibility: hidden;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete {
-      display: inline-block;
-      visibility: visible;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete .aa-dropdown-menu {
-      margin-left: 0;
-      width: 400px;
-      max-height: 400px;
-    }
-  }
-
-  .algolia-autocomplete .aa-input, .algolia-autocomplete .aa-hint {
-    width: 90%;
-    outline: none;
-    border: none;
-  }
-
-  .algolia-autocomplete .aa-hint {
-    color: #999;
-  }
-  .algolia-autocomplete .aa-dropdown-menu {
-    width: 550px;
-    max-height: 70vh;
-    overflow-x: visible;
-    overflow-y: scroll;
-    padding: 5px;
-    margin-top: 3px;
-    margin-left: -150px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: 1px solid #999;
-    border-top: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
-    cursor: pointer;
-    padding: 5px 4px;
-    border-bottom: 1px solid #eee;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion:last-of-type {
-    border-bottom: none;
-    margin-bottom: 2px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item {
-    overflow: hidden;
-    font-size: 0.8em;
-    line-height: 1.4em;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item h3 {
-    font-size: 1rem;
-    margin-block-start: 0;
-    margin-block-end: 5px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-description {
-    display: inline-block;
-    overflow: hidden;
-    height: 2.8em;
-    width: 80%;
-    margin-right: 4%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview {
-    display: inline-block;
-    width: 15%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img {
-    height: 3em;
-    width: auto;
-    display: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img[src] {
-    display: initial;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
-    background-color: #eee;
-  }
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
-    font-weight: bold;
-    font-style: normal;
-  }
-
-  </style>
-
-
   <!--/radix_placeholder_navigation_in_header-->
   <!--radix_placeholder_distill-->
 
@@ -2035,342 +1439,175 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </script>
 
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
-  <script src="site_libs/popper-2.6.0/popper.min.js"></script>
-  <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
-  <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
-  <script src="site_libs/tippy-6.2.7/tippy.umd.min.js"></script>
-  <script src="site_libs/anchor-4.2.2/anchor.min.js"></script>
-  <script src="site_libs/bowser-1.9.3/bowser.min.js"></script>
-  <script src="site_libs/webcomponents-2.0.0/webcomponents.js"></script>
-  <script src="site_libs/distill-2.2.21/template.v2.js"></script>
+  <script src="barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/header-attrs-2.11/header-attrs.js"></script>
+  <script src="barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+  <script src="barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/popper-2.6.0/popper.min.js"></script>
+  <link href="barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost_files/distill-2.2.21/template.v2.js"></script>
   <!--radix_placeholder_site_in_header-->
   <!--/radix_placeholder_site_in_header-->
 
 
 </head>
 
-<body class="layout-listing">
+<body>
 
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Un garçon pas comme les autres (Bayes)","authors":[]}
+{"title":"Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)","description":"A repost from Andrew's blog about comparing computational methods for performing a task. (Lightly edited.) Original posted 20 October, 2017.","authors":[],"publishedDate":"2022-01-26T00:00:00.000+11:00"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
 <!--radix_placeholder_navigation_before_body-->
-<header class="header header--fixed" role="banner">
-<nav class="distill-site-nav distill-site-header">
-<div class="nav-left">
-<a href="index.html" class="title">Un garçon pas comme les autres (Bayes)</a>
-<input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
-</div>
-<div class="nav-right">
-<a href="index.html">Home</a>
-<a href="about.html">About</a>
-<a href="index.xml">
-<i class="fa fa-rss" aria-hidden="true"></i>
-</a>
-<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
-</div>
-</nav>
-</header>
 <!--/radix_placeholder_navigation_before_body-->
 <!--radix_placeholder_site_before_body-->
 <!--/radix_placeholder_site_before_body-->
-<!--radix_placeholder_article_listing-->
-
-
-<script type="application/javascript">
-
-function init_posts_list() {
-
-  function load_image(img) {
-    var src = $(img).attr('data-src');
-    if (src) {
-      $(img).attr('src', src);
-      $(img).on("load", function() {
-        img.removeAttribute('data-src');
-      });
-    }
-  }
-
-  function set_posts_visible(posts, visible) {
-    if (visible) {
-
-      // show bottom border by default
-      $(posts).removeClass('post-preview-last');
-
-      // apply limits if need be
-      var max_posts = 25;
-      var apply_limits = $('.posts-container').hasClass('posts-apply-limit');
-      if (apply_limits && posts.length > max_posts) {
-        posts = $(posts).slice(0, max_posts);
-      } else {
-        $('.posts-more a').addClass('hidden');
-      }
-
-      // apply last style
-      $(posts.slice(-1)[0]).addClass('post-preview-last');
-
-      $(posts).removeClass('hidden');
-      $(posts).find('img[data-src]').each(function(i, img) {
-        load_image(img);
-      });
-    } else {
-      $(posts).addClass('hidden');
-    }
-  }
-
-  function apply_hash_filter() {
-
-    // clear active state
-    $('.categories .active').removeClass('active');
-
-    // mark all posts invisible to start
-    set_posts_visible($('.posts-list').children('a'), false);
-
-    // if we have a hash filter
-    if (window.location.hash && window.location.hash.startsWith("#category:")) {
-
-      // mark posts that match the category visible
-      var page_category = window.location.hash.replace(/^#category:/, "");
-      page_category = decodeURIComponent(page_category)
-      var posts = $('.post-metadata').map(function(idx, script) {
-        var metadata = $.parseJSON($(script).html());
-        var post = null;
-        $.each(metadata.categories, function(idx, category) {
-          category = category.replace(/ /g,"_");
-          if ((page_category || '').toLowerCase() === "articles" || category === page_category) {
-            post = $(script).parent().get();
-            return false;
-          }
-        });
-        return post;
-      });
-      set_posts_visible(posts, true);
-
-      // mark the hash active
-      $('.categories li>a[href="' + decodeURIComponent(window.location.hash) + '"]').addClass('active');
-
-      // update the list_caption
-      var list_caption = $('.posts-list-caption');
-      var caption = (page_category || '').toLowerCase() === "articles"
-        ? list_caption.attr('data-caption')
-        : ('Category: ' + page_category.replace(/_/g," "));
-      list_caption.text(caption);
-
-    } else {
-
-      // no hash filter, make all posts visible (subject to max display)
-      set_posts_visible($('.posts-list').children(), true);
-
-      // reset list caption
-      var list_caption = $('.posts-list-caption');
-      list_caption.text(list_caption.attr('data-caption'));
-
-
-    }
-  }
-
-  // more articles
-  function apply_post_limits(apply) {
-    if (apply) {
-      $('.posts-container').addClass('posts-apply-limit');
-      $('.posts-more a').removeClass('hidden');
-    } else {
-      $('.posts-container').removeClass('posts-apply-limit');
-      $('.posts-more a').addClass('hidden');
-    }
-  }
-
-  // click handling for tags
-  $('.dt-tag').click(function(ev) {
-    window.location.hash = '#category:' + $(this).text().replace(/ /g, "_");
-    return false;
-  })
-
-  // hash filter handling
-  apply_hash_filter();
-  $(window).on('hashchange',function() {
-    apply_post_limits(true);
-    apply_hash_filter();
-  });
-
-  // more articles link
-  $('.posts-more a').click(function(e) {
-    e.preventDefault();
-    apply_post_limits(false);
-    apply_hash_filter();
-    return false;
-  });
-
-}
-
-</script>
-
-
-
-<div class="posts-container posts-apply-limit l-page">
-<div class="posts-list">
-<h1 class="posts-list-caption" data-caption="Un garçon pas comme les autres (Bayes)">Un garçon pas comme les autres (Bayes)</h1>
-<a href="posts/2022-01-26-barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 26, 2022</div>
-<div class="dt-authors"></div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)</h2>
-<div class="dt-tags"></div>
-<p>A repost from Andrew's blog about comparing computational methods for performing a task. (Lightly edited.) Original posted 20 October, 2017.</p>
-</div>
-</a>
-<a href="posts/2021-12-09-why-wont-you-cheat-with-me-repost/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Dec. 9, 2021</div>
-<div class="dt-authors"></div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Why won't you cheat with me? (Repost)</h2>
-<div class="dt-tags"></div>
-<p>A repost from Andrew's blog about how design information infects multivariate priors.
-(Lightly edited. Well, a bit more than lightly because the last version didn't 
-fully make sense. But whatever. Blogs, eh.) Original posted 5 November, 2017.</p>
-</div>
-</a>
-<a href="posts/2021-12-08-the-king-must-die-repost/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Dec. 8, 2021</div>
-<div class="dt-authors"></div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-12-08-the-king-must-die-repost/the-king-must-die-repost_files/figure-html5/unnamed-chunk-1-1.png"/>
-</div>
-<div class="description">
-<h2>The king must die (repost)</h2>
-<div class="dt-tags"></div>
-<p>A repost (with edits, revisions, and footnotes) from Andrew's blog about how much I hate the Bayesian Lasso. Originally published 2nd November, 2017.</p>
-</div>
-</a>
-<a href="posts/2021-11-24-getting-into-the-subspace/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Nov. 24, 2021</div>
-<div class="dt-authors"></div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Getting into the subspace; or what happens when you approximate a Gaussian process</h2>
-<div class="dt-tags"></div>
-<p>Fuck man, I don't know about this one. A lot of stuff happens. At some point there's a lot of PDEs. There are proofs. Back away.</p>
-</div>
-</a>
-<a href="posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Nov. 3, 2021</div>
-<div class="dt-authors"></div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness</h2>
-<div class="dt-tags"></div>
-<p>Gaussian processes. As narrated by an increasingly deranged man during a day of torrential rain.</p>
-</div>
-</a>
-<a href="posts/2021-10-15-priors3/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Oct. 16, 2021</div>
-<div class="dt-authors"></div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Priors: Fire With Fire (Track 3)</h2>
-<div class="dt-tags"></div>
-<p>Objective priors? In finite dimensions? A confidence trick? Yes.</p>
-</div>
-</a>
-<a href="posts/2021-10-14-priors2/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Oct. 15, 2021</div>
-<div class="dt-authors"></div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Priors: Whole New Way (Track 2)</h2>
-<div class="dt-tags"></div>
-<p>Conjugate Priors? The crystal deoderant of Bayesian statistics</p>
-</div>
-</a>
-<a href="posts/2021-10-11-n-sane-in-the-membrane/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Oct. 14, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">Dan Simpson</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-10-11-n-sane-in-the-membrane/n-sane-in-the-membrane_files/figure-html5/unnamed-chunk-1-1.png"/>
-</div>
-<div class="description">
-<h2>$(n-1)$-sane in the membrane</h2>
-<div class="dt-tags"></div>
-<p>Windmills? Tilted. Topic? Boring. (n-1)? No.</p>
-</div>
-</a>
-<a href="posts/2021-10-14-priors1/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Oct. 14, 2021</div>
-<div class="dt-authors"></div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Priors: Night work (Track 1)</h2>
-<div class="dt-tags"></div>
-<p>Priors? Defined. Questions? Outlined. Purpose? Declared.</p>
-</div>
-</a>
-</div>
-<div class="posts-more">
-<a href="#">More articles &raquo;</a>
-</div>
-</div>
-<!--/radix_placeholder_article_listing-->
 
 <div class="d-title">
-<h1>Un garçon pas comme les autres (Bayes)</h1>
+<h1>Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-
+<p><p>A repost from Andrew’s blog about comparing computational methods for performing a task. (Lightly edited.) Original posted 20 October, 2017.</p></p>
 </div>
 
 
 <div class="d-article">
+<blockquote>
+<p><em>Every day a little death, in the parlour, in the bed. On the lips and in the eyes. In the curtains in the silver, in the buttons, in the bread, in the murmurs, in the pauses, in the gestures, in the sighs.</em> <a href="https://www.youtube.com/watch?v=Snru5gtCyWA">Sondheim</a></p>
+</blockquote>
+<p>The most horrible sound in the world is that of a reviewer asking you to compare your computational method to another, existing method. Like bombing countries in the name of peace, the purity of intent drowns out the voices of our better angels as they whisper: at what cost.</p>
+<p>Before the unnecessary drama of that last sentence<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> sends you running back to the still-open browser tab documenting the world’s slow slide into a deeper, danker, more complete darkness that we’ve seen before, I should say that I understand that for most people this isn’t a problem. Most people don’t do research in computational statistics. Most people are happy<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+<p>So why does someone asking for a comparison of two methods for allegedly computing the same thing fill me with the sort of dread usually reserved for climbing down the ladder into my basement to discover, by the the light of a single, swinging, naked light bulb, that the evil clown I keep chained in the corner has escaped? Because it’s almost impossible to do well.</p>
+<h1 id="i-go-through-all-this-before-you-wake-up-so-i-can-feel-happier-to-be-safe-again-with-you">I go through all this before you wake up so I can feel happier to be safe again with you</h1>
+<p>Many many years ago, when I still had all my hair and thought it was impressive when people proved things, I did a PhD in numerical analysis. These all tend to have the same structure:</p>
+<ol type="1">
+<li><p>survey your chosen area with a simulation study comparing all the existing methods,</p></li>
+<li><p>propose a new method that should be marginally better than the existing ones,</p></li>
+<li><p>analyse the new method, show that it’s at least not worse than the existing ones (or worse in an interesting way),</p></li>
+<li><p>construct a simulation study that shows the superiority of your method on a problem that hopefully doesn’t look too artificial,</p></li>
+<li><p>write a long discussion blaming the inconsistencies between the maths and the simulations on “pre-asymptotic artefacts”.</p></li>
+</ol>
+<p>Which is to say, I’ve done my share of simulation studies comparing algorithms.</p>
+<p>So what changed? When did I start to get <a href="https://www.youtube.com/watch?v=ykdtNuKlHiA">the fear</a> every time someone mentioned comparing algorithms?</p>
+<p>Well, I left numerical analysis and moved to statistics and I learnt the one true thing that all people who come to statistics must learn: statistics is hard.</p>
+<p>When I used to compare deterministic algorithms it was easy. I would know the correct answer and so I could compare algorithms by comparing the error in their approximate solutions (perhaps taking into account things like how long it took to compute the answer).</p>
+<p>But in statistics, the truth is random. Or the truth is a high-dimensional joint distribution that you cannot possibly know. So how can you really compare your algorithms, except possibly by comparing your answer to some sort of “gold standard” method that may or may not work.</p>
+<h1 id="inte-ner-för-ett-stup.-inte-ner-från-en-bro.-utan-från-vattentornets-topp.">Inte ner för ett stup. Inte ner från en bro. Utan från vattentornets topp<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</h1>
+<p>The first two statistical things I ever really worked on (in an office overlooking a fjord) were computationally tractable ways of approximating posterior distributions for specific types of models. The first of these was [INLA]((<a href="https://en.wikipedia.org/wiki/Irish_National_Liberation_Army" class="uri">https://en.wikipedia.org/wiki/Irish_National_Liberation_Army</a>)<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. For those of you who haven’t heard of it, INLA (and it’s popular R implementation <a href="https://www.r-inla.org">R-INLA</a>) is a method for doing approximate posterior computation for a lot of the sorts of models you can fit in <code>rstanarm</code> and <code>brms</code>. So random effect models, multilevel models, models with splines, and spatial effects.</p>
+<p>At the time, Stan didn’t exist (later, it barely existed), so I would describe INLA as being Bayesian inference for people who lacked the ideological purity to wait 14 hours for a poorly mixing BUGS chain to run, instead choosing to spend 14 seconds to get a better “approximate” answer. These days, Stan exists in earnest and that 14 hours is 20 minutes for small-ish models with only a couple of thousand observations, and the answer that comes out of Stan is probably as good as INLA.</p>
+<p>Working on INLA I learnt a new fear: the fear that someone else was going to publish a simulation study comparing INLA with something else without checking with us first.</p>
+<p>Now obviously, we wanted people to run their comparisons past us so we could ruthlessly quash any dissent and hopefully exile the poor soul who thought to critique our perfect method to the academic equivalent of a Siberian work camp.</p>
+<p>Or, more likely, because comparing statistical models is really hard, and we could usually make the comparison much better by asking some questions about how it was being done.</p>
+<p>Sometimes, learning from well-constructed simulation studies how INLA was failing lead to improvements in the method.</p>
+<p>But nothing could be learned if, for instance, the simulation study was reporting runs from code that wasn’t doing what the authors thought it was<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. And I don’t want to suggest that bad or unfair comparisons comes from malice (for the most part, we’re all quite conscientious and fairly nice), but rather that they happen because comparing statistical algorithms is hard.</p>
+<p>And comparing algorithms fairly where you don’t understand them equally well is almost impossible.</p>
+<h1 id="well-did-you-hear-the-one-about-mr-ed-he-said-im-this-way-because-of-the-things-ive-seen">Well did you hear the one about Mr Ed? He said I’m this way because of the things I’ve seen</h1>
+<p>Why am I bringing this up? It’s because of the second statistical thing that I worked on while I was living in sunny Trondheim (in between looking at the fjord and holding onto the sides of buildings for dear life because for 8 months of the year Trondheim is a very pretty mess of icy hills).</p>
+<p>During that time, I worked with <a href="https://www.maths.ed.ac.uk/~flindgre/">Finn Lindgren</a> and <a href="https://www.kaust.edu.sa/en/study/faculty/haavard-rue">Håvard “INLA” Rue</a> on computationally efficient approximations to Gaussian random fields (which is what we’re supposed to call Gaussian Processes when the parameter space is more complex than just “time” [<em>shakes fist at passing cloud</em>]). Finn (with Håvard and Johan Lindström) had proposed a new method, cannily named the <a href="https://rss.onlinelibrary.wiley.com/doi/10.1111/j.1467-9868.2011.00777.x">Stochastic Partial Differential Equation</a> (SPDE) method, for exploiting the continuous-space Markov property in higher dimensions. Which all sounds very maths-y, but it isn’t.</p>
+<p>The guts of the method says “all of our problems with working computationally with Gaussian random fields comes from the fact that the set of all possible functions is too big for a computer to deal with, so we should do something about that”.  The “something” is replace the continuous function with a piecewise linear one defined over a fairly fine triangulation on the domain of interest.</p>
+<h1 id="but-why-am-i-talking-about-this">But why am I talking about this?</h1>
+<p>(Sorry. One day I’ll write a short post.)</p>
+<p>A <a href="https://arxiv.org/pdf/1710.05013.pdf">very exciting paper popped up on arXiv on Monday</a><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> comparing a fairly exhaustive collection of recent methods for making spatial Gaussian random fields more computationally efficient.</p>
+<p>Why am I not cringing in fear? Because if you look at the author list, they have included an author from each of the projects they have compared! This means that the comparison will probably be as good as it can be. In particular, it won’t suffer from the usual problem of the authors understanding some methods they’re comparing better than others.</p>
+<p>#The world is held together by the wind that blows through Gena Rowland’s hair</p>
+<p>So how did they go? Well, actually, they did quite well. I like that</p>
+<ul>
+<li><p>They describe each problem quite well</p></li>
+<li><p>The simulation study and the real data analysis uses a collection of different evaluations metrics</p></li>
+<li><p>Some of these are proper scoring rules, which is the correct framework for evaluating probabilistic predictions</p></li>
+<li><p>They acknowledge that the wall clock timings are likely to be more a function of how hard a team worked to optimise performance on this one particular model than a true representation of how these methods would work in practice.</p></li>
+</ul>
+<h1 id="not-the-lovin-kind">Not the lovin’ kind</h1>
+<p>But I’m an academic statistician. And our key feature, as a people, is that we loudly and publicly dislike each other’s work. Even the stuff we agree with.  Why? Because people with our skills who also have impulse control tend to work for more money in the private sector.</p>
+<p>So with that in mind, let’s have some fun.</p>
+<p>(Although seriously, this is the best comparison of this type I’ve ever seen. So, really, I’m just wanting it to be even bester.)</p>
+<p>So what’s wrong with it?</p>
+<h1 id="its-gotta-be-big.-i-said-it-better-be-big">It’s gotta be big. I said it better be big</h1>
+<p>The most obvious problem with the comparison is that the problem that these methods are being compared on is not particularly large or complex. You can see that from the timings. Almost none of these implementations are sweating, which is a sign that we are not anywhere near the sort of problem that would really allow us to differentiate between methods.</p>
+<p>So how small is small? The problem had 105,569 observations and required prediction at at most  4,431 other locations. To be challenging, this data needed to be another order of magnitude bigger.</p>
+<h1 id="god-knows-i-know-ive-thrown-away-those-graces">God knows I know I’ve thrown away those graces</h1>
+<p>(Can you tell what I’m listening to?)</p>
+<p>The second problem with the comparison is that the problem is tooooooo easy. As the data is modelled with a Gaussian observation noise and a multivariate Gaussian latent random effect, it is a straightforward piece of algebra to eliminate all of the latent Gaussian variables from the model. This leads to a model with only a small number of parameters, which should make inference much easier.</p>
+<p>How do you do that? Well, if the data is <span class="math inline">\(y\)</span>, the Gaussian random field is <span class="math inline">\(x\)</span> and and all the hyperparmeters <span class="math inline">\(\theta\)</span>. In this case, we can use conditional probability to write that <span class="math display">\[
+p(\theta \mid y) \propto \frac{p(y,x,\theta)}{p(x \mid y, \theta)},
+\]</span>
+which holds for every value of <span class="math inline">\(x\)</span> and particularly <span class="math inline">\(x=0\)</span>. Hence if you have a closed form full conditional (which is the case when you have Gaussian observations), you can write the marginal posterior out exactly without having to do any integration.</p>
+<p>A much more challenging problem would have had Poisson or binomial data, where the full conditional doesn’t have a known form. In this case you cannot do this marginalisation analytically, so you put much more stress on your inference algorithm.</p>
+<p>I guess there’s an argument to be made that some methods are really difficult to extend to non-Gaussian observations. But there’s also an argument to be made that I don’t care. Shit or get off the pot, as American would say.</p>
+<h1 id="dont-take-me-back-to-the-range">Don’t take me back to the range</h1>
+<p>The prediction quality is measured in terms of mean squared error and mean absolute error (which are fine), the continuous rank probability score (CRPS) and and the Interval Score (INT), both of which are proper scoring rules. <a href="https://sites.stat.washington.edu/raftery/Research/PDF/Gneiting2007jasa.pdf">Proper scoring rules</a> (and follow the link or google for more if you’ve never heard of them) are the correct way to compare probabilistic predictions, regardless of the statistical framework that’s used to make the predictions. So this is an excellent start!</p>
+<p>But one of these measures does stand out: the prediction interval coverage (CVG) which is defined in the paper as “the percent of intervals containing the true predicted value”. I’m going to parse that as “the percent of prediction intervals containing the true value”. The paper suggests (through use of bold in the tables) that the correct value for CVG is 0.95. That is, the paper suggests the true value should lie within the 95% interval 95% of the time.</p>
+<p><em>This is not true.</em></p>
+<p>Or, at least, this is considerably more complex than the result suggests.</p>
+<p>Or, at least, this is only true if you compute intervals that are specifically built to do this, which is mostly very hard to do. And you definitely don’t do it by providing a standard error (which is an option in this competition).</p>
+<p>#Boys on my left side. Boys on my right side. Boys in the middle. And you’re not here.</p>
+<p>So what’s wrong with CVG?</p>
+<p>Why? Well first of all it’s a multiple testing problem. You are not testing the same interval multiple times, you are checking multiple intervals one time each. So it can only be meaningful if the prediction intervals were constructed jointly to solve this specific multiple testing problem.</p>
+<p>Secondly, it’s extremely difficult to know what is considered random here. Coverage statements are statements about repeated tests, so how you repeat them<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> will affect whether or not a particular statement is true. It will also affect how you account for the multiple testing when building your prediction intervals. (Really, if anyone did opt to just return standard errors, nothing good is going to happen for them in this criterion!)</p>
+<p>Thirdly, it’s already covered by the interval score. If your interval is <span class="math inline">\([l,u]\)</span> with nominal level <span class="math inline">\(\alpha\)</span>, the interval score is for an observation <span class="math inline">\(y\)</span> is <span class="math display">\[
+\text{INT}_\alpha(l, u, y) = u - l + \frac{2}{\alpha}(l-y) \mathbf{1}\{y &lt; l\} + \frac{2}{\alpha}(y-u)\mathbf{1}\{y&gt;u\}.
+\]</span>
+This score (where smaller is better) rewards you for having a narrow prediction interval, but penalises you every time the data does not lie in the interval. The score is minimised when <span class="math inline">\(\Pr(y \in [l,u]) = \alpha\)</span>. So this really is a good measure of how well the interval estimate is calibrated that also checks more aspects of the interval than CVG (which lacks the first term) does.</p>
+<h1 id="theres-the-part-youve-braced-yourself-against-and-then-theres-the-other-part">There’s the part you’ve braced yourself against, and then there’s the other part</h1>
+<p>Any conversation about how to evaluate the quality of an interval estimate really only makes sense in the situation where everyone has constructed their intervals the same way. The authors’ code is <a href="https://github.com/finnlindgren/heatoncomparison/">here</a>, but even without seeing it we know there are essentially four options:</p>
+<ol type="1">
+<li><p>Compute pointwise prediction means <span class="math inline">\(\hat{\mu}_i\)</span> and standard errors <span class="math inline">\(\hat{\sigma}_i\)</span> and build the pointwise intervals <span class="math inline">\(\hat{\mu}_i \pm 1.96\hat{\sigma}\)</span>.</p></li>
+<li><p>Compute the pointwise Bayesian prediction intervals, which are formed from the appropriate quantiles (or the HPD region if you are Tony O’Hagan) of <span class="math inline">\(\int \int p(\hat{y} \mid x,\theta) p(x,\theta \mid y)\,dx d\theta\)</span>.</p></li>
+<li><p>An interval of the form <span class="math inline">\(\hat{\mu}_i \pm c\hat{\sigma}\)</span>, where <span class="math inline">\(c\)</span> is chosen to ensure coverage.</p></li>
+<li><p>Some sort of clever thing based on functional data analysis.</p></li>
+</ol>
+<p>But how well these different options work will depend on how they’re being assessed (or what they’re being used for).</p>
+<h2 id="option-1-we-want-to-fill-in-our-sparse-observation-by-predicting-at-more-and-more-points">Option 1: We want to fill in our sparse observation by predicting at more and more points</h2>
+<p>(This is known as “in-fill asymptotics”). This type of question occurs when, for instance, we want to fill in the holes in satellite data (which are usually due to clouds).</p>
+<p>This is the case that most closely resembles the design of the simulation study in this paper. In this case you refine your estimated coverage by computing more prediction intervals and checking if the true value lies within the interval.</p>
+<p>Most of the easy to find results about coverage in these is from the 1D literature (specifically around smoothing splines and non-parametric regression). In these cases, it’s known that the first option is bad, the second option will <a href="https://projecteuclid.org/journals/annals-of-statistics/volume-21/issue-2/An-Analysis-of-Bayesian-Inference-for-Nonparametric-Regression/10.1214/aos/1176349157.full">lead to conservative regions</a> (the coverage will be too high), the third option involves <a href="https://link.springer.com/book/10.1007/978-0-387-48116-6">some sophisticated understanding of how Gaussian random fields work</a>, and the fourth is not something I know anything about.</p>
+<h2 id="option-2-we-want-to-predict-at-one-point-where-the-field-will-be-monitored-multiple-times">Option 2: We want to predict at one point, where the field will be monitored multiple times</h2>
+<p>This second option comes up when we’re looking at a long-term monitoring network. This type data is common in environmental science, where a long term network of sensors is set up to monitor, for example, air pollution. The new observations are not independent of the previous ones (there’s usually some sort of temporal structure), but independence can often be assumed if the observations are distant enough in time.</p>
+<p>In this case as you are repeating observations at a single site, Option 1 will be the right way to construct your interval, option 2 will probably still be a bit broad but might be ok, and options 3 and 4 will probably be too narrow if the underlying process is smooth.</p>
+<h2 id="option-3-mixed-asymptotics-you-do-both-at-once">Option 3: Mixed asymptotics! You do both at once</h2>
+<p>Simulation studies are the last refuge of the damned.</p>
+<h1 id="i-see-the-sun-go-down.-i-see-the-sun-come-up.-i-see-a-light-beyond-the-frame.">I see the sun go down. I see the sun come up. I see a light beyond the frame.</h1>
+<p>So what are my suggestions for making this comparison better (other than making it bigger, harder, and dumping the weird CVG criterion)?</p>
+<ol type="1">
+<li><p>randomise</p></li>
+<li><p>randomise</p></li>
+<li><p>randomise</p></li>
+</ol>
+<p>What do I mean by that? Well in the simulation study, the paper only considered one possible set of data simulated from the correct model. All of the results in their Table 2, which contains the scores, and timings on the simulated data, depends on this particular realisation. And hence Table 2 is a realisation of a random variable that will have a mean and standard deviation.</p>
+<p>This should <em>not</em> be taken as an endorsement of the frequentist view that the observed data is random and estimators should be evaluated by their average performance over different realisation of the data. <em>This is an acknowledgement of the fact that in this case the data is actually a realisation of a random variable.</em> Reporting the variation in Table 2 would give an idea of the variation in the performance of the method. And would lead to a more nuanced and realistic comparison of the methods. It is not difficult to imagine that for some of these criteria there is no clear winner when averaged over data sets.</p>
+<h1 id="where-did-you-get-that-painter-in-your-pocket">Where did you get that painter in your pocket?</h1>
+<p>I have very mixed feelings about the timings column in the results table. On one hand, an “order of magnitude” estimate of how long this will actually take to fit is probably a useful thing for a person considering using a method. On the other hand, there is just no way for these results not to be misleading. And the paper acknowledges this.</p>
+<p>Similarly, the competition does not specify things like priors for the Bayesian solutions. This makes it difficult to really compare things like interval estimates, which can strongly depend on the specified priors. You could certainly improve your chances of winning on the CVG computation for the simulation study by choosing your priors carefully!</p>
+<h1 id="what-is-this-six-stringed-instrument-but-an-adolescent-loom">What is this six-stringed instrument but an adolescent loom?</h1>
+<p>I haven’t really talked about the real data performance yet. Part of this is because <a href="https://statmodeling.stat.columbia.edu/2019/10/15/a-heart-full-of-hatred-8-schools-edition/">I don’t think real data is particularly useful for evaluating algorithms</a>. More likely, you’re evaluating your chosen data set as much as, or even more than, you are evaluating your algorithm.</p>
+<p>Why? Because real data doesn’t follow the model, so even if a particular method gives a terrible approximation to the inference you’d get from the “correct” model, it might do very very well on the particular data set. I’m not sure how you can draw any sort of meaningful conclusion from this type of situation.</p>
+<p>I mean, I should be happy I guess because the method I work on “won” three of the scores, and did fairly well in the other two. But there’s no way to say that wasn’t just luck.</p>
+<p>What does luck look like in this context? It could be that the SPDE approximation is a better model for the data than the “correct” Gaussian random field model. It could just be Finn appealing to the old Norse gods. It’s really hard to tell.</p>
+<p>If any real data is to be used to make general claims about how well algorithms work, I think it’s necessary to use <em>a lot</em> of different data sets rather than just one.</p>
+<p>Similarly, a range of different simulation study scenarios would give a broader picture of when different approximations behave better.</p>
+<h1 id="dont-dream-its-over">Don’t dream it’s over</h1>
+<p><a href="https://www.youtube.com/watch?v=OtvdZ47h8y4">One more kiss before we part</a>: This field is still alive and kicking. One of the really exciting new ideas in the field (that’s probably too new to be in the comparison) is that you can speed up the computation of the unnormalised log-posterior through <a href="https://arxiv.org/abs/1709.04419">hierarchical decompositions of the covariance matrix</a> (there is also code). This is a really neat method for solving the problem and a really exciting new idea in the field.</p>
+<p>There are a bunch of other things that are probably worth looking at in this article, but I’ve run out of energy for the moment. Probably the most interesting thing for me is that a lot of the methods that did well (SPDEs, Predictive Processes, Fixed Rank Kriging, Multi-resolution Approximation, Lattice Krig, Nearest-Neighbour Predictive Processes) are cut from very similar cloth. It would be interesting to look deeper at the similarities and differences in an attempt to explain these results.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>2021: Oh my giddy aunt what even was that?!<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>2021: The around that time is notable to me, but not interesting to others. So I’m sorry extent to which these blog posts captured the variations in my mental state about that. But also
+they give a small glimpse at just how bleak my sense of humour can be.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>No I don’t speak Swedish, but <a href="https://www.youtube.com/watch?v=oS2ExAcW-Z8">one of my favourite songwriters/lyricists</a> does. And sometimes I’m just that unbearable. Also the next part of this story takes place in Norway, which is near Sweden but produces worse music (<a href="https://www.youtube.com/watch?v=Y_lEXa7VWcA">Susanne Sunfør</a> and <a href="https://www.youtube.com/watch?v=ZCFlT_FYnEE">M2M</a> being notable exceptions)<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>I once gave a truly mortifying talk called INLA: Past, Present, and Future at a conference in Dublin.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>Or, as happened one time, they compared computation for a different model with an algorithm that failed its convergence checks and assumed that all of the hyperparameters were fixed. All of that is bad but the last part is like saying <code>lm</code> is faster than <code>lme4::lmer</code> for fitting mixed effects models because we only checked when the almost always unknown variance parameters were assumed known.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p>In 2017. A long time ago.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7" role="doc-endnote"><p>Repeat the same test or make a new test for different data<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
@@ -2378,11 +1615,25 @@ fully make sense. But whatever. Blogs, eh.) Original posted 5 November, 2017.</p
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->
 <!--radix_placeholder_appendices-->
-<div class="appendix-bottom"></div>
+<div class="appendix-bottom">
+<h3 id="updates-and-corrections">Corrections</h3>
+<p>If you see mistakes or want to suggest changes, please <a href="https://github.com/dpsimpson/blog/tree/master/_posts/2022-01-26-barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost/issues/new">create an issue</a> on the source repository.</p>
+<h3 id="reuse">Reuse</h3>
+<p>Text and figures are licensed under Creative Commons Attribution <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>. Source code is available at <a href="https://github.com/dpsimpson/blog/tree/master/_posts/2022-01-26-barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost">https://github.com/dpsimpson/blog/tree/master/_posts/2022-01-26-barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost</a>, unless otherwise noted. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: "Figure from ...".</p>
+</div>
 <!--/radix_placeholder_appendices-->
 <!--radix_placeholder_navigation_after_body-->
 <!--/radix_placeholder_navigation_after_body-->

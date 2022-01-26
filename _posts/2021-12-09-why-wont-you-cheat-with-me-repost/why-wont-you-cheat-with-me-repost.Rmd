@@ -2,7 +2,8 @@
 title: "Why won't you cheat with me? (Repost)"
 description: |
   A repost from Andrew's blog about how design information infects multivariate priors.
-  (Lightly edited.) Original posted 5 November, 2017.
+  (Lightly edited. Well, a bit more than lightly because the last version didn't 
+  fully make sense. But whatever. Blogs, eh.) Original posted 5 November, 2017.
 
 date: 2021-12-09
 output:
@@ -51,7 +52,7 @@ Actually, maybe that last point isn't for Pedant's Corner after all.  Because if
 
 This is quite useful because, with the notable exception of the "Bayesian" "Lasso" [which-does-not-work-but-will-never-die-because-it-was-inexplicably-published-in-the leading-stats-journal-by-prominent-statisticians-and-has-the-word-Lasso-in-the-title-even-though-a-back-of-the-envelope-calculation-or-I-don't-know-a-fairly-straightforward-simulation-by-the-reviewers-should-have-nixed-it](https://dansblog.netlify.app/posts/2021-12-08-the-king-must-die-repost/) (to use its married name), we can't compute the marginal prior for most scale-mixtures of normals.  
 
-The following result, which was killed by reviewers at some point during the PC prior papers long review process, but lives forever [in the arXiv'd first version](https://arxiv.org/abs/1403.4630v1), tells you everything you need to know.  It's a picture because frankly I've had a glass of wine and I'm not bloody typing it all again.
+The following result, which was killed by reviewers at some point during the PC prior papers long review process, but lives forever [in the arXiv'd first version](https://arxiv.org/abs/1403.4630v1), tells you everything you need to know.  It's a picture because frankly I've had a glass of wine and I'm not bloody typing it all again^[2021: I did indeed type it all again. And a proof. Because why bother if you're not going to do it well.].
 
 ```{theorem, echo = TRUE}
 Let $\pi_d(r)$ be a prior on the standard deviation of  $v \sim
