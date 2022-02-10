@@ -2,7 +2,9 @@
 title: "The king must die (repost)"
 description: |
   A repost (with edits, revisions, and footnotes) from Andrew's blog about how much I hate the Bayesian Lasso. Originally published 2nd November, 2017.
-
+author:
+  - name: Dan Simpson
+    url: https://dpsimpson.github.io
 date: 2021-12-08
 output:
   distill::distill_article:

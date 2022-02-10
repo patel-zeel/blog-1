@@ -2,7 +2,9 @@
 title: "Getting into the subspace; or what happens when you approximate a Gaussian process"
 description: |
   Fuck man, I don't know about this one. A lot of stuff happens. At some point there's a lot of PDEs. There are proofs. Back away.
-
+author:
+  - name: Dan Simpson
+    url: https://dpsimpson.github.io
 date: 11-24-2021
 output:
   distill::distill_article:

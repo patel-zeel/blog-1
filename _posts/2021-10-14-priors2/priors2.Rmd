@@ -2,7 +2,9 @@
 title: "Priors: Whole New Way (Track 2)"
 description: |
   Conjugate Priors? The crystal deoderant of Bayesian statistics
-
+author:
+  - name: Dan Simpson
+    url: https://dpsimpson.github.io
 date: 10-15-2021
 twitter:
   creator: "@dan_p_simpson"

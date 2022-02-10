@@ -4,7 +4,9 @@ description: |
   A repost from Andrew's blog about how design information infects multivariate priors.
   (Lightly edited. Well, a bit more than lightly because the last version didn't 
   fully make sense. But whatever. Blogs, eh.) Original posted 5 November, 2017.
-
+author:
+  - name: Dan Simpson
+    url: https://dpsimpson.github.io
 date: 2021-12-09
 output:
   bookdown::html_document2:

@@ -3,6 +3,9 @@ title: "Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)"
 description: |
    A repost from Andrew's blog about comparing computational methods for performing a task. (Lightly edited.) Original posted 20 October, 2017.
 date: 2022-01-26
+author:
+  - name: Dan Simpson
+    url: https://dpsimpson.github.io
 output:
   bookdown::html_document2:
     base_format: distill::distill_article

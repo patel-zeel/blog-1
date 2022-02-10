@@ -3,6 +3,9 @@ title: "Yes but what is a Gaussian process? or, Once, twice, three times a defin
 description: |
   Gaussian processes. As narrated by an increasingly deranged man during a day of torrential rain.
 date: 11-03-2021
+author:
+  - name: Dan Simpson
+    url: https://dpsimpson.github.io
 twitter:
   creator: "@dan_p_simpson"
 creative_commons: CC BY-NC
@@ -10,7 +13,7 @@ repository_url: https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-03-
 output:
   distill::distill_article:
     self_contained: false
-    
+    pandoc_args: !expr rmdfiltr::add_wordcount_filter()
 ---
 
 I guess I'm going to talk about Gaussian processes now. This wasn't the plan but who really expected a) there to be a plan or b) me to stick to the plan. I feel like writing about Gaussian processes and so I shall! It will be grand.

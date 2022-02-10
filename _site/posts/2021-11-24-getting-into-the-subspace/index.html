@@ -97,6 +97,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--  https://schema.org/Article -->
 <meta property="article:published" itemprop="datePublished" content="2021-11-24"/>
 <meta property="article:created" itemprop="dateCreated" content="2021-11-24"/>
+<meta name="article:author" content="Dan Simpson"/>
 
 <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
 <meta property="og:title" content="Un garçon pas comme les autres (Bayes): Getting into the subspace; or what happens when you approximate a Gaussian process"/>
@@ -113,11 +114,18 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <meta property="twitter:url" content="https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/"/>
 <meta property="twitter:creator" content="@dan_p_simpson"/>
 
+<!--  https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->
+<meta name="citation_title" content="Un garçon pas comme les autres (Bayes): Getting into the subspace; or what happens when you approximate a Gaussian process"/>
+<meta name="citation_fulltext_html_url" content="https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/"/>
+<meta name="citation_fulltext_world_readable" content=""/>
+<meta name="citation_online_date" content="2021/11/24"/>
+<meta name="citation_publication_date" content="2021/11/24"/>
+<meta name="citation_author" content="Dan Simpson"/>
 <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","date","output","twitter","creative_commons","repository_url","citation_url","canonical_url"]}},"value":[{"type":"character","attributes":{},"value":["Getting into the subspace; or what happens when you approximate a Gaussian process"]},{"type":"character","attributes":{},"value":["Fuck man, I don't know about this one. A lot of stuff happens. At some point there's a lot of PDEs. There are proofs. Back away."]},{"type":"character","attributes":{},"value":["11-24-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","pandoc_args"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["--lua-filter","/Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/library/rmdfiltr/wordcount.lua"]}]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creator"]}},"value":[{"type":"character","attributes":{},"value":["@dan_p_simpson"]}]},{"type":"character","attributes":{},"value":["CC BY-NC"]},{"type":"character","attributes":{},"value":["https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-24-getting-into-the-subspace"]},{"type":"character","attributes":{},"value":["https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/"]},{"type":"character","attributes":{},"value":["https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/"]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","twitter","creative_commons","repository_url","citation_url","canonical_url"]}},"value":[{"type":"character","attributes":{},"value":["Getting into the subspace; or what happens when you approximate a Gaussian process"]},{"type":"character","attributes":{},"value":["Fuck man, I don't know about this one. A lot of stuff happens. At some point there's a lot of PDEs. There are proofs. Back away."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Dan Simpson"]},{"type":"character","attributes":{},"value":["https://dpsimpson.github.io"]}]}]},{"type":"character","attributes":{},"value":["11-24-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","pandoc_args"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["--lua-filter","/Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/library/rmdfiltr/wordcount.lua"]}]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creator"]}},"value":[{"type":"character","attributes":{},"value":["@dan_p_simpson"]}]},{"type":"character","attributes":{},"value":["CC BY-NC"]},{"type":"character","attributes":{},"value":["https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-24-getting-into-the-subspace"]},{"type":"character","attributes":{},"value":["https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/"]},{"type":"character","attributes":{},"value":["https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/"]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
@@ -2070,7 +2078,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Getting into the subspace; or what happens when you approximate a Gaussian process","description":"Fuck man, I don't know about this one. A lot of stuff happens. At some point there's a lot of PDEs. There are proofs. Back away.","authors":[],"publishedDate":"2021-11-24T00:00:00.000+11:00"}
+{"title":"Getting into the subspace; or what happens when you approximate a Gaussian process","description":"Fuck man, I don't know about this one. A lot of stuff happens. At some point there's a lot of PDEs. There are proofs. Back away.","authors":[{"author":"Dan Simpson","authorURL":"https://dpsimpson.github.io","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-11-24T00:00:00.000+11:00","citationText":"Simpson, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2102,6 +2110,11 @@ document.addEventListener('DOMContentLoaded', function() {
 <p><p>Fuck man, I don’t know about this one. A lot of stuff happens. At some point there’s a lot of PDEs. There are proofs. Back away.</p></p>
 </div>
 
+<div class="d-byline">
+  Dan Simpson <a href="https://dpsimpson.github.io" class="uri">https://dpsimpson.github.io</a> 
+  
+<br/>11-24-2021
+</div>
 
 <div class="d-article">
 <h2 id="so.-gaussian-processes-eh.">So. Gaussian processes, eh.</h2>
@@ -2527,6 +2540,16 @@ p(\theta \mid y) &amp; \frac{\exp(-\Phi(u;y))}{p(y)} \left[\frac{d\mu_y}{d\mu_0}
   <p>If you see mistakes or want to suggest changes, please <a href="https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-24-getting-into-the-subspace/issues/new">create an issue</a> on the source repository.</p>
   <h3 id="reuse">Reuse</h3>
   <p>Text and figures are licensed under Creative Commons Attribution <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>. Source code is available at <a href="https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-24-getting-into-the-subspace">https://github.com/dpsimpson/blog/tree/master/_posts/2021-11-24-getting-into-the-subspace</a>, unless otherwise noted. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: "Figure from ...".</p>
+  <h3 id="citation">Citation</h3>
+  <p>For attribution, please cite this work as</p>
+  <pre class="citation-appendix short">Simpson (2021, Nov. 24). Un garçon pas comme les autres (Bayes): Getting into the subspace; or what happens when you approximate a Gaussian process. Retrieved from https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/</pre>
+  <p>BibTeX citation</p>
+  <pre class="citation-appendix long">@misc{simpson2021getting,
+  author = {Simpson, Dan},
+  title = {Un garçon pas comme les autres (Bayes): Getting into the subspace; or what happens when you approximate a Gaussian process},
+  url = {https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/},
+  year = {2021}
+}</pre>
 </div>
 <!--/radix_placeholder_appendices-->
 <!--radix_placeholder_navigation_after_body-->
