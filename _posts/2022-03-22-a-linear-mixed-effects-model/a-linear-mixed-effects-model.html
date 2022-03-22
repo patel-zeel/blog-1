@@ -1,0 +1,2161 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="distill" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ad0000; } /* Alert */
+code span.an { color: #5e5e5e; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bn { color: #ad0000; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007ba5; } /* ControlFlow */
+code span.ch { color: #20794d; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #5e5e5e; } /* Comment */
+code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+code span.dt { color: #ad0000; } /* DataType */
+code span.dv { color: #ad0000; } /* DecVal */
+code span.er { color: #ad0000; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #ad0000; } /* Float */
+code span.fu { color: #4758ab; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #5e5e5e; } /* Information */
+code span.kw { color: #007ba5; } /* Keyword */
+code span.op { color: #5e5e5e; } /* Operator */
+code span.ot { color: #007ba5; } /* Other */
+code span.pp { color: #ad0000; } /* Preprocessor */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
+code span.ss { color: #20794d; } /* SpecialString */
+code span.st { color: #20794d; } /* String */
+code span.va { color: #111111; } /* Variable */
+code span.vs { color: #20794d; } /* VerbatimString */
+code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+</style>
+
+
+  <!--radix_placeholder_meta_tags-->
+  <title>A linear mixed model</title>
+
+  <meta property="description" itemprop="description" content="Hubris. Just hubris."/>
+
+
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2022-03-22"/>
+  <meta property="article:created" itemprop="dateCreated" content="2022-03-22"/>
+  <meta name="article:author" content="Dan Simpson"/>
+
+  <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+  <meta property="og:title" content="A linear mixed model"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Hubris. Just hubris."/>
+  <meta property="og:locale" content="en_US"/>
+
+  <!--  https://dev.twitter.com/cards/types/summary -->
+  <meta property="twitter:card" content="summary"/>
+  <meta property="twitter:title" content="A linear mixed model"/>
+  <meta property="twitter:description" content="Hubris. Just hubris."/>
+
+  <!--/radix_placeholder_meta_tags-->
+  <!--radix_placeholder_rmarkdown_metadata-->
+
+  <script type="text/json" id="radix-rmarkdown-metadata">
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","draft","css"]}},"value":[{"type":"character","attributes":{},"value":["A linear mixed model"]},{"type":"character","attributes":{},"value":["Hubris. Just hubris. \n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Dan Simpson"]},{"type":"character","attributes":{},"value":["https://dpsimpson.github.io"]}]}]},{"type":"character","attributes":{},"value":["03-22-2022"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["box.css"]}]}
+  </script>
+  <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["a-linear-mixed-effects-model_files/anchor-4.2.2/anchor.min.js","a-linear-mixed-effects-model_files/bowser-1.9.3/bowser.min.js","a-linear-mixed-effects-model_files/distill-2.2.21/template.v2.js","a-linear-mixed-effects-model_files/header-attrs-2.11/header-attrs.js","a-linear-mixed-effects-model_files/jquery-3.6.0/jquery-3.6.0.js","a-linear-mixed-effects-model_files/jquery-3.6.0/jquery-3.6.0.min.js","a-linear-mixed-effects-model_files/jquery-3.6.0/jquery-3.6.0.min.map","a-linear-mixed-effects-model_files/popper-2.6.0/popper.min.js","a-linear-mixed-effects-model_files/tippy-6.2.7/tippy-bundle.umd.min.js","a-linear-mixed-effects-model_files/tippy-6.2.7/tippy-light-border.css","a-linear-mixed-effects-model_files/tippy-6.2.7/tippy.css","a-linear-mixed-effects-model_files/tippy-6.2.7/tippy.umd.min.js","a-linear-mixed-effects-model_files/webcomponents-2.0.0/webcomponents.js","box.css"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+  <!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+
+  <style type="text/css">
+
+  body {
+    background-color: white;
+  }
+
+  .pandoc-table {
+    width: 100%;
+  }
+
+  .pandoc-table>caption {
+    margin-bottom: 10px;
+  }
+
+  .pandoc-table th:not([align]) {
+    text-align: left;
+  }
+
+  .pagedtable-footer {
+    font-size: 15px;
+  }
+
+  d-byline .byline {
+    grid-template-columns: 2fr 2fr;
+  }
+
+  d-byline .byline h3 {
+    margin-block-start: 1.5em;
+  }
+
+  d-byline .byline .authors-affiliations h3 {
+    margin-block-start: 0.5em;
+  }
+
+  .authors-affiliations .orcid-id {
+    width: 16px;
+    height:16px;
+    margin-left: 4px;
+    margin-right: 4px;
+    vertical-align: middle;
+    padding-bottom: 2px;
+  }
+
+  d-title .dt-tags {
+    margin-top: 1em;
+    grid-column: text;
+  }
+
+  .dt-tags .dt-tag {
+    text-decoration: none;
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0em 0.4em;
+    margin-right: 0.5em;
+    margin-bottom: 0.4em;
+    font-size: 70%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  d-article table.gt_table td,
+  d-article table.gt_table th {
+    border-bottom: none;
+  }
+
+  .html-widget {
+    margin-bottom: 2.0em;
+  }
+
+  .l-screen-inset {
+    padding-right: 16px;
+  }
+
+  .l-screen .caption {
+    margin-left: 10px;
+  }
+
+  .shaded {
+    background: rgb(247, 247, 247);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .shaded .html-widget {
+    margin-bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .shaded .shaded-content {
+    background: white;
+  }
+
+  .text-output {
+    margin-top: 0;
+    line-height: 1.5em;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  d-article {
+    padding-top: 2.5rem;
+    padding-bottom: 30px;
+  }
+
+  d-appendix {
+    padding-top: 30px;
+  }
+
+  d-article>p>img {
+    width: 100%;
+  }
+
+  d-article h2 {
+    margin: 1rem 0 1.5rem 0;
+  }
+
+  d-article h3 {
+    margin-top: 1.5rem;
+  }
+
+  d-article iframe {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 2.0em;
+    width: 100%;
+  }
+
+  /* Tweak code blocks */
+
+  d-article div.sourceCode code,
+  d-article pre code {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  }
+
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: auto;
+  }
+
+  d-article div.sourceCode {
+    background-color: white;
+  }
+
+  d-article div.sourceCode pre {
+    padding-left: 10px;
+    font-size: 12px;
+    border-left: 2px solid rgba(0,0,0,0.1);
+  }
+
+  d-article pre {
+    font-size: 12px;
+    color: black;
+    background: none;
+    margin-top: 0;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  d-article pre a {
+    border-bottom: none;
+  }
+
+  d-article pre a:hover {
+    border-bottom: none;
+    text-decoration: underline;
+  }
+
+  d-article details {
+    grid-column: text;
+    margin-bottom: 0.8em;
+  }
+
+  @media(min-width: 768px) {
+
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: visible !important;
+  }
+
+  d-article div.sourceCode pre {
+    padding-left: 18px;
+    font-size: 14px;
+  }
+
+  d-article pre {
+    font-size: 14px;
+  }
+
+  }
+
+  figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+
+  /* CSS for d-contents */
+
+  .d-contents {
+    grid-column: text;
+    color: rgba(0,0,0,0.8);
+    font-size: 0.9em;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+    padding-left: 0.25em;
+    justify-self: start;
+  }
+
+  @media(min-width: 1000px) {
+    .d-contents.d-contents-float {
+      height: 0;
+      grid-column-start: 1;
+      grid-column-end: 4;
+      justify-self: center;
+      padding-right: 3em;
+      padding-left: 2em;
+    }
+  }
+
+  .d-contents nav h3 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 1em;
+  }
+
+  .d-contents li {
+    list-style-type: none
+  }
+
+  .d-contents nav > ul {
+    padding-left: 0;
+  }
+
+  .d-contents ul {
+    padding-left: 1em
+  }
+
+  .d-contents nav ul li {
+    margin-top: 0.6em;
+    margin-bottom: 0.2em;
+  }
+
+  .d-contents nav a {
+    font-size: 13px;
+    border-bottom: none;
+    text-decoration: none
+    color: rgba(0, 0, 0, 0.8);
+  }
+
+  .d-contents nav a:hover {
+    text-decoration: underline solid rgba(0, 0, 0, 0.6)
+  }
+
+  .d-contents nav > ul > li > a {
+    font-weight: 600;
+  }
+
+  .d-contents nav > ul > li > ul {
+    font-weight: inherit;
+  }
+
+  .d-contents nav > ul > li > ul > li {
+    margin-top: 0.2em;
+  }
+
+
+  .d-contents nav ul {
+    margin-top: 0;
+    margin-bottom: 0.25em;
+  }
+
+  .d-article-with-toc h2:nth-child(2) {
+    margin-top: 0;
+  }
+
+
+  /* Figure */
+
+  .figure {
+    position: relative;
+    margin-bottom: 2.5em;
+    margin-top: 1.5em;
+  }
+
+  .figure img {
+    width: 100%;
+  }
+
+  .figure .caption {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 12px;
+    line-height: 1.5em;
+  }
+
+  .figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+
+  .figure .caption a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .figure .caption b,
+  .figure .caption strong, {
+    font-weight: 600;
+    color: rgba(0, 0, 0, 1.0);
+  }
+
+  /* Citations */
+
+  d-article .citation {
+    color: inherit;
+    cursor: inherit;
+  }
+
+  div.hanging-indent{
+    margin-left: 1em; text-indent: -1em;
+  }
+
+  /* Citation hover box */
+
+  .tippy-box[data-theme~=light-border] {
+    background-color: rgba(250, 250, 250, 0.95);
+  }
+
+  .tippy-content > p {
+    margin-bottom: 0;
+    padding: 2px;
+  }
+
+
+  /* Tweak 1000px media break to show more text */
+
+  @media(min-width: 1000px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 16px;
+    }
+
+    .grid {
+      grid-column-gap: 16px;
+    }
+
+    d-article {
+      font-size: 1.06rem;
+      line-height: 1.7em;
+    }
+    figure .caption, .figure .caption, figure figcaption {
+      font-size: 13px;
+    }
+  }
+
+  @media(min-width: 1180px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 32px;
+    }
+
+    .grid {
+      grid-column-gap: 32px;
+    }
+  }
+
+
+  /* Get the citation styles for the appendix (not auto-injected on render since
+     we do our own rendering of the citation appendix) */
+
+  d-appendix .citation-appendix,
+  .d-appendix .citation-appendix {
+    font-size: 11px;
+    line-height: 15px;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    padding-left: 18px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px 18px;
+    border-radius: 3px;
+    color: rgba(150, 150, 150, 1);
+    overflow: hidden;
+    margin-top: -12px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  /* Include appendix styles here so they can be overridden */
+
+  d-appendix {
+    contain: layout style;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-top: 60px;
+    margin-bottom: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    color: rgba(0,0,0,0.5);
+    padding-top: 60px;
+    padding-bottom: 48px;
+  }
+
+  d-appendix h3 {
+    grid-column: page-start / text-start;
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 1em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.65);
+  }
+
+  d-appendix h3 + * {
+    margin-top: 1em;
+  }
+
+  d-appendix ol {
+    padding: 0 0 0 15px;
+  }
+
+  @media (min-width: 768px) {
+    d-appendix ol {
+      padding: 0 0 0 30px;
+      margin-left: -30px;
+    }
+  }
+
+  d-appendix li {
+    margin-bottom: 1em;
+  }
+
+  d-appendix a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  d-appendix > * {
+    grid-column: text;
+  }
+
+  d-appendix > d-footnote-list,
+  d-appendix > d-citation-list,
+  d-appendix > distill-appendix {
+    grid-column: screen;
+  }
+
+  /* Include footnote styles here so they can be overridden */
+
+  d-footnote-list {
+    contain: layout style;
+  }
+
+  d-footnote-list > * {
+    grid-column: text;
+  }
+
+  d-footnote-list a.footnote-backlink {
+    color: rgba(0,0,0,0.3);
+    padding-left: 0.5em;
+  }
+
+
+
+  /* Anchor.js */
+
+  .anchorjs-link {
+    /*transition: all .25s linear; */
+    text-decoration: none;
+    border-bottom: none;
+  }
+  *:hover > .anchorjs-link {
+    margin-left: -1.125em !important;
+    text-decoration: none;
+    border-bottom: none;
+  }
+
+  /* Social footer */
+
+  .social_footer {
+    margin-top: 30px;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.67);
+  }
+
+  .disqus-comments {
+    margin-right: 30px;
+  }
+
+  .disqus-comment-count {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+
+  #disqus_thread {
+    margin-top: 30px;
+  }
+
+  .article-sharing a {
+    border-bottom: none;
+    margin-right: 8px;
+  }
+
+  .article-sharing a:hover {
+    border-bottom: none;
+  }
+
+  .sidebar-section.subscribe {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+
+  .subscribe p {
+    margin-bottom: 0.5em;
+  }
+
+
+  .article-footer .subscribe {
+    font-size: 15px;
+    margin-top: 45px;
+  }
+
+
+  .sidebar-section.custom {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+
+  .custom p {
+    margin-bottom: 0.5em;
+  }
+
+  /* Styles for listing layout (hide title) */
+  .layout-listing d-title, .layout-listing .d-title {
+    display: none;
+  }
+
+  /* Styles for posts lists (not auto-injected) */
+
+
+  .posts-with-sidebar {
+    padding-left: 45px;
+    padding-right: 45px;
+  }
+
+  .posts-list .description h2,
+  .posts-list .description p {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .posts-list .description h2 {
+    font-weight: 700;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .posts-list h2.post-tag {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding-bottom: 12px;
+  }
+  .posts-list {
+    margin-top: 60px;
+    margin-bottom: 24px;
+  }
+
+  .posts-list .post-preview {
+    text-decoration: none;
+    overflow: hidden;
+    display: block;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 24px 0;
+  }
+
+  .post-preview-last {
+    border-bottom: none !important;
+  }
+
+  .posts-list .posts-list-caption {
+    grid-column: screen;
+    font-weight: 400;
+  }
+
+  .posts-list .post-preview h2 {
+    margin: 0 0 6px 0;
+    line-height: 1.2em;
+    font-style: normal;
+    font-size: 24px;
+  }
+
+  .posts-list .post-preview p {
+    margin: 0 0 12px 0;
+    line-height: 1.4em;
+    font-size: 16px;
+  }
+
+  .posts-list .post-preview .thumbnail {
+    box-sizing: border-box;
+    margin-bottom: 24px;
+    position: relative;
+    max-width: 500px;
+  }
+  .posts-list .post-preview img {
+    width: 100%;
+    display: block;
+  }
+
+  .posts-list .metadata {
+    font-size: 12px;
+    line-height: 1.4em;
+    margin-bottom: 18px;
+  }
+
+  .posts-list .metadata > * {
+    display: inline-block;
+  }
+
+  .posts-list .metadata .publishedDate {
+    margin-right: 2em;
+  }
+
+  .posts-list .metadata .dt-authors {
+    display: block;
+    margin-top: 0.3em;
+    margin-right: 2em;
+  }
+
+  .posts-list .dt-tags {
+    display: block;
+    line-height: 1em;
+  }
+
+  .posts-list .dt-tags .dt-tag {
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0.3em 0.4em;
+    margin-right: 0.2em;
+    margin-bottom: 0.4em;
+    font-size: 60%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .posts-list img {
+    opacity: 1;
+  }
+
+  .posts-list img[data-src] {
+    opacity: 0;
+  }
+
+  .posts-more {
+    clear: both;
+  }
+
+
+  .posts-sidebar {
+    font-size: 16px;
+  }
+
+  .posts-sidebar h3 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  .sidebar-section {
+    margin-bottom: 30px;
+  }
+
+  .categories ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .categories li {
+    color: rgba(0, 0, 0, 0.8);
+    margin-bottom: 0;
+  }
+
+  .categories li>a {
+    border-bottom: none;
+  }
+
+  .categories li>a:hover {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  }
+
+  .categories .active {
+    font-weight: 600;
+  }
+
+  .categories .category-count {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+
+  @media(min-width: 768px) {
+    .posts-list .post-preview h2 {
+      font-size: 26px;
+    }
+    .posts-list .post-preview .thumbnail {
+      float: right;
+      width: 30%;
+      margin-bottom: 0;
+    }
+    .posts-list .post-preview .description {
+      float: left;
+      width: 45%;
+    }
+    .posts-list .post-preview .metadata {
+      float: left;
+      width: 20%;
+      margin-top: 8px;
+    }
+    .posts-list .post-preview p {
+      margin: 0 0 12px 0;
+      line-height: 1.5em;
+      font-size: 16px;
+    }
+    .posts-with-sidebar .posts-list {
+      float: left;
+      width: 75%;
+    }
+    .posts-with-sidebar .posts-sidebar {
+      float: right;
+      width: 20%;
+      margin-top: 60px;
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+  }
+
+
+  /* Improve display for browsers without grid (IE/Edge <= 15) */
+
+  .downlevel {
+    line-height: 1.6em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+  }
+
+  .downlevel .d-title {
+    padding-top: 6rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .downlevel .d-title h1 {
+    font-size: 50px;
+    font-weight: 700;
+    line-height: 1.1em;
+    margin: 0 0 0.5rem;
+  }
+
+  .downlevel .d-title p {
+    font-weight: 300;
+    font-size: 1.2rem;
+    line-height: 1.55em;
+    margin-top: 0;
+  }
+
+  .downlevel .d-byline {
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    font-size: 0.8rem;
+    line-height: 1.8em;
+  }
+
+  .downlevel .section-separator {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .downlevel .d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+
+
+  .downlevel .d-appendix {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: none;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.5);
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+
+  .downlevel .footnotes ol {
+    padding-left: 13px;
+  }
+
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  @media(min-width: 768px) {
+    .downlevel .base-grid,
+    .downlevel .distill-header,
+    .downlevel .d-title,
+    .downlevel .d-abstract,
+    .downlevel .d-article,
+    .downlevel .d-appendix,
+    .downlevel .distill-appendix,
+    .downlevel .d-byline,
+    .downlevel .d-footnote-list,
+    .downlevel .d-citation-list,
+    .downlevel .distill-footer,
+    .downlevel .appendix-bottom,
+    .downlevel .posts-container {
+    padding-left: 150px;
+    padding-right: 150px;
+    max-width: 900px;
+  }
+  }
+
+  .downlevel pre code {
+    display: block;
+    border-left: 2px solid rgba(0, 0, 0, .1);
+    padding: 0 0 0 20px;
+    font-size: 14px;
+  }
+
+  .downlevel code, .downlevel pre {
+    color: black;
+    background: none;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  .downlevel .posts-list .post-preview {
+    color: inherit;
+  }
+
+
+
+  </style>
+
+  <script type="application/javascript">
+
+  function is_downlevel_browser() {
+    if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                   window.navigator.userAgent)) {
+      return true;
+    } else {
+      return window.load_distill_framework === undefined;
+    }
+  }
+
+  // show body when load is complete
+  function on_load_complete() {
+
+    // add anchors
+    if (window.anchors) {
+      window.anchors.options.placement = 'left';
+      window.anchors.add('d-article > h2, d-article > h3, d-article > h4, d-article > h5');
+    }
+
+
+    // set body to visible
+    document.body.style.visibility = 'visible';
+
+    // force redraw for leaflet widgets
+    if (window.HTMLWidgets) {
+      var maps = window.HTMLWidgets.findAll(".leaflet");
+      $.each(maps, function(i, el) {
+        var map = this.getMap();
+        map.invalidateSize();
+        map.eachLayer(function(layer) {
+          if (layer instanceof L.TileLayer)
+            layer.redraw();
+        });
+      });
+    }
+
+    // trigger 'shown' so htmlwidgets resize
+    $('d-article').trigger('shown');
+  }
+
+  function init_distill() {
+
+    init_common();
+
+    // create front matter
+    var front_matter = $('<d-front-matter></d-front-matter>');
+    $('#distill-front-matter').wrap(front_matter);
+
+    // create d-title
+    $('.d-title').changeElementType('d-title');
+
+    // create d-byline
+    var byline = $('<d-byline></d-byline>');
+    $('.d-byline').replaceWith(byline);
+
+    // create d-article
+    var article = $('<d-article></d-article>');
+    $('.d-article').wrap(article).children().unwrap();
+
+    // move posts container into article
+    $('.posts-container').appendTo($('d-article'));
+
+    // create d-appendix
+    $('.d-appendix').changeElementType('d-appendix');
+
+    // flag indicating that we have appendix items
+    var appendix = $('.appendix-bottom').children('h3').length > 0;
+
+    // replace footnotes with <d-footnote>
+    $('.footnote-ref').each(function(i, val) {
+      appendix = true;
+      var href = $(this).attr('href');
+      var id = href.replace('#', '');
+      var fn = $('#' + id);
+      var fn_p = $('#' + id + '>p');
+      fn_p.find('.footnote-back').remove();
+      var text = fn_p.html();
+      var dtfn = $('<d-footnote></d-footnote>');
+      dtfn.html(text);
+      $(this).replaceWith(dtfn);
+    });
+    // remove footnotes
+    $('.footnotes').remove();
+
+    // move refs into #references-listing
+    $('#references-listing').replaceWith($('#refs'));
+
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      var id = $(this).attr('id');
+      $('.d-contents a[href="#' + id + '"]').parent().remove();
+      appendix = true;
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+    });
+
+    // show d-appendix if we have appendix content
+    $("d-appendix").css('display', appendix ? 'grid' : 'none');
+
+    // localize layout chunks to just output
+    $('.layout-chunk').each(function(i, val) {
+
+      // capture layout
+      var layout = $(this).attr('data-layout');
+
+      // apply layout to markdown level block elements
+      var elements = $(this).children().not('details, div.sourceCode, pre, script');
+      elements.each(function(i, el) {
+        var layout_div = $('<div class="' + layout + '"></div>');
+        if (layout_div.hasClass('shaded')) {
+          var shaded_content = $('<div class="shaded-content"></div>');
+          $(this).wrap(shaded_content);
+          $(this).parent().wrap(layout_div);
+        } else {
+          $(this).wrap(layout_div);
+        }
+      });
+
+
+      // unwrap the layout-chunk div
+      $(this).children().unwrap();
+    });
+
+    // remove code block used to force  highlighting css
+    $('.distill-force-highlighting-css').parent().remove();
+
+    // remove empty line numbers inserted by pandoc when using a
+    // custom syntax highlighting theme
+    $('code.sourceCode a:empty').remove();
+
+    // load distill framework
+    load_distill_framework();
+
+    // wait for window.distillRunlevel == 4 to do post processing
+    function distill_post_process() {
+
+      if (!window.distillRunlevel || window.distillRunlevel < 4)
+        return;
+
+      // hide author/affiliations entirely if we have no authors
+      var front_matter = JSON.parse($("#distill-front-matter").html());
+      var have_authors = front_matter.authors && front_matter.authors.length > 0;
+      if (!have_authors)
+        $('d-byline').addClass('hidden');
+
+      // article with toc class
+      $('.d-contents').parent().addClass('d-article-with-toc');
+
+      // strip links that point to #
+      $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+
+      // add orcid ids
+      $('.authors-affiliations').find('.author').each(function(i, el) {
+        var orcid_id = front_matter.authors[i].orcidID;
+        if (orcid_id) {
+          var a = $('<a></a>');
+          a.attr('href', 'https://orcid.org/' + orcid_id);
+          var img = $('<img></img>');
+          img.addClass('orcid-id');
+          img.attr('alt', 'ORCID ID');
+          img.attr('src','data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==');
+          a.append(img);
+          $(this).append(a);
+        }
+      });
+
+      // hide elements of author/affiliations grid that have no value
+      function hide_byline_column(caption) {
+        $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+      }
+
+      // affiliations
+      var have_affiliations = false;
+      for (var i = 0; i<front_matter.authors.length; ++i) {
+        var author = front_matter.authors[i];
+        if (author.affiliation !== "&nbsp;") {
+          have_affiliations = true;
+          break;
+        }
+      }
+      if (!have_affiliations)
+        $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+
+      // published date
+      if (!front_matter.publishedDate)
+        hide_byline_column("Published");
+
+      // document object identifier
+      var doi = $('d-byline').find('h3:contains("DOI")');
+      var doi_p = doi.next().empty();
+      if (!front_matter.doi) {
+        // if we have a citation and valid citationText then link to that
+        if ($('#citation').length > 0 && front_matter.citationText) {
+          doi.html('Citation');
+          $('<a href="#citation"></a>')
+            .text(front_matter.citationText)
+            .appendTo(doi_p);
+        } else {
+          hide_byline_column("DOI");
+        }
+      } else {
+        $('<a></a>')
+           .attr('href', "https://doi.org/" + front_matter.doi)
+           .html(front_matter.doi)
+           .appendTo(doi_p);
+      }
+
+       // change plural form of authors/affiliations
+      if (front_matter.authors.length === 1) {
+        var grid = $('.authors-affiliations');
+        grid.children('h3:contains("Authors")').text('Author');
+        grid.children('h3:contains("Affiliations")').text('Affiliation');
+      }
+
+      // remove d-appendix and d-footnote-list local styles
+      $('d-appendix > style:first-child').remove();
+      $('d-footnote-list > style:first-child').remove();
+
+      // move appendix-bottom entries to the bottom
+      $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+      $('.appendix-bottom').remove();
+
+      // hoverable references
+      $('span.citation[data-cites]').each(function() {
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          return "<p>" + $('#ref-' + ref).html() + "</p>";
+        }).join("\n");
+        window.tippy(this, {
+          allowHTML: true,
+          content: refHtml,
+          maxWidth: 500,
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        });
+      });
+
+      // clear polling timer
+      clearInterval(tid);
+
+      // show body now that everything is ready
+      on_load_complete();
+    }
+
+    var tid = setInterval(distill_post_process, 50);
+    distill_post_process();
+
+  }
+
+  function init_downlevel() {
+
+    init_common();
+
+     // insert hr after d-title
+    $('.d-title').after($('<hr class="section-separator"/>'));
+
+    // check if we have authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+
+    // manage byline/border
+    if (!have_authors)
+      $('.d-byline').remove();
+    $('.d-byline').after($('<hr class="section-separator"/>'));
+    $('.d-byline a').remove();
+
+    // remove toc
+    $('.d-contents').remove();
+
+    // move appendix elements
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+    });
+
+
+    // inject headers into references and footnotes
+    var refs_header = $('<h3></h3>');
+    refs_header.text('References');
+    $('#refs').prepend(refs_header);
+
+    var footnotes_header = $('<h3></h3');
+    footnotes_header.text('Footnotes');
+    $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+
+    // remove appendix if it's empty
+    if ($('.d-appendix').children().length === 0)
+      $('.d-appendix').remove();
+
+    // prepend separator above appendix
+    $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+
+    // trim code
+    $('pre>code').each(function(i, val) {
+      $(this).html($.trim($(this).html()));
+    });
+
+    // move posts-container right before article
+    $('.posts-container').insertBefore($('.d-article'));
+
+    $('body').addClass('downlevel');
+
+    on_load_complete();
+  }
+
+
+  function init_common() {
+
+    // jquery plugin to change element types
+    (function($) {
+      $.fn.changeElementType = function(newType) {
+        var attrs = {};
+
+        $.each(this[0].attributes, function(idx, attr) {
+          attrs[attr.nodeName] = attr.nodeValue;
+        });
+
+        this.replaceWith(function() {
+          return $("<" + newType + "/>", attrs).append($(this).contents());
+        });
+      };
+    })(jQuery);
+
+    // prevent underline for linked images
+    $('a > img').parent().css({'border-bottom' : 'none'});
+
+    // mark non-body figures created by knitr chunks as 100% width
+    $('.layout-chunk').each(function(i, val) {
+      var figures = $(this).find('img, .html-widget');
+      if ($(this).attr('data-layout') !== "l-body") {
+        figures.css('width', '100%');
+      } else {
+        figures.css('max-width', '100%');
+        figures.filter("[width]").each(function(i, val) {
+          var fig = $(this);
+          fig.css('width', fig.attr('width') + 'px');
+        });
+
+      }
+    });
+
+    // auto-append index.html to post-preview links in file: protocol
+    // and in rstudio ide preview
+    $('.post-preview').each(function(i, val) {
+      if (window.location.protocol === "file:")
+        $(this).attr('href', $(this).attr('href') + "index.html");
+    });
+
+    // get rid of index.html references in header
+    if (window.location.protocol !== "file:") {
+      $('.distill-site-header a[href]').each(function(i,val) {
+        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+      });
+    }
+
+    // add class to pandoc style tables
+    $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+    $('.kable-table').children('table').addClass('pandoc-table');
+
+    // add figcaption style to table captions
+    $('caption').parent('table').addClass("figcaption");
+
+    // initialize posts list
+    if (window.init_posts_list)
+      window.init_posts_list();
+
+    // implmement disqus comment link
+    $('.disqus-comment-count').click(function() {
+      window.headroom_prevent_pin = true;
+      $('#disqus_thread').toggleClass('hidden');
+      if (!$('#disqus_thread').hasClass('hidden')) {
+        var offset = $(this).offset();
+        $(window).resize();
+        $('html, body').animate({
+          scrollTop: offset.top - 35
+        });
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (is_downlevel_browser())
+      init_downlevel();
+    else
+      window.addEventListener('WebComponentsReady', init_distill);
+  });
+
+  </script>
+
+  <!--/radix_placeholder_distill-->
+  <script src="a-linear-mixed-effects-model_files/header-attrs-2.11/header-attrs.js"></script>
+  <script src="a-linear-mixed-effects-model_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+  <script src="a-linear-mixed-effects-model_files/popper-2.6.0/popper.min.js"></script>
+  <link href="a-linear-mixed-effects-model_files/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="a-linear-mixed-effects-model_files/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="a-linear-mixed-effects-model_files/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="a-linear-mixed-effects-model_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="a-linear-mixed-effects-model_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="a-linear-mixed-effects-model_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="a-linear-mixed-effects-model_files/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+  <!--/radix_placeholder_site_in_header-->
+
+  <link rel="stylesheet" href="box.css" type="text/css"/>
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"A linear mixed model","description":"Hubris. Just hubris.","authors":[{"author":"Dan Simpson","authorURL":"https://dpsimpson.github.io","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-03-22T00:00:00.000+11:00","citationText":"Simpson, 2022"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>A linear mixed model</h1>
+<!--radix_placeholder_categories-->
+<!--/radix_placeholder_categories-->
+<p><p>Hubris. Just hubris.</p></p>
+</div>
+
+<div class="d-byline">
+  Dan Simpson <a href="https://dpsimpson.github.io"
+class="uri">https://dpsimpson.github.io</a> 
+  
+<br/>03-22-2022
+</div>
+
+<div class="d-article">
+<p>Sometimes, you’ve just got to set yourself a task. And I’ve decided,
+for no particular reason at all, that I should be better at Python. This
+is a modest goal. I am currently shit at Python. So I’m unlikely to get
+worse.</p>
+<p>Part of the reason why I’m a shit Python programmer is I don’t really
+have any reason to use it in my day-to-day job. So I’ve been trying to
+come up with one. And come up with one I did.</p>
+<p>I want to test out some ideas I have for making linear mixed
+effects-type models faster in Stan. “But Daniel”, you sigh, “Stan is not
+written in Python.” No it fucking isn’t. It’s written in C++ and, while
+I am actually a better C++ programmer than I am a Python programmer, it
+is slow as balls to prototype in and the overhead for something I’m not
+sure will work is just too hard.</p>
+<p>This has been flopping around in my haunted clown car of a brain for
+a while, but the other night I realised how I could actually go about
+doing it: I could use PyMC.</p>
+<p>PyMC is written<a href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a> in Python, so extending it would
+give me an excuse to buff up my Python skills. It will also give me a
+solid chance to actually let loose on JAX and see what it can do.</p>
+<p>All in all, I expect this to be a shitshow, but maybe it’ll be
+fun.</p>
+<p>The (planned) order of service is as follows:</p>
+<ol type="1">
+<li>A quick write up on the model I want to fit.</li>
+<li>A JAX-implementation of the log-likelihood. (This, I promise you,
+will hurt)</li>
+<li>PyMC bindings!</li>
+<li>Let’s see if it works!</li>
+<li>Can we make it better?</li>
+</ol>
+<h2 id="a-generalised-linear-mixed-effects-ish-model">A generalised
+linear mixed effects-ish model</h2>
+<p>If you were to open the correct textbook, or the <a
+href="https://www.jstatsoft.org/article/view/v067i01">Bates, Mächler,
+Boler, and Walker 2015 masterpiece paper</a> that describes the workings
+of <code>lme4</code>, you will see the linear mixed model written as
+<span class="math display">\[
+y ~ X\beta + Zb + \epsilon,
+\]</span> where</p>
+<ul>
+<li>the columns of <span class="math inline">\(X\)</span> contain the
+covariates<a href="#fn2" class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a>,</li>
+<li><span class="math inline">\(\beta\)</span> is a vector of unknown
+regression coefficients,</li>
+<li><span class="math inline">\(Z\)</span> is a known matrix that
+describes the random effects (basically which observation is linked to
+which random effect),</li>
+<li><span class="math inline">\(b \sim N(0, \Sigma_b)\)</span> is the
+vector of random effects with some unknown covariance matrix <span
+class="math inline">\(\Sigma_b\)</span>,</li>
+<li>and <span class="math inline">\(\epsilon ~ N(0 ,\sigma^2 W)\)</span>
+is the observation noise (here <span class="math inline">\(W\)</span> is
+a known diagonal matrix).</li>
+</ul>
+<p>But unlike Doug Bates and his friends, my aim is to do Bayesian
+computation. In this situation, <span
+class="math inline">\(\beta\)</span> <em>also</em> has a prior on it! In
+fact, I’m going to also put a prior <span class="math inline">\(\beta
+\sim N(0, R)\)</span>, for some known<a href="#fn3" class="footnote-ref"
+id="fnref3" role="doc-noteref"><sup>3</sup></a> matrix <span
+class="math inline">\(R\)</span>.</p>
+<p>This means that I can treat <span
+class="math inline">\(\beta\)</span> and <span
+class="math inline">\(b\)</span> the same<a href="#fn4"
+class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>
+way! And I’m going to do just that. I’m going to put them together into
+a vector <span class="math inline">\(u = (\beta^T, b^T)^T\)</span>.
+Because the prior on <span class="math inline">\(u\)</span> is
+Gaussian<a href="#fn5" class="footnote-ref" id="fnref5"
+role="doc-noteref"><sup>5</sup></a>, I’m sometimes going to call <span
+class="math inline">\(u\)</span> the <em>Gaussian component</em> or even
+the <em>latent</em><a href="#fn6" class="footnote-ref" id="fnref6"
+role="doc-noteref"><sup>6</sup></a> Gaussian component.</p>
+<p>Now that I’ve smooshed my fixed and random effects together, I don’t
+really need to keep <span class="math inline">\(X\)</span> and <span
+class="math inline">\(Z\)</span> separate. So I’m going push them
+together into a rectangular matrix <span class="math display">\[
+A = [X \vdots Z].
+\]</span></p>
+<p>This allows us to re-write the model as <span
+class="math display">\[\begin{align*}
+y \mid u, \sigma &amp; \sim N(A u, \sigma^2 W)\\
+u \mid \theta \sim N(0, Q(\theta)^{-1}).
+\end{align*}\]</span></p>
+<p>What the hell is <span class="math inline">\(Q(\theta)\)</span> and
+why are we suddenly parameterising a multivariate normal distribution by
+the inverse of its covariance matrix (which, if you’re curious, is known
+as a <em>precision</em> matrix)???</p>
+<p>I will take your questions in reverse order.</p>
+<p>We are parameterising by the precision<a href="#fn7"
+class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>
+matrix because it will simplify our formulas and lead to faster
+computations. This will be a major topic for us later!</p>
+<p>As to what <span class="math inline">\(Q(\theta)\)</span> is, it is
+the matrix <span class="math display">\[
+Q(\theta) = \begin{pmatrix} \Sigma_b^{-1} &amp; 0 \\ 0 &amp;
+R^{-1}\end{pmatrix}
+\]</span> and <span class="math inline">\(\theta = (\sigma,
+\Sigma_b)\)</span> is the collection of all<a href="#fn8"
+class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>
+non-Gaussian parameters in the model.</p>
+<p>This is a <em>very</em> generic model. It happily contains things
+like</p>
+<ul>
+<li>Linear regression!</li>
+<li>Linear regression with horseshoe priors!</li>
+<li>Linear mixed effects models!</li>
+<li>Linear regression with splines (smoothing or basis)!</li>
+<li>Spatial models like ICARs etc etc etc</li>
+<li>Gaussian processes (begrudgingly, those you should formulate in
+terms of the covariance matrix and not the precision)</li>
+<li>Any combination of these things!</li>
+</ul>
+<p>So if I manage to get this implemented efficiently, all of these
+models will become efficient too. All it will cost is a truly
+shithouse<a href="#fn9" class="footnote-ref" id="fnref9"
+role="doc-noteref"><sup>9</sup></a> interface.</p>
+<p>The only downside of this degree of flexibility compared to just
+implementing a straight linear mixed model with <span
+class="math inline">\(X\)</span> and <span
+class="math inline">\(Z\)</span> and <span
+class="math inline">\(\beta\)</span> and <span
+class="math inline">\(b\)</span> all living separately is that there are
+a couple of tricks<a href="#fn10" class="footnote-ref" id="fnref10"
+role="doc-noteref"><sup>10</sup></a> to improve numerical stability that
+we can’t use.</p>
+<h2 id="lets-get-the-posterior">Let’s get the posterior!</h2>
+<p>The nice thing about thing about this model is that it is a normal
+likelihood with a normal prior, so we can easily compute two key
+quantities:</p>
+<ul>
+<li><p>The “full conditional” distribution <span
+class="math inline">\(p(u \mid y, \theta)\)</span>, which is useful for
+getting posterior information about <span
+class="math inline">\(b\)</span> and <span
+class="math inline">\(\beta\)</span>, and</p></li>
+<li><p>The marginal posterior <span class="math inline">\(p(\theta \mid
+y)\)</span>.</p></li>
+</ul>
+<p>This means that we do not need to do MCMC on the joint space <span
+class="math inline">\((u, \theta)\)</span>! We can instead write a model
+to draw samples from <span class="math inline">\(p(\theta \mid
+y)\)</span>, which is much lower-dimensional and easier<a href="#fn11"
+class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>
+to sample from, and then compute the joint posterior by sampling from
+the full conditional.</p>
+<p>I talked a little about the mechanics of this in a <a
+href="https://dansblog.netlify.app/posts/2021-10-14-priors2/">previous
+blog post about conjugate priors</a>, but let’s do the derivations. Why?
+Because they’re not too hard and it’s useful to have them written out
+somewhere.</p>
+<h3 id="the-full-conditional">The full conditional</h3>
+<p>First we need to compute <span class="math inline">\(p(u \mid y ,
+\theta)\)</span>. The first thing that we note is that conditional
+distributions are always proportional to the joint distribution (we’re
+literally just pretending some things are constant), so we get <span
+class="math display">\[\begin{align*}
+p(u \mid y , \theta) &amp;\propto p(y \mid u, \theta) p(u \mid \theta)
+p(theta) \\
+&amp;\propto \exp\left[-\frac{1}{2\sigma^2} (y -
+Au)^TW^{-1}(y-Au)\right]\exp\left[-\frac{1}{2}u^TQ(\theta)u\right].
+\end{align*}\]</span></p>
+<p>Now we just need to expand things out and work out what the mean and
+the precision matrix of <span class="math inline">\(p(u \mid \theta
+y)\)</span> (which is Gaussian!) are.</p>
+<p>Computing posterior distributions by hand is a dying<a href="#fn12"
+class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>
+art. So my best and only advice to you: don’t be a hero. Just pattern
+match like the rest of us. To do this, we need to know what the density
+of a multivarite normal distribution looks like <em>deep</em> down in
+its soul.</p>
+<p>Behold<a href="#fn13" class="footnote-ref" id="fnref13"
+role="doc-noteref"><sup>13</sup></a>: the ugly <code>div</code> box!</p>
+<div class="note">
+<p>If <span class="math display">\[
+u \sim N(m, P^{-1}),
+\]</span> then <span class="math display">\[\begin{align*}
+p(u) &amp;\propto \exp\left[- \frac{1}{2}(u - m)^TP(u-m)\right] \\
+&amp;\propto \exp\left[- \frac{1}{2}u^TPu + m^TPu\right],
+\end{align*}\]</span> where I just dropped all of the terms that didn’t
+involve <span class="math inline">\(u\)</span>.</p>
+</div>
+<p>This means the plan is to</p>
+<ol type="1">
+<li>Expand out the quadratics in the exponential term so we get
+something that looks like <span
+class="math inline">\(\exp\left[-\frac{1}{2}u^TPu +
+z^Tu\right]\)</span></li>
+<li>The matrix <span class="math inline">\(P\)</span> will be the
+precision matrix of <span class="math inline">\(u \mid y,
+\theta\)</span>.</li>
+<li>The mean of <span class="math inline">\(\mu \mid y, theta\)</span>
+is <span class="math inline">\(P^{-1}z\)</span>.</li>
+</ol>
+<p>So let’s do it!</p>
+<p><span class="math display">\[\begin{align*}
+p(u \mid y , \theta) &amp;\propto \exp\left[-\frac{1}{2\sigma^2}
+u^TA^TW^{-1}Au +
+\frac{1}{\sigma^2}(A^TW^{-1}y)^Tu\right]\exp\left[-\frac{1}{2}u^TQ(\theta)u\right]
+\\
+&amp;\propto \exp\left[-\frac{1}{2}u^T\left(Q +
+\frac{1}{\sigma^2}A^TW^{-1}A\right)u
++  \frac{1}{\sigma^2}(A^TW^{-1}y)^Tu\right].
+\end{align*}\]</span></p>
+<p>This means that <span class="math inline">\(p(u \mid y
+,\theta)\)</span> is multivariate normal with</p>
+<ul>
+<li><p>precision matrix <span class="math inline">\(Q_{u\mid
+y,\theta}(\theta) = \left(Q(\theta) +
+\frac{1}{\sigma^2}A^TW^{-1}A\right)\)</span> and</p></li>
+<li><p>mean<a href="#fn14" class="footnote-ref" id="fnref14"
+role="doc-noteref"><sup>14</sup></a> <span
+class="math inline">\(\mu_{u\mid y,\theta}(\theta) = \frac{1}{\sigma^2}
+Q_{u\mid y,\theta}(\theta)^{-1} A^TW^{-1}y\)</span>.</p></li>
+</ul>
+<p>This means if I build an MCMC scheme to give me <span
+class="math inline">\(B\)</span> samples <span
+class="math inline">\(\theta_b \sim p(\theta \mid y)\)</span>, <span
+class="math inline">\(b = 1, \ldots, B\)</span>, then I can turn them
+into <span class="math inline">\(B\)</span> samples <span
+class="math inline">\((\theta_b, u_b)\)</span> from <span
+class="math inline">\(p(\theta, u \mid y)\)</span> by doing the
+following.</p>
+<div class="note">
+<p>For <span class="math inline">\(b = 1, \ldots, B\)</span> {</p>
+<ul>
+<li><p>Simulate <span class="math inline">\(u_b \sim N\left(\mu_{u\mid
+y,\theta}(\theta_b), Q_{u\mid
+y,\theta}(\theta_b)^{-1}\right)\)</span></p></li>
+<li><p>Store the pair <span class="math inline">\((\theta_b,
+u_b)\)</span></p></li>
+</ul>
+<p>}</p>
+</div>
+<p>Easy<a href="#fn15" class="footnote-ref" id="fnref15"
+role="doc-noteref"><sup>15</sup></a> as!</p>
+<h3 id="writing-down-ptheta-mid-y">Writing down <span
+class="math inline">\(p(\theta \mid y)\)</span></h3>
+<p>So now we just<a href="#fn16" class="footnote-ref" id="fnref16"
+role="doc-noteref"><sup>16</sup></a> have to get the marginal posterior
+for the non-Gaussian parameters <span
+class="math inline">\(\theta\)</span>. We only need it up to a constant
+of proportionality, so we can express the joint probability <span
+class="math inline">\(p(y, u, \theta)\)</span> in two equivalent ways to
+get <span class="math display">\[\begin{align*}
+p(y, u , \theta) &amp;= p(y, u, \theta) \\
+p(u \mid \theta, y) p(\theta \mid y) p(y) &amp;= p(y \mid u, \theta) p(u
+\mid \theta)p(\theta). \\
+\end{align*}\]</span></p>
+<p>Rearranging, we get <span class="math display">\[\begin{align*}
+p(\theta \mid y) &amp;= \frac{p(y \mid u, \theta) p(u \mid
+\theta)p(\theta)}{p(u \mid \theta, y)p(y)} \\
+&amp;\propto \frac{p(y \mid u, \theta) p(u \mid \theta)p(\theta)}{p(u
+\mid \theta, y)}.
+\end{align*}\]</span></p>
+<p>This is generically true. If you have access to the full conditional
+distribution<a href="#fn17" class="footnote-ref" id="fnref17"
+role="doc-noteref"><sup>17</sup></a> for <span
+class="math inline">\(u\)</span> you can marginalise <span
+class="math inline">\(u\)</span> out. No weird integrals required.</p>
+<p>But there’s one oddity: there is a <span
+class="math inline">\(u\)</span> on the right hand side, but no <span
+class="math inline">\(u\)</span> on the left hand side. What we have
+actually found is a whole continuum of functions that are proportional
+to <span class="math inline">\(p(\theta \mid y)\)</span>. It truly does
+not matter which one we choose.</p>
+<p>But some choices make the algebra slightly nicer. (And remember, I’m
+gonna have to implement this later, so I should probably keep and eye on
+that.)</p>
+<p>A good<a href="#fn18" class="footnote-ref" id="fnref18"
+role="doc-noteref"><sup>18</sup></a> generic choice is <span
+class="math inline">\(u = \mu_{u\mid y, \theta}(\theta)\)</span>.</p>
+<p>The algebra here can be a bit tricky<a href="#fn19"
+class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a>,
+so let’s write out each function evaluated at <span
+class="math inline">\(u = \mu_{u\mid y, \theta}(\theta)\)</span>.</p>
+<p>The bit from the likelihood is <span
+class="math display">\[\begin{align*}
+p(y \mid u = \mu_{u\mid y, \theta}(\theta), \theta) &amp;\propto
+\sigma^{-n} \exp\left[-\frac{1}{2\sigma^2}(y - A\mu_{u\mid y,
+\theta}(\theta))^TW^{-1}(y-  A\mu_{u\mid y, \theta}(\theta))\right]\\
+&amp;\propto \sigma^{-n}\exp\left[\frac{-1}{2\sigma^2} \mu_{u\mid y,
+\theta}(\theta)^TA^TW^{-1}A\mu_{u\mid y, \theta}(\theta) +
+\frac{1}{\sigma^2} y^T W^{-1}A \mu_{u\mid y, \theta}(\theta)\right],
+\end{align*}\]</span> where <span class="math inline">\(n\)</span> is
+the length of <span class="math inline">\(y\)</span>.</p>
+<p>The bit from the prior on <span class="math inline">\(u\)</span> is
+<span class="math display">\[\begin{align*}
+p(\mu_{u\mid y, \theta}(\theta) \mid \theta )
+\propto |Q(\theta)|^{1/2}\exp\left[-\frac{1}{2} \mu_{u\mid y,
+\theta}(\theta)^TQ(\theta)\mu_{u\mid y, \theta}(\theta)\right].
+\end{align*}\]</span></p>
+<p>Finally, we get that the denominator is <span class="math display">\[
+p(\mu_{u\mid y, \theta}(\theta) \mid y, \theta) \propto |Q_{u\mid y,
+\theta}(\theta)|^{1/2}
+\]</span> as the exponential term<a href="#fn20" class="footnote-ref"
+id="fnref20" role="doc-noteref"><sup>20</sup></a> cancels!</p>
+<p>Ok. Let’s finish this. (Incidentally, if you’re wondering why
+Bayesians love MCMC, this is why.)</p>
+<p><span class="math display">\[\begin{align*}
+p(\theta \mid y) &amp;\propto p(\theta) \frac{|Q(\theta)|}{|Q_{u\mid y,
+\theta}(\theta)|} \exp\left[-\frac{1}{2} \mu_{u\mid y,
+\theta}(\theta)^T(Q(\theta) + \frac{1}{\sigma^2}A^TW^{-1}A)\mu_{u\mid y,
+\theta}(\theta) + \frac{1}{\sigma^2} y^T W^{-1}A \mu_{u\mid y,
+\theta}(\theta)\right] \\
+&amp;=  p(\theta) \frac{|Q(\theta)|}{|Q_{u\mid y, \theta}(\theta)|}
+\exp\left[-\frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TQ_{u\mid y,
+\theta}(\theta)\mu_{u\mid y, \theta}(\theta) + \frac{1}{\sigma^2} y^T
+W^{-1}A \mu_{u\mid y, \theta}(\theta)\right].
+\end{align*}\]</span></p>
+<p>We can now use the fact that <span class="math inline">\(Q_{u\mid y,
+\theta}(\theta)\mu_{u\mid y, \theta}(\theta) = A^TW^{-1}y\)</span> to
+get</p>
+<p><span class="math display">\[\begin{align*}
+p(\theta \mid y) &amp;\propto p(\theta) \frac{|Q(\theta)|}{|Q_{u\mid y,
+\theta}(\theta)|} \exp\left[-\frac{1}{2} \mu_{u\mid y,
+\theta}(\theta)^TA^TW^{-1}y + \frac{1}{\sigma^2} y^T W^{-1}A \mu_{u\mid
+y, \theta}(\theta)\right] \\
+&amp;=\frac{|Q(\theta)|}{|Q_{u\mid y, \theta}(\theta)|}
+\exp\left[\frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TA^TW^{-1}y \right]
+.
+\end{align*}\]</span></p>
+<p>For those who just love a log-density, this is <span
+class="math display">\[
+\log(p(\theta \mid y)) = \frac{1}{2} \mu_{u\mid y,
+\theta}(\theta)^TA^TW^{-1}y + \log(|Q(\theta)|) - \log(|Q_{u\mid y,
+\theta}(\theta)|).
+\]</span> A fairly simple expression<a href="#fn21" class="footnote-ref"
+id="fnref21" role="doc-noteref"><sup>21</sup></a> for all of that
+work.</p>
+<h2 id="so-why-isnt-this-just-a-gaussian-process">So why isn’t this just
+a Gaussian process?</h2>
+<p>These days, people<a href="#fn22" class="footnote-ref" id="fnref22"
+role="doc-noteref"><sup>22</sup></a> are more than passingly familiar<a
+href="#fn23" class="footnote-ref" id="fnref23"
+role="doc-noteref"><sup>23</sup></a> with Gaussian processes. And so
+they’re quite possibly wondering why this isn’t all just an extremely
+inconvenient way to do the exact same computations you do with a GP.</p>
+<p>Let me tell you. It is <em>all</em> about <span
+class="math inline">\(Q(\theta)\)</span> and <span
+class="math inline">\(A\)</span>.</p>
+<p>The prior precision matrix <span
+class="math inline">\(Q(\theta)\)</span> is typically block diagonal.
+This special structure makes it pretty easy to compute the <span
+class="math inline">\(|Q(\theta)|\)</span> term<a href="#fn24"
+class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a>.
+But, of course, there’s more going on here.</p>
+<p>In linear mixed effects models, these blocks on the diagonal matrix
+are typically fairly small (their size is controlled by the number of
+levels in the variable you’re stratifying by). Moreover, the matrices on
+the diagonal of <span class="math inline">\(Q(\theta)\)</span> are the
+inverses of either diagonal or block diagonal matrices that
+themselveshave quite small blocks<a href="#fn25" class="footnote-ref"
+id="fnref25" role="doc-noteref"><sup>25</sup></a>.</p>
+<p>In models that have more structured random effects<a href="#fn26"
+class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a>,
+the diagonal blocks of <span class="math inline">\(Q(\theta)\)</span>
+can get quite large<a href="#fn27" class="footnote-ref" id="fnref27"
+role="doc-noteref"><sup>27</sup></a>. Moreover, the matrices on these
+blocks are usually not block diagonal.</p>
+<p>Thankfully, these prior precision matrices do have something going
+for them: most of their entries are zero. We refer to these types of
+matrices as <em>sparse matrices</em>. There are some marvelous
+algorithms for factorising sparse matrices that are usually a lot more
+efficient<a href="#fn28" class="footnote-ref" id="fnref28"
+role="doc-noteref"><sup>28</sup></a> than algorithms for dense
+matrices.</p>
+<p>So the prior precision<a href="#fn29" class="footnote-ref"
+id="fnref29" role="doc-noteref"><sup>29</sup></a> is a sparse matrix.
+What about the precision matrix of <span class="math inline">\([u \mid
+y, \theta]\)</span>?</p>
+<p>It is also sparse! Recall that <span class="math inline">\(A = [Z
+\vdots X]\)</span>. This means that <span class="math display">\[
+\frac{1}{\sigma^2}A^TW^{-1}A = \frac{1}{\sigma^2}\begin{pmatrix} Z^T
+W^{-1}Z &amp; Z^T W^{-1}X \\ X^T W^{-1} Z &amp; X^TW^{-1}X
+\end{pmatrix}.
+\]</span> Remembering that <span class="math inline">\(Z\)</span> is a
+matrix that links the stacked vector of random effects <span
+class="math inline">\(b\)</span> to each observation. Typically, the
+likelihood <span class="math inline">\(p(y_i \mid \theta)\)</span> will
+only depend on a small number of entries of <span
+class="math inline">\(b\)</span>, which suggests that most elements in
+each row of <span class="math inline">\(Z\)</span> will be zero. This,
+in turn, implies that <span class="math inline">\(Z\)</span> is sparse
+and so is<a href="#fn30" class="footnote-ref" id="fnref30"
+role="doc-noteref"><sup>30</sup></a> <span
+class="math inline">\(Z^TW^{-1}Z\)</span>.</p>
+<p>On the other hand, the other three blocks are usually<a href="#fn31"
+class="footnote-ref" id="fnref31" role="doc-noteref"><sup>31</sup></a>
+fully dense. Thankfully, though, the usual situation is that <span
+class="math inline">\(b\)</span> has <em>far</em> more elements that
+<span class="math inline">\(\beta\)</span>, which means that <span
+class="math inline">\(A^TW^{-1}A\)</span> is still sparse and we can
+still use our special algorithms<a href="#fn32" class="footnote-ref"
+id="fnref32" role="doc-noteref"><sup>32</sup></a>.</p>
+<p>All of this suggests that, under usual operating conditions, <span
+class="math inline">\(Q_{u\mid y, \theta}\)</span> is <em>also</em> a
+sparse matrix.</p>
+<p>And that’s <em>great</em> because that means that we can compute the
+log-posterior using only 3 main operations:</p>
+<ol type="1">
+<li><p>Computing <span class="math inline">\(\log(|Q(\theta)\)</span>).
+This matrix is block diagonal so you can just multiply together the
+determinants<a href="#fn33" class="footnote-ref" id="fnref33"
+role="doc-noteref"><sup>33</sup></a> of the diagonal blocks, which are
+relatively cheap to compute.</p></li>
+<li><p>Computing <span class="math inline">\(\mu_{u \mid y,
+\theta}(\theta)\)</span>. This requires solving the sparse linear system
+<span class="math inline">\(Q_{u \mid y, \theta} \mu_{u \mid y, \theta}
+= \frac{1}{\sigma^2}A^TW^{-1}y\)</span>. This is going to rely on some
+fancy pants sparse matrix algorithm.</p></li>
+<li><p>Computing <span class="math inline">\(\log(|Q_{u \mid y,
+\theta}(\theta)\)</span>. This is, thankfully, a by-product of the
+things we need to compute to solve the linear system in the previous
+task.</p></li>
+</ol>
+<h2 id="what-i-what-i-what-i-gotta-do-to-get-this-model-in-pymc">What I?
+What I? <a href="https://www.youtube.com/watch?v=fqTSaMR75ns">What I
+gotta do to get this model in PyMC</a></h2>
+<p>The first task is not hard at all.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<section class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>I haven’t checked. Bits of it are
+probably at least a little in C++. But hey. No one’s perfect.<a
+href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>and the intercept if it’s needed<a
+href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>Default options include the identity
+matrix or some multiple of the identity matrix.<a href="#fnref3"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>REML heads don’t dismay. You can do
+all kinds of weird shit by choosing some of these matrices in certain
+ways. I’m not gonna stop you. I love and support you. Good vibes only.<a
+href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>The priors on <span
+class="math inline">\(\beta\)</span> and <span
+class="math inline">\(b\)</span> are independent Gaussian so it has to
+be.<a href="#fnref5" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p>Latent = not directly observed but
+you think it’s there. Like latent homosexuality.<a href="#fnref6"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7" role="doc-endnote"><p>Inverse correlation matrix<a
+href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8" role="doc-endnote"><p>excluding the fixed ones, like <span
+class="math inline">\(W\)</span> and <span
+class="math inline">\(A\)</span> and <span
+class="math inline">\(R\)</span>. <a href="#fnref8"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9" role="doc-endnote"><p>I would suggest a lot of syntactic
+sugar if you were ever going to expose this stuff to users.<a
+href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10" role="doc-endnote"><p>See the Bates <em>et al.</em> paper.
+Their formulation is fabulous but doesn’t extend nicely to the
+situations I care about! Basically they optimise for the situation where
+<span class="math inline">\(\Sigma_b\)</span> can be singular, which is
+an issue when you’re doing optimisation. I care about the case where
+“<span class="math inline">\(\Sigma_b^{-1}\)</span>” is defined as a
+singular matrix as this occurs in many important models like smoothing
+splines and ICAR models (which are extremely popular in spatial
+epidemiology).<a href="#fnref10" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn11" role="doc-endnote"><p>It’s easier in two ways. Firstly,
+MCMC likes lower-dimensional targets. They are typically easier to
+sample from! Secondly, the posterior geometry of <span
+class="math inline">\(p(\theta \mid y)\)</span> is usually pretty
+simple, while the joint posterior <span class="math inline">\(p(\theta,
+u \mid y)\)</span> has an annoying tendency to have a funnel in it,
+which forces us to do all kinds of annoying reparameterisation tricks to
+stop it from shitting the bed.<a href="#fnref11" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn12" role="doc-endnote"><p>Computers!<a href="#fnref12"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13" role="doc-endnote"><p>Design is my passion.<a
+href="#fnref13" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn14" role="doc-endnote"><p>It’s possible to rearrange things to
+lose that <span class="math inline">\(\frac{1}{\sigma^2}\)</span>, which
+I admit looks a bit weird. It cancels out down the line.<a
+href="#fnref14" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn15" role="doc-endnote"><p>I have, historically, not had the
+greatest grip on whether or not things are easy.<a href="#fnref15"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16" role="doc-endnote"><p>See above.<a href="#fnref16"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17" role="doc-endnote"><p>Or a good approximation to it.
+Laplace approximations work very well for this to extend everything
+we’re doing here from a linear mixed-ish model to a generalised linear
+mixed-ish model.<a href="#fnref17" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn18" role="doc-endnote"><p>This is actually a bit dangerous on
+the face of it because it depends on <span
+class="math inline">\(\theta\)</span>. You can convince yourself it’s
+ok. Choosing <span class="math inline">\(u=0\)</span> is less stress
+inducing, but I wanted to bring out the parallel to using a Laplace
+approximation to <span class="math inline">\(p(u \mid \theta,
+y)\)</span>, in which case we really want to evaluate the ratio at the
+point where the approximation is the best (aka the conditional mean).<a
+href="#fnref18" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn19" role="doc-endnote"><p>A common mistake is to forget the
+parameter dependent proportionality constants from the normal
+distribution. You didn’t need them before because you were conditioning
+on <span class="math inline">\(\theta\)</span> so they were all
+constant. But now <span class="math inline">\(\theta\)</span> is unknown
+and if we forget them an angel will cry.<a href="#fnref19"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20" role="doc-endnote"><p>Honest footnote: This started as
+<span class="math inline">\(p(\mu_{u\mid y, \theta}(\theta) \mid y,
+\theta) \propto 1\)</span> because I don’t read my own warnings.<a
+href="#fnref20" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn21" role="doc-endnote"><p>The brave or foolish amongst you
+might want to convince yourselves that this collapses to
+<em>exactly</em> the marginal likelihood we would’ve gotten from
+Rasmussen and Williams had we made a sequence of different life
+choices.<a href="#fnref21" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn22" role="doc-endnote"><p>Or, at least, people who have made
+it this far into the post.<a href="#fnref22" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn23" role="doc-endnote"><p>You like GPs bro? <a
+href="https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/">Give
+me a sequence of increasingly abstract definitions.</a> I’m waiting.<a
+href="#fnref23" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn24" role="doc-endnote"><p>Multiply the determinants of the
+matrices along the diagonal.<a href="#fnref24" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn25" role="doc-endnote"><p>Look at the Bates et al paper.
+Specifically section 2.2. <code>lme4</code> is a really clever thing.<a
+href="#fnref25" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn26" role="doc-endnote"><p>examples: smoothing splines, AR(p)
+models, areal spatial models, <a
+href="https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/">some
+Gaussian processes if you’re careful</a><a href="#fnref26"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn27" role="doc-endnote"><p>10<sup>4-10</sup>6 is not unheard
+of<a href="#fnref27" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn28" role="doc-endnote"><p>A dense matrix factorisation of an
+<span class="math inline">\(n\times n\)</span> matrix costs <span
+class="math inline">\(\mathcal{O}(n^3)\)</span>. The same factorisation
+of a sparse matrix can cost as little as <span
+class="math inline">\(\mathcal{O}(n)\)</span> if you’re very lucky. More
+typically it clocks in a <span
+class="math inline">\(\mathcal{O}(n^{1.5})\)</span>–<span
+class="math inline">\(\mathcal{O}(n^{2})\)</span>, which is still a
+substantial saving!<a href="#fnref28" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn29" role="doc-endnote"><p>It’s important that we are talking
+about <em>precision</em> matrices here and not covariance matrices as
+the inverse of a sparse matrix is typically dense. For instance, an
+AR(1) prior with autocorrelation parameter <span
+class="math inline">\(\rho\)</span> has a prior has a sparse precision
+matrix that looks something like <span class="math display">\[
+Q = \frac{1}{\tau^2}\begin{pmatrix}
+1 &amp; -\rho &amp;&amp;&amp;&amp;&amp; \\
+-\rho&amp;1 + \rho^2&amp; -\rho&amp;&amp;&amp;&amp; \\
+&amp;-\rho&amp; 1 + \rho^2 &amp;- \rho&amp;&amp;&amp; \\
+&amp;&amp;-\rho&amp; 1 + \rho^2&amp;-\rho&amp;&amp; \\
+&amp;&amp;&amp;-\rho&amp;1+\rho^2 &amp;-\rho &amp; \\
+&amp;&amp;&amp;&amp;-\rho&amp;1 + \rho^2&amp; - \rho \\
+&amp;&amp;&amp;&amp;&amp;-\rho&amp;1
+\end{pmatrix}.
+\]</span> On the other hand, the <em>covariance matrix</em> is fully
+dense <span class="math display">\[
+Q^{-1} = \tau^2\begin{pmatrix}
+\rho&amp;\rho^2&amp;\rho^3&amp;\rho^4&amp;\rho^5&amp;\rho^6&amp;\rho^7
+\\
+\rho^2&amp;\rho&amp;\rho^2&amp;\rho^3&amp;\rho^4&amp;\rho^5&amp;\rho^6
+\\
+\rho^3&amp;\rho^2&amp;\rho&amp;\rho^2&amp;\rho^3&amp;\rho^4&amp;\rho^5
+\\
+\rho^4&amp;\rho^3&amp;\rho^2&amp;\rho&amp;\rho^2&amp;\rho^3&amp;\rho^4
+\\
+\rho^5&amp;\rho^4&amp;\rho^3&amp;\rho^2&amp;\rho&amp;\rho^2&amp;\rho^3
+\\
+\rho^6&amp;\rho^5&amp;\rho^4&amp;\rho^3&amp;\rho^2&amp;\rho&amp;\rho^2
+\\
+\rho^7&amp;\rho^6&amp;\rho^5&amp;\rho^4&amp;\rho^3&amp;\rho^2&amp;\rho
+\\
+\end{pmatrix},
+\]</span> which is completely dense. This is a generic property: the
+inverse of a sparse matrix is usually dense (it’s dense as long as the
+graph associated with the sparse matrix has a single connected component
+there’s a matrix with the same pattern of non-zeros that has a fully
+dense inverse) and the entries <a
+href="https://eudml.org/doc/130625">satisfy geometric decay
+bounds</a>.<a href="#fnref29" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn30" role="doc-endnote"><p>Remember: <span
+class="math inline">\(W\)</span> is diagonal and known.<a
+href="#fnref30" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn31" role="doc-endnote"><p>Not if you’re doing some wild dummy
+coding shit or modelling text, but typically.<a href="#fnref31"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn32" role="doc-endnote"><p>You’d think that dense rows and
+columns would be a problem but they’re not. A little graph theory and a
+little numerical linear algebra says that as long as they are the last
+variables in the model, the algorithms will still be efficient. That
+said, if you want to <em>dig in</em>, sparse algorithms typically don’t
+take good advantage of level 2 and 3 Blas operations for their dense
+rows and columns, which means that they are not as cache efficient as
+they potentially could be. But to my knowledge exactly nobody does
+anything about that because it would be a) a nightmare, and b) these
+algorithms are typically developed by people who want to solve PDEs
+numerically and they’re much less likely to run into a lot of dense rows
+and columns. So it is, for them, a bit of a fringe issue. And, really,
+it’s mostly fine for us too. It’s kinda rare to have a huge number of
+covariates in the sorts of models that use these complex random effects.
+(Or if you do, you better light your Sinead O’Connor votive candle
+because honestly you have a lot of problems and you’re gonna need
+healing.)<a href="#fnref32" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn33" role="doc-endnote"><p>If you’ve been reading the
+footnotes, you’ll recall that sometimes one of these precision matrices
+on the diagonal will be singular. Sometimes that’s because you fucked up
+your programming. But other times it’s because you’re using something
+like an ICAR (intrinsic conditional autoregressive) prior on one of your
+components. The precision matrix for this model is <span
+class="math inline">\(Q_\text{ICAR} = \tau_\text{ICAR} = \tau
+\text{Adj}(\mathcal{G})\)</span>, where <span
+class="math inline">\(\operatorname{Adj}(\mathcal{G})\)</span> is the
+adjacency matrix of some fixed graph <span
+class="math inline">\(\mathcal{G}\)</span> (typically describing
+something like which postcodes are next to each other). <a
+href="https://www.routledge.com/Gaussian-Markov-Random-Fields-Theory-and-Applications/Rue-Held/p/book/9781584884323">Some
+theory</a> suggests that if <span
+class="math inline">\(\mathcal{G}\)</span> has <span
+class="math inline">\(d\)</span> connected components, the zero
+determinant should be replaced with <span class="math inline">\(\tau^{(m
+- d)/2}\)</span>, where <span class="math inline">\(m\)</span> is the
+number of vertices in <span
+class="math inline">\(\mathcal{G}\)</span>.<a href="#fnref33"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+<!--radix_placeholder_article_footer-->
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom"></div>
+<!--/radix_placeholder_appendices-->
+<!--radix_placeholder_navigation_after_body-->
+<!--/radix_placeholder_navigation_after_body-->
+
+</body>
+
+</html>

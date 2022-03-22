@@ -1,0 +1,293 @@
+---
+title: "A linear mixed model"
+description: |
+  Hubris. Just hubris. 
+author:
+  - name: Dan Simpson
+    url: https://dpsimpson.github.io
+date: 03-22-2022
+output:
+  distill::distill_article:
+    self_contained: false
+draft: true
+css: box.css
+---
+
+Sometimes, you've just got to set yourself a task. And I've decided,
+for no particular reason at all, that I should be better at Python. This
+is a modest goal. I am currently shit at Python. So I'm unlikely to get 
+worse.
+
+Part of the reason why I'm a shit Python programmer is I don't really have
+any reason to use it in my day-to-day job. So I've been trying to come
+up with one. And come up with one I did.
+
+I want to test out some ideas I have for making linear mixed effects-type
+models faster in Stan. "But Daniel", you sigh, "Stan is not written in Python." No it fucking isn't. It's written in C++ and, while I am actually
+a better C++ programmer than I am a Python programmer, it is slow as balls
+to prototype in and the overhead for something I'm not sure will work is
+just too hard.
+
+This has been flopping around in my haunted clown car of a brain for a 
+while, but the other night I realised how I could actually go about 
+doing it: I could use PyMC.
+
+PyMC is written^[I haven't checked. Bits of it are probably at least a
+little in C++. But hey. No one's perfect.] in Python, so extending it
+would give me an excuse to buff up my Python skills. It will also give 
+me a solid chance to actually let loose on JAX and see what it can do.
+
+All in all, I expect this to be a shitshow, but maybe it'll be fun.
+
+The (planned) order of service is as follows:
+
+1. A quick write up on the model I want to fit.
+2. A JAX-implementation of the log-likelihood. (This, I promise you, will hurt)
+3. PyMC bindings!
+4. Let's see if it works!
+5. Can we make it better?
+
+## A generalised linear mixed effects-ish model
+
+If you were to open the correct textbook, or the [Bates, Mächler, Boler, and Walker 2015 masterpiece paper](https://www.jstatsoft.org/article/view/v067i01) that describes the workings of `lme4`, you will see the linear mixed model written as $$
+y ~ X\beta + Zb + \epsilon,
+$$
+where 
+
+- the columns of $X$ contain the covariates^[and the intercept if it's needed], 
+- $\beta$ is a vector of unknown regression coefficients, 
+- $Z$ is a known matrix that describes the random effects (basically which observation is linked to which random effect),
+- $b \sim N(0, \Sigma_b)$ is the vector of random effects with some unknown covariance matrix $\Sigma_b$,
+- and $\epsilon ~ N(0 ,\sigma^2 W)$ is the observation noise (here $W$ is a known diagonal matrix).
+
+But unlike Doug Bates and his friends, my aim is to do Bayesian computation. In this situation, $\beta$ _also_ has a prior on it! In fact, I'm going to also put a prior $\beta \sim N(0, R)$, for some known^[Default options include the identity matrix or some multiple of the identity matrix.] matrix $R$.
+
+This means that I can treat $\beta$ and $b$ the same^[REML heads don't dismay. You can do all kinds of weird shit by choosing some of these matrices in certain ways. I'm not gonna stop you. I love and support you. Good vibes only.] way! And I'm going to do just that. I'm going to put them together into a vector $u = (\beta^T, b^T)^T$. Because the prior on $u$ is Gaussian^[The priors on $\beta$ and $b$ are independent Gaussian so it has to be.], I'm sometimes going to call $u$ the _Gaussian component_ or even the _latent_^[Latent = not directly observed but you think it's there. Like latent homosexuality.] Gaussian component.
+
+Now that I've smooshed my fixed and random effects together, I don't really need to keep $X$ and $Z$ separate. So I'm going push them together into a rectangular matrix $$
+A = [X \vdots Z].
+$$ 
+
+This allows us to re-write the model as 
+\begin{align*}
+y \mid u, \sigma & \sim N(A u, \sigma^2 W)\\
+u \mid \theta \sim N(0, Q(\theta)^{-1}).
+\end{align*}
+
+What the hell is $Q(\theta)$ and why are we suddenly parameterising a multivariate normal distribution by the inverse of its covariance matrix (which, if you're curious, is known as a _precision_ matrix)???
+
+I will take your questions in reverse order. 
+
+We are parameterising by the precision^[Inverse correlation matrix] matrix because it will simplify our formulas and lead to faster computations. This will be a major topic for us later!
+
+As to what $Q(\theta)$ is, it is the matrix $$
+Q(\theta) = \begin{pmatrix} \Sigma_b^{-1} & 0 \\ 0 & R^{-1}\end{pmatrix}
+$$ and $\theta = (\sigma, \Sigma_b)$ is the collection of all^[excluding the fixed ones, like $W$ and $A$ and $R$. ] non-Gaussian parameters in the model.
+
+This is a _very_ generic model. It happily contains things like 
+
+- Linear regression!
+- Linear regression with horseshoe priors!
+- Linear mixed effects models!
+- Linear regression with splines (smoothing or basis)!
+- Spatial models like ICARs etc etc etc
+- Gaussian processes (begrudgingly, those you should formulate in terms of the covariance matrix and not the precision)
+- Any combination of these things!
+
+So if I manage to get this implemented efficiently, all of these models will become efficient too. All it will cost is a truly shithouse^[I would suggest a lot of syntactic sugar if you were ever going to expose this stuff to users.] interface.
+
+The only downside of this degree of flexibility compared to just implementing a straight linear mixed model with $X$ and $Z$ and $\beta$ and $b$ all living separately is that there are a couple of tricks^[See the Bates _et al._ paper. Their formulation is fabulous but doesn't extend nicely to the situations I care about! Basically they optimise for the situation where $\Sigma_b$ can be singular, which is an issue when you're doing optimisation. I care about the case where "$\Sigma_b^{-1}$" is defined as a singular matrix as this occurs in many important models like smoothing splines and ICAR models (which are extremely popular in spatial epidemiology).] to improve numerical stability that we can't use.
+
+## Let's get the posterior!
+
+The nice thing about thing about this model is that it is a normal likelihood with a normal prior, so we can easily compute two key quantities:
+
+- The "full conditional" distribution $p(u \mid y, \theta)$, which is useful for getting posterior information about $b$ and $\beta$, and
+
+- The marginal posterior $p(\theta \mid y)$.
+
+This means that we do not need to do MCMC on the joint space $(u, \theta)$! We can instead write a model to draw samples from $p(\theta \mid y)$, which is much lower-dimensional and easier^[It's easier in two ways. Firstly, MCMC likes lower-dimensional targets. They are typically easier to sample from! Secondly, the posterior geometry of $p(\theta \mid y)$ is usually pretty simple, while the joint posterior $p(\theta, u \mid y)$ has an annoying tendency to have a funnel in it, which forces us to do all kinds of annoying reparameterisation tricks to stop it from shitting the bed.] to sample from, and then compute the joint posterior by sampling from the full conditional.
+
+
+I talked a little about the mechanics of this in a [previous blog post about conjugate priors](https://dansblog.netlify.app/posts/2021-10-14-priors2/),  but let's do the derivations. Why? Because they're not too hard and it's useful to have them written out somewhere.
+
+
+### The full conditional
+
+First we need to compute $p(u \mid y , \theta)$. The first thing that we note is that conditional distributions are always proportional to the joint distribution (we're literally just pretending some things are constant), so we get
+\begin{align*}
+p(u \mid y , \theta) &\propto p(y \mid u, \theta) p(u \mid \theta) p(theta) \\
+&\propto \exp\left[-\frac{1}{2\sigma^2} (y - Au)^TW^{-1}(y-Au)\right]\exp\left[-\frac{1}{2}u^TQ(\theta)u\right].
+\end{align*}
+
+Now we just need to expand things out and work out what the mean and the precision matrix of $p(u \mid \theta y)$ (which is Gaussian!) are.
+
+Computing posterior distributions by hand is a dying^[Computers!] art. So my best and only advice to you: don't be a hero. Just pattern match like the rest of us. To do this, we need to know what the density of a multivarite normal distribution looks like _deep_ down in its soul. 
+
+Behold^[Design is my passion.]: the ugly `div` box!
+
+:::note
+
+If $$
+u \sim N(m, P^{-1}),
+$$ then 
+\begin{align*}
+p(u) &\propto \exp\left[- \frac{1}{2}(u - m)^TP(u-m)\right] \\
+&\propto \exp\left[- \frac{1}{2}u^TPu + m^TPu\right],
+\end{align*}
+where I just dropped all of the terms that didn't involve $u$.
+
+:::
+
+This means the plan is to 
+
+1. Expand out the quadratics in the exponential term so we get something that looks like $\exp\left[-\frac{1}{2}u^TPu + z^Tu\right]$
+2. The matrix $P$ will be the precision matrix of $u \mid y, \theta$.
+3. The mean of $\mu \mid y, theta$ is $P^{-1}z$.
+
+So let's do it!
+
+\begin{align*}
+p(u \mid y , \theta) &\propto \exp\left[-\frac{1}{2\sigma^2} u^TA^TW^{-1}Au + \frac{1}{\sigma^2}(A^TW^{-1}y)^Tu\right]\exp\left[-\frac{1}{2}u^TQ(\theta)u\right] \\
+&\propto \exp\left[-\frac{1}{2}u^T\left(Q + \frac{1}{\sigma^2}A^TW^{-1}A\right)u +  \frac{1}{\sigma^2}(A^TW^{-1}y)^Tu\right].
+\end{align*}
+
+This means that $p(u \mid y ,\theta)$ is multivariate normal with
+
+
+- precision matrix $Q_{u\mid y,\theta}(\theta) = \left(Q(\theta) + \frac{1}{\sigma^2}A^TW^{-1}A\right)$ and
+
+- mean^[It's possible to rearrange things to lose that $\frac{1}{\sigma^2}$, which I admit looks a bit weird. It cancels out down the line.] $\mu_{u\mid y,\theta}(\theta) = \frac{1}{\sigma^2} Q_{u\mid y,\theta}(\theta)^{-1} A^TW^{-1}y$.
+
+This means if I build an MCMC scheme to give me $B$ samples  $\theta_b \sim p(\theta \mid y)$, $b = 1, \ldots, B$, then I can turn them into $B$ samples $(\theta_b, u_b)$ from $p(\theta, u \mid y)$ by doing the following.
+
+:::note
+
+For $b = 1, \ldots, B$ {
+
+-  Simulate $u_b \sim N\left(\mu_{u\mid y,\theta}(\theta_b), Q_{u\mid y,\theta}(\theta_b)^{-1}\right)$
+
+- Store the pair $(\theta_b, u_b)$
+
+}
+
+:::
+
+Easy^[I have, historically, not had the greatest grip on whether or not things are easy.] as! 
+
+### Writing down $p(\theta \mid y)$
+
+So now we just^[See above.] have to get the marginal posterior for the non-Gaussian parameters $\theta$. We only need it up to a constant of proportionality, so we can express the joint probability $p(y, u, \theta)$ in two equivalent ways to get
+\begin{align*}
+p(y, u , \theta) &= p(y, u, \theta) \\
+p(u \mid \theta, y) p(\theta \mid y) p(y) &= p(y \mid u, \theta) p(u \mid \theta)p(\theta). \\
+\end{align*}
+
+Rearranging, we get 
+\begin{align*}
+ p(\theta \mid y) &= \frac{p(y \mid u, \theta) p(u \mid \theta)p(\theta)}{p(u \mid \theta, y)p(y)} \\
+ &\propto \frac{p(y \mid u, \theta) p(u \mid \theta)p(\theta)}{p(u \mid \theta, y)}.
+\end{align*}
+
+This is generically true. If you have access to the full conditional distribution^[Or a good approximation to it. Laplace approximations work very well for this to extend everything we're doing here from a linear mixed-ish model to a generalised linear mixed-ish model.] for $u$ you can marginalise $u$ out. No weird integrals required.
+
+But there's one oddity: there is a $u$ on the right hand side, but no $u$ on the left hand side. What we have actually found is a whole continuum of functions that are proportional to $p(\theta \mid y)$. It truly does not matter which one we choose. 
+
+But some choices make the algebra slightly nicer. (And remember, I'm gonna have to implement this later, so I should probably keep and eye on that.)
+
+A good^[This is actually a bit dangerous on the face of it because it depends on $\theta$. You can convince yourself it's ok. Choosing $u=0$ is less stress inducing, but I wanted to bring out the parallel to using a Laplace approximation to $p(u \mid \theta, y)$, in which case we really want to evaluate the ratio at the point where the approximation is the best (aka the conditional mean).] generic choice is $u = \mu_{u\mid y, \theta}(\theta)$.
+
+The algebra here can be a bit tricky^[A common mistake is to forget the parameter dependent proportionality constants from the normal distribution. You didn't need them before because you were conditioning on $\theta$ so they were all constant. But now $\theta$ is unknown and if we forget them an angel will cry.], so let's write out each function evaluated at $u = \mu_{u\mid y, \theta}(\theta)$.
+
+The bit from the likelihood is
+\begin{align*}
+p(y \mid u = \mu_{u\mid y, \theta}(\theta), \theta) &\propto \sigma^{-n} \exp\left[-\frac{1}{2\sigma^2}(y - A\mu_{u\mid y, \theta}(\theta))^TW^{-1}(y-  A\mu_{u\mid y, \theta}(\theta))\right]\\
+&\propto \sigma^{-n}\exp\left[\frac{-1}{2\sigma^2} \mu_{u\mid y, \theta}(\theta)^TA^TW^{-1}A\mu_{u\mid y, \theta}(\theta) + \frac{1}{\sigma^2} y^T W^{-1}A \mu_{u\mid y, \theta}(\theta)\right],
+\end{align*}
+where $n$ is the length of $y$.
+
+The bit from the prior on $u$ is 
+\begin{align*}
+p(\mu_{u\mid y, \theta}(\theta) \mid \theta )
+\propto |Q(\theta)|^{1/2}\exp\left[-\frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TQ(\theta)\mu_{u\mid y, \theta}(\theta)\right].
+\end{align*}
+
+Finally, we get that the denominator is $$
+p(\mu_{u\mid y, \theta}(\theta) \mid y, \theta) \propto |Q_{u\mid y, \theta}(\theta)|^{1/2}
+$$ as the exponential term^[Honest footnote: This started as $p(\mu_{u\mid y, \theta}(\theta) \mid y, \theta) \propto 1$ because I don't read my own warnings.] cancels!
+
+Ok. Let's finish this. (Incidentally, if you're wondering why Bayesians love MCMC, this is why.)
+
+\begin{align*}
+p(\theta \mid y) &\propto p(\theta) \frac{|Q(\theta)|}{|Q_{u\mid y, \theta}(\theta)|} \exp\left[-\frac{1}{2} \mu_{u\mid y, \theta}(\theta)^T(Q(\theta) + \frac{1}{\sigma^2}A^TW^{-1}A)\mu_{u\mid y, \theta}(\theta) + \frac{1}{\sigma^2} y^T W^{-1}A \mu_{u\mid y, \theta}(\theta)\right] \\
+&=  p(\theta) \frac{|Q(\theta)|}{|Q_{u\mid y, \theta}(\theta)|} \exp\left[-\frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TQ_{u\mid y, \theta}(\theta)\mu_{u\mid y, \theta}(\theta) + \frac{1}{\sigma^2} y^T W^{-1}A \mu_{u\mid y, \theta}(\theta)\right].
+\end{align*}
+
+We can now use the fact that $Q_{u\mid y, \theta}(\theta)\mu_{u\mid y, \theta}(\theta) = A^TW^{-1}y$ to get
+
+\begin{align*}
+p(\theta \mid y) &\propto p(\theta) \frac{|Q(\theta)|}{|Q_{u\mid y, \theta}(\theta)|} \exp\left[-\frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TA^TW^{-1}y + \frac{1}{\sigma^2} y^T W^{-1}A \mu_{u\mid y, \theta}(\theta)\right] \\
+&=\frac{|Q(\theta)|}{|Q_{u\mid y, \theta}(\theta)|} \exp\left[\frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TA^TW^{-1}y \right] .
+\end{align*}
+
+For those who just love a log-density, this is $$
+\log(p(\theta \mid y)) = \frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TA^TW^{-1}y + \log(|Q(\theta)|) - \log(|Q_{u\mid y, \theta}(\theta)|).
+$$ A fairly simple expression^[The brave or foolish amongst you might want to convince yourselves that this collapses to _exactly_ the marginal likelihood we would've gotten from Rasmussen and Williams had we made a sequence of different life choices.] for all of that work.
+
+## So why isn't this just a Gaussian process?
+
+These days, people^[Or, at least, people who have made it this far into the post.] are more than passingly familiar^[You like GPs bro? [Give me a sequence of increasingly abstract definitions.](https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/) I'm waiting.] with Gaussian processes. And so they're quite possibly wondering why this isn't all just an extremely inconvenient way to do the exact same computations you do with a GP.
+
+Let me tell you. It is _all_ about $Q(\theta)$ and $A$.
+
+The prior precision matrix $Q(\theta)$ is typically block diagonal. This special structure makes it pretty easy to compute the $|Q(\theta)|$ term^[Multiply the determinants of the matrices along the diagonal.]. But, of course, there's more going on here. 
+
+In linear mixed effects models, these blocks on the diagonal matrix are typically fairly small (their size is controlled by the number of levels in the variable you're stratifying by). Moreover, the matrices on the diagonal of $Q(\theta)$ are the inverses of either diagonal or block diagonal matrices that themselveshave quite small blocks^[Look at the Bates et al paper. Specifically section 2.2. `lme4` is a really clever thing.]. 
+
+In models that have more structured random effects^[examples: smoothing splines, AR(p) models, areal spatial models, [some Gaussian processes if you're careful](https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/)], the diagonal blocks of $Q(\theta)$ can get quite large^[10^4-10^6 is not unheard of]. Moreover, the matrices on these blocks are usually not block diagonal. 
+
+Thankfully, these prior precision matrices do have something going for them: most of their entries are zero. We refer to these types of matrices as _sparse matrices_. There are some marvelous algorithms for factorising sparse matrices that are usually a lot more efficient^[A dense matrix factorisation of an $n\times n$ matrix costs $\mathcal{O}(n^3)$. The same factorisation of a sparse matrix can cost as little as $\mathcal{O}(n)$ if you're very lucky. More typically it clocks in a $\mathcal{O}(n^{1.5})$--$\mathcal{O}(n^{2})$, which is still a substantial saving!] than algorithms for dense matrices.
+
+So the prior precision^[It's important that we are talking about _precision_ matrices here and not covariance matrices as the inverse of a sparse matrix is typically dense. For instance, an AR(1) prior with autocorrelation parameter $\rho$ has a prior has a sparse precision matrix that looks something like $$
+Q = \frac{1}{\tau^2}\begin{pmatrix} 
+1 & -\rho &&&&& \\
+-\rho&1 + \rho^2& -\rho&&&& \\
+&-\rho& 1 + \rho^2 &- \rho&&& \\
+&&-\rho& 1 + \rho^2&-\rho&& \\
+&&&-\rho&1+\rho^2 &-\rho & \\
+&&&&-\rho&1 + \rho^2& - \rho \\
+&&&&&-\rho&1
+\end{pmatrix}.
+$$ On the other hand, the _covariance matrix_ is fully dense $$
+Q^{-1} = \tau^2\begin{pmatrix}
+\rho&\rho^2&\rho^3&\rho^4&\rho^5&\rho^6&\rho^7 \\
+\rho^2&\rho&\rho^2&\rho^3&\rho^4&\rho^5&\rho^6 \\
+\rho^3&\rho^2&\rho&\rho^2&\rho^3&\rho^4&\rho^5 \\
+\rho^4&\rho^3&\rho^2&\rho&\rho^2&\rho^3&\rho^4 \\
+\rho^5&\rho^4&\rho^3&\rho^2&\rho&\rho^2&\rho^3 \\
+\rho^6&\rho^5&\rho^4&\rho^3&\rho^2&\rho&\rho^2 \\
+\rho^7&\rho^6&\rho^5&\rho^4&\rho^3&\rho^2&\rho \\
+\end{pmatrix},
+$$ which is completely dense. This is a generic property: the inverse of a sparse matrix is usually dense (it's dense as long as the graph associated with the sparse matrix has a single connected component there's a matrix with the same pattern of non-zeros that has a fully dense inverse) and the entries [satisfy geometric decay bounds](https://eudml.org/doc/130625).] is a sparse matrix. What about the precision matrix of $[u \mid y, \theta]$? 
+
+It is also sparse! Recall that $A = [Z \vdots X]$. This means that $$
+\frac{1}{\sigma^2}A^TW^{-1}A = \frac{1}{\sigma^2}\begin{pmatrix} Z^T W^{-1}Z & Z^T W^{-1}X \\ X^T W^{-1} Z & X^TW^{-1}X \end{pmatrix}.
+$$
+Remembering that $Z$ is a matrix that links the stacked vector of random effects $b$ to each observation. Typically, the likelihood $p(y_i \mid \theta)$ will only depend on a small number of entries of $b$, which suggests that most elements in each row of $Z$ will be zero. This, in turn, implies that $Z$ is sparse and so is^[Remember: $W$ is diagonal and known.] $Z^TW^{-1}Z$.
+
+On the other hand, the other three blocks are usually^[Not if you're doing some wild dummy coding shit or modelling text, but typically.] fully dense. Thankfully, though, the usual situation is that $b$ has _far_ more elements that $\beta$, which means that $A^TW^{-1}A$ is still sparse and we can still use our special algorithms^[You'd think that dense rows and columns would be a problem but they're not. A little graph theory and a little numerical linear algebra says that as long as they are the last variables in the model, the algorithms will still be efficient. That said, if you want to _dig in_, sparse algorithms typically don't take good advantage of level 2 and 3 Blas operations for their dense rows and columns, which means that they are not as cache efficient as they potentially could be. But to my knowledge exactly nobody does anything about that because it would be a) a nightmare, and b) these algorithms are typically developed by people who want to solve PDEs numerically and they're much less likely to run into a lot of dense rows and columns. So it is, for them, a bit of a fringe issue. And, really, it's mostly fine for us too. It's kinda rare to have a huge number of covariates in the sorts of models that use these complex random effects. (Or if you do, you better light your Sinead O'Connor votive candle because honestly you have a lot of problems and you're gonna need healing.)]. 
+
+All of this suggests that, under usual operating conditions, $Q_{u\mid y, \theta}$ is _also_ a sparse matrix.
+
+And that's _great_ because that means that we can compute the log-posterior using only 3 main operations:
+
+1. Computing $\log(|Q(\theta)$). This matrix is block diagonal so you can just multiply together the determinants^[If you've been reading the footnotes, you'll recall that sometimes one of these precision matrices on the diagonal will be singular. Sometimes that's because you fucked up your programming. But other times it's because you're using something like an ICAR (intrinsic conditional autoregressive) prior on one of your components. The precision matrix for this model is $Q_\text{ICAR} = \tau_\text{ICAR} = \tau \text{Adj}(\mathcal{G})$, where $\operatorname{Adj}(\mathcal{G})$ is the adjacency matrix of some fixed graph $\mathcal{G}$ (typically describing something like which postcodes are next to each other). [Some theory](https://www.routledge.com/Gaussian-Markov-Random-Fields-Theory-and-Applications/Rue-Held/p/book/9781584884323) suggests that if $\mathcal{G}$ has $d$ connected components, the zero determinant should be replaced with $\tau^{(m - d)/2}$, where $m$ is the number of vertices in $\mathcal{G}$.] of the diagonal blocks, which are relatively cheap to compute.
+
+2. Computing $\mu_{u \mid y, \theta}(\theta)$. This requires solving the sparse linear system $Q_{u \mid y, \theta} \mu_{u \mid y, \theta} = \frac{1}{\sigma^2}A^TW^{-1}y$. This is going to rely on some fancy pants sparse matrix algorithm.
+
+3. Computing $\log(|Q_{u \mid y, \theta}(\theta)$. This is, thankfully, a by-product of the things we need to compute to solve the linear system in the previous task.
+
+## What I? What I? [What I gotta do to get this model in PyMC](https://www.youtube.com/watch?v=fqTSaMR75ns)
+
+The first task is not hard at all.
+
