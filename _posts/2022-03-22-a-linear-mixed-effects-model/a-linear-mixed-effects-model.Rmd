@@ -12,6 +12,10 @@ output:
     pandoc_args: !expr rmdfiltr::add_wordcount_filter()
 draft: false
 css: box.css
+twitter:
+  creator: "@dan_p_simpson"
+creative_commons: CC BY-NC
+repository_url: https://github.com/dpsimpson/blog/tree/master/_posts/2022-03-22-a-linear-mixed-effects-model
 ---
 
 Back in the early days of the pandemic I though "I'll have a pandemic project". I never did my pandemic project. 
