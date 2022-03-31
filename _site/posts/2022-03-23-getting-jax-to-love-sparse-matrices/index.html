@@ -1,0 +1,3107 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="distill" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+  <!--radix_placeholder_meta_tags-->
+<title>Un garçon pas comme les autres (Bayes): An invitation to a sparse Cholesky factorisation</title>
+
+<meta property="description" itemprop="description" content="Come for the details, stay for the shitty Python, leave with disappointment. Not unlike the experience of dating me."/>
+
+<link rel="canonical" href="https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/"/>
+
+<!--  https://schema.org/Article -->
+<meta property="article:published" itemprop="datePublished" content="2022-03-31"/>
+<meta property="article:created" itemprop="dateCreated" content="2022-03-31"/>
+<meta name="article:author" content="Dan Simpson"/>
+
+<!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+<meta property="og:title" content="Un garçon pas comme les autres (Bayes): An invitation to a sparse Cholesky factorisation"/>
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="Come for the details, stay for the shitty Python, leave with disappointment. Not unlike the experience of dating me."/>
+<meta property="og:url" content="https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/"/>
+<meta property="og:image" content="https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-7-1.png"/>
+<meta property="og:image:width" content="1248"/>
+<meta property="og:image:height" content="768"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:site_name" content="Un garçon pas comme les autres (Bayes)"/>
+
+<!--  https://dev.twitter.com/cards/types/summary -->
+<meta property="twitter:card" content="summary_large_image"/>
+<meta property="twitter:title" content="Un garçon pas comme les autres (Bayes): An invitation to a sparse Cholesky factorisation"/>
+<meta property="twitter:description" content="Come for the details, stay for the shitty Python, leave with disappointment. Not unlike the experience of dating me."/>
+<meta property="twitter:url" content="https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/"/>
+<meta property="twitter:image" content="https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-7-1.png"/>
+<meta property="twitter:image:width" content="1248"/>
+<meta property="twitter:image:height" content="768"/>
+
+<!--  https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->
+<meta name="citation_title" content="Un garçon pas comme les autres (Bayes): An invitation to a sparse Cholesky factorisation"/>
+<meta name="citation_fulltext_html_url" content="https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/"/>
+<meta name="citation_online_date" content="2022/03/31"/>
+<meta name="citation_publication_date" content="2022/03/31"/>
+<meta name="citation_author" content="Dan Simpson"/>
+<!--/radix_placeholder_meta_tags-->
+  <!--radix_placeholder_rmarkdown_metadata-->
+
+<script type="text/json" id="radix-rmarkdown-metadata">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","draft","citation_url","canonical_url"]}},"value":[{"type":"character","attributes":{},"value":["An invitation to a sparse Cholesky factorisation"]},{"type":"character","attributes":{},"value":["Come for the details, stay for the shitty Python, leave with disappointment. Not unlike the experience of dating me."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Dan Simpson"]},{"type":"character","attributes":{},"value":["https://dpsimpson.github.io"]}]}]},{"type":"character","attributes":{},"value":["2022-03-31"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight","pandoc_args"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["pygments"]},{"type":"character","attributes":{},"value":["--lua-filter","/Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/library/rmdfiltr/wordcount.lua"]}]}]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/"]},{"type":"character","attributes":{},"value":["https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/"]}]}
+</script>
+<!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["getting-jax-to-love-sparse-matrices_files/anchor-4.2.2/anchor.min.js","getting-jax-to-love-sparse-matrices_files/bowser-1.9.3/bowser.min.js","getting-jax-to-love-sparse-matrices_files/distill-2.2.21/template.v2.js","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-10-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-11-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-6-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-7-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-8-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-9-1.png","getting-jax-to-love-sparse-matrices_files/header-attrs-2.11/header-attrs.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.min.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.min.map","getting-jax-to-love-sparse-matrices_files/popper-2.6.0/popper.min.js","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy-bundle.umd.min.js","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy-light-border.css","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy.css","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy.umd.min.js","getting-jax-to-love-sparse-matrices_files/webcomponents-2.0.0/webcomponents.js","Python/factorisation.py","Python/main.py"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+<meta name="distill:offset" content="../.."/>
+
+<script type="application/javascript">
+
+  window.headroom_prevent_pin = false;
+
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+
+    // initialize headroom for banner
+    var header = $('header').get(0);
+    var headerHeight = header.offsetHeight;
+    var headroom = new Headroom(header, {
+      tolerance: 5,
+      onPin : function() {
+        if (window.headroom_prevent_pin) {
+          window.headroom_prevent_pin = false;
+          headroom.unpin();
+        }
+      }
+    });
+    headroom.init();
+    if(window.location.hash)
+      headroom.unpin();
+    $(header).addClass('headroom--transition');
+
+    // offset scroll location for banner on hash change
+    // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
+    window.addEventListener("hashchange", function(event) {
+      window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
+    });
+
+    // responsive menu
+    $('.distill-site-header').each(function(i, val) {
+      var topnav = $(this);
+      var toggle = topnav.find('.nav-toggle');
+      toggle.on('click', function() {
+        topnav.toggleClass('responsive');
+      });
+    });
+
+    // nav dropdowns
+    $('.nav-dropbtn').click(function(e) {
+      $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
+      $(this).parent().siblings('.nav-dropdown')
+         .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
+    });
+    $("body").click(function(e){
+      $('.nav-dropdown-content').removeClass('nav-dropdown-active');
+    });
+    $(".nav-dropdown").click(function(e){
+      e.stopPropagation();
+    });
+  });
+</script>
+
+<style type="text/css">
+
+/* Theme (user-documented overrideables for nav appearance) */
+
+.distill-site-nav {
+  color: rgba(255, 255, 255, 0.8);
+  background-color: #0F2E3D;
+  font-size: 15px;
+  font-weight: 300;
+}
+
+.distill-site-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.distill-site-nav a:hover {
+  color: white;
+}
+
+@media print {
+  .distill-site-nav {
+    display: none;
+  }
+}
+
+.distill-site-header {
+
+}
+
+.distill-site-footer {
+
+}
+
+
+/* Site Header */
+
+.distill-site-header {
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 3;
+}
+
+.distill-site-header .nav-left {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+@media screen and (max-width: 768px) {
+  .distill-site-header .nav-left {
+    margin-left: 0;
+  }
+}
+
+
+.distill-site-header .nav-right {
+  float: right;
+  margin-right: 8px;
+}
+
+.distill-site-header a,
+.distill-site-header .title {
+  display: inline-block;
+  text-align: center;
+  padding: 14px 10px 14px 10px;
+}
+
+.distill-site-header .title {
+  font-size: 18px;
+  min-width: 150px;
+}
+
+.distill-site-header .logo {
+  padding: 0;
+}
+
+.distill-site-header .logo img {
+  display: none;
+  max-height: 20px;
+  width: auto;
+  margin-bottom: -4px;
+}
+
+.distill-site-header .nav-image img {
+  max-height: 18px;
+  width: auto;
+  display: inline-block;
+  margin-bottom: -3px;
+}
+
+
+
+@media screen and (min-width: 1000px) {
+  .distill-site-header .logo img {
+    display: inline-block;
+  }
+  .distill-site-header .nav-left {
+    margin-left: 20px;
+  }
+  .distill-site-header .nav-right {
+    margin-right: 20px;
+  }
+  .distill-site-header .title {
+    padding-left: 12px;
+  }
+}
+
+
+.distill-site-header .nav-toggle {
+  display: none;
+}
+
+.nav-dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.nav-dropdown .nav-dropbtn {
+  border: none;
+  outline: none;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 16px 10px;
+  background-color: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+  margin-top: 1px;
+  z-index: 2;
+}
+
+.nav-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 200px;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 4px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+  z-index: 1;
+  margin-top: 2px;
+  white-space: nowrap;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.nav-dropdown-content hr {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-dropdown-active {
+  display: block;
+}
+
+.nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
+  color: black;
+  padding: 6px 24px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.nav-dropdown-content .nav-dropdown-header {
+  display: block;
+  padding: 5px 24px;
+  padding-bottom: 0;
+  text-transform: uppercase;
+  font-size: 14px;
+  color: #999999;
+  white-space: nowrap;
+}
+
+.nav-dropdown:hover .nav-dropbtn {
+  color: white;
+}
+
+.nav-dropdown-content a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.nav-right .nav-dropdown-content {
+  margin-left: -45%;
+  right: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
+  .distill-site-header a.nav-toggle {
+    float: right;
+    display: block;
+  }
+  .distill-site-header .title {
+    margin-left: 0;
+  }
+  .distill-site-header .nav-right {
+    margin-right: 0;
+  }
+  .distill-site-header {
+    overflow: hidden;
+  }
+  .nav-right .nav-dropdown-content {
+    margin-left: 0;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  .distill-site-header.responsive {position: relative; min-height: 500px; }
+  .distill-site-header.responsive a.nav-toggle {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .distill-site-header.responsive a,
+  .distill-site-header.responsive .nav-dropdown {
+    display: block;
+    text-align: left;
+  }
+  .distill-site-header.responsive .nav-left,
+  .distill-site-header.responsive .nav-right {
+    width: 100%;
+  }
+  .distill-site-header.responsive .nav-dropdown {float: none;}
+  .distill-site-header.responsive .nav-dropdown-content {position: relative;}
+  .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* Site Footer */
+
+.distill-site-footer {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  z-index: 3;
+  margin-top: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  text-align: center;
+}
+
+/* Headroom */
+
+d-title {
+  padding-top: 6rem;
+}
+
+@media print {
+  d-title {
+    padding-top: 4rem;
+  }
+}
+
+.headroom {
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.headroom--transition {
+  transition: all .4s ease-in-out;
+}
+
+.headroom--unpinned {
+  top: -100px;
+}
+
+.headroom--pinned {
+  top: 0;
+}
+
+/* adjust viewport for navbar height */
+/* helps vertically center bootstrap (non-distill) content */
+.min-vh-100 {
+  min-height: calc(100vh - 100px) !important;
+}
+
+</style>
+
+<script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="../../site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
+<link href="../../site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
+<script src="../../site_libs/headroom-0.9.4/headroom.min.js"></script>
+<script src="../../site_libs/autocomplete-0.37.1/autocomplete.min.js"></script>
+<script src="../../site_libs/fuse-6.4.1/fuse.min.js"></script>
+
+<script type="application/javascript">
+
+function getMeta(metaName) {
+  var metas = document.getElementsByTagName('meta');
+  for (let i = 0; i < metas.length; i++) {
+    if (metas[i].getAttribute('name') === metaName) {
+      return metas[i].getAttribute('content');
+    }
+  }
+  return '';
+}
+
+function offsetURL(url) {
+  var offset = getMeta('distill:offset');
+  return offset ? offset + '/' + url : url;
+}
+
+function createFuseIndex() {
+
+  // create fuse index
+  var options = {
+    keys: [
+      { name: 'title', weight: 20 },
+      { name: 'categories', weight: 15 },
+      { name: 'description', weight: 10 },
+      { name: 'contents', weight: 5 },
+    ],
+    ignoreLocation: true,
+    threshold: 0
+  };
+  var fuse = new window.Fuse([], options);
+
+  // fetch the main search.json
+  return fetch(offsetURL('search.json'))
+    .then(function(response) {
+      if (response.status == 200) {
+        return response.json().then(function(json) {
+          // index main articles
+          json.articles.forEach(function(article) {
+            fuse.add(article);
+          });
+          // download collections and index their articles
+          return Promise.all(json.collections.map(function(collection) {
+            return fetch(offsetURL(collection)).then(function(response) {
+              if (response.status === 200) {
+                return response.json().then(function(articles) {
+                  articles.forEach(function(article) {
+                    fuse.add(article);
+                  });
+                })
+              } else {
+                return Promise.reject(
+                  new Error('Unexpected status from search index request: ' +
+                            response.status)
+                );
+              }
+            });
+          })).then(function() {
+            return fuse;
+          });
+        });
+
+      } else {
+        return Promise.reject(
+          new Error('Unexpected status from search index request: ' +
+                      response.status)
+        );
+      }
+    });
+}
+
+window.document.addEventListener("DOMContentLoaded", function (event) {
+
+  // get search element (bail if we don't have one)
+  var searchEl = window.document.getElementById('distill-search');
+  if (!searchEl)
+    return;
+
+  createFuseIndex()
+    .then(function(fuse) {
+
+      // make search box visible
+      searchEl.classList.remove('hidden');
+
+      // initialize autocomplete
+      var options = {
+        autoselect: true,
+        hint: false,
+        minLength: 2,
+      };
+      window.autocomplete(searchEl, options, [{
+        source: function(query, callback) {
+          const searchOptions = {
+            isCaseSensitive: false,
+            shouldSort: true,
+            minMatchCharLength: 2,
+            limit: 10,
+          };
+          var results = fuse.search(query, searchOptions);
+          callback(results
+            .map(function(result) { return result.item; })
+          );
+        },
+        templates: {
+          suggestion: function(suggestion) {
+            var img = suggestion.preview && Object.keys(suggestion.preview).length > 0
+              ? `<img src="${offsetURL(suggestion.preview)}"</img>`
+              : '';
+            var html = `
+              <div class="search-item">
+                <h3>${suggestion.title}</h3>
+                <div class="search-item-description">
+                  ${suggestion.description || ''}
+                </div>
+                <div class="search-item-preview">
+                  ${img}
+                </div>
+              </div>
+            `;
+            return html;
+          }
+        }
+      }]).on('autocomplete:selected', function(event, suggestion) {
+        window.location.href = offsetURL(suggestion.path);
+      });
+      // remove inline display style on autocompleter (we want to
+      // manage responsive display via css)
+      $('.algolia-autocomplete').css("display", "");
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+
+});
+
+</script>
+
+<style type="text/css">
+
+.nav-search {
+  font-size: x-small;
+}
+
+/* Algolioa Autocomplete */
+
+.algolia-autocomplete {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: sub;
+  background-color: white;
+  color: black;
+  padding: 6px;
+  padding-top: 8px;
+  padding-bottom: 0;
+  border-radius: 6px;
+  border: 1px #0F2E3D solid;
+  width: 180px;
+}
+
+
+@media screen and (max-width: 768px) {
+  .distill-site-nav .algolia-autocomplete {
+    display: none;
+    visibility: hidden;
+  }
+  .distill-site-nav.responsive .algolia-autocomplete {
+    display: inline-block;
+    visibility: visible;
+  }
+  .distill-site-nav.responsive .algolia-autocomplete .aa-dropdown-menu {
+    margin-left: 0;
+    width: 400px;
+    max-height: 400px;
+  }
+}
+
+.algolia-autocomplete .aa-input, .algolia-autocomplete .aa-hint {
+  width: 90%;
+  outline: none;
+  border: none;
+}
+
+.algolia-autocomplete .aa-hint {
+  color: #999;
+}
+.algolia-autocomplete .aa-dropdown-menu {
+  width: 550px;
+  max-height: 70vh;
+  overflow-x: visible;
+  overflow-y: scroll;
+  padding: 5px;
+  margin-top: 3px;
+  margin-left: -150px;
+  background-color: #fff;
+  border-radius: 5px;
+  border: 1px solid #999;
+  border-top: none;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
+  cursor: pointer;
+  padding: 5px 4px;
+  border-bottom: 1px solid #eee;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion:last-of-type {
+  border-bottom: none;
+  margin-bottom: 2px;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item {
+  overflow: hidden;
+  font-size: 0.8em;
+  line-height: 1.4em;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item h3 {
+  font-size: 1rem;
+  margin-block-start: 0;
+  margin-block-end: 5px;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-description {
+  display: inline-block;
+  overflow: hidden;
+  height: 2.8em;
+  width: 80%;
+  margin-right: 4%;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview {
+  display: inline-block;
+  width: 15%;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img {
+  height: 3em;
+  width: auto;
+  display: none;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img[src] {
+  display: initial;
+}
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
+  background-color: #eee;
+}
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
+  font-weight: bold;
+  font-style: normal;
+}
+
+</style>
+
+
+<!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+
+<style type="text/css">
+
+body {
+  background-color: white;
+}
+
+.pandoc-table {
+  width: 100%;
+}
+
+.pandoc-table>caption {
+  margin-bottom: 10px;
+}
+
+.pandoc-table th:not([align]) {
+  text-align: left;
+}
+
+.pagedtable-footer {
+  font-size: 15px;
+}
+
+d-byline .byline {
+  grid-template-columns: 2fr 2fr;
+}
+
+d-byline .byline h3 {
+  margin-block-start: 1.5em;
+}
+
+d-byline .byline .authors-affiliations h3 {
+  margin-block-start: 0.5em;
+}
+
+.authors-affiliations .orcid-id {
+  width: 16px;
+  height:16px;
+  margin-left: 4px;
+  margin-right: 4px;
+  vertical-align: middle;
+  padding-bottom: 2px;
+}
+
+d-title .dt-tags {
+  margin-top: 1em;
+  grid-column: text;
+}
+
+.dt-tags .dt-tag {
+  text-decoration: none;
+  display: inline-block;
+  color: rgba(0,0,0,0.6);
+  padding: 0em 0.4em;
+  margin-right: 0.5em;
+  margin-bottom: 0.4em;
+  font-size: 70%;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 3px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+d-article table.gt_table td,
+d-article table.gt_table th {
+  border-bottom: none;
+}
+
+.html-widget {
+  margin-bottom: 2.0em;
+}
+
+.l-screen-inset {
+  padding-right: 16px;
+}
+
+.l-screen .caption {
+  margin-left: 10px;
+}
+
+.shaded {
+  background: rgb(247, 247, 247);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.shaded .html-widget {
+  margin-bottom: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.shaded .shaded-content {
+  background: white;
+}
+
+.text-output {
+  margin-top: 0;
+  line-height: 1.5em;
+}
+
+.hidden {
+  display: none !important;
+}
+
+d-article {
+  padding-top: 2.5rem;
+  padding-bottom: 30px;
+}
+
+d-appendix {
+  padding-top: 30px;
+}
+
+d-article>p>img {
+  width: 100%;
+}
+
+d-article h2 {
+  margin: 1rem 0 1.5rem 0;
+}
+
+d-article h3 {
+  margin-top: 1.5rem;
+}
+
+d-article iframe {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 2.0em;
+  width: 100%;
+}
+
+/* Tweak code blocks */
+
+d-article div.sourceCode code,
+d-article pre code {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+d-article pre,
+d-article div.sourceCode,
+d-article div.sourceCode pre {
+  overflow: auto;
+}
+
+d-article div.sourceCode {
+  background-color: white;
+}
+
+d-article div.sourceCode pre {
+  padding-left: 10px;
+  font-size: 12px;
+  border-left: 2px solid rgba(0,0,0,0.1);
+}
+
+d-article pre {
+  font-size: 12px;
+  color: black;
+  background: none;
+  margin-top: 0;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+d-article pre a {
+  border-bottom: none;
+}
+
+d-article pre a:hover {
+  border-bottom: none;
+  text-decoration: underline;
+}
+
+d-article details {
+  grid-column: text;
+  margin-bottom: 0.8em;
+}
+
+@media(min-width: 768px) {
+
+d-article pre,
+d-article div.sourceCode,
+d-article div.sourceCode pre {
+  overflow: visible !important;
+}
+
+d-article div.sourceCode pre {
+  padding-left: 18px;
+  font-size: 14px;
+}
+
+d-article pre {
+  font-size: 14px;
+}
+
+}
+
+figure img.external {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+/* CSS for d-contents */
+
+.d-contents {
+  grid-column: text;
+  color: rgba(0,0,0,0.8);
+  font-size: 0.9em;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+  margin-bottom: 1em;
+  padding-left: 0.25em;
+  justify-self: start;
+}
+
+@media(min-width: 1000px) {
+  .d-contents.d-contents-float {
+    height: 0;
+    grid-column-start: 1;
+    grid-column-end: 4;
+    justify-self: center;
+    padding-right: 3em;
+    padding-left: 2em;
+  }
+}
+
+.d-contents nav h3 {
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.d-contents li {
+  list-style-type: none
+}
+
+.d-contents nav > ul {
+  padding-left: 0;
+}
+
+.d-contents ul {
+  padding-left: 1em
+}
+
+.d-contents nav ul li {
+  margin-top: 0.6em;
+  margin-bottom: 0.2em;
+}
+
+.d-contents nav a {
+  font-size: 13px;
+  border-bottom: none;
+  text-decoration: none
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.d-contents nav a:hover {
+  text-decoration: underline solid rgba(0, 0, 0, 0.6)
+}
+
+.d-contents nav > ul > li > a {
+  font-weight: 600;
+}
+
+.d-contents nav > ul > li > ul {
+  font-weight: inherit;
+}
+
+.d-contents nav > ul > li > ul > li {
+  margin-top: 0.2em;
+}
+
+
+.d-contents nav ul {
+  margin-top: 0;
+  margin-bottom: 0.25em;
+}
+
+.d-article-with-toc h2:nth-child(2) {
+  margin-top: 0;
+}
+
+
+/* Figure */
+
+.figure {
+  position: relative;
+  margin-bottom: 2.5em;
+  margin-top: 1.5em;
+}
+
+.figure img {
+  width: 100%;
+}
+
+.figure .caption {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+  line-height: 1.5em;
+}
+
+.figure img.external {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.figure .caption a {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.figure .caption b,
+.figure .caption strong, {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 1.0);
+}
+
+/* Citations */
+
+d-article .citation {
+  color: inherit;
+  cursor: inherit;
+}
+
+div.hanging-indent{
+  margin-left: 1em; text-indent: -1em;
+}
+
+/* Citation hover box */
+
+.tippy-box[data-theme~=light-border] {
+  background-color: rgba(250, 250, 250, 0.95);
+}
+
+.tippy-content > p {
+  margin-bottom: 0;
+  padding: 2px;
+}
+
+
+/* Tweak 1000px media break to show more text */
+
+@media(min-width: 1000px) {
+  .base-grid,
+  distill-header,
+  d-title,
+  d-abstract,
+  d-article,
+  d-appendix,
+  distill-appendix,
+  d-byline,
+  d-footnote-list,
+  d-citation-list,
+  distill-footer {
+    grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+    grid-column-gap: 16px;
+  }
+
+  .grid {
+    grid-column-gap: 16px;
+  }
+
+  d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+  }
+  figure .caption, .figure .caption, figure figcaption {
+    font-size: 13px;
+  }
+}
+
+@media(min-width: 1180px) {
+  .base-grid,
+  distill-header,
+  d-title,
+  d-abstract,
+  d-article,
+  d-appendix,
+  distill-appendix,
+  d-byline,
+  d-footnote-list,
+  d-citation-list,
+  distill-footer {
+    grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+    grid-column-gap: 32px;
+  }
+
+  .grid {
+    grid-column-gap: 32px;
+  }
+}
+
+
+/* Get the citation styles for the appendix (not auto-injected on render since
+   we do our own rendering of the citation appendix) */
+
+d-appendix .citation-appendix,
+.d-appendix .citation-appendix {
+  font-size: 11px;
+  line-height: 15px;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  padding-left: 18px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.02);
+  padding: 10px 18px;
+  border-radius: 3px;
+  color: rgba(150, 150, 150, 1);
+  overflow: hidden;
+  margin-top: -12px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Include appendix styles here so they can be overridden */
+
+d-appendix {
+  contain: layout style;
+  font-size: 0.8em;
+  line-height: 1.7em;
+  margin-top: 60px;
+  margin-bottom: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  color: rgba(0,0,0,0.5);
+  padding-top: 60px;
+  padding-bottom: 48px;
+}
+
+d-appendix h3 {
+  grid-column: page-start / text-start;
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 1em;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.65);
+}
+
+d-appendix h3 + * {
+  margin-top: 1em;
+}
+
+d-appendix ol {
+  padding: 0 0 0 15px;
+}
+
+@media (min-width: 768px) {
+  d-appendix ol {
+    padding: 0 0 0 30px;
+    margin-left: -30px;
+  }
+}
+
+d-appendix li {
+  margin-bottom: 1em;
+}
+
+d-appendix a {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+d-appendix > * {
+  grid-column: text;
+}
+
+d-appendix > d-footnote-list,
+d-appendix > d-citation-list,
+d-appendix > distill-appendix {
+  grid-column: screen;
+}
+
+/* Include footnote styles here so they can be overridden */
+
+d-footnote-list {
+  contain: layout style;
+}
+
+d-footnote-list > * {
+  grid-column: text;
+}
+
+d-footnote-list a.footnote-backlink {
+  color: rgba(0,0,0,0.3);
+  padding-left: 0.5em;
+}
+
+
+
+/* Anchor.js */
+
+.anchorjs-link {
+  /*transition: all .25s linear; */
+  text-decoration: none;
+  border-bottom: none;
+}
+*:hover > .anchorjs-link {
+  margin-left: -1.125em !important;
+  text-decoration: none;
+  border-bottom: none;
+}
+
+/* Social footer */
+
+.social_footer {
+  margin-top: 30px;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.67);
+}
+
+.disqus-comments {
+  margin-right: 30px;
+}
+
+.disqus-comment-count {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+#disqus_thread {
+  margin-top: 30px;
+}
+
+.article-sharing a {
+  border-bottom: none;
+  margin-right: 8px;
+}
+
+.article-sharing a:hover {
+  border-bottom: none;
+}
+
+.sidebar-section.subscribe {
+  font-size: 12px;
+  line-height: 1.6em;
+}
+
+.subscribe p {
+  margin-bottom: 0.5em;
+}
+
+
+.article-footer .subscribe {
+  font-size: 15px;
+  margin-top: 45px;
+}
+
+
+.sidebar-section.custom {
+  font-size: 12px;
+  line-height: 1.6em;
+}
+
+.custom p {
+  margin-bottom: 0.5em;
+}
+
+/* Styles for listing layout (hide title) */
+.layout-listing d-title, .layout-listing .d-title {
+  display: none;
+}
+
+/* Styles for posts lists (not auto-injected) */
+
+
+.posts-with-sidebar {
+  padding-left: 45px;
+  padding-right: 45px;
+}
+
+.posts-list .description h2,
+.posts-list .description p {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+.posts-list .description h2 {
+  font-weight: 700;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.posts-list h2.post-tag {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: 12px;
+}
+.posts-list {
+  margin-top: 60px;
+  margin-bottom: 24px;
+}
+
+.posts-list .post-preview {
+  text-decoration: none;
+  overflow: hidden;
+  display: block;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 24px 0;
+}
+
+.post-preview-last {
+  border-bottom: none !important;
+}
+
+.posts-list .posts-list-caption {
+  grid-column: screen;
+  font-weight: 400;
+}
+
+.posts-list .post-preview h2 {
+  margin: 0 0 6px 0;
+  line-height: 1.2em;
+  font-style: normal;
+  font-size: 24px;
+}
+
+.posts-list .post-preview p {
+  margin: 0 0 12px 0;
+  line-height: 1.4em;
+  font-size: 16px;
+}
+
+.posts-list .post-preview .thumbnail {
+  box-sizing: border-box;
+  margin-bottom: 24px;
+  position: relative;
+  max-width: 500px;
+}
+.posts-list .post-preview img {
+  width: 100%;
+  display: block;
+}
+
+.posts-list .metadata {
+  font-size: 12px;
+  line-height: 1.4em;
+  margin-bottom: 18px;
+}
+
+.posts-list .metadata > * {
+  display: inline-block;
+}
+
+.posts-list .metadata .publishedDate {
+  margin-right: 2em;
+}
+
+.posts-list .metadata .dt-authors {
+  display: block;
+  margin-top: 0.3em;
+  margin-right: 2em;
+}
+
+.posts-list .dt-tags {
+  display: block;
+  line-height: 1em;
+}
+
+.posts-list .dt-tags .dt-tag {
+  display: inline-block;
+  color: rgba(0,0,0,0.6);
+  padding: 0.3em 0.4em;
+  margin-right: 0.2em;
+  margin-bottom: 0.4em;
+  font-size: 60%;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 3px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.posts-list img {
+  opacity: 1;
+}
+
+.posts-list img[data-src] {
+  opacity: 0;
+}
+
+.posts-more {
+  clear: both;
+}
+
+
+.posts-sidebar {
+  font-size: 16px;
+}
+
+.posts-sidebar h3 {
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.sidebar-section {
+  margin-bottom: 30px;
+}
+
+.categories ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.categories li {
+  color: rgba(0, 0, 0, 0.8);
+  margin-bottom: 0;
+}
+
+.categories li>a {
+  border-bottom: none;
+}
+
+.categories li>a:hover {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.categories .active {
+  font-weight: 600;
+}
+
+.categories .category-count {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+
+@media(min-width: 768px) {
+  .posts-list .post-preview h2 {
+    font-size: 26px;
+  }
+  .posts-list .post-preview .thumbnail {
+    float: right;
+    width: 30%;
+    margin-bottom: 0;
+  }
+  .posts-list .post-preview .description {
+    float: left;
+    width: 45%;
+  }
+  .posts-list .post-preview .metadata {
+    float: left;
+    width: 20%;
+    margin-top: 8px;
+  }
+  .posts-list .post-preview p {
+    margin: 0 0 12px 0;
+    line-height: 1.5em;
+    font-size: 16px;
+  }
+  .posts-with-sidebar .posts-list {
+    float: left;
+    width: 75%;
+  }
+  .posts-with-sidebar .posts-sidebar {
+    float: right;
+    width: 20%;
+    margin-top: 60px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+}
+
+
+/* Improve display for browsers without grid (IE/Edge <= 15) */
+
+.downlevel {
+  line-height: 1.6em;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+}
+
+.downlevel .d-title {
+  padding-top: 6rem;
+  padding-bottom: 1.5rem;
+}
+
+.downlevel .d-title h1 {
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 1.1em;
+  margin: 0 0 0.5rem;
+}
+
+.downlevel .d-title p {
+  font-weight: 300;
+  font-size: 1.2rem;
+  line-height: 1.55em;
+  margin-top: 0;
+}
+
+.downlevel .d-byline {
+  padding-top: 0.8em;
+  padding-bottom: 0.8em;
+  font-size: 0.8rem;
+  line-height: 1.8em;
+}
+
+.downlevel .section-separator {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.downlevel .d-article {
+  font-size: 1.06rem;
+  line-height: 1.7em;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+
+
+.downlevel .d-appendix {
+  padding-left: 0;
+  padding-right: 0;
+  max-width: none;
+  font-size: 0.8em;
+  line-height: 1.7em;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.5);
+  padding-top: 40px;
+  padding-bottom: 48px;
+}
+
+.downlevel .footnotes ol {
+  padding-left: 13px;
+}
+
+.downlevel .base-grid,
+.downlevel .distill-header,
+.downlevel .d-title,
+.downlevel .d-abstract,
+.downlevel .d-article,
+.downlevel .d-appendix,
+.downlevel .distill-appendix,
+.downlevel .d-byline,
+.downlevel .d-footnote-list,
+.downlevel .d-citation-list,
+.downlevel .distill-footer,
+.downlevel .appendix-bottom,
+.downlevel .posts-container {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+@media(min-width: 768px) {
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+  padding-left: 150px;
+  padding-right: 150px;
+  max-width: 900px;
+}
+}
+
+.downlevel pre code {
+  display: block;
+  border-left: 2px solid rgba(0, 0, 0, .1);
+  padding: 0 0 0 20px;
+  font-size: 14px;
+}
+
+.downlevel code, .downlevel pre {
+  color: black;
+  background: none;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+.downlevel .posts-list .post-preview {
+  color: inherit;
+}
+
+
+
+</style>
+
+<script type="application/javascript">
+
+function is_downlevel_browser() {
+  if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                 window.navigator.userAgent)) {
+    return true;
+  } else {
+    return window.load_distill_framework === undefined;
+  }
+}
+
+// show body when load is complete
+function on_load_complete() {
+
+  // add anchors
+  if (window.anchors) {
+    window.anchors.options.placement = 'left';
+    window.anchors.add('d-article > h2, d-article > h3, d-article > h4, d-article > h5');
+  }
+
+
+  // set body to visible
+  document.body.style.visibility = 'visible';
+
+  // force redraw for leaflet widgets
+  if (window.HTMLWidgets) {
+    var maps = window.HTMLWidgets.findAll(".leaflet");
+    $.each(maps, function(i, el) {
+      var map = this.getMap();
+      map.invalidateSize();
+      map.eachLayer(function(layer) {
+        if (layer instanceof L.TileLayer)
+          layer.redraw();
+      });
+    });
+  }
+
+  // trigger 'shown' so htmlwidgets resize
+  $('d-article').trigger('shown');
+}
+
+function init_distill() {
+
+  init_common();
+
+  // create front matter
+  var front_matter = $('<d-front-matter></d-front-matter>');
+  $('#distill-front-matter').wrap(front_matter);
+
+  // create d-title
+  $('.d-title').changeElementType('d-title');
+
+  // create d-byline
+  var byline = $('<d-byline></d-byline>');
+  $('.d-byline').replaceWith(byline);
+
+  // create d-article
+  var article = $('<d-article></d-article>');
+  $('.d-article').wrap(article).children().unwrap();
+
+  // move posts container into article
+  $('.posts-container').appendTo($('d-article'));
+
+  // create d-appendix
+  $('.d-appendix').changeElementType('d-appendix');
+
+  // flag indicating that we have appendix items
+  var appendix = $('.appendix-bottom').children('h3').length > 0;
+
+  // replace footnotes with <d-footnote>
+  $('.footnote-ref').each(function(i, val) {
+    appendix = true;
+    var href = $(this).attr('href');
+    var id = href.replace('#', '');
+    var fn = $('#' + id);
+    var fn_p = $('#' + id + '>p');
+    fn_p.find('.footnote-back').remove();
+    var text = fn_p.html();
+    var dtfn = $('<d-footnote></d-footnote>');
+    dtfn.html(text);
+    $(this).replaceWith(dtfn);
+  });
+  // remove footnotes
+  $('.footnotes').remove();
+
+  // move refs into #references-listing
+  $('#references-listing').replaceWith($('#refs'));
+
+  $('h1.appendix, h2.appendix').each(function(i, val) {
+    $(this).changeElementType('h3');
+  });
+  $('h3.appendix').each(function(i, val) {
+    var id = $(this).attr('id');
+    $('.d-contents a[href="#' + id + '"]').parent().remove();
+    appendix = true;
+    $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+  });
+
+  // show d-appendix if we have appendix content
+  $("d-appendix").css('display', appendix ? 'grid' : 'none');
+
+  // localize layout chunks to just output
+  $('.layout-chunk').each(function(i, val) {
+
+    // capture layout
+    var layout = $(this).attr('data-layout');
+
+    // apply layout to markdown level block elements
+    var elements = $(this).children().not('details, div.sourceCode, pre, script');
+    elements.each(function(i, el) {
+      var layout_div = $('<div class="' + layout + '"></div>');
+      if (layout_div.hasClass('shaded')) {
+        var shaded_content = $('<div class="shaded-content"></div>');
+        $(this).wrap(shaded_content);
+        $(this).parent().wrap(layout_div);
+      } else {
+        $(this).wrap(layout_div);
+      }
+    });
+
+
+    // unwrap the layout-chunk div
+    $(this).children().unwrap();
+  });
+
+  // remove code block used to force  highlighting css
+  $('.distill-force-highlighting-css').parent().remove();
+
+  // remove empty line numbers inserted by pandoc when using a
+  // custom syntax highlighting theme
+  $('code.sourceCode a:empty').remove();
+
+  // load distill framework
+  load_distill_framework();
+
+  // wait for window.distillRunlevel == 4 to do post processing
+  function distill_post_process() {
+
+    if (!window.distillRunlevel || window.distillRunlevel < 4)
+      return;
+
+    // hide author/affiliations entirely if we have no authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+    if (!have_authors)
+      $('d-byline').addClass('hidden');
+
+    // article with toc class
+    $('.d-contents').parent().addClass('d-article-with-toc');
+
+    // strip links that point to #
+    $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+
+    // add orcid ids
+    $('.authors-affiliations').find('.author').each(function(i, el) {
+      var orcid_id = front_matter.authors[i].orcidID;
+      if (orcid_id) {
+        var a = $('<a></a>');
+        a.attr('href', 'https://orcid.org/' + orcid_id);
+        var img = $('<img></img>');
+        img.addClass('orcid-id');
+        img.attr('alt', 'ORCID ID');
+        img.attr('src','data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==');
+        a.append(img);
+        $(this).append(a);
+      }
+    });
+
+    // hide elements of author/affiliations grid that have no value
+    function hide_byline_column(caption) {
+      $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+    }
+
+    // affiliations
+    var have_affiliations = false;
+    for (var i = 0; i<front_matter.authors.length; ++i) {
+      var author = front_matter.authors[i];
+      if (author.affiliation !== "&nbsp;") {
+        have_affiliations = true;
+        break;
+      }
+    }
+    if (!have_affiliations)
+      $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+
+    // published date
+    if (!front_matter.publishedDate)
+      hide_byline_column("Published");
+
+    // document object identifier
+    var doi = $('d-byline').find('h3:contains("DOI")');
+    var doi_p = doi.next().empty();
+    if (!front_matter.doi) {
+      // if we have a citation and valid citationText then link to that
+      if ($('#citation').length > 0 && front_matter.citationText) {
+        doi.html('Citation');
+        $('<a href="#citation"></a>')
+          .text(front_matter.citationText)
+          .appendTo(doi_p);
+      } else {
+        hide_byline_column("DOI");
+      }
+    } else {
+      $('<a></a>')
+         .attr('href', "https://doi.org/" + front_matter.doi)
+         .html(front_matter.doi)
+         .appendTo(doi_p);
+    }
+
+     // change plural form of authors/affiliations
+    if (front_matter.authors.length === 1) {
+      var grid = $('.authors-affiliations');
+      grid.children('h3:contains("Authors")').text('Author');
+      grid.children('h3:contains("Affiliations")').text('Affiliation');
+    }
+
+    // remove d-appendix and d-footnote-list local styles
+    $('d-appendix > style:first-child').remove();
+    $('d-footnote-list > style:first-child').remove();
+
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+
+    // hoverable references
+    $('span.citation[data-cites]').each(function() {
+      var refs = $(this).attr('data-cites').split(" ");
+      var refHtml = refs.map(function(ref) {
+        return "<p>" + $('#ref-' + ref).html() + "</p>";
+      }).join("\n");
+      window.tippy(this, {
+        allowHTML: true,
+        content: refHtml,
+        maxWidth: 500,
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start'
+      });
+    });
+
+    // clear polling timer
+    clearInterval(tid);
+
+    // show body now that everything is ready
+    on_load_complete();
+  }
+
+  var tid = setInterval(distill_post_process, 50);
+  distill_post_process();
+
+}
+
+function init_downlevel() {
+
+  init_common();
+
+   // insert hr after d-title
+  $('.d-title').after($('<hr class="section-separator"/>'));
+
+  // check if we have authors
+  var front_matter = JSON.parse($("#distill-front-matter").html());
+  var have_authors = front_matter.authors && front_matter.authors.length > 0;
+
+  // manage byline/border
+  if (!have_authors)
+    $('.d-byline').remove();
+  $('.d-byline').after($('<hr class="section-separator"/>'));
+  $('.d-byline a').remove();
+
+  // remove toc
+  $('.d-contents').remove();
+
+  // move appendix elements
+  $('h1.appendix, h2.appendix').each(function(i, val) {
+    $(this).changeElementType('h3');
+  });
+  $('h3.appendix').each(function(i, val) {
+    $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+  });
+
+
+  // inject headers into references and footnotes
+  var refs_header = $('<h3></h3>');
+  refs_header.text('References');
+  $('#refs').prepend(refs_header);
+
+  var footnotes_header = $('<h3></h3');
+  footnotes_header.text('Footnotes');
+  $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+
+  // move appendix-bottom entries to the bottom
+  $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+  $('.appendix-bottom').remove();
+
+  // remove appendix if it's empty
+  if ($('.d-appendix').children().length === 0)
+    $('.d-appendix').remove();
+
+  // prepend separator above appendix
+  $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+
+  // trim code
+  $('pre>code').each(function(i, val) {
+    $(this).html($.trim($(this).html()));
+  });
+
+  // move posts-container right before article
+  $('.posts-container').insertBefore($('.d-article'));
+
+  $('body').addClass('downlevel');
+
+  on_load_complete();
+}
+
+
+function init_common() {
+
+  // jquery plugin to change element types
+  (function($) {
+    $.fn.changeElementType = function(newType) {
+      var attrs = {};
+
+      $.each(this[0].attributes, function(idx, attr) {
+        attrs[attr.nodeName] = attr.nodeValue;
+      });
+
+      this.replaceWith(function() {
+        return $("<" + newType + "/>", attrs).append($(this).contents());
+      });
+    };
+  })(jQuery);
+
+  // prevent underline for linked images
+  $('a > img').parent().css({'border-bottom' : 'none'});
+
+  // mark non-body figures created by knitr chunks as 100% width
+  $('.layout-chunk').each(function(i, val) {
+    var figures = $(this).find('img, .html-widget');
+    if ($(this).attr('data-layout') !== "l-body") {
+      figures.css('width', '100%');
+    } else {
+      figures.css('max-width', '100%');
+      figures.filter("[width]").each(function(i, val) {
+        var fig = $(this);
+        fig.css('width', fig.attr('width') + 'px');
+      });
+
+    }
+  });
+
+  // auto-append index.html to post-preview links in file: protocol
+  // and in rstudio ide preview
+  $('.post-preview').each(function(i, val) {
+    if (window.location.protocol === "file:")
+      $(this).attr('href', $(this).attr('href') + "index.html");
+  });
+
+  // get rid of index.html references in header
+  if (window.location.protocol !== "file:") {
+    $('.distill-site-header a[href]').each(function(i,val) {
+      $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+    });
+  }
+
+  // add class to pandoc style tables
+  $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+  $('.kable-table').children('table').addClass('pandoc-table');
+
+  // add figcaption style to table captions
+  $('caption').parent('table').addClass("figcaption");
+
+  // initialize posts list
+  if (window.init_posts_list)
+    window.init_posts_list();
+
+  // implmement disqus comment link
+  $('.disqus-comment-count').click(function() {
+    window.headroom_prevent_pin = true;
+    $('#disqus_thread').toggleClass('hidden');
+    if (!$('#disqus_thread').hasClass('hidden')) {
+      var offset = $(this).offset();
+      $(window).resize();
+      $('html, body').animate({
+        scrollTop: offset.top - 35
+      });
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (is_downlevel_browser())
+    init_downlevel();
+  else
+    window.addEventListener('WebComponentsReady', init_distill);
+});
+
+</script>
+
+<!--/radix_placeholder_distill-->
+  <script src="../../site_libs/header-attrs-2.11/header-attrs.js"></script>
+  <script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+  <script src="../../site_libs/popper-2.6.0/popper.min.js"></script>
+  <link href="../../site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="../../site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="../../site_libs/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="../../site_libs/anchor-4.2.2/anchor.min.js"></script>
+  <script src="../../site_libs/bowser-1.9.3/bowser.min.js"></script>
+  <script src="../../site_libs/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="../../site_libs/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+<!--/radix_placeholder_site_in_header-->
+
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"An invitation to a sparse Cholesky factorisation","description":"Come for the details, stay for the shitty Python, leave with disappointment. Not unlike the experience of dating me.","authors":[{"author":"Dan Simpson","authorURL":"https://dpsimpson.github.io","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-03-31T00:00:00.000+11:00","citationText":"Simpson, 2022"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<header class="header header--fixed" role="banner">
+<nav class="distill-site-nav distill-site-header">
+<div class="nav-left">
+<a href="../../index.html" class="title">Un garçon pas comme les autres (Bayes)</a>
+<input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
+</div>
+<div class="nav-right">
+<a href="../../index.html">Home</a>
+<a href="../../about.html">About</a>
+<a href="../../index.xml">
+<i class="fa fa-rss" aria-hidden="true"></i>
+</a>
+<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
+</div>
+</nav>
+</header>
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>An invitation to a sparse Cholesky factorisation</h1>
+<!--radix_placeholder_categories-->
+<!--/radix_placeholder_categories-->
+<p><p>Come for the details, stay for the shitty Python, leave with
+disappointment. Not unlike the experience of dating me.</p></p>
+</div>
+
+<div class="d-byline">
+  Dan Simpson <a href="https://dpsimpson.github.io"
+class="uri">https://dpsimpson.github.io</a> 
+  
+<br/>2022-03-31
+</div>
+
+<div class="d-article">
+<h1 id="the-choleksy-factorisation">The Choleksy factorisation</h1>
+<p>So first things first: Cholesky wasn’t Russian. I don’t know why I
+always thought he was, but you know. Sometime you should do a little
+googling first. Cholesky was French and died in the First World War.</p>
+<p>But now that’s out of the way, let’s talk about matrices. If <span
+class="math inline">\(A\)</span><a href="#fn1" class="footnote-ref"
+id="fnref1" role="doc-noteref"><sup>1</sup></a> is a symmetric positive
+definite matrix, then there is a unique lower-triangular matrix <span
+class="math inline">\(L\)</span> such that <span class="math inline">\(A
+= LL^T\)</span>.</p>
+<p>Like all good theorems in numerical linear algebra, the proof of the
+existence of the Cholesky decomposition gives a pretty clear algorithm
+for constructing <span class="math inline">\(L\)</span>. To sketch<a
+href="#fn2" class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a> it, let us see what it looks like if
+build up our Choleksy factorisation from left to right, so the first
+<span class="math inline">\(j-1\)</span> columns have been modified and
+we are looking at how to build the <span
+class="math inline">\(j\)</span>th column. In order to make <span
+class="math inline">\(L\)</span> lower-triangular, we need the first
+<span class="math inline">\(j-1\)</span> elements of the <span
+class="math inline">\(j\)</span>th column to be zero. Let’s see if we
+can work out what the other columns have to be.</p>
+<p>Writing this as a matrix equation, we get <span
+class="math display">\[
+\begin{pmatrix} A_{11} &amp; a_{12} &amp; A_{32}^T \\
+a_{12}^T &amp; a_{22} &amp; a_{32}^T \\
+A_{31} &amp; a_{32} &amp; A_{33}\end{pmatrix} =
+\begin{pmatrix} L_{11}&amp;&amp; \\
+l_{12}^T &amp; l_{22}&amp;\\
+L_{31} &amp; l_{32} &amp; L_{33}\end{pmatrix}
+\begin{pmatrix}L_{11}^T  &amp;l_{12} &amp; L_{31}^T\\
+&amp; l_{22}&amp;l_{32}^T\\
+&amp;  &amp; L_{33}^T\end{pmatrix},
+\]</span> where <span class="math inline">\(L_{11}\)</span> is
+lower-triangular (and <span class="math inline">\(A_{11} =
+L_{11}L_{11}^T\)</span>) and lower-case letters are vectors<a
+href="#fn3" class="footnote-ref" id="fnref3"
+role="doc-noteref"><sup>3</sup></a> and everything is of the appropriate
+dimension to make <span class="math inline">\(A_{11}\)</span> the
+top-left <span class="math inline">\((j-1) \times (j-1)\)</span>
+submatrix of <span class="math inline">\(A\)</span>.</p>
+<p>If we can find equations for <span
+class="math inline">\(l_{22}\)</span> and <span
+class="math inline">\(l_{32}\)</span> that don’t depend on <span
+class="math inline">\(L_{33}\)</span> (ie we can express them in terms
+of things we already know), then we have found an algorithm that marches
+from the left of the matrix to the right leaving a Choleksy
+factorisation in its wake!</p>
+<p>If we do our matrix multiplications, we get the following equation
+for <span class="math inline">\(a_{22} = A_{jj}\)</span>: <span
+class="math display">\[
+a_{22} = l_{12}^Tl_{12} + l_{22}^2.
+\]</span> Rearranging, we get <span class="math display">\[
+l_{22}  = \sqrt{a_{22} - l_{12}^Tl_{12}}.
+\]</span> The canny amongst you will be asking “yes but is that a real
+number”. The answer turns out to be “yes” for all diagonals if and only
+if<a href="#fn4" class="footnote-ref" id="fnref4"
+role="doc-noteref"><sup>4</sup></a> <span
+class="math inline">\(A\)</span> is symmetric positive definite.</p>
+<p>Ok! We have expressed <span class="math inline">\(l_{22}\)</span> in
+terms of things we know, so we are half way there. Now to attack the
+vector <span class="math inline">\(l_{3,2}\)</span>. Looking at the
+(3,2) equation implied by the above block matrices, we get <span
+class="math display">\[
+a_{32} = L_{31}l_{12} + l_{32} l_{22}.
+\]</span> Remembering that <span class="math inline">\(l_{22}\)</span>
+is a scalar (that we have already computed!), we get <span
+class="math display">\[
+l_{32} = (a_{32} - L_{31}l_{12}) / l_{22}.
+\]</span></p>
+<p>Success!</p>
+<p>This then gives us the<a href="#fn5" class="footnote-ref" id="fnref5"
+role="doc-noteref"><sup>5</sup></a> Cholesky factorisation<a href="#fn6"
+class="footnote-ref" id="fnref6"
+role="doc-noteref"><sup>6</sup></a>:</p>
+<pre><code>for j in range(0,n) (using python slicing notation because why notation)
+  L[j,j] = sqrt(A[j,j] - L[j, 1:(j-1)] * L[j, 1:(j-1)]&#39;)
+  L[(j+1):n, j] = (A[(j+1):n, j] - L[(j+1):n, 1:(j-1)] * L[j, 1:(j-1)]&#39;) / L[j,j]</code></pre>
+<p>Easy as.</p>
+<p>When <span class="math inline">\(A\)</span> is a dense matrix, this
+costs <span class="math inline">\(\mathcal{O}(n^3)\)</span> floating
+point operations<a href="#fn7" class="footnote-ref" id="fnref7"
+role="doc-noteref"><sup>7</sup></a>.</p>
+<p>So how can we take advantage of the observation that most of the
+entries of <span class="math inline">\(A\)</span> are zero (aka <span
+class="math inline">\(A\)</span> is a sparse matrix)? Well. That is the
+topic of this post. In order, we are going to look at the following:</p>
+<ol type="1">
+<li>Storing a sparse matrix so it works with the algorithm</li>
+<li>How sparse is a Cholesky factor?</li>
+<li>Which elements of the Cholesky factor are non-zero (aka symbolic
+factorisation)</li>
+<li>Computing the Cholesky factorisation</li>
+<li><del>What about JAX? (or: fucking immutable arrays are trying to
+ruin my fucking life)</del> (This did not happen. Next time. The post is
+long enough.)</li>
+</ol>
+<h2 id="so-how-do-we-store-a-sparse-matrix">So how do we store a sparse
+matrix?</h2>
+<p>If we look at the Cholesky algorithm, we notice that we are scanning
+through the matrix column-by-column. When a computer stores a matrix, it
+stores it as a long 1D array with some side information. How this array
+is constructed from the matrix depends on the language.</p>
+<p>There are (roughly) two options: column-major or row-major storage.
+Column major storage (used by Fortran<a href="#fn8" class="footnote-ref"
+id="fnref8" role="doc-noteref"><sup>8</sup></a>, R, Matlab, Julia,
+Eigen, etc) stacks a matrix column by column. A small example: <span
+class="math display">\[
+\begin{pmatrix}1&amp;3&amp;5\\2&amp;4&amp;6 \end{pmatrix} \Rightarrow
+[1,2,3,4,5,6].
+\]</span> Row-mjor ordering (C/C++ arrays, SAS, Pascal, numpy<a
+href="#fn9" class="footnote-ref" id="fnref9"
+role="doc-noteref"><sup>9</sup></a>) stores things row-by-row.</p>
+<p>Which one do we use? Well. If you look at the Cholesky algorithm, it
+scans through the matrix column-by-column. It is much much much more
+memory efficient in this case to have the whole column available in one
+contiguous chunk of memory. So we are going to use column-major
+storage.</p>
+<p>But there’s an extra wrinkle: Most of the entries in our matrix are
+zero. It would be very inefficient to store all of those zeros. You may
+be sceptical about this, but it’s true. It helps to realize that even in
+the examples at the bottom of this post that are not trying very hard to
+minimise the fill in, only 3-4% of the potential elements in <span
+class="math inline">\(L\)</span> are non-zero.</p>
+<p>It is far more efficient to just store the locations<a href="#fn10"
+class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>
+of the non-zeros and their values. If only 4% of your matrix is
+non-zero, you are saving<a href="#fn11" class="footnote-ref"
+id="fnref11" role="doc-noteref"><sup>11</sup></a> a lot of memory!</p>
+<p>The storage scheme we are inching towards is called <em>compressed
+sparse column (CSC)</em> storage. This stores the matrix in three
+arrays. The first array <code>indices</code> (which has as many entries
+as there are non-zeros) stores the row numbers for each non-zero
+element. So if <span class="math display">\[
+B = \begin{pmatrix}
+1 &amp;&amp;5 \\
+2&amp;3&amp; \\
+&amp;4&amp;6
+\end{pmatrix}
+\]</span> then (using zero-based indices because I’ve to to make this
+work in Python)</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>B_indices <span class="op">=</span> [<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">3</span>]</span></code></pre></div>
+</div>
+<p>The second array <code>indptr</code> is an <span
+class="math inline">\(n+1\)</span>-dimensional array that indexes the
+first element of each row. The final element of <code>indptr</code> is
+<code>nnz(B)</code><a href="#fn12" class="footnote-ref" id="fnref12"
+role="doc-noteref"><sup>12</sup></a>. This leads to</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>B_indptr <span class="op">=</span> [<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>]</span></code></pre></div>
+</div>
+<p>This means that the entries in column<a href="#fn13"
+class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a> j
+are have row numbers</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>B_indices[B_indptr[j]:B_indptr[j<span class="op">+</span><span class="dv">1</span>]]</span></code></pre></div>
+</div>
+<p>The third and final array is <code>x</code>, which stores the
+<em>values</em> of the non-negative entries of <span
+class="math inline">\(A\)</span> <em>column-by-column</em>. This
+gives</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>B_x <span class="op">=</span> [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>]</span></code></pre></div>
+</div>
+<p>Using these three arrays we can get access to the <code>j</code>th
+row of <span class="math inline">\(B\)</span> by accessing</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>B_x[B_indptr[j]:B_indptr[j<span class="op">+</span><span class="dv">1</span>]]</span></code></pre></div>
+</div>
+<p>This storage scheme is very efficient for what we are about to do.
+But it is fundamentally a static scheme: it is <em>extremely</em>
+expensive to add a new non-zero element. There are other sparse matrix
+storage schemes that make this work better.</p>
+<h2 id="how-sparse-is-a-cholesky-factor-of-a-sparse-matrix">How sparse
+is a Cholesky factor of a sparse matrix?</h2>
+<p>Ok. So now we’ve got that out of the way, we need to work out the
+sparsity structure of a Choleksy factorisation. At this point we need to
+close our eyes, pray, and start thinking about graphs.</p>
+<p>Why graphs? I promise, it is not because I love discrete<a
+href="#fn14" class="footnote-ref" id="fnref14"
+role="doc-noteref"><sup>14</sup></a> maths. It is because symmetric
+sparse matrices are strongly related to graphs.</p>
+<p>To remind people, a graph<a href="#fn15" class="footnote-ref"
+id="fnref15" role="doc-noteref"><sup>15</sup></a> (in a mathematical
+sense) <span class="math inline">\(\mathcal{G} = (\mathcal{V},
+\mathcal{E})\)</span> consists of two lists:</p>
+<ol type="1">
+<li>A list of vertices <span class="math inline">\(\mathcal{V}\)</span>
+numbered from <span class="math inline">\(1\)</span> to <span
+class="math inline">\(n\)</span><a href="#fn16" class="footnote-ref"
+id="fnref16" role="doc-noteref"><sup>16</sup></a>.</li>
+<li>A list of edges <span class="math inline">\(\mathcal{E}\)</span> in
+the graph (aka all the pairs <span class="math inline">\((i,j)\)</span>
+such that <span class="math inline">\(i&lt;j\)</span> and there is an
+edge between <span class="math inline">\(i\)</span> and <span
+class="math inline">\(j\)</span>).</li>
+</ol>
+<p>Every symmetric sparse matrix <span class="math inline">\(A\)</span>
+has a graph naturally associated with it. The relationship is that <span
+class="math inline">\((i,j)\)</span> (for <span
+class="math inline">\(i\neq j\)</span>) is an edge in <span
+class="math inline">\(\mathcal{G}\)</span> if and only if <span
+class="math inline">\(A_{ij} \neq 0\)</span>.</p>
+<p>So, for instance, if <span class="math display">\[
+A = \begin{pmatrix}
+1&amp;2&amp;&amp;8 \\
+2&amp;3&amp;&amp; 5\\
+&amp;&amp;4&amp;6 \\
+8&amp;5&amp;6&amp;7
+\end{pmatrix},
+\]</span></p>
+<p>then we can plot the associated graph, <span
+class="math inline">\(\mathcal{G}\)</span>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-7-1.png" width="624" /></p>
+</div>
+<p>But why do we care about graphs?</p>
+<p>We care because they let us answer our question for this section:
+<em>which elements of the Cholesky factor <span
+class="math inline">\(L\)</span> are non-zero?</em></p>
+<p>It is useful to write the algorithm out for a second time<a
+href="#fn17" class="footnote-ref" id="fnref17"
+role="doc-noteref"><sup>17</sup></a>, but this time closer to how we
+will implement it.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  tmp <span class="op">=</span> A[j:n, j]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, j):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, j<span class="op">-</span><span class="dv">1</span>):</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      tmp[i] <span class="op">=</span> tmp[i] <span class="op">-</span> L[i, k] <span class="op">*</span> L[j, k]</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    L[j, j] <span class="op">=</span> sqrt(tmp[<span class="dv">0</span>])</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    L[(j<span class="op">+</span><span class="dv">1</span>):n, j] <span class="op">=</span> tmp[<span class="dv">1</span>:n] <span class="op">/</span> L[j, j]</span></code></pre></div>
+</div>
+<p>If we stare at this long enough we can work out when <span
+class="math inline">\(L_{ij}\)</span> is going to be potentially
+non-zero.</p>
+<p>And here is where we have to take a quick zoom out. We are
+<em>not</em> interested if the numerical entry <span
+class="math inline">\(L_{ij}\)</span> is <em>actually</em> non-zero. We
+are interested if it <em>could be</em> non-zero. Why? Because this will
+allow us to set up our storage scheme for the sparse Cholesky factor.
+And it will tell us exactly which bits of the above loops we actually
+need to do!</p>
+<p>So with that motivation in mind, can we spot the non-zeros? Well.
+I’ll be honest with you. I struggle at this game. This is part of why I
+do not like thinking about graphs<a href="#fn18" class="footnote-ref"
+id="fnref18" role="doc-noteref"><sup>18</sup></a>. But with a piece of
+paper and a bit of time, I can convince myslef that <span
+class="math inline">\(L_ij\)</span> is potentially non-zero (or a
+<em>structural</em> non-zero) if:</p>
+<ul>
+<li><span class="math inline">\(A_{ij}\)</span> is non-zero (because
+<code>tmp[i-j]</code> is non-zero!), or</li>
+<li><span class="math inline">\(L_{ik} \neq 0\)</span> <em>and</em>
+<span class="math inline">\(L_{jk} \neq 0\)</span> for some <span
+class="math inline">\(k &lt; \min\{i, j\}\)</span> (because that is the
+only time an element of <code>tmp</code> is updated through
+<code>tmp[i] = tmp[i] - L[i, k] * L[j, k]</code>)</li>
+</ul>
+<p>If we dig into the second condition a bit more,<a href="#fn19"
+class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a>
+we notice that the second case can happen if and only if there is a path
+in <span class="math inline">\(\mathcal{G}\)</span><a href="#fn20"
+class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a>
+from node <span class="math inline">\(i\)</span> to node <span
+class="math inline">\(j\)</span> <span class="math display">\[
+i \rightarrow v_1 \rightarrow v_2 \rightarrow \ldots \rightarrow
+v_{\ell-1} \rightarrow j
+\]</span> with <span class="math inline">\(v_1, \ldots v_{\ell-1} &lt;
+\min\{i,j\}\)</span>. The proof is an induction on <span
+class="math inline">\(\min\{i,j\}\)</span> that I can’t be arsed typing
+out.</p>
+<p>(As an aside, Theorem 2.8 in <a
+href="https://www.routledge.com/Gaussian-Markov-Random-Fields-Theory-and-Applications/Rue-Held/p/book/9781584884323">Rue
+and Held’s book</a> gives a very clearn nice statistical proof of this
+result.)</p>
+<p>This is enough to see that fill in patterns are going to be a complex
+thing.</p>
+<h3 id="a-toy-example">A toy example</h3>
+<p>Consider the following graph</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-9-1.png" width="624" /></p>
+</div>
+<p>It’s pretty clear that there is a path between <span
+class="math inline">\((i,j)\)</span> for every pair <span
+class="math inline">\((i,j)\)</span> (the path goes through the fully
+connected vertex, which is labelled <code>1</code>).</p>
+<p>And indeed, we can check this numerically<a href="#fn21"
+class="footnote-ref" id="fnref21"
+role="doc-noteref"><sup>21</sup></a></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://Matrix.R-forge.R-project.org/'>Matrix</a></span><span class='op'>)</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>6</span>
+<span class='va'>A</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/Matrix/man/sparseMatrix.html'>sparseMatrix</a></span><span class='op'>(</span>i <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>n</span>, <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='va'>n</span><span class='op'>)</span><span class='op'>)</span>, 
+                  j <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='va'>n</span><span class='op'>)</span>,<span class='fl'>1</span><span class='op'>:</span><span class='va'>n</span><span class='op'>)</span>, 
+                  x <span class='op'>=</span> <span class='op'>-</span><span class='fl'>0.2</span>, 
+                  dims <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>n</span>,<span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> 
+      <span class='fu'><a href='https://rdrr.io/pkg/Matrix/man/Diagonal.html'>Diagonal</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span>
+<span class='va'>A</span> <span class='op'>!=</span> <span class='fl'>0</span> <span class='co'>#print the non-zero structrure</span>
+</code></pre>
+</div>
+<pre><code>6 x 6 sparse Matrix of class &quot;lgCMatrix&quot;
+                
+[1,] | | | | | |
+[2,] | | . . . .
+[3,] | . | . . .
+[4,] | . . | . .
+[5,] | . . . | .
+[6,] | . . . . |</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>L</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/Matrix/man/chol.html'>chol</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>A</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># transpose is for R reasons</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='va'>L</span>, digits <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span> <span class='co'># Fully dense!</span>
+</code></pre>
+</div>
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]  0.8  0.0  0.0  0.0  0.0    0
+[2,] -0.3  1.0  0.0  0.0  0.0    0
+[3,] -0.3 -0.1  1.0  0.0  0.0    0
+[4,] -0.3 -0.1 -0.1  1.0  0.0    0
+[5,] -0.3 -0.1 -0.1 -0.1  1.0    0
+[6,] -0.3 -0.1 -0.1 -0.1 -0.1    1</code></pre>
+</div>
+<p>But what if we changed the labels of our vertices? What is the fill
+in pattern implied by a labelling where the fully collected vertex is
+labelled last instead of first?</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-11-1.png" width="624" /></p>
+</div>
+<p>There are now <em>no paths</em> from <span
+class="math inline">\(i\)</span> to <span
+class="math inline">\(j\)</span> that only go through lower-numbered
+vertices. So there is no fill in! We can check this numerically!<a
+href="#fn22" class="footnote-ref" id="fnref22"
+role="doc-noteref"><sup>22</sup></a></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>A2</span> <span class='op'>&lt;-</span> <span class='va'>A</span><span class='op'>[</span><span class='va'>n</span><span class='op'>:</span><span class='fl'>1</span>,<span class='va'>n</span><span class='op'>:</span><span class='fl'>1</span><span class='op'>]</span>
+<span class='va'>L2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/Matrix/man/chol.html'>chol</a></span><span class='op'>(</span><span class='va'>A2</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>L2</span><span class='op'>!=</span><span class='fl'>0</span>
+</code></pre>
+</div>
+<pre><code>6 x 6 sparse Matrix of class &quot;ltCMatrix&quot;
+                
+[1,] | . . . . .
+[2,] . | . . . .
+[3,] . . | . . .
+[4,] . . . | . .
+[5,] . . . . | .
+[6,] | | | | | |</code></pre>
+</div>
+<h3 id="so-what-is-the-lesson-here">So what is the lesson here?</h3>
+<p>The lesson is that the sparse Cholesky algorithm cares
+<em>deeply</em> about what order the rows and columns of the matrix are
+in. This is why, <a
+href="https://dansblog.netlify.app/posts/2022-03-22-a-linear-mixed-effects-model/">in
+the previous post</a>, we put the dense rows and columns of <span
+class="math inline">\(Q_{u \mid y, \theta}\)</span> at the <em>end</em>
+of the matrix!</p>
+<p>Luckily, a lot of clever graph theorists got on the job a while back
+and found a number of good algorithms for finding decent<a href="#fn23"
+class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a>
+ways to reorder the vertices of a graph to minimise fill in. There are
+two particularly well-known reorderings: the approximate minimum degree
+(AMD) reordering and the nested-dissection reordering. Neither of these
+are easily available in Python<a href="#fn24" class="footnote-ref"
+id="fnref24" role="doc-noteref"><sup>24</sup></a>.</p>
+<p>AMD is a bog-standard black box that is a greedy reordering that
+tries to label the next vertex so that graph you get after removing that
+vertex and adding edges between all of the nodes that connect to that
+vertex isn’t too fucked.</p>
+<p>Nested dissection tries to generalise the toy example above by
+finding nodes that separate the graph into two minimally connected
+components. The separator node is then labelled last. The process is
+repeated until you run out of nodes. This algorithm can be very
+efficient in some cases (eg if the graph is planar<a href="#fn25"
+class="footnote-ref" id="fnref25" role="doc-noteref"><sup>25</sup></a>,
+the sparse Cholesky algorithm using this reordering <a
+href="https://link.springer.com/article/10.1007/BF01396660">provably
+costs</a> at most <span
+class="math inline">\(\mathcal{O}(n^{3/2})\)</span>).</p>
+<p>Typically, you compute multiple reorderings<a href="#fn26"
+class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a>
+and pick the one that results in the least fill in.</p>
+<h2
+id="which-elements-of-the-cholesky-factor-are-non-zero-aka-symbolic-factorisation">Which
+elements of the Cholesky factor are non-zero (aka symbolic
+factorisation)</h2>
+<p>Ok. So I guess we’ve got to work out an algorithm for computing the
+non-zero structure of a sparse Cholesky factor. Naively, this seems
+easy: just use the Cholesky algorithm and mark which elements are
+non-zero.</p>
+<p>But this is slow and inefficient. You’re not thinking like a
+programmer! Or a graph theorist. So let’s talk about how to do this
+efficiently.</p>
+<h3 id="the-elimination-tree">The elimination tree</h3>
+<p>Let’s consider the graph <span
+class="math inline">\(\mathcal{G}_L\)</span> that contains the sparsity
+pattern of <span class="math inline">\(L\)</span>. We <em>know</em> that
+the non-zero structure consists of all <span
+class="math inline">\((i,j)\)</span> such that <span
+class="math inline">\(i &lt; j\)</span> and there is a path <span
+class="math inline">\(in \mathcal{G}\)</span> from <span
+class="math inline">\(i\)</span> to <span
+class="math inline">\(j\)</span>. This means we could just compute that
+and make <span class="math inline">\(\mathcal{G}_L\)</span>.</p>
+<p>The thing that you should notice immediately is that there is a lot
+of redundancy in this structure. Remember that if <span
+class="math inline">\(L_{ik}\)</span> is non-zero and <span
+class="math inline">\(L_{jk}\)</span> is also non-zero, then <span
+class="math inline">\(L_{ij}\)</span> is also non-zero.</p>
+<p>This suggests that if we have <span
+class="math inline">\((i,k)\)</span> and <span
+class="math inline">\((j,k)\)</span> in the graph, we can remove the
+edge <span class="math inline">\((i,j)\)</span> from <span
+class="math inline">\(\mathcal{G}_L\)</span> and still be able to work
+out that <span class="math inline">\(L_{ij}\)</span> is non-zero. This
+new graph is no longer the graph associated with <span
+class="math inline">\(L\)</span> but, for our purposes, it contains the
+same information.</p>
+<p>If we continue pruning the graph this way, we are going to end up
+with a<a href="#fn27" class="footnote-ref" id="fnref27"
+role="doc-noteref"><sup>27</sup></a> rooted tree! From this tree, which
+is called the <em>elimination tree</em> of <span
+class="math inline">\(A\)</span><a href="#fn28" class="footnote-ref"
+id="fnref28" role="doc-noteref"><sup>28</sup></a> we can easily work out
+the non-zero structure of <span class="math inline">\(L\)</span>.</p>
+<p>The elimination tree is the fundamental structure needed to build an
+efficient sparse Cholesky algorithm. We are not going to use it to its
+full potential, but it is very cheap to compute (roughly<a href="#fn29"
+class="footnote-ref" id="fnref29" role="doc-noteref"><sup>29</sup></a>
+<span class="math inline">\(\mathcal{O}(\operatorname{nnz}(A))\)</span>
+operations).</p>
+<p>Once we have the elimination tree, it’s cheap to compute properties
+of <span class="math inline">\(L\)</span> like the number of non-zeros
+in a column, the exact sparsity pattern of every column, which columns
+can be grouped together to form supernodes<a href="#fn30"
+class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a>,
+and the approximate minimum degree reordering.</p>
+<p>All of those things would be necessary for a modern,
+industrial-strength sparse Cholesky factorisation. But, and I cannot
+stress this enough, fuck that shit.</p>
+<h3 id="the-symbolic-factorisation">The symbolic factorisation</h3>
+<p>We are doing the easy version. Which is to say I <em>refuse</em> to
+do anything here that couldn’t be easily done in the early 90s.
+Specifically, we are going to use the version of this that<a
+href="http://heath.cs.illinois.edu/courses/cs598mh/george_liu.pdf">George,
+Liu, and Ng</a> wrote about<a href="#fn31" class="footnote-ref"
+id="fnref31" role="doc-noteref"><sup>31</sup></a> in the 90s.
+Understanding this is, I think, enough to see how things like supernodal
+factorisations work, but it’s so much less to keep track of.</p>
+<p>The nice thing about this method is that we compute the elimination
+tree implicitly as we go along.</p>
+<p>Let <span class="math inline">\(\mathcal{L}_j\)</span> be the
+non-zero entries in the <span class="math inline">\(j\)</span>th column
+of <span class="math inline">\(L\)</span>. Then our discussion in the
+previous section tells us that we need to determine the <em>reach</em>
+of the node i <span class="math display">\[
+\text{Reach}(j, S_j) = \left\{i: \text{there is a path from } i\text{ to
+}j\text{ through }S_j\right\},
+\]</span> where <span class="math inline">\(S_j = \{1,\ldots,
+j-1\}\)</span>.</p>
+<p>If we can compute the reach, then <span
+class="math inline">\(\mathcal{L}_j = \text{Reach}(j, S_j)
+\cup\{j\}\)</span>!</p>
+<p>This is where the elimination tree comes in: it is an efficient
+representation of these sets. Indeed, <span class="math inline">\(i \in
+\text{Reach}(j, S_j)\)</span> <em>if and only if</em> there is a
+directed<a href="#fn32" class="footnote-ref" id="fnref32"
+role="doc-noteref"><sup>32</sup></a> path from <span
+class="math inline">\(j\)</span> to <span
+class="math inline">\(i\)</span> in the elimination tree! Now this tree
+is ordered<a href="#fn33" class="footnote-ref" id="fnref33"
+role="doc-noteref"><sup>33</sup></a> so that if <span
+class="math inline">\(i\)</span> is a child of <span
+class="math inline">\(j\)</span> (aka directly below it in the tree),
+then <span class="math inline">\(i &lt; j\)</span>. This means that its
+column in the Cholesky factorisation has already been computed. So all
+of the nodes that can be reached from <span
+class="math inline">\(j\)</span> by going through <span
+class="math inline">\(i\)</span> are in <span
+class="math inline">\(\mathcal{L}_{i} \cap \{j+1, \ldots,
+n\}\)</span>.</p>
+<p>This means that we can compute the non-zeros of the <span
+class="math inline">\(j\)</span>th column of <span
+class="math inline">\(L\)</span> efficiently from the non-zeros of all
+of the (very few, hopefully) columns associated with the child nodes of
+<span class="math inline">\(j\)</span>.</p>
+<p>So all that’s left is to ask “how can we find the child?” (as phones
+around the city start buzzing). Well, a little bit of thinking time
+should convince you that if <span class="math display">\[
+p = \min\{i : i \in \text{Reach}(j, S_j) \},
+\]</span> then <span class="math inline">\(p\)</span> is the parent of
+<span class="math inline">\(i\)</span>. Or, the parent of column <span
+class="math inline">\(j\)</span> is the index of its first<a
+href="#fn34" class="footnote-ref" id="fnref34"
+role="doc-noteref"><sup>34</sup></a> non-zero below the diagonal.</p>
+<p>We can put all of these observations together into the following
+algorithm. We assume that we are given the non-zero structure of
+<code>tril(A)</code> (aka the lower-triangle of <span
+class="math inline">\(A\)</span>).</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _symbolic_factor_csc(A_indices, A_indptr):</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Assumes A_indices and A_indptr index the lower triangle of $A$ ONLY.</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  n <span class="op">=</span> <span class="bu">len</span>(A_indptr) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  L_sym <span class="op">=</span> [np.array([], dtype<span class="op">=</span><span class="bu">int</span>) <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n)]</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  children <span class="op">=</span> [np.array([], dtype<span class="op">=</span><span class="bu">int</span>) <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n)]</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    L_sym[j] <span class="op">=</span> A_indices[A_indptr[j]:A_indptr[j <span class="op">+</span> <span class="dv">1</span>]]</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> child <span class="kw">in</span> children[j]:</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>      tmp <span class="op">=</span> L_sym[child][L_sym[child] <span class="op">&gt;</span> j]</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>      L_sym[j] <span class="op">=</span> np.unique(np.append(L_sym[j], tmp))</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(L_sym[j]) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>      p <span class="op">=</span> L_sym[j][<span class="dv">1</span>]</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>      children[p] <span class="op">=</span> np.append(children[p], j)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  L_indptr <span class="op">=</span> np.zeros(n<span class="op">+</span><span class="dv">1</span>, dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  L_indptr[<span class="dv">1</span>:] <span class="op">=</span> np.cumsum([<span class="bu">len</span>(x) <span class="cf">for</span> x <span class="kw">in</span> L_sym])</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  L_indices <span class="op">=</span> np.concatenate(L_sym)</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> L_indices, L_indptr</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  </span></code></pre></div>
+</div>
+<p>This was the first piece of Python I’ve written in about 13 years<a
+href="#fn35" class="footnote-ref" id="fnref35"
+role="doc-noteref"><sup>35</sup></a>, so it’s a bit shit. Nevertheless,
+it works. It is possible to replace the <code>children</code> structure
+by a linked list implemented in an n-dimensional integer array<a
+href="#fn36" class="footnote-ref" id="fnref36"
+role="doc-noteref"><sup>36</sup></a>, but why bother. This function is
+run once.</p>
+<p>It’s also worth noting that the <code>children</code> array expresses
+the elimination tree. If we were going to do something with it
+explicitly, we could just spit it out and reshape it into a more useful
+data structure.</p>
+<p>There’s one more piece of tedium before we can get to the main event:
+we need to do a deep copy of <span class="math inline">\(A\)</span> into
+the data structure of <span class="math inline">\(L\)</span>. There is
+no<a href="#fn37" class="footnote-ref" id="fnref37"
+role="doc-noteref"><sup>37</sup></a> avoiding this.</p>
+<p>Here is the code.<a href="#fn38" class="footnote-ref" id="fnref38"
+role="doc-noteref"><sup>38</sup></a></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _deep_copy_csc(A_indices, A_indptr, A_x, L_indices, L_indptr):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  n <span class="op">=</span> <span class="bu">len</span>(A_indptr) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  L_x <span class="op">=</span> np.zeros(<span class="bu">len</span>(L_indices))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n):</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    copy_idx <span class="op">=</span> np.nonzero(np.in1d(L_indices[L_indptr[j]:L_indptr[j <span class="op">+</span> <span class="dv">1</span>]],</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                                  A_indices[A_indptr[j]:A_indptr[j<span class="op">+</span><span class="dv">1</span>]]))[<span class="dv">0</span>]</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    L_x[L_indptr[j] <span class="op">+</span> copy_idx] <span class="op">=</span> A_x[A_indptr[j]:A_indptr[j<span class="op">+</span><span class="dv">1</span>]].copy()</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> L_x</span></code></pre></div>
+</div>
+<h2 id="computing-the-cholesky-factorisation">Computing the Cholesky
+factorisation</h2>
+<p>It feels like we’ve been going for a really long time and we still
+don’t have a Cholesky factorisation. Mate. I feel your pain. Believe
+me.</p>
+<p>But we are here now: everything is in place. We can now write down
+the Cholesky algorithm!</p>
+<p>The algorithm is as it was before, with the main difference being
+that we now know two things:</p>
+<ol type="1">
+<li>We only need to update <code>tmp</code> with descendent of
+<code>j</code> in the elimination tree.</li>
+<li>That’s it. That is the only thing we know.</li>
+</ol>
+<p>Of course, we could use the elimination tree to do this very
+efficiently, but, <em>as per my last email</em>, I do not care. So we
+will simply build up a copy of all of the descendants. This will
+obviously be less efficient, but it’s fine for our purposes. Let’s face
+it, we’re all going to die eventually.</p>
+<p>So here it goes.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _sparse_cholesky_csc_impl(L_indices, L_indptr, L_x):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(L_indptr) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    descendant <span class="op">=</span> [[] <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n)]</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n):</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        tmp <span class="op">=</span> L_x[L_indptr[j]:L_indptr[j <span class="op">+</span> <span class="dv">1</span>]]</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> bebe <span class="kw">in</span> descendant[j]:</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>            k <span class="op">=</span> bebe[<span class="dv">0</span>]</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>            Ljk<span class="op">=</span> L_x[bebe[<span class="dv">1</span>]]</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            pad <span class="op">=</span> np.nonzero(                                                <span class="op">\</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>              L_indices[L_indptr[k]:L_indptr[k<span class="op">+</span><span class="dv">1</span>]] <span class="op">==</span> L_indices[L_indptr[j]])[<span class="dv">0</span>][<span class="dv">0</span>]</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>            update_idx <span class="op">=</span> np.nonzero(np.in1d(                                 <span class="op">\</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>              L_indices[L_indptr[j]:L_indptr[j<span class="op">+</span><span class="dv">1</span>]],                          <span class="op">\</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>              L_indices[(L_indptr[k] <span class="op">+</span> pad):L_indptr[k<span class="op">+</span><span class="dv">1</span>]]))[<span class="dv">0</span>]</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>            tmp[update_idx] <span class="op">=</span> tmp[update_idx] <span class="op">-</span>                              <span class="op">\</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>              Ljk <span class="op">*</span> L_x[(L_indptr[k] <span class="op">+</span> pad):L_indptr[k <span class="op">+</span> <span class="dv">1</span>]]</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        diag <span class="op">=</span> np.sqrt(tmp[<span class="dv">0</span>])</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        L_x[L_indptr[j]] <span class="op">=</span> diag</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>        L_x[(L_indptr[j] <span class="op">+</span> <span class="dv">1</span>):L_indptr[j <span class="op">+</span> <span class="dv">1</span>]] <span class="op">=</span> tmp[<span class="dv">1</span>:] <span class="op">/</span> diag</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> idx <span class="kw">in</span> <span class="bu">range</span>(L_indptr[j] <span class="op">+</span> <span class="dv">1</span>, L_indptr[j <span class="op">+</span> <span class="dv">1</span>]):</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>            descendant[L_indices[idx]].append((j, idx))</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> L_x</span></code></pre></div>
+</div>
+<p>The one thing that you’ll note in this code<a href="#fn39"
+class="footnote-ref" id="fnref39" role="doc-noteref"><sup>39</sup></a>
+is that we are implicitly using things that we know about the sparsity
+structure of the <span class="math inline">\(j\)</span>th column. In
+particular, we <em>know</em> that the sparsity structure of the <span
+class="math inline">\(j\)</span>th column is the <em>union</em> of the
+relevant parts of the sparsity structure of their dependent columns.
+This allows a lot of our faster indexing to work.</p>
+<p>Finally, we can put it all together.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sparse_cholesky_csc(A_indices, A_indptr, A_x):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    L_indices, L_indptr<span class="op">=</span> _symbolic_factor_csc(A_indices, A_indptr)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    L_x <span class="op">=</span> _deep_copy_csc(A_indices, A_indptr, A_x, L_indices, L_indptr)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    L_x <span class="op">=</span> _sparse_cholesky_csc_impl(L_indices, L_indptr, L_x)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> L_indices, L_indptr, L_x</span></code></pre></div>
+</div>
+<p>Right. Let’s test it. We’re going to work on a particular<a
+href="#fn40" class="footnote-ref" id="fnref40"
+role="doc-noteref"><sup>40</sup></a> sparse matrix.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> sparse</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>one_d <span class="op">=</span> sparse.diags([[<span class="op">-</span><span class="fl">1.</span>]<span class="op">*</span>(n<span class="op">-</span><span class="dv">1</span>), [<span class="fl">2.</span>]<span class="op">*</span>n, [<span class="op">-</span><span class="fl">1.</span>]<span class="op">*</span>(n<span class="op">-</span><span class="dv">1</span>)], [<span class="op">-</span><span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>])</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> sparse.kronsum(one_d, one_d) <span class="op">+</span> sparse.eye(n<span class="op">*</span>n)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>A_lower <span class="op">=</span> sparse.tril(A, <span class="bu">format</span> <span class="op">=</span> <span class="st">&quot;csc&quot;</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>A_indices <span class="op">=</span> A_lower.indices</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>A_indptr <span class="op">=</span> A_lower.indptr</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>A_x <span class="op">=</span> A_lower.data</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>L_indices, L_indptr, L_x <span class="op">=</span> sparse_cholesky_csc(A_indices, A_indptr, A_x)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> sparse.csc_array((L_x, L_indices, L_indptr), shape <span class="op">=</span> (n<span class="op">**</span><span class="dv">2</span>, n<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> np.<span class="bu">sum</span>(np.<span class="bu">abs</span>((A <span class="op">-</span> L <span class="op">@</span> L.transpose()).todense()))</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Error in Cholesky is </span><span class="sc">{</span>err<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<pre><code>Error in Cholesky is 3.871041263071504e-12</code></pre>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nnz <span class="op">=</span> <span class="bu">len</span>(L_x)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Number of non-zeros is </span><span class="sc">{</span>nnz<span class="sc">}</span><span class="ss"> (fill in of </span><span class="sc">{</span><span class="bu">len</span>(L_x) <span class="op">-</span> <span class="bu">len</span>(A_x)<span class="sc">}</span><span class="ss">)&quot;</span>)</span></code></pre></div>
+<pre><code>Number of non-zeros is 125049 (fill in of 117649)</code></pre>
+</div>
+<p>Finally, let’s demonstrate that we can reduce the amount of fill-in
+with a reordering. Obviously, the built in permutation in
+<code>scipy</code> is crappy, so we will not see much of a difference.
+But nevertheless. It’s there.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>perm <span class="op">=</span> sparse.csgraph.reverse_cuthill_mckee(A, symmetric_mode<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(perm)</span></code></pre></div>
+<pre><code>[2499 2498 2449 ...   50    1    0]</code></pre>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>A_perm <span class="op">=</span> A[perm[:,<span class="va">None</span>], perm]</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>A_perm_lower <span class="op">=</span> sparse.tril(A_perm, <span class="bu">format</span> <span class="op">=</span> <span class="st">&quot;csc&quot;</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>A_indices <span class="op">=</span> A_perm_lower.indices</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>A_indptr <span class="op">=</span> A_perm_lower.indptr</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>A_x <span class="op">=</span> A_perm_lower.data</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>L_indices, L_indptr, L_x <span class="op">=</span> sparse_cholesky_csc(A_indices, A_indptr, A_x)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> sparse.csc_array((L_x, L_indices, L_indptr), shape <span class="op">=</span> (n<span class="op">**</span><span class="dv">2</span>, n<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> np.<span class="bu">sum</span>(np.<span class="bu">abs</span>((A_perm <span class="op">-</span> L <span class="op">@</span> L.transpose()).todense()))</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Error in Cholesky is </span><span class="sc">{</span>err<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<pre><code>Error in Cholesky is 3.0580421951974465e-12</code></pre>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nnz_rcm <span class="op">=</span> <span class="bu">len</span>(L_x)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Number of non-zeros is </span><span class="sc">{</span>nnz_rcm<span class="sc">}</span><span class="ss"> (fill in of </span><span class="sc">{</span><span class="bu">len</span>(L_x) <span class="op">-</span> <span class="bu">len</span>(A_x)<span class="sc">}</span><span class="ss">),</span><span class="ch">\n</span><span class="ss">which is less than the unpermuted matrix, which had </span><span class="sc">{</span>nnz<span class="sc">}</span><span class="ss"> non-zeros.&quot;</span>)</span></code></pre></div>
+<pre><code>Number of non-zeros is 87025 (fill in of 79625),
+which is less than the unpermuted matrix, which had 125049 non-zeros.</code></pre>
+</div>
+<p>And finally, let’s check that we’ve not made some fake non-zeros. To
+do this we need to wander back into <code>R</code> because
+<code>scipy</code> doesn’t have a sparse Cholesky<a href="#fn41"
+class="footnote-ref" id="fnref41" role="doc-noteref"><sup>41</sup></a>
+factorisation.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>ind</span> <span class='op'>&lt;-</span> <span class='va'>py</span><span class='op'>$</span><span class='va'>A_indices</span>
+<span class='va'>indptr</span> <span class='op'>&lt;-</span> <span class='va'>py</span><span class='op'>$</span><span class='va'>A_indptr</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>py</span><span class='op'>$</span><span class='va'>A_x</span><span class='op'>)</span>
+<span class='va'>A</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/Matrix/man/sparseMatrix.html'>sparseMatrix</a></span><span class='op'>(</span>i <span class='op'>=</span> <span class='va'>ind</span> <span class='op'>+</span> <span class='fl'>1</span>, p <span class='op'>=</span> <span class='va'>indptr</span>, x<span class='op'>=</span><span class='va'>x</span>, symmetric <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+
+<span class='va'>L</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/Matrix/man/chol.html'>chol</a></span><span class='op'>(</span><span class='va'>A</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>L</span><span class='op'>@</span><span class='va'>i</span> <span class='op'>-</span> <span class='va'>py</span><span class='op'>$</span><span class='va'>L_indices</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>[1] 0</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>L</span><span class='op'>@</span><span class='va'>p</span> <span class='op'>-</span> <span class='va'>py</span><span class='op'>$</span><span class='va'>L_indptr</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>[1] 0</code></pre>
+</div>
+<p>Perfect.</p>
+<h2 id="ok-we-are-done-for-today.">Ok we are done for today.</h2>
+<p>I was hoping that we were going to make it to the JAX implementation,
+but this is long enough now. And I suspect that there will be some
+<em>issues</em> that are going to come up.</p>
+<p>If you want some references, I recommend:</p>
+<ul>
+<li><a
+href="http://heath.cs.illinois.edu/courses/cs598mh/george_liu.pdf">George,
+Liu, and Ng’s notes</a> (warning: FORTRAN).</li>
+<li><a
+href="https://epubs.siam.org/doi/book/10.1137/1.9780898718881">Timothy
+Davis’ book</a> (warning: pure C).</li>
+<li>Liu’s <a href="https://epubs.siam.org/doi/10.1137/0611010">survey
+paper about elimination trees</a> (warning: trees).</li>
+<li><a
+href="https://www.routledge.com/Gaussian-Markov-Random-Fields-Theory-and-Applications/Rue-Held/p/book/9781584884323">Rue
+and Held’s book</a> (Statistically motivated).</li>
+</ul>
+<p>Obviously this is a massive area and I obviously did not do it
+justice in a single blog post. It’s well worth looking further into. It
+is very cool. And obviously, <em>I go through all this</em><a
+href="#fn42" class="footnote-ref" id="fnref42"
+role="doc-noteref"><sup>42</sup></a> to get a prototype that I can play
+with all of the bits of. For the love of god, use Cholmod or Eigen or
+MUMPS or literally anything else. The only reason to write these
+yourself is to learn how to understand it.</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<section class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>The old numerical linear algebra
+naming conventions: Symmetric letters are symmetric matrices, upper case
+is a matrix, lower case is a vector, etc etc etc. Obviously, all
+conventions in statistics go against this so who really cares. Burn it
+all down.<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>Go girl. Give us nothing.<a
+href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>or scalars<a href="#fnref3"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>This is actually how you check if a
+matrix is SPD. Such a useful agorithm!<a href="#fnref4"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>This variant is called the
+left-looking Cholesky. There are 6 distinct ways to rearrange these
+computations that lead to algorithms that are well-adapted to different
+structures. The left-looking algorithm is well adapted to matrices
+stored column-by-column. But it is not the only one! The variant of the
+sparse Cholesky in Matlab and Eigen is the upward-looking Cholesky.
+CHOLMOD uses the left-looking Cholesky (because that’s how you get
+supernodes). MUMPS uses the right-looking variant. Honestly this is a
+fucking fascinating wormhole you can fall down. A solid review of some
+of the possibilities is in Chapter 4 of Tim Davis’ book.<a
+href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p>Here <code>A</code> is a <span
+class="math inline">\(n\times n\)</span> matrix and <code>u'</code> is
+the transpose of the vector <code>u</code>.<a href="#fnref6"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7" role="doc-endnote"><p>You can also see that if <span
+class="math inline">\(A\)</span> is stored in memory by stacking the
+columns, this algorithm is set up to be fairly memory efficient. Of
+course, if you find yourself caring about what your cache is doing,
+you’ve gone astray somewhere. That is why professionals have coded this
+up (only a fool competes with LAPACK).<a href="#fnref7"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8" role="doc-endnote"><p>The ultimate language of scientific
+computing. Do not slide into my DMs and suggest Julia is.<a
+href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9" role="doc-endnote"><p>You may be thinking <em>well surely
+we have to use a row-major ordering</em>. But honey let me tell you. We
+are building our own damn storage method, so we can order it however we
+bloody want. Also, somewhere down the line I’m going to do this in
+Eigen, which is column major by default.<a href="#fnref9"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10" role="doc-endnote"><p>If you look at the algorithm, you’ll
+see that we only need to store the diagonal and the entries below. This
+is enough (in general) because we know the matrix is symmetric!<a
+href="#fnref10" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn11" role="doc-endnote"><p>CPU operations are a lot less
+memory-limited than they used to be, but nevertheless it piles up. GPU
+operations still very much are, but sparse matrix operations mostly
+don’t have the arithmetic intensity to be worth putting on a GPU.<a
+href="#fnref11" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn12" role="doc-endnote"><p>(NB: zero-based indexing!) This is a
+superfluous entry (the information is available elsewhere), but having
+it in makes life just a million times easier because you don’t have to
+treat the final column separately!.<a href="#fnref12"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13" role="doc-endnote"><p>ZERO BASED, PYTHON SLICES<a
+href="#fnref13" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn14" role="doc-endnote"><p>I am not a headless torso that can’t
+host. I differentiate.<a href="#fnref14" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn15" role="doc-endnote"><p>We only care about undirected
+graphs<a href="#fnref15" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn16" role="doc-endnote"><p>Or from <span
+class="math inline">\(0\)</span> to <span
+class="math inline">\(n-1\)</span> if you have hate in your heart and
+darkness in your soul.<a href="#fnref16" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn17" role="doc-endnote"><p>To get from the previous version of
+the algorithm to this, we unwound all of those beautiful vectorised
+matrix-vector products. This would be a terrible idea if we were doing a
+dense Cholesky, but as general rule if you are implementing your own
+dense Cholesky factorisation you have already committed to a terrible
+idea. (The same, to be honest, is true for sparse Choleskys. But
+nevertheless, she persisted.)<a href="#fnref17" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn18" role="doc-endnote"><p>or trees or really any discrete
+structure.<a href="#fnref18" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn19" role="doc-endnote"><p>Don’t kid yourself, <a
+href="https://epubs.siam.org/doi/10.1137/0205021">we look this shit
+up</a>.<a href="#fnref19" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn20" role="doc-endnote"><p>This means that all of the pairs
+<span class="math inline">\((i, v_1)\)</span>, <span
+class="math inline">\((v_i, v_{i+1})\)</span> and <span
+class="math inline">\((v_{\ell-1}, v_j)\)</span> are all in the edge set
+<span class="math inline">\(\mathcal{E}\)</span><a href="#fnref20"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21" role="doc-endnote"><p>The specific choices building this
+matrix are to make sure it’s positive definite. The transpose is there
+because in R, <code>R &lt;- chol(A)</code> returns an <em>upper</em>
+triangular matrix that satisfies <span class="math inline">\(A =
+R^TR\)</span>. I assume this is because C has row-major storage, but I
+honestly don’t care enough to look it up.<a href="#fnref21"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn22" role="doc-endnote"><p>Here the <code>pivot = FALSE</code>
+option is needed because the default for a sparse Cholesky decomposition
+in R is to re-order the vertices to try to minimise the fill-in. But
+that goes against the example!<a href="#fnref22" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn23" role="doc-endnote"><p>Finding the minimum fill reordering
+is NP-hard, so everything is heuristic.<a href="#fnref23"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24" role="doc-endnote"><p>scipy has the reverse Cuthill-McKee
+reordering—which is shit—easily available. As far as I can tell, the
+easiest way to get AMD out is to factorise a sparse matrix in scipy and
+pull the reordering out. If I were less lazy, I’d probably just bind
+SuiteSparse’s AMD algorithm, which is permissively licensed. But nah.
+The standard nested-dissection implementation is in the METIS package,
+which used to have a shit license but is now Apache2.0. Good on you
+METIS!<a href="#fnref24" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn25" role="doc-endnote"><p>and some other cases<a
+href="#fnref25" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn26" role="doc-endnote"><p>They are cheap to compute<a
+href="#fnref26" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn27" role="doc-endnote"><p>Actually, you get a forest in
+general. You get a tree if <span
+class="math inline">\(\mathcal{G}\)</span> has a single connected
+component, otherwise you get a bunch of disjoint trees. But we still
+call it a tree because maths is wild.<a href="#fnref27"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn28" role="doc-endnote"><p>Fun fact: it is the spanning tree of
+the graph of <span class="math inline">\(L + L^T\)</span>. Was that fun?
+I don’t think that was fun.<a href="#fnref28" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn29" role="doc-endnote"><p>This is morally but not actually
+true. There is a variant (slower in practice, faster asymptotically),
+that costs <span
+class="math inline">\(\mathcal{O}\left(\operatorname{nnz}(A)\alpha(\operatorname{nnz}(A),
+n)\right)\)</span>, where <span
+class="math inline">\(\alpha(m,n)\)</span> is the inverse Ackerman
+function, which is a very slowly growing function that is always equal
+to 4 for our purposes. The actual version that people use is technically
+<span class="math inline">\(\mathcal{O}(\operatorname{nnz}(A) \log
+n)\)</span>, but is faster and the <span class="math inline">\(\log
+n\)</span> is never seen in practice.<a href="#fnref29"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn30" role="doc-endnote"><p>This is beyond the scope, but
+basically it’s trying to find groups of nodes that can be eliminated as
+a block using dense matrix operations. This leads to a much more
+efficient algorithm.<a href="#fnref30" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn31" role="doc-endnote"><p>There is, of course, a typo in the
+algorithm we’re about to implement. We’re using the correct version from
+<a href="https://epubs.siam.org/doi/10.1137/0611010">here</a>.<a
+href="#fnref31" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn32" role="doc-endnote"><p>from parent to child (aka in
+descending node order)<a href="#fnref32" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn33" role="doc-endnote"><p>by construction<a href="#fnref33"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn34" role="doc-endnote"><p>If there are no non-zeros below the
+diagonal, then we have a root of one of the trees in the forest!<a
+href="#fnref34" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn35" role="doc-endnote"><p>I did not make it prettier because
+a) I think it’s useful to show bad code sometimes, and b) I can’t be
+arsed. The real file has some comments in it because I am not a monster,
+but in some sense this whole damn blog is a code comment.<a
+href="#fnref35" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn36" role="doc-endnote"><p>The George, Liu, Ng book does that
+in FORTRAN. Enjoy decoding it.<a href="#fnref36" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn37" role="doc-endnote"><p>Well, there is some avoiding this.
+If the amount of fill in is small, it may be more efficient to do
+insertions instead. But again, I am not going to bother. And anyway. If
+<code>A_x</code> is a JAX array, it’s going to be immutable and we are
+not going to be able to avoid the deep copy.<a href="#fnref37"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn38" role="doc-endnote"><p>Those <code>copy()</code> methods
+seem a bit weird right now but they will become very import! Because
+<code>A_x</code> will come in as an immutable array and we are going to
+need to mute it. And for whatever reason the copy methods for JAX
+<code>DeviceArray</code>s returns a <code>numpy.ndarray</code>. This is
+weird, but really fucking convenient. On the other hand if
+<code>x</code> is an JAX <code>DeviceArray</code> and <code>y</code> is
+initialised as a <code>numpy.ndarray</code>, then <code>y = x</code>
+<em>promotes</em> <code>y</code> to a <code>DeviceArray</code>. Python’s
+relationship with types is so messy.<a href="#fnref38"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn39" role="doc-endnote"><p>and in the deep copy code<a
+href="#fnref39" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn40" role="doc-endnote"><p>This is the discretisation of a 2D
+laplacian on a square with some specific boundary conditions<a
+href="#fnref40" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn41" role="doc-endnote"><p>Cholmod, which is the natural
+choice, is GPL’d, which basically means it can’t be used in something
+like Scipy. R does not have this problem.<a href="#fnref41"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn42" role="doc-endnote"><p>Björk voice<a href="#fnref42"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+<!--radix_placeholder_article_footer-->
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom">
+  <h3 id="citation">Citation</h3>
+  <p>For attribution, please cite this work as</p>
+  <pre class="citation-appendix short">Simpson (2022, March 31). Un garçon pas comme les autres (Bayes): An invitation to a sparse Cholesky factorisation. Retrieved from https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/</pre>
+  <p>BibTeX citation</p>
+  <pre class="citation-appendix long">@misc{simpson2022an,
+  author = {Simpson, Dan},
+  title = {Un garçon pas comme les autres (Bayes): An invitation to a sparse Cholesky factorisation},
+  url = {https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/},
+  year = {2022}
+}</pre>
+</div>
+<!--/radix_placeholder_appendices-->
+<!--radix_placeholder_navigation_after_body-->
+<!--/radix_placeholder_navigation_after_body-->
+
+</body>
+
+</html>

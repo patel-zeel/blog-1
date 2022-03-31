@@ -7,14 +7,23 @@
     <description>Nobody asked for this. There is no reason for this to exist.
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Mon, 21 Mar 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 30 Mar 2022 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>An invitation to a sparse Cholesky factorisation</title>
+      <dc:creator>Dan Simpson</dc:creator>
+      <link>https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices</link>
+      <description>Come for the details, stay for the shitty Python, leave with disappointment. Not unlike the experience of dating me.</description>
+      <guid>https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices</guid>
+      <pubDate>Wed, 30 Mar 2022 00:00:00 +0000</pubDate>
+      <media:content url="https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-7-1.png" medium="image" type="image/png" width="1248" height="768"/>
+    </item>
     <item>
       <title>The linear algebra of linear mixed effects models and their generalisations</title>
       <dc:creator>Dan Simpson</dc:creator>
       <link>https://dansblog.netlify.app/posts/2022-03-22-a-linear-mixed-effects-model</link>
       <description>Hubris. Just hubris. But before the fall comes the statement of purpose. This is that statement.</description>
       <guid>https://dansblog.netlify.app/posts/2022-03-22-a-linear-mixed-effects-model</guid>
-      <pubDate>Mon, 21 Mar 2022 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 22 Mar 2022 00:00:00 +0000</pubDate>
     </item>
     <item>
       <title>Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)</title>
