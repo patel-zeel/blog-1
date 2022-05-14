@@ -136,7 +136,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["getting-jax-to-love-sparse-matrices_files/anchor-4.2.2/anchor.min.js","getting-jax-to-love-sparse-matrices_files/bowser-1.9.3/bowser.min.js","getting-jax-to-love-sparse-matrices_files/distill-2.2.21/template.v2.js","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-10-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-11-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-6-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-7-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-8-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-9-1.png","getting-jax-to-love-sparse-matrices_files/header-attrs-2.11/header-attrs.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.min.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.min.map","getting-jax-to-love-sparse-matrices_files/popper-2.6.0/popper.min.js","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy-bundle.umd.min.js","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy-light-border.css","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy.css","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy.umd.min.js","getting-jax-to-love-sparse-matrices_files/webcomponents-2.0.0/webcomponents.js","Python/factorisation.py","Python/main.py"]}
+  {"type":"character","attributes":{},"value":["getting-jax-to-love-sparse-matrices_files/anchor-4.2.2/anchor.min.js","getting-jax-to-love-sparse-matrices_files/bowser-1.9.3/bowser.min.js","getting-jax-to-love-sparse-matrices_files/distill-2.2.21/template.v2.js","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-10-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-11-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-6-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-7-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-8-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-9-1.png","getting-jax-to-love-sparse-matrices_files/header-attrs-2.11/header-attrs.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.min.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.min.map","getting-jax-to-love-sparse-matrices_files/popper-2.6.0/popper.min.js","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy-bundle.umd.min.js","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy-light-border.css","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy.css","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy.umd.min.js","getting-jax-to-love-sparse-matrices_files/webcomponents-2.0.0/webcomponents.js","Python/__pycache__/cholesky.cpython-310.pyc","Python/__pycache__/jax_cholesky.cpython-310.pyc","Python/cholesky.py","Python/factorisation.py","Python/jax_cholesky.py","Python/main.py"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2680,8 +2680,7 @@ we need to do a deep copy of <span class="math inline">\(A\)</span> into
 the data structure of <span class="math inline">\(L\)</span>. There is
 no<a href="#fn37" class="footnote-ref" id="fnref37"
 role="doc-noteref"><sup>37</sup></a> avoiding this.</p>
-<p>Here is the code.<a href="#fn38" class="footnote-ref" id="fnref38"
-role="doc-noteref"><sup>38</sup></a></p>
+Here is the code.
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode" id="cb12"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _deep_copy_csc(A_indices, A_indptr, A_x, L_indices, L_indptr):</span>
@@ -2691,7 +2690,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a h
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n):</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    copy_idx <span class="op">=</span> np.nonzero(np.in1d(L_indices[L_indptr[j]:L_indptr[j <span class="op">+</span> <span class="dv">1</span>]],</span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                                  A_indices[A_indptr[j]:A_indptr[j<span class="op">+</span><span class="dv">1</span>]]))[<span class="dv">0</span>]</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    L_x[L_indptr[j] <span class="op">+</span> copy_idx] <span class="op">=</span> A_x[A_indptr[j]:A_indptr[j<span class="op">+</span><span class="dv">1</span>]].copy()</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    L_x[L_indptr[j] <span class="op">+</span> copy_idx] <span class="op">=</span> A_x[A_indptr[j]:A_indptr[j<span class="op">+</span><span class="dv">1</span>]]</span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> L_x</span></code></pre></div>
 </div>
 <h2 id="computing-the-cholesky-factorisation">Computing the Cholesky
@@ -2739,8 +2738,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a h
 <span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>            descendant[L_indices[idx]].append((j, idx))</span>
 <span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> L_x</span></code></pre></div>
 </div>
-<p>The one thing that you’ll note in this code<a href="#fn39"
-class="footnote-ref" id="fnref39" role="doc-noteref"><sup>39</sup></a>
+<p>The one thing that you’ll note in this code<a href="#fn38"
+class="footnote-ref" id="fnref38" role="doc-noteref"><sup>38</sup></a>
 is that we are implicitly using things that we know about the sparsity
 structure of the <span class="math inline">\(j\)</span>th column. In
 particular, we <em>know</em> that the sparsity structure of the <span
@@ -2757,8 +2756,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a h
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> L_indices, L_indptr, L_x</span></code></pre></div>
 </div>
 <p>Right. Let’s test it. We’re going to work on a particular<a
-href="#fn40" class="footnote-ref" id="fnref40"
-role="doc-noteref"><sup>40</sup></a> sparse matrix.</p>
+href="#fn39" class="footnote-ref" id="fnref39"
+role="doc-noteref"><sup>39</sup></a> sparse matrix.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode" id="cb15"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> sparse</span>
@@ -2811,8 +2810,8 @@ which is less than the unpermuted matrix, which had 125049 non-zeros.</code></pr
 </div>
 <p>And finally, let’s check that we’ve not made some fake non-zeros. To
 do this we need to wander back into <code>R</code> because
-<code>scipy</code> doesn’t have a sparse Cholesky<a href="#fn41"
-class="footnote-ref" id="fnref41" role="doc-noteref"><sup>41</sup></a>
+<code>scipy</code> doesn’t have a sparse Cholesky<a href="#fn40"
+class="footnote-ref" id="fnref40" role="doc-noteref"><sup>40</sup></a>
 factorisation.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2854,8 +2853,8 @@ and Held’s book</a> (Statistically motivated).</li>
 <p>Obviously this is a massive area and I obviously did not do it
 justice in a single blog post. It’s well worth looking further into. It
 is very cool. And obviously, <em>I go through all this</em><a
-href="#fn42" class="footnote-ref" id="fnref42"
-role="doc-noteref"><sup>42</sup></a> to get a prototype that I can play
+href="#fn41" class="footnote-ref" id="fnref41"
+role="doc-noteref"><sup>41</sup></a> to get a prototype that I can play
 with all of the bits of. For the love of god, use Cholmod or Eigen or
 MUMPS or literally anything else. The only reason to write these
 yourself is to learn how to understand it.</p>
@@ -3046,29 +3045,18 @@ insertions instead. But again, I am not going to bother. And anyway. If
 <code>A_x</code> is a JAX array, it’s going to be immutable and we are
 not going to be able to avoid the deep copy.<a href="#fnref37"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn38" role="doc-endnote"><p>Those <code>copy()</code> methods
-seem a bit weird right now but they will become very import! Because
-<code>A_x</code> will come in as an immutable array and we are going to
-need to mute it. And for whatever reason the copy methods for JAX
-<code>DeviceArray</code>s returns a <code>numpy.ndarray</code>. This is
-weird, but really fucking convenient. On the other hand if
-<code>x</code> is an JAX <code>DeviceArray</code> and <code>y</code> is
-initialised as a <code>numpy.ndarray</code>, then <code>y = x</code>
-<em>promotes</em> <code>y</code> to a <code>DeviceArray</code>. Python’s
-relationship with types is so messy.<a href="#fnref38"
-class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn39" role="doc-endnote"><p>and in the deep copy code<a
+<li id="fn38" role="doc-endnote"><p>and in the deep copy code<a
+href="#fnref38" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn39" role="doc-endnote"><p>This is the discretisation of a 2D
+laplacian on a square with some specific boundary conditions<a
 href="#fnref39" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn40" role="doc-endnote"><p>This is the discretisation of a 2D
-laplacian on a square with some specific boundary conditions<a
-href="#fnref40" class="footnote-back"
-role="doc-backlink">↩︎</a></p></li>
-<li id="fn41" role="doc-endnote"><p>Cholmod, which is the natural
+<li id="fn40" role="doc-endnote"><p>Cholmod, which is the natural
 choice, is GPL’d, which basically means it can’t be used in something
-like Scipy. R does not have this problem.<a href="#fnref41"
+like Scipy. R does not have this problem.<a href="#fnref40"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn42" role="doc-endnote"><p>Björk voice<a href="#fnref42"
+<li id="fn41" role="doc-endnote"><p>Björk voice<a href="#fnref41"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
