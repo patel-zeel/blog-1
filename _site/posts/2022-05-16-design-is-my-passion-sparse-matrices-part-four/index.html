@@ -130,7 +130,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"NULL"}
+  {"type":"character","attributes":{},"value":["design-is-my-passion-sparse-matrices-part-four_files/anchor-4.2.2/anchor.min.js","design-is-my-passion-sparse-matrices-part-four_files/bowser-1.9.3/bowser.min.js","design-is-my-passion-sparse-matrices-part-four_files/distill-2.2.21/template.v2.js","design-is-my-passion-sparse-matrices-part-four_files/header-attrs-2.11/header-attrs.js","design-is-my-passion-sparse-matrices-part-four_files/jquery-3.6.0/jquery-3.6.0.js","design-is-my-passion-sparse-matrices-part-four_files/jquery-3.6.0/jquery-3.6.0.min.js","design-is-my-passion-sparse-matrices-part-four_files/jquery-3.6.0/jquery-3.6.0.min.map","design-is-my-passion-sparse-matrices-part-four_files/popper-2.6.0/popper.min.js","design-is-my-passion-sparse-matrices-part-four_files/tippy-6.2.7/tippy-bundle.umd.min.js","design-is-my-passion-sparse-matrices-part-four_files/tippy-6.2.7/tippy-light-border.css","design-is-my-passion-sparse-matrices-part-four_files/tippy-6.2.7/tippy.css","design-is-my-passion-sparse-matrices-part-four_files/tippy-6.2.7/tippy.umd.min.js","design-is-my-passion-sparse-matrices-part-four_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2176,7 +2176,7 @@ class="math inline">\(b\)</span></li>
 primitives for both of the major components of our target and combine
 them using existing JAX primitives (like addition, scalar
 multiplication, and dot products).</p>
-<p>This is a bad design.</p>
+<p>This is a bad idea.</p>
 <p>The problem is that both primitives require the Cholesky
 decomposition of <span class="math inline">\(A\)</span>, so if we take
 this route we might end up computing an extra Cholesky decomposition.
@@ -2218,7 +2218,8 @@ matrix we instantiate, this design might be useful. It might also be
 useful to write a constructor that takes a
 <code>jax.experimental.CSCMatrix</code>, so that we could build a
 differentiable matrix and then just absolutely <em>slam</em> it into our
-filthy little Cholesky context.</p>
+filthy little Cholesky context<a href="#fn3" class="footnote-ref"
+id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
 <p>In order to use this type of pattern with JAX, we would need to
 register it as a Pytree class, which involves writing flatten and
 unflatten routines. The <a
@@ -2233,11 +2234,11 @@ sugar</a> in the experimental sparse library.</p>
 <p>Implementing this would be quite an undertaking, but it’s certainly
 an option. The most obvious downside of this pattern (plus a fully
 functional sparse matrix class) is that it may end up being quite
-delicate to have this volume of auxillary<br />
-information<a href="#fn3" class="footnote-ref" id="fnref3"
-role="doc-noteref"><sup>3</sup></a> in a pytree while making everything
-differentiate properly. This doesn’t seem to be how most parts of JAX
-has been built. There are also a couple of <a
+delicate to have this volume of auxillary information<a href="#fn4"
+class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> in
+a pytree while making everything differentiate properly. This doesn’t
+seem to be how most parts of JAX has been built. There are also a couple
+of <a
 href="https://jax.readthedocs.io/en/latest/pytrees.html#custom-pytrees-and-initialization">sharp
 corners</a> we could run into with instantiation.</p>
 <p>To close this out, it’s worth noting a variation on this pattern that
@@ -2248,8 +2249,8 @@ we need a Cholesky factor we check <code>is_cholesky</code> and if it’s
 <code>True</code> we use the computed Cholesky factor and otherwise we
 compute it and set <code>is_cholesky = True</code>.</p>
 <p>This pattern introduces state to the object: it is no longer <em>set
-and forget</em>. This will not work within JAX<a href="#fn4"
-class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>,
+and forget</em>. This will not work within JAX<a href="#fn5"
+class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>,
 where objects need to be immutable. It’s also not an exceptional pattern
 in general: it is considerably easier to debug code with stateless
 objects.</p>
@@ -2275,20 +2276,21 @@ store computed Cholesky factors. We can simply eat, prey, love.</p>
 expand the codebase if there are more things that we want to do. It’s
 also not obvious why we would do this instead of just making <span
 class="math inline">\(\log p(\theta \mid y)\)</span> a primitive<a
-href="#fn5" class="footnote-ref" id="fnref5"
-role="doc-noteref"><sup>5</sup></a>.</p>
+href="#fn6" class="footnote-ref" id="fnref6"
+role="doc-noteref"><sup>6</sup></a>.</p>
 <h2 id="option-3-just-compute-the-cholesky">Option 3: Just compute the
 Cholesky</h2>
 <p>Our third option is to simply compute (and differentiate) the
 Cholesky factor directly. We can then compute <span
 class="math inline">\(\log(|A|)\)</span> and <span
 class="math inline">\(A^{-1}b\)</span> through a combination of
-differentiable operations on the elements of the Cholesky factor (<span
-class="math inline">\(\log(|A|)\)</span>) and triangular linear solves
-<span class="math inline">\(L^{-1}b\)</span> and <span
-class="math inline">\(L^{-T}c\)</span>.</p>
-<p>Hence we require the following two<a href="#fn6" class="footnote-ref"
-id="fnref6" role="doc-noteref"><sup>6</sup></a> JAX primitives:</p>
+differentiable operations on the elements of the Cholesky factor (for
+<span class="math inline">\(\log(|A|)\)</span>) and triangular linear
+solves <span class="math inline">\(L^{-1}b\)</span> and <span
+class="math inline">\(L^{-T}c\)</span> (for <span
+class="math inline">\(A^{-1}b\)</span>).</p>
+<p>Hence we require the following two<a href="#fn7" class="footnote-ref"
+id="fnref7" role="doc-noteref"><sup>7</sup></a> JAX primitives:</p>
 <ul>
 <li><span class="math inline">\(A \rightarrow
 \operatorname{chol}(A)\)</span>, where <span
@@ -2326,8 +2328,8 @@ the flexibility to do whatever perverted thing they want to do with the
 Cholesky triangle. For example, they might want to do a
 centring/non-centring transformation. In Option 1, we would need to
 write explicit functions to let them do that (not difficult, but there’s
-a lot of code to write and, potentially, a lot of technical debt to
-accrue).</p>
+a lot of code to write, which has the annoying tendency to increases the
+maintainence burden).</p>
 <h2 id="option-4-functors">Option 4: Functors!</h2>
 <p>A slightly wilder design pattern would be to abandon sparse matrices
 and just make functions <code>A(theta, ...)</code> that return a sparse
@@ -2347,11 +2349,13 @@ variant has been used successfully in the (as yet un-merged) <a
 href="https://github.com/stan-dev/math/tree/try-laplace_student/stan/math/laplace">Laplace
 approximation feature</a> in Stan.</p>
 <h2 id="which-one-should-we-use">Which one should we use?</h2>
-<p>We don’t really need to make that choice yet. So we won’t. But
-personally, I like option 1. I expect everyone else on earth would
-prefer option 3. But for densities that see a lot of action, it would
-make quite a bit of sense to consider making the density a primitive
+<p>We don’t really need to make that choice yet. So we won’t.</p>
+<p>But personally, I like option 1. I expect everyone else on earth
+would prefer option 3. For densities that see a lot of action, it would
+make quite a bit of sense to consider making that density a primitive
 when it has a complex derivative (<em>à la</em> option 2).</p>
+<p>But for now, let’s park this and start getting in on the
+implementations.</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <section class="footnotes footnotes-end-of-document"
@@ -2365,19 +2369,21 @@ role="doc-backlink">↩︎</a></p></li>
 <li id="fn2" role="doc-endnote"><p>I get sick of typing “unnormalised
 log-posterior”<a href="#fnref2" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p>Permuations, cholesky, etc<a
+<li id="fn3" role="doc-endnote"><p>I am sorry. I have had some wine.<a
 href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4" role="doc-endnote"><p>This also won’t work in Stan, because
-all Stan objects are stateless.<a href="#fnref4" class="footnote-back"
+<li id="fn4" role="doc-endnote"><p>Permuations, cholesky, etc<a
+href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>This also won’t work in Stan, because
+all Stan objects are stateless.<a href="#fnref5" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn5" role="doc-endnote"><p>This is actually what Stan has done
+<li id="fn6" role="doc-endnote"><p>This is actually what Stan has done
 for a bunch of its <a
 href="https://mc-stan.org/docs/2_29/functions-reference/poisson-log-glm.html">GLM-type
 models</a>. It’s very efficient and fast. But with a maintainance
-burden.<a href="#fnref5" class="footnote-back"
+burden.<a href="#fnref6" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn6" role="doc-endnote"><p>or three, but you can implement both
-triangular solves in one function<a href="#fnref6" class="footnote-back"
+<li id="fn7" role="doc-endnote"><p>or three, but you can implement both
+triangular solves in one function<a href="#fnref7" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>

@@ -59,7 +59,7 @@ This option is, in some sense, the most straightforward. We implement primitives
 for both of the major components of our target and combine them using existing JAX 
 primitives (like addition, scalar multiplication, and dot products).
 
-This is a bad design.
+This is a bad idea.
 
 The problem is that both primitives require the Cholesky decomposition of $A$, so 
 if we take this route we might end up computing an extra Cholesky decomposition.
@@ -101,7 +101,7 @@ class SPDSparse:
 In contexts where we need a Cholesky decomposition of every SPD matrix we instantiate,
 this design might be useful.  It might also  be useful to write a constructor
 that takes a `jax.experimental.CSCMatrix`, so that we could build a differentiable
-matrix and then just absolutely _slam_ it into our filthy little Cholesky context.
+matrix and then just absolutely _slam_ it into our filthy little Cholesky context^[I am sorry. I have had some wine.].
 
 In order to use this type of pattern with JAX, we would need to register it as a
 Pytree class, which involves writing flatten and unflatten routines. The [CSCSparse
@@ -113,8 +113,7 @@ extra [autodiff sugar](https://github.com/google/jax/blob/712ab66f2855acf8a3f3c3
 
 Implementing this would be quite an undertaking, but it's certainly an option.
 The most obvious downside of this pattern (plus a fully functional sparse matrix
-class) is that it may end up being quite delicate to have this volume of auxillary  
-information^[Permuations, cholesky, etc] in a pytree while making everything differentiate 
+class) is that it may end up being quite delicate to have this volume of auxillary information^[Permuations, cholesky, etc] in a pytree while making everything differentiate 
 properly. This doesn't seem to be how most parts of JAX has been built.
 There are also a couple of [sharp corners](https://jax.readthedocs.io/en/latest/pytrees.html#custom-pytrees-and-initialization) we could run into with instantiation.
 
@@ -152,8 +151,7 @@ we would do this instead of just making $\log p(\theta \mid y)$ a primitive^[Thi
 
 Our third option is to simply compute (and differentiate) the Cholesky factor 
 directly. We can then compute $\log(|A|)$ and $A^{-1}b$ through a combination 
-of differentiable operations on the elements of the Cholesky factor ($\log(|A|)$)
-and triangular linear solves $L^{-1}b$ and $L^{-T}c$.
+of differentiable operations on the elements of the Cholesky factor (for $\log(|A|)$) and triangular linear solves $L^{-1}b$ and $L^{-T}c$ (for $A^{-1}b$).
 
 Hence we require the following two^[or three, but you can implement both triangular solves in one function]
 JAX primitives:
@@ -182,7 +180,7 @@ The advantage of this type of design pattern is that it gives users the flexibil
 to do whatever perverted thing they want to do with the Cholesky triangle. For
 example, they might want to do a centring/non-centring transformation. In Option 1,
 we would need to write explicit functions to let them do that (not difficult, but 
-there's a lot of code to write and, potentially, a lot of technical debt to accrue).
+there's a lot of code to write, which has the annoying tendency to increases the maintainence burden).
 
 ## Option 4: Functors!
 
@@ -202,7 +200,10 @@ There's a little bit of the idea in [this Stan issue](https://github.com/stan-de
 
 ## Which one should we use?
 
-We don't really need to make that choice yet. So we won't. But personally, I like
-option 1. I expect everyone else on earth would prefer option 3. But for densities 
-that see a lot of action, it would make quite a bit of sense to consider making
-the density a primitive when it has a complex derivative (_à la_ option 2).
+We don't really need to make that choice yet. So we won't. 
+
+But personally, I like option 1. I expect everyone else on earth would prefer option 3. For densities that see a lot of action, it would make quite a bit of sense to consider making that density a primitive when it has a complex derivative (_à la_ option 2).
+
+But for now, let's park this and start getting in on the implementations. 
+
+
