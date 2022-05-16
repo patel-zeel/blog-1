@@ -220,7 +220,7 @@ p(\theta \mid y) &\propto p(\theta) \frac{|Q(\theta)|}{|Q_{u\mid y, \theta}(\the
 \end{align*}
 
 For those who just love a log-density, this is $$
-\log(p(\theta \mid y)) = \frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TA^TW^{-1}y + \log(|Q(\theta)|) - \log(|Q_{u\mid y, \theta}(\theta)|).
+\log(p(\theta \mid y)) = \frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TA^TW^{-1}y +\frac{1}{2} \log(|Q(\theta)|) - \frac{1}{2}\log(|Q_{u\mid y, \theta}(\theta)|).
 $$ A fairly simple expression^[The brave or foolish amongst you might want to convince yourselves that this collapses to _exactly_ the marginal likelihood we would've gotten from Rasmussen and Williams had we made a sequence of different life choices. In particular if $A = I$ and $Q(\theta) = \Sigma(\theta)^{-1}$.] for all of that work.
 
 ## So why isn't this just a Gaussian process?

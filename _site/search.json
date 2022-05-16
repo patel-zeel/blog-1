@@ -6,14 +6,14 @@
       "description": "Nobody asked for this.",
       "author": [],
       "contents": "\nThere is no reason for this to exist.\n\n\n\n",
-      "last_modified": "2022-05-14T17:03:52+10:00"
+      "last_modified": "2022-05-16T17:13:27+10:00"
     },
     {
       "path": "index.html",
       "title": "Un garçon pas comme les autres (Bayes)",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2022-05-14T17:03:54+10:00"
+      "last_modified": "2022-05-16T17:13:28+10:00"
     }
   ],
   "collections": ["posts/posts.json"]

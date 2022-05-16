@@ -7,7 +7,15 @@
     <description>Nobody asked for this. There is no reason for this to exist.
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Sat, 14 May 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 16 May 2022 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Design is my passion: sparse matrices part four</title>
+      <dc:creator>Dan Simpson</dc:creator>
+      <link>https://dansblog.netlify.app/posts/2022-05-16-design-is-my-passion-sparse-matrices-part-four</link>
+      <description>Just some harmeless notes. Like the ones Judy Dench took in that movie.</description>
+      <guid>https://dansblog.netlify.app/posts/2022-05-16-design-is-my-passion-sparse-matrices-part-four</guid>
+      <pubDate>Mon, 16 May 2022 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Sparse matrices part 3: Failing at JAX</title>
       <dc:creator>Dan Simpson</dc:creator>
