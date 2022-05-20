@@ -3,17 +3,17 @@
     {
       "path": "about.html",
       "title": "About this blog",
-      "description": "Nobody asked for this.",
+      "description": "A footnote that got out of control.",
       "author": [],
-      "contents": "\nThere is no reason for this to exist.\n\n\n\n",
-      "last_modified": "2022-05-16T17:23:02+10:00"
+      "contents": "\nNobody asked for this. There is no reason for this to exist.\n\n\n\n",
+      "last_modified": "2022-05-20T23:02:25+10:00"
     },
     {
       "path": "index.html",
       "title": "Un garçon pas comme les autres (Bayes)",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2022-05-16T17:23:02+10:00"
+      "last_modified": "2022-05-20T23:02:25+10:00"
     }
   ],
   "collections": ["posts/posts.json"]

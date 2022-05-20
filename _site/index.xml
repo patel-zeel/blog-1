@@ -4,10 +4,18 @@
     <title>Un garçon pas comme les autres (Bayes)</title>
     <link>https://dansblog.netlify.app/</link>
     <atom:link href="https://dansblog.netlify.app/index.xml" rel="self" type="application/rss+xml"/>
-    <description>Nobody asked for this. There is no reason for this to exist.
+    <description>A footnote that got out of control.
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Mon, 16 May 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 20 May 2022 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Sparse Matrices 5: I bind you Nancy</title>
+      <dc:creator>Dan Simpson</dc:creator>
+      <link>https://dansblog.netlify.app/posts/2022-05-14-sparse4-some-primatives</link>
+      <description>A new JAX primitive? In this economy?</description>
+      <guid>https://dansblog.netlify.app/posts/2022-05-14-sparse4-some-primatives</guid>
+      <pubDate>Fri, 20 May 2022 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Design is my passion: sparse matrices part four</title>
       <dc:creator>Dan Simpson</dc:creator>
