@@ -2200,7 +2200,7 @@ class="math inline">\(\|\delta\|\)</span>.</p>
 <p>Now let’s get algebraing. <span class="math display">\[\begin{align*}
 f(A + \Delta, b + \delta) &amp;= (A+\Delta)^{-1}(b + \delta) \\
 &amp;= (I + A^{-1}\Delta)^{-1}A^{-1}(b + \delta) \\
-&amp;= (I - A^{-1}\Delta + o(\|\Delta\|))A^{-1}(A^{-1}b + \delta) \\
+&amp;= (I - A^{-1}\Delta + o(\|\Delta\|))A^{-1}(b + \delta) \\
 &amp;= A^{-1}b + A^{-1}(\delta - \Delta A^{-1}b ) + o(\|\Delta\| +
 \|\delta\|)
 \end{align*}\]</span></p>
@@ -2629,12 +2629,12 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a h
 <span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="ss">&quot;&quot;&quot;</span>)</span></code></pre></div>
 <pre><code>
 Transpose = False:
-  Error A varying:  9.42e-08
-  Error b varying:  5.82e-11
-  Error A and b varying:  5.55e-07
+  Error A varying:  9.40e-08
+  Error b varying:  0.00e+00
+  Error A and b varying:  4.73e-07
 
 Transpose = True:
-  Error A varying:  1.31e-07
+  Error A varying:  8.18e-08
   Error b varying:  0.00e+00</code></pre>
 </div>
 <p>Brilliant! Everythign correct withing single precision!</p>

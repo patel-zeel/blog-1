@@ -94,7 +94,7 @@ Now let's get algebraing.
 \begin{align*}
 f(A + \Delta, b + \delta) &= (A+\Delta)^{-1}(b + \delta) \\
 &= (I + A^{-1}\Delta)^{-1}A^{-1}(b + \delta) \\
-&= (I - A^{-1}\Delta + o(\|\Delta\|))A^{-1}(A^{-1}b + \delta) \\
+&= (I - A^{-1}\Delta + o(\|\Delta\|))A^{-1}(b + \delta) \\
 &= A^{-1}b + A^{-1}(\delta - \Delta A^{-1}b ) + o(\|\Delta\| + \|\delta\|)
 \end{align*}
 
