@@ -136,7 +136,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["getting-jax-to-love-sparse-matrices_files/anchor-4.2.2/anchor.min.js","getting-jax-to-love-sparse-matrices_files/bowser-1.9.3/bowser.min.js","getting-jax-to-love-sparse-matrices_files/distill-2.2.21/template.v2.js","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-10-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-11-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-6-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-7-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-8-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-9-1.png","getting-jax-to-love-sparse-matrices_files/header-attrs-2.11/header-attrs.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.min.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.min.map","getting-jax-to-love-sparse-matrices_files/popper-2.6.0/popper.min.js","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy-bundle.umd.min.js","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy-light-border.css","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy.css","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy.umd.min.js","getting-jax-to-love-sparse-matrices_files/webcomponents-2.0.0/webcomponents.js","Python/__pycache__/cholesky.cpython-310.pyc","Python/__pycache__/jax_cholesky.cpython-310.pyc","Python/cholesky.py","Python/factorisation.py","Python/jax_cholesky.py","Python/main.py"]}
+  {"type":"character","attributes":{},"value":["getting-jax-to-love-sparse-matrices_files/anchor-4.2.2/anchor.min.js","getting-jax-to-love-sparse-matrices_files/bowser-1.9.3/bowser.min.js","getting-jax-to-love-sparse-matrices_files/distill-2.2.21/template.v2.js","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-10-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-11-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-12-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-6-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-7-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-8-1.png","getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-9-1.png","getting-jax-to-love-sparse-matrices_files/header-attrs-2.11/header-attrs.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.min.js","getting-jax-to-love-sparse-matrices_files/jquery-3.6.0/jquery-3.6.0.min.map","getting-jax-to-love-sparse-matrices_files/popper-2.6.0/popper.min.js","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy-bundle.umd.min.js","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy-light-border.css","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy.css","getting-jax-to-love-sparse-matrices_files/tippy-6.2.7/tippy.umd.min.js","getting-jax-to-love-sparse-matrices_files/webcomponents-2.0.0/webcomponents.js","Python/__pycache__/cholesky.cpython-310.pyc","Python/__pycache__/jax_cholesky.cpython-310.pyc","Python/cholesky.py","Python/factorisation.py","Python/jax_cholesky.py","Python/main.py"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2360,14 +2360,16 @@ href="#fn17" class="footnote-ref" id="fnref17"
 role="doc-noteref"><sup>17</sup></a>, but this time closer to how we
 will implement it.</p>
 <div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode" id="cb7"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n):</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  tmp <span class="op">=</span> A[j:n, j]</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, j):</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, j<span class="op">-</span><span class="dv">1</span>):</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      tmp[i] <span class="op">=</span> tmp[i] <span class="op">-</span> L[i, k] <span class="op">*</span> L[j, k]</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    L[j, j] <span class="op">=</span> sqrt(tmp[<span class="dv">0</span>])</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    L[(j<span class="op">+</span><span class="dv">1</span>):n, j] <span class="op">=</span> tmp[<span class="dv">1</span>:n] <span class="op">/</span> L[j, j]</span></code></pre></div>
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> np.tril(A)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(j<span class="op">-</span><span class="dv">1</span>):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    L[j:n, j] <span class="op">-=</span> L[j, k] <span class="op">*</span> L[j:n, k]</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  L[j,j]<span class="op">=</span> np.sqrt(L[j,j])</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  L[j<span class="op">+</span><span class="dv">1</span>:n, j] <span class="op">=</span> L[j<span class="op">+</span><span class="dv">1</span>:n] <span class="op">/</span> L[j, j]</span></code></pre></div>
 </div>
 <p>If we stare at this long enough we can work out when <span
 class="math inline">\(L_{ij}\)</span> is going to be potentially
@@ -2417,7 +2419,7 @@ thing.</p>
 <h3 id="a-toy-example">A toy example</h3>
 <p>Consider the following graph</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-9-1.png" width="624" /></p>
+<p><img src="getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-10-1.png" width="624" /></p>
 </div>
 <p>It’s pretty clear that there is a path between <span
 class="math inline">\((i,j)\)</span> for every pair <span
@@ -2463,7 +2465,7 @@ role="doc-noteref"><sup>21</sup></a></p>
 in pattern implied by a labelling where the fully collected vertex is
 labelled last instead of first?</p>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-11-1.png" width="624" /></p>
+<p><img src="getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-12-1.png" width="624" /></p>
 </div>
 <p>There are now <em>no paths</em> from <span
 class="math inline">\(i\)</span> to <span

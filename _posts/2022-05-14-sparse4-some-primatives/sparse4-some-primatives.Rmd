@@ -341,7 +341,7 @@ to use `L_nse` to work out the dimension of our output.
 @sparse_cholesky_p.def_abstract_eval
 def sparse_cholesky_abstract_eval(A_indices, A_indptr, A_x, *, L_nse):
   return core.ShapedArray((L_nse,), A_indices.dtype),                   \
-         core.ShapedArray(A.indptr.shape, A_indptr.dtype),             \
+         core.ShapedArray(A_indptr.shape, A_indptr.dtype),             \
          core.ShapedArray((L_nse,), A_x.dtype)
 
 ```
