@@ -1029,11 +1029,11 @@ Conference in Minneapolis, MN).] in 1973.
 Their idea was that if we write $A = VDV^T$, where $V$ is a lower-triangular matrix
 with ones on the diagonal and $D$ is diagonal. This links up with our usual Cholesky
 factorisation through the identity $L = VD^{1/2}$. It follows that if $S = A^{-1}$, 
-then $VDV^TS = I$.  Then, we make some magic manipulations.
+then $VDV^TS = I$.  Then, we make some magic manipulations^[Thnks to Jerzy Baranowski for finding a very very bad LaTeX erro that made these queations quite wrong!].
 \begin{align*}
 V^TS &= D^{-1}V^{-1} \\
-S + V^TS &= S + D^{-1}V^{-1}
-S = D^{-1}V^{-1} + (I - V^T)S.
+S + V^TS &= S + D^{-1}V^{-1} \\
+S &= D^{-1}V^{-1} + (I - V^T)S.
 \end{align*}
 
 Once again, this does not look super-useful. The trick is to notice 2 things. 

@@ -2629,12 +2629,12 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a h
 <span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="ss">&quot;&quot;&quot;</span>)</span></code></pre></div>
 <pre><code>
 Transpose = False:
-  Error A varying:  9.40e-08
+  Error A varying:  1.18e-07
   Error b varying:  0.00e+00
-  Error A and b varying:  4.73e-07
+  Error A and b varying:  4.82e-07
 
 Transpose = True:
-  Error A varying:  8.18e-08
+  Error A varying:  9.65e-08
   Error b varying:  0.00e+00</code></pre>
 </div>
 <p>Brilliant! Everythign correct withing single precision!</p>
@@ -3289,10 +3289,12 @@ usual Cholesky factorisation through the identity <span
 class="math inline">\(L = VD^{1/2}\)</span>. It follows that if <span
 class="math inline">\(S = A^{-1}\)</span>, then <span
 class="math inline">\(VDV^TS = I\)</span>. Then, we make some magic
-manipulations. <span class="math display">\[\begin{align*}
+manipulations<a href="#fn43" class="footnote-ref" id="fnref43"
+role="doc-noteref"><sup>43</sup></a>. <span
+class="math display">\[\begin{align*}
 V^TS &amp;= D^{-1}V^{-1} \\
-S + V^TS &amp;= S + D^{-1}V^{-1}
-S = D^{-1}V^{-1} + (I - V^T)S.
+S + V^TS &amp;= S + D^{-1}V^{-1} \\
+S &amp;= D^{-1}V^{-1} + (I - V^T)S.
 \end{align*}\]</span></p>
 <p>Once again, this does not look super-useful. The trick is to notice 2
 things.</p>
@@ -3343,8 +3345,8 @@ structure of the <span class="math inline">\(j\)</span> the column of
 <span class="math inline">\(L\)</span> relates to the non-zero structure
 of the <span class="math inline">\(i\)</span> th column for <span
 class="math inline">\(j \geq i\)</span>, it’s clear that we have
-computed enough<a href="#fn43" class="footnote-ref" id="fnref43"
-role="doc-noteref"><sup>43</sup></a> of <span
+computed enough<a href="#fn44" class="footnote-ref" id="fnref44"
+role="doc-noteref"><sup>44</sup></a> of <span
 class="math inline">\(S\)</span> at every step to complete the
 recursions.</p>
 <p>Now we just need to Python it. (And thanks to Finn Lindgren who
@@ -3397,8 +3399,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a h
 <span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>    out_x[out_indptr[col]:out_indptr[col<span class="op">+</span><span class="dv">1</span>]] <span class="op">=</span> Linv_x[L_indptr[col] <span class="op">+</span> ind]</span>
 <span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> out_x</span></code></pre></div>
 </div>
-<p>The implementation makes use of the<a href="#fn44"
-class="footnote-ref" id="fnref44" role="doc-noteref"><sup>44</sup></a>
+<p>The implementation makes use of the<a href="#fn45"
+class="footnote-ref" id="fnref45" role="doc-noteref"><sup>45</sup></a>
 <em>dictionary of keys</em> representation of a sparse matrix from
 <code>scipy.sparse</code>. This is an efficient storage scheme when you
 need to modify the sparsity structure (as we are doing here) or do a lot
@@ -3530,8 +3532,8 @@ Variable A:
 difference. I was somewhat concerned that there was a bug somewhere in
 my code. I did a little bit of exploring and the error got larger as the
 problem got larger. It also depended a little bit more than I was
-comfortable on how I had implemented<a href="#fn45" class="footnote-ref"
-id="fnref45" role="doc-noteref"><sup>45</sup></a> the baseline dense
+comfortable on how I had implemented<a href="#fn46" class="footnote-ref"
+id="fnref46" role="doc-noteref"><sup>46</sup></a> the baseline dense
 version.</p>
 <p>That second fact suggested to me that it might be a floating point
 problem. By default, JAX uses single precision (32-bit) floating point.
@@ -3588,8 +3590,8 @@ Variable A:
 <h2 id="wrapping-up">Wrapping up</h2>
 <p>And that is where we will leave it for today. Next up, I’m probably
 going to need to do the autodiff for the Cholesky factorisation. It’s
-not <em>hard</em>, but it is tedious<a href="#fn46" class="footnote-ref"
-id="fnref46" role="doc-noteref"><sup>46</sup></a> and this post is
+not <em>hard</em>, but it is tedious<a href="#fn47" class="footnote-ref"
+id="fnref47" role="doc-noteref"><sup>47</sup></a> and this post is
 already very long.</p>
 <p>After that we need a few more things:</p>
 <ol type="1">
@@ -3804,31 +3806,35 @@ Proceedings.IEEE Power Engineering Society, pp. 63–69 (Papers Presented
 at the 1973 Power Industry Computer Application Conference in
 Minneapolis, MN).<a href="#fnref42" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn43" role="doc-endnote"><p>Indeed, in the notation of post two
+<li id="fn43" role="doc-endnote"><p>Thnks to Jerzy Baranowski for
+finding a very very bad LaTeX erro that made these queations quite
+wrong!<a href="#fnref43" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn44" role="doc-endnote"><p>Indeed, in the notation of post two
 <span class="math inline">\(\mathcal{L}_i \cap \{i+1, \dots, n\}
 \subseteq \mathcal{L}_j\)</span> for all <span class="math inline">\(i
 \leq j\)</span>, where <span
 class="math inline">\(\mathcal{L}_i\)</span> is the set of non-zeros in
 the <span class="math inline">\(i\)</span>th column of <span
-class="math inline">\(L\)</span>.<a href="#fnref43"
+class="math inline">\(L\)</span>.<a href="#fnref44"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn44" role="doc-endnote"><p>The sparse matrix is stored as a
+<li id="fn45" role="doc-endnote"><p>The sparse matrix is stored as a
 dictionary <code>{(i,j): value}</code>, which is a very natural way to
 build a sparse matrix, even if its quite inefficient to do anything with
-it in that form.<a href="#fnref44" class="footnote-back"
+it in that form.<a href="#fnref45" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn45" role="doc-endnote"><p>You can’t just use
+<li id="fn46" role="doc-endnote"><p>You can’t just use
 <code>jnp.linalg.det()</code> because there’s a tendency towards
 <code>nan</code>s. (The true value is something like 6.1341871^{108}!)<a
-href="#fnref45" class="footnote-back"
+href="#fnref46" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn46" role="doc-endnote"><p>Would it be less tedious if my
+<li id="fn47" role="doc-endnote"><p>Would it be less tedious if my
 implementation of the Cholesky was less shit? Yes. But hey. It was the
 first non-trivial piece of python code I’d written in more than a decade
 (or maybe ever?) so it is what it is. Anyway. I’m gonna run into the
 same problem I had in <a
 href="https://dansblog.netlify.app/posts/2022-05-14-jax-ing-a-sparse-cholesky-factorisation-part-3-in-an-ongoing-journey/">Part
-3</a><a href="#fnref46" class="footnote-back"
+3</a><a href="#fnref47" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
