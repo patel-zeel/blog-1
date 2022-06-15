@@ -1,5 +1,5 @@
 ---
-title: "Tail stabilization of importance sampling etimators: A bit of theroy"
+title: "Tail stabilization of importance sampling etimators: A bit of theory"
 description: |
   Look. I had to do it so I wrote it out in detail. This is some of the convergence theory for truncated and winzorised importance sampling estimators
 author:

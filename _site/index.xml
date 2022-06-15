@@ -7,14 +7,14 @@
     <description>A footnote that got out of control.
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Wed, 15 Jun 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 14 Jun 2022 00:00:00 +0000</lastBuildDate>
     <item>
-      <title>Tail stabilization of importance sampling etimators: A bit of theroy</title>
+      <title>Tail stabilization of importance sampling etimators: A bit of theory</title>
       <dc:creator>Dan Simpson</dc:creator>
       <link>https://dansblog.netlify.app/posts/2022-06-03-that-psis-proof</link>
       <description>Look. I had to do it so I wrote it out in detail. This is some of the convergence theory for truncated and winzorised importance sampling estimators</description>
       <guid>https://dansblog.netlify.app/posts/2022-06-03-that-psis-proof</guid>
-      <pubDate>Wed, 15 Jun 2022 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 14 Jun 2022 00:00:00 +0000</pubDate>
       <media:content url="https://dansblog.netlify.app/posts/2022-06-03-that-psis-proof/that-psis-proof_files/figure-html5/unnamed-chunk-1-1.png" medium="image" type="image/png" width="1248" height="768"/>
     </item>
     <item>
