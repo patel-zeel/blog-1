@@ -20,7 +20,7 @@ draft: false
 ---
 
 Imagine you have a target probability distribution $p(\theta)$ and you want
-to estimate the expectation $I_h = \int h(\theta) p(\theta)\,d(theta)$. That's lovely
+to estimate the expectation $I_h = \int h(\theta) p(\theta)\,d(\theta)$. That's lovely
 and everything, but if it was easy none of us would have jobs. High-dimensional
 quadrature is a pain in the arse.
 
@@ -142,7 +142,7 @@ $$
 $$
 which estimates the bias when $h(\theta)$ is constant^[This is a relevant case. But if you think a little bit about it, our problem happens when $r(\theta)$ grows _much_ faster than $h(\theta)$. For example if $P = \operatorname{Exp}(1)$ and $G = \operatorname{Exp}(1/\lambda)$ for $\lambda>1$, then $k = 1-1/\lambda$, $r(\theta) = \exp((\lambda-1)\theta)$ and if $|h(\theta)| < |\theta|^\alpha$, then $|h(\theta)| \leq C \log(r)^\alpha$, which is a slowly growing function.] as 
 $$
-I - \mathbb{E}(I_\text{TIS}^S) \approx \mathcal{O}\left(T^{1-1/k}\right)
+I - \mathbb{E}(I_\text{TIS}^S) \approx \mathcal{O}\left(T^{1-1/k}\right).
 $$
 
 For what it's worth, Ionides got the same result more directly in the TIS paper, but he wasn't
@@ -431,7 +431,7 @@ $\mathbb{E}|1-\mathcal{F}|$.
 
 Unfortunately, Mathematica couldn't help me out. Its asymptotic abilities shit the
 bed at the sight of ${}_2F_1(a,b;c;z))$, which is everywhere in the exact expression (which 
-I've put below the fold.
+I've put below in the fold.
 
 <details><summary>Mathematica expression for $\mathbb{E}|1-\mathcal{F}|$.</summary>
 ```
@@ -490,7 +490,7 @@ I've put below the fold.
 
 But do not fear: we can recover. At the cost of an assumption about the tails 
 of $R$. (We're also going to assume that $h$ is bounded because it makes things
-ever so slightly easier, although unbounded $k$ is ok^[The result holds exactly if $\mathbb{E}(H \mid R=r) = \mathcal{O}(\log^k(r))$ and with a $k$ turning up somewhere if its $o(r^{1/k - 1})$.] as along as it doesn't grow too quickly relative to $r$.)
+ever so slightly easier, although unbounded $h$ is ok^[The result holds exactly if $\mathbb{E}(H \mid R=r) = \mathcal{O}(\log^k(r))$ and with a $k$ turning up somewhere if it's $o(r^{1/k - 1})$.] as long as it doesn't grow too quickly relative to $r$.)
 
 We are going to make the assumption that $R - T \mid R\geq T$ is in 
 the domain of attraction of a generalized Pareto distribution with shape parameter $k$.
@@ -500,7 +500,7 @@ $$
 $$
 
 This seems like a weird condition, but it's basically just a regularity condition at infinity.
-For example if $1-R(r)$ is regularly varying at infinity^[$1-R(r) \sim c r^(-1/k)\mathcal{L(r)}$ for a slowly varying function (eg a power of a logarithm) $\mathcal{L}(r)$.] and $R'(r)$ is, eventually, monotone^[A property that implies this is that $1-R(r)$ is differentiable and  _convex at infinity_, which is to say that there is some finite $r_0$ such that $R'(r)$ exists for all $r \geq r_0$ and $1-R(r)$ is a monotone function on $[r_0, \infty)$.] decreasing, then this condition holds.
+For example if $1-R(r)$ is regularly varying at infinity^[$1-R(r) \sim c r^{(-1/k)}\mathcal{L(r)}$ for a slowly varying function (eg a power of a logarithm) $\mathcal{L}(r)$.] and $R'(r)$ is, eventually, monotone^[A property that implies this is that $1-R(r)$ is differentiable and  _convex at infinity_, which is to say that there is some finite $r_0$ such that $R'(r)$ exists for all $r \geq r_0$ and $1-R(r)$ is a monotone function on $[r_0, \infty)$.] decreasing, then this condition holds.
 
 The von Mises condition is very natural for us as [Falk and Marohn (1993)](https://projecteuclid.org/journals/annals-of-probability/volume-21/issue-3/Von-Mises-Conditions-Revisited/10.1214/aop/1176989120.full) show that the relative error we get
 when approximating the tail of $R$ by a generalised Pareto density is the 
@@ -543,7 +543,7 @@ You might worry that this is going to grow too quickly. But it doesn't. Noting
 that $B(n,m) = \Gamma(n)\Gamma(m)/\Gamma(n+m)$, we can rewrite the upper bound in
 terms of the Beta function to  get 
 $$
-\mathbb{E}(r_{k:M}^2) \leq C \frac{\Gamma(S+1)}{\Gamma(S-3)} \frac{\Gamma(k-2)}{\Gamma(k+1)}\frac{\Gamma(S-k-1)}{\Gamma(S-k+1)}
+\mathbb{E}(r_{k:M}^2) \leq C \frac{\Gamma(S+1)}{\Gamma(S-3)} \frac{\Gamma(k-2)}{\Gamma(k+1)}\frac{\Gamma(S-k-1)}{\Gamma(S-k+1)}.
 $$
 
 To show that this doesn't grow too quickly, we use the identity 
@@ -556,7 +556,7 @@ $$
 $$
 In this case, we are interested in $k = S-M+1$, so 
 $$
-\mathbb{E}(r_{k:M}^2) \leq C S^4S^{-3}M^{-2}(1 - M/S + 1/S)^{-3}(1 - 1/M)^{-2}(1+ \mathcal{O}(S^{-1}))(1+ \mathcal{O}(S^{-1}))(1+ \mathcal{O}(M^{-1}))
+\mathbb{E}(r_{k:M}^2) \leq C S^4S^{-3}M^{-2}(1 - M/S + 1/S)^{-3}(1 - 1/M)^{-2}(1+ \mathcal{O}(S^{-1}))(1+ \mathcal{O}(S^{-1}))(1+ \mathcal{O}(M^{-1})).
 $$
 
 Hence the we get that $\mathbb{E}(r_{k:M}^2) = \mathcal{O}(SM^{-2})$. This is increasing^[We need to take $M = \mathcal{O}(S^{1/2})$ to be able to estimate the tail index $k$
@@ -700,7 +700,7 @@ Essentially, it works by noting that approximating
 $$
 (1-R(r_{S-M+1:S}))\mathbb{E}(HR \mid R>r_{S-M+1:S}) \approx \frac{1}{S}\sum_{m=1}^M w_m h_{S-M+m:S},
 $$
-where $w_m$ is the median^[Or, the expected within $o(S^{-1/2})$] $m$th order statistic in an iid sample of $M$ Generalised Paretro random variables with tail parameters fitted to the distribution.
+where $w_m$ is the median^[Or, the expected within $o(S^{-1/2})$] $m$th order statistic in an iid sample of $M$ Generalised Pareto random variables with tail parameters fitted to the distribution.
 
 This is a ... funky ... quadrature rule. To see that, we can write 
 $$
