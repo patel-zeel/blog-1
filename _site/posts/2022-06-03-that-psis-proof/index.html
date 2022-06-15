@@ -136,7 +136,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["that-psis-proof_files/anchor-4.2.2/anchor.min.js","that-psis-proof_files/bowser-1.9.3/bowser.min.js","that-psis-proof_files/distill-2.2.21/template.v2.js","that-psis-proof_files/figure-html5/unnamed-chunk-1-1.png","that-psis-proof_files/figure-html5/unnamed-chunk-1-2.png","that-psis-proof_files/figure-html5/unnamed-chunk-2-1.png","that-psis-proof_files/figure-html5/unnamed-chunk-2-2.png","that-psis-proof_files/header-attrs-2.11/header-attrs.js","that-psis-proof_files/jquery-3.6.0/jquery-3.6.0.js","that-psis-proof_files/jquery-3.6.0/jquery-3.6.0.min.js","that-psis-proof_files/jquery-3.6.0/jquery-3.6.0.min.map","that-psis-proof_files/popper-2.6.0/popper.min.js","that-psis-proof_files/tippy-6.2.7/tippy-bundle.umd.min.js","that-psis-proof_files/tippy-6.2.7/tippy-light-border.css","that-psis-proof_files/tippy-6.2.7/tippy.css","that-psis-proof_files/tippy-6.2.7/tippy.umd.min.js","that-psis-proof_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["graveyard.html","that-psis-proof_files/anchor-4.2.2/anchor.min.js","that-psis-proof_files/bowser-1.9.3/bowser.min.js","that-psis-proof_files/distill-2.2.21/template.v2.js","that-psis-proof_files/figure-html5/unnamed-chunk-1-1.png","that-psis-proof_files/figure-html5/unnamed-chunk-1-2.png","that-psis-proof_files/figure-html5/unnamed-chunk-2-1.png","that-psis-proof_files/figure-html5/unnamed-chunk-2-2.png","that-psis-proof_files/header-attrs-2.11/header-attrs.js","that-psis-proof_files/jquery-3.6.0/jquery-3.6.0.js","that-psis-proof_files/jquery-3.6.0/jquery-3.6.0.min.js","that-psis-proof_files/jquery-3.6.0/jquery-3.6.0.min.map","that-psis-proof_files/popper-2.6.0/popper.min.js","that-psis-proof_files/tippy-6.2.7/tippy-bundle.umd.min.js","that-psis-proof_files/tippy-6.2.7/tippy-light-border.css","that-psis-proof_files/tippy-6.2.7/tippy.css","that-psis-proof_files/tippy-6.2.7/tippy.umd.min.js","that-psis-proof_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2129,7 +2129,7 @@ class="uri">https://dpsimpson.github.io</a>
 <p>Imagine you have a target probability distribution <span
 class="math inline">\(p(\theta)\)</span> and you want to estimate the
 expectation <span class="math inline">\(I_h = \int h(\theta)
-p(\theta)\,d(theta)\)</span>. That’s lovely and everything, but if it
+p(\theta)\,d(\theta)\)</span>. That’s lovely and everything, but if it
 was easy none of us would have jobs. High-dimensional quadrature is a
 pain in the arse.</p>
 <p>A very simple way to get an decent estimate of <span
@@ -2203,7 +2203,7 @@ class="math inline">\(\theta_s \sim g\)</span>. Occasionally we will
 talk about the joint distribution or <span
 class="math inline">\((r_s,h_s) \sim (R,H)\)</span>. Sometimes we will
 also need to use the indicator variables <span class="math inline">\(z_i
-= 1_{r_i &gt; T}\)</span>.</p>
+= 1_{r_i &lt; T}\)</span>.</p>
 <p>Then, we can write<a href="#fn4" class="footnote-ref" id="fnref4"
 role="doc-noteref"><sup>4</sup></a> <span class="math display">\[
 I = \mathbb{E}(HR \mid R \leq T) \Pr(R \leq T) + \mathbb{E}(HR \mid R
@@ -2289,7 +2289,8 @@ estimate <span class="math display">\[
 class="math inline">\(h(\theta)\)</span> is constant<a href="#fn10"
 class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>
 as <span class="math display">\[
-I - \mathbb{E}(I_\text{TIS}^S) \approx \mathcal{O}\left(T^{1-1/k}\right)
+I - \mathbb{E}(I_\text{TIS}^S) \approx
+\mathcal{O}\left(T^{1-1/k}\right).
 \]</span></p>
 <p>For what it’s worth, Ionides got the same result more directly in the
 TIS paper, but he wasn’t trying to do what I’m trying to do.</p>
@@ -2641,7 +2642,7 @@ class="math inline">\(\mathbb{E}|1-\mathcal{F}|\)</span>.</p>
 <p>Unfortunately, Mathematica couldn’t help me out. Its asymptotic
 abilities shit the bed at the sight of <span
 class="math inline">\({}_2F_1(a,b;c;z))\)</span>, which is everywhere in
-the exact expression (which I’ve put below the fold.</p>
+the exact expression (which I’ve put below in the fold.</p>
 <details>
 <summary>
 Mathematica expression for <span
@@ -2702,9 +2703,9 @@ class="math inline">\(\mathbb{E}|1-\mathcal{F}|\)</span>.
 the tails of <span class="math inline">\(R\)</span>. (We’re also going
 to assume that <span class="math inline">\(h\)</span> is bounded because
 it makes things ever so slightly easier, although unbounded <span
-class="math inline">\(k\)</span> is ok<a href="#fn18"
+class="math inline">\(h\)</span> is ok<a href="#fn18"
 class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a>
-as along as it doesn’t grow too quickly relative to <span
+as long as it doesn’t grow too quickly relative to <span
 class="math inline">\(r\)</span>.)</p>
 <p>We are going to make the assumption that <span
 class="math inline">\(R - T \mid R\geq T\)</span> is in the domain of
@@ -2771,7 +2772,7 @@ doesn’t. Noting that <span class="math inline">\(B(n,m) =
 \Gamma(n)\Gamma(m)/\Gamma(n+m)\)</span>, we can rewrite the upper bound
 in terms of the Beta function to get <span class="math display">\[
 \mathbb{E}(r_{k:M}^2) \leq C \frac{\Gamma(S+1)}{\Gamma(S-3)}
-\frac{\Gamma(k-2)}{\Gamma(k+1)}\frac{\Gamma(S-k-1)}{\Gamma(S-k+1)}
+\frac{\Gamma(k-2)}{\Gamma(k+1)}\frac{\Gamma(S-k-1)}{\Gamma(S-k+1)}.
 \]</span></p>
 <p>To show that this doesn’t grow too quickly, we use the identity <span
 class="math display">\[
@@ -2786,7 +2787,7 @@ class="math inline">\(k = S-M+1\)</span>, so <span
 class="math display">\[
 \mathbb{E}(r_{k:M}^2) \leq C S^4S^{-3}M^{-2}(1 - M/S + 1/S)^{-3}(1 -
 1/M)^{-2}(1+ \mathcal{O}(S^{-1}))(1+ \mathcal{O}(S^{-1}))(1+
-\mathcal{O}(M^{-1}))
+\mathcal{O}(M^{-1})).
 \]</span></p>
 <p>Hence the we get that <span
 class="math inline">\(\mathbb{E}(r_{k:M}^2) =
@@ -2967,7 +2968,7 @@ approximating <span class="math display">\[
 href="#fn32" class="footnote-ref" id="fnref32"
 role="doc-noteref"><sup>32</sup></a> <span
 class="math inline">\(m\)</span>th order statistic in an iid sample of
-<span class="math inline">\(M\)</span> Generalised Paretro random
+<span class="math inline">\(M\)</span> Generalised Pareto random
 variables with tail parameters fitted to the distribution.</p>
 <p>This is a … funky … quadrature rule. To see that, we can write <span
 class="math display">\[
@@ -3154,12 +3155,12 @@ class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn18" role="doc-endnote"><p>The result holds exactly if <span
 class="math inline">\(\mathbb{E}(H \mid R=r) =
 \mathcal{O}(\log^k(r))\)</span> and with a <span
-class="math inline">\(k\)</span> turning up somewhere if its <span
+class="math inline">\(k\)</span> turning up somewhere if it’s <span
 class="math inline">\(o(r^{1/k - 1})\)</span>.<a href="#fnref18"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn19" role="doc-endnote"><p><span class="math inline">\(1-R(r)
-\sim c r^(-1/k)\mathcal{L(r)}\)</span> for a slowly varying function (eg
-a power of a logarithm) <span
+\sim c r^{(-1/k)}\mathcal{L(r)}\)</span> for a slowly varying function
+(eg a power of a logarithm) <span
 class="math inline">\(\mathcal{L}(r)\)</span>.<a href="#fnref19"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn20" role="doc-endnote"><p>A property that implies this is that
