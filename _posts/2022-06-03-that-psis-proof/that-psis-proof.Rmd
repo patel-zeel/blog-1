@@ -78,7 +78,7 @@ be a trade-off between the variance and the bias. So let's explore that.
 To get an expression for the bias, first let us write $r_s = r(\theta_s)$ and 
 $h_s = h(\theta_s)$ for $\theta_s \sim g$. Occasionally we will talk about the 
 joint distribution or $(r_s,h_s) \sim (R,H)$. Sometimes we will also need to
-use the indicator variables $z_i = 1_{r_i > T}$.
+use the indicator variables $z_i = 1_{r_i < T}$.
 
 Then, we can write^[I have surreptitiously dropped the $h$ subscript because I am gay and sneaky.] $$
 I = \mathbb{E}(HR \mid R \leq T) \Pr(R \leq T) + \mathbb{E}(HR \mid R > T) \Pr(R > T).
