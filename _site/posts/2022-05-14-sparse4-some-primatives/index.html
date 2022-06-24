@@ -2312,8 +2312,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a h
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>x2 <span class="op">=</span> sparse_triangular_solve(A_indices, A_indptr, A_x, b, transpose <span class="op">=</span> <span class="va">True</span>)</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;&quot;&quot;Error in trianglular solve: </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">sum</span>(np.<span class="bu">abs</span>(b <span class="op">-</span> sparse.tril(A) <span class="op">@</span> x1))<span class="sc">: .2e}</span></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ss">Error in triangular transpose solve: </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">sum</span>(np.<span class="bu">abs</span>(b <span class="op">-</span> sparse.triu(A) <span class="op">@</span> x2))<span class="sc">: .2e}</span><span class="ss">&quot;&quot;&quot;</span>)</span></code></pre></div>
-<pre><code>Error in trianglular solve:  3.87e-15
-Error in triangular transpose solve:  4.88e-15</code></pre>
+<pre><code>Error in trianglular solve:  2.33e-15
+Error in triangular transpose solve:  5.68e-15</code></pre>
 </div>
 <p>And we can also do the abstract evaluation.</p>
 <div class="layout-chunk" data-layout="l-body">

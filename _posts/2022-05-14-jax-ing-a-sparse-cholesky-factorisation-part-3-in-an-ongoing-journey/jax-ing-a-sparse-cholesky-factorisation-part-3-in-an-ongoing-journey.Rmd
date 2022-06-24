@@ -1,5 +1,5 @@
 ---
-title: "Sparse matrices part 3: Failing at JAX"
+title: "Sparse Matrices 3: Failing at JAX"
 description: |
   _Takes a long drag on cigarette._ JAX? Where was he when I had my cancer?
 author:

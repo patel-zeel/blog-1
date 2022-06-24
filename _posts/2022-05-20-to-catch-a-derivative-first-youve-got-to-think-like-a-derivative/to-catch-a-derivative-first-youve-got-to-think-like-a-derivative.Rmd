@@ -1,5 +1,5 @@
 ---
-title: "Sparse matrices part 6: To catch a derivative, first you've got to think like a derivative"
+title: "Sparse matrices 6: To catch a derivative, first you've got to think like a derivative"
 description: |
   Open up the kennels, Kenneth. Mamma’s coming home tonight.
 author:

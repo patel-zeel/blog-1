@@ -6,14 +6,14 @@
       "description": "A footnote that got out of control.",
       "author": [],
       "contents": "\nNobody asked for this. There is no reason for this to exist.\n\n\n\n",
-      "last_modified": "2022-06-15T18:03:28+10:00"
+      "last_modified": "2022-06-24T14:42:29+10:00"
     },
     {
       "path": "index.html",
       "title": "Un garçon pas comme les autres (Bayes)",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2022-06-15T18:03:30+10:00"
+      "last_modified": "2022-06-24T14:42:29+10:00"
     }
   ],
   "collections": ["posts/posts.json"]

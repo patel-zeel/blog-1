@@ -1,5 +1,5 @@
 ---
-title: "The linear algebra of linear mixed effects models and their generalisations"
+title: "Sparse Matrices 1: The linear algebra of linear mixed effects models and their generalisations"
 description: |
   Hubris. Just hubris. But before the fall comes the statement of purpose. This is that statement.
 author:

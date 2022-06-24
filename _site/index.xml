@@ -7,18 +7,18 @@
     <description>A footnote that got out of control.
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Tue, 14 Jun 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 15 Jun 2022 00:00:00 +0000</lastBuildDate>
     <item>
       <title>Tail stabilization of importance sampling etimators: A bit of theory</title>
       <dc:creator>Dan Simpson</dc:creator>
       <link>https://dansblog.netlify.app/posts/2022-06-03-that-psis-proof</link>
       <description>Look. I had to do it so I wrote it out in detail. This is some of the convergence theory for truncated and winzorised importance sampling estimators</description>
       <guid>https://dansblog.netlify.app/posts/2022-06-03-that-psis-proof</guid>
-      <pubDate>Tue, 14 Jun 2022 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 15 Jun 2022 00:00:00 +0000</pubDate>
       <media:content url="https://dansblog.netlify.app/posts/2022-06-03-that-psis-proof/that-psis-proof_files/figure-html5/unnamed-chunk-1-1.png" medium="image" type="image/png" width="1248" height="768"/>
     </item>
     <item>
-      <title>Sparse matrices part 6: To catch a derivative, first you've got to think like a derivative</title>
+      <title>Sparse matrices 6: To catch a derivative, first you've got to think like a derivative</title>
       <dc:creator>Dan Simpson</dc:creator>
       <link>https://dansblog.netlify.app/posts/2022-05-20-to-catch-a-derivative-first-youve-got-to-think-like-a-derivative</link>
       <description>Open up the kennels, Kenneth. Mamma’s coming home tonight.</description>
@@ -42,7 +42,7 @@
       <pubDate>Mon, 16 May 2022 00:00:00 +0000</pubDate>
     </item>
     <item>
-      <title>Sparse matrices part 3: Failing at JAX</title>
+      <title>Sparse Matrices 3: Failing at JAX</title>
       <dc:creator>Dan Simpson</dc:creator>
       <link>https://dansblog.netlify.app/posts/2022-05-14-jax-ing-a-sparse-cholesky-factorisation-part-3-in-an-ongoing-journey</link>
       <description>_Takes a long drag on cigarette._ JAX? Where was he when I had my cancer?</description>
@@ -50,7 +50,7 @@
       <pubDate>Sat, 14 May 2022 00:00:00 +0000</pubDate>
     </item>
     <item>
-      <title>An invitation to a sparse Cholesky factorisation</title>
+      <title>Sparse Matrices 2: An invitation to a sparse Cholesky factorisation</title>
       <dc:creator>Dan Simpson</dc:creator>
       <link>https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices</link>
       <description>Come for the details, stay for the shitty Python, leave with disappointment. Not unlike the experience of dating me.</description>
@@ -59,7 +59,7 @@
       <media:content url="https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/getting-jax-to-love-sparse-matrices_files/figure-html5/unnamed-chunk-7-1.png" medium="image" type="image/png" width="1248" height="768"/>
     </item>
     <item>
-      <title>The linear algebra of linear mixed effects models and their generalisations</title>
+      <title>Sparse Matrices 1: The linear algebra of linear mixed effects models and their generalisations</title>
       <dc:creator>Dan Simpson</dc:creator>
       <link>https://dansblog.netlify.app/posts/2022-03-22-a-linear-mixed-effects-model</link>
       <description>Hubris. Just hubris. But before the fall comes the statement of purpose. This is that statement.</description>
@@ -115,7 +115,7 @@ fully make sense. But whatever. Blogs, eh.) Original posted 5 November, 2017.</d
       <link>https://dansblog.netlify.app/posts/2021-10-15-priors3</link>
       <description>Objective priors? In finite dimensions? A confidence trick? Yes.</description>
       <guid>https://dansblog.netlify.app/posts/2021-10-15-priors3</guid>
-      <pubDate>Sat, 16 Oct 2021 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 17 Oct 2021 00:00:00 +0000</pubDate>
     </item>
     <item>
       <title>Priors: Whole New Way (Track 2)</title>
@@ -123,6 +123,14 @@ fully make sense. But whatever. Blogs, eh.) Original posted 5 November, 2017.</d
       <link>https://dansblog.netlify.app/posts/2021-10-14-priors2</link>
       <description>Conjugate Priors? The crystal deoderant of Bayesian statistics</description>
       <guid>https://dansblog.netlify.app/posts/2021-10-14-priors2</guid>
+      <pubDate>Sat, 16 Oct 2021 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Priors: Night work (Track 1)</title>
+      <dc:creator>Dan Simpson</dc:creator>
+      <link>https://dansblog.netlify.app/posts/2021-10-14-priors1</link>
+      <description>Priors? Defined. Questions? Outlined. Purpose? Declared.</description>
+      <guid>https://dansblog.netlify.app/posts/2021-10-14-priors1</guid>
       <pubDate>Fri, 15 Oct 2021 00:00:00 +0000</pubDate>
     </item>
     <item>
@@ -133,14 +141,6 @@ fully make sense. But whatever. Blogs, eh.) Original posted 5 November, 2017.</d
       <guid>https://dansblog.netlify.app/posts/2021-10-11-n-sane-in-the-membrane</guid>
       <pubDate>Thu, 14 Oct 2021 00:00:00 +0000</pubDate>
       <media:content url="https://dansblog.netlify.app/posts/2021-10-11-n-sane-in-the-membrane/n-sane-in-the-membrane_files/figure-html5/unnamed-chunk-1-1.png" medium="image" type="image/png" width="1248" height="768"/>
-    </item>
-    <item>
-      <title>Priors: Night work (Track 1)</title>
-      <dc:creator>Dan Simpson</dc:creator>
-      <link>https://dansblog.netlify.app/posts/2021-10-14-priors1</link>
-      <description>Priors? Defined. Questions? Outlined. Purpose? Declared.</description>
-      <guid>https://dansblog.netlify.app/posts/2021-10-14-priors1</guid>
-      <pubDate>Thu, 14 Oct 2021 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>

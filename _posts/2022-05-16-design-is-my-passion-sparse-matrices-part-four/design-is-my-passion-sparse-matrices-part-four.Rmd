@@ -1,5 +1,5 @@
 ---
-title: "Design is my passion: sparse matrices part four"
+title: "Sparse Matrices 4: Design is my passion"
 description: |
   Just some harmeless notes. Like the ones Judy Dench took in that movie.
 author:
