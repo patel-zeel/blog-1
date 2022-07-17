@@ -1,0 +1,2652 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="distill" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+  <!--radix_placeholder_meta_tags-->
+  <title>Tail stabilization of importance sampling etimators: A bit of theory</title>
+
+  <meta property="description" itemprop="description" content="Look. I had to do it so I wrote it out in detail. This is some of the convergence theory for truncated and winzorised importance sampling estimators"/>
+
+  <link rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"/>
+
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2022-06-15"/>
+  <meta property="article:created" itemprop="dateCreated" content="2022-06-15"/>
+  <meta name="article:author" content="Dan Simpson"/>
+
+  <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+  <meta property="og:title" content="Tail stabilization of importance sampling etimators: A bit of theory"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Look. I had to do it so I wrote it out in detail. This is some of the convergence theory for truncated and winzorised importance sampling estimators"/>
+  <meta property="og:locale" content="en_US"/>
+
+  <!--  https://dev.twitter.com/cards/types/summary -->
+  <meta property="twitter:card" content="summary"/>
+  <meta property="twitter:title" content="Tail stabilization of importance sampling etimators: A bit of theory"/>
+  <meta property="twitter:description" content="Look. I had to do it so I wrote it out in detail. This is some of the convergence theory for truncated and winzorised importance sampling estimators"/>
+  <meta property="twitter:creator" content="@dan_p_simpson"/>
+
+  <!--/radix_placeholder_meta_tags-->
+  <!--radix_placeholder_rmarkdown_metadata-->
+
+  <script type="text/json" id="radix-rmarkdown-metadata">
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","twitter","creative_commons","repository_url","draft"]}},"value":[{"type":"character","attributes":{},"value":["Tail stabilization of importance sampling etimators: A bit of theory"]},{"type":"character","attributes":{},"value":["Look. I had to do it so I wrote it out in detail. This is some of the convergence theory for truncated and winzorised importance sampling estimators\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Dan Simpson"]},{"type":"character","attributes":{},"value":["https://dpsimpson.github.io"]}]}]},{"type":"character","attributes":{},"value":["2022-06-15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","highlight","pandoc_args"]}},"value":[{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["pygments"]},{"type":"character","attributes":{},"value":["--lua-filter","/Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/library/rmdfiltr/wordcount.lua"]}]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["creator"]}},"value":[{"type":"character","attributes":{},"value":["@dan_p_simpson"]}]},{"type":"character","attributes":{},"value":["CC BY-NC"]},{"type":"character","attributes":{},"value":["https://github.com/dpsimpson/blog/tree/master/_posts/2022-06-03-that-psis-proof"]},{"type":"logical","attributes":{},"value":[false]}]}
+  </script>
+  <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["graveyard.html","that-psis-proof_files/anchor-4.2.2/anchor.min.js","that-psis-proof_files/bowser-1.9.3/bowser.min.js","that-psis-proof_files/distill-2.2.21/template.v2.js","that-psis-proof_files/figure-html5/unnamed-chunk-1-1.png","that-psis-proof_files/figure-html5/unnamed-chunk-1-2.png","that-psis-proof_files/figure-html5/unnamed-chunk-2-1.png","that-psis-proof_files/figure-html5/unnamed-chunk-2-2.png","that-psis-proof_files/header-attrs-2.11/header-attrs.js","that-psis-proof_files/jquery-3.6.0/jquery-3.6.0.js","that-psis-proof_files/jquery-3.6.0/jquery-3.6.0.min.js","that-psis-proof_files/jquery-3.6.0/jquery-3.6.0.min.map","that-psis-proof_files/popper-2.6.0/popper.min.js","that-psis-proof_files/tippy-6.2.7/tippy-bundle.umd.min.js","that-psis-proof_files/tippy-6.2.7/tippy-light-border.css","that-psis-proof_files/tippy-6.2.7/tippy.css","that-psis-proof_files/tippy-6.2.7/tippy.umd.min.js","that-psis-proof_files/webcomponents-2.0.0/webcomponents.js"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+  <!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+
+  <style type="text/css">
+
+  body {
+    background-color: white;
+  }
+
+  .pandoc-table {
+    width: 100%;
+  }
+
+  .pandoc-table>caption {
+    margin-bottom: 10px;
+  }
+
+  .pandoc-table th:not([align]) {
+    text-align: left;
+  }
+
+  .pagedtable-footer {
+    font-size: 15px;
+  }
+
+  d-byline .byline {
+    grid-template-columns: 2fr 2fr;
+  }
+
+  d-byline .byline h3 {
+    margin-block-start: 1.5em;
+  }
+
+  d-byline .byline .authors-affiliations h3 {
+    margin-block-start: 0.5em;
+  }
+
+  .authors-affiliations .orcid-id {
+    width: 16px;
+    height:16px;
+    margin-left: 4px;
+    margin-right: 4px;
+    vertical-align: middle;
+    padding-bottom: 2px;
+  }
+
+  d-title .dt-tags {
+    margin-top: 1em;
+    grid-column: text;
+  }
+
+  .dt-tags .dt-tag {
+    text-decoration: none;
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0em 0.4em;
+    margin-right: 0.5em;
+    margin-bottom: 0.4em;
+    font-size: 70%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  d-article table.gt_table td,
+  d-article table.gt_table th {
+    border-bottom: none;
+  }
+
+  .html-widget {
+    margin-bottom: 2.0em;
+  }
+
+  .l-screen-inset {
+    padding-right: 16px;
+  }
+
+  .l-screen .caption {
+    margin-left: 10px;
+  }
+
+  .shaded {
+    background: rgb(247, 247, 247);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .shaded .html-widget {
+    margin-bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .shaded .shaded-content {
+    background: white;
+  }
+
+  .text-output {
+    margin-top: 0;
+    line-height: 1.5em;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  d-article {
+    padding-top: 2.5rem;
+    padding-bottom: 30px;
+  }
+
+  d-appendix {
+    padding-top: 30px;
+  }
+
+  d-article>p>img {
+    width: 100%;
+  }
+
+  d-article h2 {
+    margin: 1rem 0 1.5rem 0;
+  }
+
+  d-article h3 {
+    margin-top: 1.5rem;
+  }
+
+  d-article iframe {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 2.0em;
+    width: 100%;
+  }
+
+  /* Tweak code blocks */
+
+  d-article div.sourceCode code,
+  d-article pre code {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  }
+
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: auto;
+  }
+
+  d-article div.sourceCode {
+    background-color: white;
+  }
+
+  d-article div.sourceCode pre {
+    padding-left: 10px;
+    font-size: 12px;
+    border-left: 2px solid rgba(0,0,0,0.1);
+  }
+
+  d-article pre {
+    font-size: 12px;
+    color: black;
+    background: none;
+    margin-top: 0;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  d-article pre a {
+    border-bottom: none;
+  }
+
+  d-article pre a:hover {
+    border-bottom: none;
+    text-decoration: underline;
+  }
+
+  d-article details {
+    grid-column: text;
+    margin-bottom: 0.8em;
+  }
+
+  @media(min-width: 768px) {
+
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: visible !important;
+  }
+
+  d-article div.sourceCode pre {
+    padding-left: 18px;
+    font-size: 14px;
+  }
+
+  d-article pre {
+    font-size: 14px;
+  }
+
+  }
+
+  figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+
+  /* CSS for d-contents */
+
+  .d-contents {
+    grid-column: text;
+    color: rgba(0,0,0,0.8);
+    font-size: 0.9em;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+    padding-left: 0.25em;
+    justify-self: start;
+  }
+
+  @media(min-width: 1000px) {
+    .d-contents.d-contents-float {
+      height: 0;
+      grid-column-start: 1;
+      grid-column-end: 4;
+      justify-self: center;
+      padding-right: 3em;
+      padding-left: 2em;
+    }
+  }
+
+  .d-contents nav h3 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 1em;
+  }
+
+  .d-contents li {
+    list-style-type: none
+  }
+
+  .d-contents nav > ul {
+    padding-left: 0;
+  }
+
+  .d-contents ul {
+    padding-left: 1em
+  }
+
+  .d-contents nav ul li {
+    margin-top: 0.6em;
+    margin-bottom: 0.2em;
+  }
+
+  .d-contents nav a {
+    font-size: 13px;
+    border-bottom: none;
+    text-decoration: none
+    color: rgba(0, 0, 0, 0.8);
+  }
+
+  .d-contents nav a:hover {
+    text-decoration: underline solid rgba(0, 0, 0, 0.6)
+  }
+
+  .d-contents nav > ul > li > a {
+    font-weight: 600;
+  }
+
+  .d-contents nav > ul > li > ul {
+    font-weight: inherit;
+  }
+
+  .d-contents nav > ul > li > ul > li {
+    margin-top: 0.2em;
+  }
+
+
+  .d-contents nav ul {
+    margin-top: 0;
+    margin-bottom: 0.25em;
+  }
+
+  .d-article-with-toc h2:nth-child(2) {
+    margin-top: 0;
+  }
+
+
+  /* Figure */
+
+  .figure {
+    position: relative;
+    margin-bottom: 2.5em;
+    margin-top: 1.5em;
+  }
+
+  .figure img {
+    width: 100%;
+  }
+
+  .figure .caption {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 12px;
+    line-height: 1.5em;
+  }
+
+  .figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+
+  .figure .caption a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .figure .caption b,
+  .figure .caption strong, {
+    font-weight: 600;
+    color: rgba(0, 0, 0, 1.0);
+  }
+
+  /* Citations */
+
+  d-article .citation {
+    color: inherit;
+    cursor: inherit;
+  }
+
+  div.hanging-indent{
+    margin-left: 1em; text-indent: -1em;
+  }
+
+  /* Citation hover box */
+
+  .tippy-box[data-theme~=light-border] {
+    background-color: rgba(250, 250, 250, 0.95);
+  }
+
+  .tippy-content > p {
+    margin-bottom: 0;
+    padding: 2px;
+  }
+
+
+  /* Tweak 1000px media break to show more text */
+
+  @media(min-width: 1000px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 16px;
+    }
+
+    .grid {
+      grid-column-gap: 16px;
+    }
+
+    d-article {
+      font-size: 1.06rem;
+      line-height: 1.7em;
+    }
+    figure .caption, .figure .caption, figure figcaption {
+      font-size: 13px;
+    }
+  }
+
+  @media(min-width: 1180px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 32px;
+    }
+
+    .grid {
+      grid-column-gap: 32px;
+    }
+  }
+
+
+  /* Get the citation styles for the appendix (not auto-injected on render since
+     we do our own rendering of the citation appendix) */
+
+  d-appendix .citation-appendix,
+  .d-appendix .citation-appendix {
+    font-size: 11px;
+    line-height: 15px;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    padding-left: 18px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px 18px;
+    border-radius: 3px;
+    color: rgba(150, 150, 150, 1);
+    overflow: hidden;
+    margin-top: -12px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  /* Include appendix styles here so they can be overridden */
+
+  d-appendix {
+    contain: layout style;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-top: 60px;
+    margin-bottom: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    color: rgba(0,0,0,0.5);
+    padding-top: 60px;
+    padding-bottom: 48px;
+  }
+
+  d-appendix h3 {
+    grid-column: page-start / text-start;
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 1em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.65);
+  }
+
+  d-appendix h3 + * {
+    margin-top: 1em;
+  }
+
+  d-appendix ol {
+    padding: 0 0 0 15px;
+  }
+
+  @media (min-width: 768px) {
+    d-appendix ol {
+      padding: 0 0 0 30px;
+      margin-left: -30px;
+    }
+  }
+
+  d-appendix li {
+    margin-bottom: 1em;
+  }
+
+  d-appendix a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  d-appendix > * {
+    grid-column: text;
+  }
+
+  d-appendix > d-footnote-list,
+  d-appendix > d-citation-list,
+  d-appendix > distill-appendix {
+    grid-column: screen;
+  }
+
+  /* Include footnote styles here so they can be overridden */
+
+  d-footnote-list {
+    contain: layout style;
+  }
+
+  d-footnote-list > * {
+    grid-column: text;
+  }
+
+  d-footnote-list a.footnote-backlink {
+    color: rgba(0,0,0,0.3);
+    padding-left: 0.5em;
+  }
+
+
+
+  /* Anchor.js */
+
+  .anchorjs-link {
+    /*transition: all .25s linear; */
+    text-decoration: none;
+    border-bottom: none;
+  }
+  *:hover > .anchorjs-link {
+    margin-left: -1.125em !important;
+    text-decoration: none;
+    border-bottom: none;
+  }
+
+  /* Social footer */
+
+  .social_footer {
+    margin-top: 30px;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.67);
+  }
+
+  .disqus-comments {
+    margin-right: 30px;
+  }
+
+  .disqus-comment-count {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+
+  #disqus_thread {
+    margin-top: 30px;
+  }
+
+  .article-sharing a {
+    border-bottom: none;
+    margin-right: 8px;
+  }
+
+  .article-sharing a:hover {
+    border-bottom: none;
+  }
+
+  .sidebar-section.subscribe {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+
+  .subscribe p {
+    margin-bottom: 0.5em;
+  }
+
+
+  .article-footer .subscribe {
+    font-size: 15px;
+    margin-top: 45px;
+  }
+
+
+  .sidebar-section.custom {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+
+  .custom p {
+    margin-bottom: 0.5em;
+  }
+
+  /* Styles for listing layout (hide title) */
+  .layout-listing d-title, .layout-listing .d-title {
+    display: none;
+  }
+
+  /* Styles for posts lists (not auto-injected) */
+
+
+  .posts-with-sidebar {
+    padding-left: 45px;
+    padding-right: 45px;
+  }
+
+  .posts-list .description h2,
+  .posts-list .description p {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .posts-list .description h2 {
+    font-weight: 700;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .posts-list h2.post-tag {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding-bottom: 12px;
+  }
+  .posts-list {
+    margin-top: 60px;
+    margin-bottom: 24px;
+  }
+
+  .posts-list .post-preview {
+    text-decoration: none;
+    overflow: hidden;
+    display: block;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 24px 0;
+  }
+
+  .post-preview-last {
+    border-bottom: none !important;
+  }
+
+  .posts-list .posts-list-caption {
+    grid-column: screen;
+    font-weight: 400;
+  }
+
+  .posts-list .post-preview h2 {
+    margin: 0 0 6px 0;
+    line-height: 1.2em;
+    font-style: normal;
+    font-size: 24px;
+  }
+
+  .posts-list .post-preview p {
+    margin: 0 0 12px 0;
+    line-height: 1.4em;
+    font-size: 16px;
+  }
+
+  .posts-list .post-preview .thumbnail {
+    box-sizing: border-box;
+    margin-bottom: 24px;
+    position: relative;
+    max-width: 500px;
+  }
+  .posts-list .post-preview img {
+    width: 100%;
+    display: block;
+  }
+
+  .posts-list .metadata {
+    font-size: 12px;
+    line-height: 1.4em;
+    margin-bottom: 18px;
+  }
+
+  .posts-list .metadata > * {
+    display: inline-block;
+  }
+
+  .posts-list .metadata .publishedDate {
+    margin-right: 2em;
+  }
+
+  .posts-list .metadata .dt-authors {
+    display: block;
+    margin-top: 0.3em;
+    margin-right: 2em;
+  }
+
+  .posts-list .dt-tags {
+    display: block;
+    line-height: 1em;
+  }
+
+  .posts-list .dt-tags .dt-tag {
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0.3em 0.4em;
+    margin-right: 0.2em;
+    margin-bottom: 0.4em;
+    font-size: 60%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .posts-list img {
+    opacity: 1;
+  }
+
+  .posts-list img[data-src] {
+    opacity: 0;
+  }
+
+  .posts-more {
+    clear: both;
+  }
+
+
+  .posts-sidebar {
+    font-size: 16px;
+  }
+
+  .posts-sidebar h3 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  .sidebar-section {
+    margin-bottom: 30px;
+  }
+
+  .categories ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .categories li {
+    color: rgba(0, 0, 0, 0.8);
+    margin-bottom: 0;
+  }
+
+  .categories li>a {
+    border-bottom: none;
+  }
+
+  .categories li>a:hover {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  }
+
+  .categories .active {
+    font-weight: 600;
+  }
+
+  .categories .category-count {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+
+  @media(min-width: 768px) {
+    .posts-list .post-preview h2 {
+      font-size: 26px;
+    }
+    .posts-list .post-preview .thumbnail {
+      float: right;
+      width: 30%;
+      margin-bottom: 0;
+    }
+    .posts-list .post-preview .description {
+      float: left;
+      width: 45%;
+    }
+    .posts-list .post-preview .metadata {
+      float: left;
+      width: 20%;
+      margin-top: 8px;
+    }
+    .posts-list .post-preview p {
+      margin: 0 0 12px 0;
+      line-height: 1.5em;
+      font-size: 16px;
+    }
+    .posts-with-sidebar .posts-list {
+      float: left;
+      width: 75%;
+    }
+    .posts-with-sidebar .posts-sidebar {
+      float: right;
+      width: 20%;
+      margin-top: 60px;
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+  }
+
+
+  /* Improve display for browsers without grid (IE/Edge <= 15) */
+
+  .downlevel {
+    line-height: 1.6em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+  }
+
+  .downlevel .d-title {
+    padding-top: 6rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .downlevel .d-title h1 {
+    font-size: 50px;
+    font-weight: 700;
+    line-height: 1.1em;
+    margin: 0 0 0.5rem;
+  }
+
+  .downlevel .d-title p {
+    font-weight: 300;
+    font-size: 1.2rem;
+    line-height: 1.55em;
+    margin-top: 0;
+  }
+
+  .downlevel .d-byline {
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    font-size: 0.8rem;
+    line-height: 1.8em;
+  }
+
+  .downlevel .section-separator {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .downlevel .d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+
+
+  .downlevel .d-appendix {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: none;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.5);
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+
+  .downlevel .footnotes ol {
+    padding-left: 13px;
+  }
+
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  @media(min-width: 768px) {
+    .downlevel .base-grid,
+    .downlevel .distill-header,
+    .downlevel .d-title,
+    .downlevel .d-abstract,
+    .downlevel .d-article,
+    .downlevel .d-appendix,
+    .downlevel .distill-appendix,
+    .downlevel .d-byline,
+    .downlevel .d-footnote-list,
+    .downlevel .d-citation-list,
+    .downlevel .distill-footer,
+    .downlevel .appendix-bottom,
+    .downlevel .posts-container {
+    padding-left: 150px;
+    padding-right: 150px;
+    max-width: 900px;
+  }
+  }
+
+  .downlevel pre code {
+    display: block;
+    border-left: 2px solid rgba(0, 0, 0, .1);
+    padding: 0 0 0 20px;
+    font-size: 14px;
+  }
+
+  .downlevel code, .downlevel pre {
+    color: black;
+    background: none;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  .downlevel .posts-list .post-preview {
+    color: inherit;
+  }
+
+
+
+  </style>
+
+  <script type="application/javascript">
+
+  function is_downlevel_browser() {
+    if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                   window.navigator.userAgent)) {
+      return true;
+    } else {
+      return window.load_distill_framework === undefined;
+    }
+  }
+
+  // show body when load is complete
+  function on_load_complete() {
+
+    // add anchors
+    if (window.anchors) {
+      window.anchors.options.placement = 'left';
+      window.anchors.add('d-article > h2, d-article > h3, d-article > h4, d-article > h5');
+    }
+
+
+    // set body to visible
+    document.body.style.visibility = 'visible';
+
+    // force redraw for leaflet widgets
+    if (window.HTMLWidgets) {
+      var maps = window.HTMLWidgets.findAll(".leaflet");
+      $.each(maps, function(i, el) {
+        var map = this.getMap();
+        map.invalidateSize();
+        map.eachLayer(function(layer) {
+          if (layer instanceof L.TileLayer)
+            layer.redraw();
+        });
+      });
+    }
+
+    // trigger 'shown' so htmlwidgets resize
+    $('d-article').trigger('shown');
+  }
+
+  function init_distill() {
+
+    init_common();
+
+    // create front matter
+    var front_matter = $('<d-front-matter></d-front-matter>');
+    $('#distill-front-matter').wrap(front_matter);
+
+    // create d-title
+    $('.d-title').changeElementType('d-title');
+
+    // create d-byline
+    var byline = $('<d-byline></d-byline>');
+    $('.d-byline').replaceWith(byline);
+
+    // create d-article
+    var article = $('<d-article></d-article>');
+    $('.d-article').wrap(article).children().unwrap();
+
+    // move posts container into article
+    $('.posts-container').appendTo($('d-article'));
+
+    // create d-appendix
+    $('.d-appendix').changeElementType('d-appendix');
+
+    // flag indicating that we have appendix items
+    var appendix = $('.appendix-bottom').children('h3').length > 0;
+
+    // replace footnotes with <d-footnote>
+    $('.footnote-ref').each(function(i, val) {
+      appendix = true;
+      var href = $(this).attr('href');
+      var id = href.replace('#', '');
+      var fn = $('#' + id);
+      var fn_p = $('#' + id + '>p');
+      fn_p.find('.footnote-back').remove();
+      var text = fn_p.html();
+      var dtfn = $('<d-footnote></d-footnote>');
+      dtfn.html(text);
+      $(this).replaceWith(dtfn);
+    });
+    // remove footnotes
+    $('.footnotes').remove();
+
+    // move refs into #references-listing
+    $('#references-listing').replaceWith($('#refs'));
+
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      var id = $(this).attr('id');
+      $('.d-contents a[href="#' + id + '"]').parent().remove();
+      appendix = true;
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+    });
+
+    // show d-appendix if we have appendix content
+    $("d-appendix").css('display', appendix ? 'grid' : 'none');
+
+    // localize layout chunks to just output
+    $('.layout-chunk').each(function(i, val) {
+
+      // capture layout
+      var layout = $(this).attr('data-layout');
+
+      // apply layout to markdown level block elements
+      var elements = $(this).children().not('details, div.sourceCode, pre, script');
+      elements.each(function(i, el) {
+        var layout_div = $('<div class="' + layout + '"></div>');
+        if (layout_div.hasClass('shaded')) {
+          var shaded_content = $('<div class="shaded-content"></div>');
+          $(this).wrap(shaded_content);
+          $(this).parent().wrap(layout_div);
+        } else {
+          $(this).wrap(layout_div);
+        }
+      });
+
+
+      // unwrap the layout-chunk div
+      $(this).children().unwrap();
+    });
+
+    // remove code block used to force  highlighting css
+    $('.distill-force-highlighting-css').parent().remove();
+
+    // remove empty line numbers inserted by pandoc when using a
+    // custom syntax highlighting theme
+    $('code.sourceCode a:empty').remove();
+
+    // load distill framework
+    load_distill_framework();
+
+    // wait for window.distillRunlevel == 4 to do post processing
+    function distill_post_process() {
+
+      if (!window.distillRunlevel || window.distillRunlevel < 4)
+        return;
+
+      // hide author/affiliations entirely if we have no authors
+      var front_matter = JSON.parse($("#distill-front-matter").html());
+      var have_authors = front_matter.authors && front_matter.authors.length > 0;
+      if (!have_authors)
+        $('d-byline').addClass('hidden');
+
+      // article with toc class
+      $('.d-contents').parent().addClass('d-article-with-toc');
+
+      // strip links that point to #
+      $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+
+      // add orcid ids
+      $('.authors-affiliations').find('.author').each(function(i, el) {
+        var orcid_id = front_matter.authors[i].orcidID;
+        if (orcid_id) {
+          var a = $('<a></a>');
+          a.attr('href', 'https://orcid.org/' + orcid_id);
+          var img = $('<img></img>');
+          img.addClass('orcid-id');
+          img.attr('alt', 'ORCID ID');
+          img.attr('src','data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==');
+          a.append(img);
+          $(this).append(a);
+        }
+      });
+
+      // hide elements of author/affiliations grid that have no value
+      function hide_byline_column(caption) {
+        $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+      }
+
+      // affiliations
+      var have_affiliations = false;
+      for (var i = 0; i<front_matter.authors.length; ++i) {
+        var author = front_matter.authors[i];
+        if (author.affiliation !== "&nbsp;") {
+          have_affiliations = true;
+          break;
+        }
+      }
+      if (!have_affiliations)
+        $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+
+      // published date
+      if (!front_matter.publishedDate)
+        hide_byline_column("Published");
+
+      // document object identifier
+      var doi = $('d-byline').find('h3:contains("DOI")');
+      var doi_p = doi.next().empty();
+      if (!front_matter.doi) {
+        // if we have a citation and valid citationText then link to that
+        if ($('#citation').length > 0 && front_matter.citationText) {
+          doi.html('Citation');
+          $('<a href="#citation"></a>')
+            .text(front_matter.citationText)
+            .appendTo(doi_p);
+        } else {
+          hide_byline_column("DOI");
+        }
+      } else {
+        $('<a></a>')
+           .attr('href', "https://doi.org/" + front_matter.doi)
+           .html(front_matter.doi)
+           .appendTo(doi_p);
+      }
+
+       // change plural form of authors/affiliations
+      if (front_matter.authors.length === 1) {
+        var grid = $('.authors-affiliations');
+        grid.children('h3:contains("Authors")').text('Author');
+        grid.children('h3:contains("Affiliations")').text('Affiliation');
+      }
+
+      // remove d-appendix and d-footnote-list local styles
+      $('d-appendix > style:first-child').remove();
+      $('d-footnote-list > style:first-child').remove();
+
+      // move appendix-bottom entries to the bottom
+      $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+      $('.appendix-bottom').remove();
+
+      // hoverable references
+      $('span.citation[data-cites]').each(function() {
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          return "<p>" + $('#ref-' + ref).html() + "</p>";
+        }).join("\n");
+        window.tippy(this, {
+          allowHTML: true,
+          content: refHtml,
+          maxWidth: 500,
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        });
+      });
+
+      // clear polling timer
+      clearInterval(tid);
+
+      // show body now that everything is ready
+      on_load_complete();
+    }
+
+    var tid = setInterval(distill_post_process, 50);
+    distill_post_process();
+
+  }
+
+  function init_downlevel() {
+
+    init_common();
+
+     // insert hr after d-title
+    $('.d-title').after($('<hr class="section-separator"/>'));
+
+    // check if we have authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+
+    // manage byline/border
+    if (!have_authors)
+      $('.d-byline').remove();
+    $('.d-byline').after($('<hr class="section-separator"/>'));
+    $('.d-byline a').remove();
+
+    // remove toc
+    $('.d-contents').remove();
+
+    // move appendix elements
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+    });
+
+
+    // inject headers into references and footnotes
+    var refs_header = $('<h3></h3>');
+    refs_header.text('References');
+    $('#refs').prepend(refs_header);
+
+    var footnotes_header = $('<h3></h3');
+    footnotes_header.text('Footnotes');
+    $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+
+    // remove appendix if it's empty
+    if ($('.d-appendix').children().length === 0)
+      $('.d-appendix').remove();
+
+    // prepend separator above appendix
+    $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+
+    // trim code
+    $('pre>code').each(function(i, val) {
+      $(this).html($.trim($(this).html()));
+    });
+
+    // move posts-container right before article
+    $('.posts-container').insertBefore($('.d-article'));
+
+    $('body').addClass('downlevel');
+
+    on_load_complete();
+  }
+
+
+  function init_common() {
+
+    // jquery plugin to change element types
+    (function($) {
+      $.fn.changeElementType = function(newType) {
+        var attrs = {};
+
+        $.each(this[0].attributes, function(idx, attr) {
+          attrs[attr.nodeName] = attr.nodeValue;
+        });
+
+        this.replaceWith(function() {
+          return $("<" + newType + "/>", attrs).append($(this).contents());
+        });
+      };
+    })(jQuery);
+
+    // prevent underline for linked images
+    $('a > img').parent().css({'border-bottom' : 'none'});
+
+    // mark non-body figures created by knitr chunks as 100% width
+    $('.layout-chunk').each(function(i, val) {
+      var figures = $(this).find('img, .html-widget');
+      if ($(this).attr('data-layout') !== "l-body") {
+        figures.css('width', '100%');
+      } else {
+        figures.css('max-width', '100%');
+        figures.filter("[width]").each(function(i, val) {
+          var fig = $(this);
+          fig.css('width', fig.attr('width') + 'px');
+        });
+
+      }
+    });
+
+    // auto-append index.html to post-preview links in file: protocol
+    // and in rstudio ide preview
+    $('.post-preview').each(function(i, val) {
+      if (window.location.protocol === "file:")
+        $(this).attr('href', $(this).attr('href') + "index.html");
+    });
+
+    // get rid of index.html references in header
+    if (window.location.protocol !== "file:") {
+      $('.distill-site-header a[href]').each(function(i,val) {
+        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+      });
+    }
+
+    // add class to pandoc style tables
+    $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+    $('.kable-table').children('table').addClass('pandoc-table');
+
+    // add figcaption style to table captions
+    $('caption').parent('table').addClass("figcaption");
+
+    // initialize posts list
+    if (window.init_posts_list)
+      window.init_posts_list();
+
+    // implmement disqus comment link
+    $('.disqus-comment-count').click(function() {
+      window.headroom_prevent_pin = true;
+      $('#disqus_thread').toggleClass('hidden');
+      if (!$('#disqus_thread').hasClass('hidden')) {
+        var offset = $(this).offset();
+        $(window).resize();
+        $('html, body').animate({
+          scrollTop: offset.top - 35
+        });
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (is_downlevel_browser())
+      init_downlevel();
+    else
+      window.addEventListener('WebComponentsReady', init_distill);
+  });
+
+  </script>
+
+  <!--/radix_placeholder_distill-->
+  <script src="that-psis-proof_files/header-attrs-2.11/header-attrs.js"></script>
+  <script src="that-psis-proof_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+  <script src="that-psis-proof_files/popper-2.6.0/popper.min.js"></script>
+  <link href="that-psis-proof_files/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="that-psis-proof_files/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="that-psis-proof_files/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="that-psis-proof_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="that-psis-proof_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="that-psis-proof_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="that-psis-proof_files/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+  <!--/radix_placeholder_site_in_header-->
+
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"Tail stabilization of importance sampling etimators: A bit of theory","description":"Look. I had to do it so I wrote it out in detail. This is some of the convergence theory for truncated and winzorised importance sampling estimators","authors":[{"author":"Dan Simpson","authorURL":"https://dpsimpson.github.io","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2022-06-15T00:00:00.000+10:00","citationText":"Simpson, 2022"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>Tail stabilization of importance sampling etimators: A bit of theory</h1>
+<!--radix_placeholder_categories-->
+<!--/radix_placeholder_categories-->
+<p><p>Look. I had to do it so I wrote it out in detail. This is some of
+the convergence theory for truncated and winzorised importance sampling
+estimators</p></p>
+</div>
+
+<div class="d-byline">
+  Dan Simpson <a href="https://dpsimpson.github.io"
+class="uri">https://dpsimpson.github.io</a> 
+  
+<br/>2022-06-15
+</div>
+
+<div class="d-article">
+<p>Imagine you have a target probability distribution <span
+class="math inline">\(p(\theta)\)</span> and you want to estimate the
+expectation <span class="math inline">\(I_h = \int h(\theta)
+p(\theta)\,d(\theta)\)</span>. That’s lovely and everything, but if it
+was easy none of us would have jobs. High-dimensional quadrature is a
+pain in the arse.</p>
+<p>A very simple way to get an decent estimate of <span
+class="math inline">\(I_h\)</span> is to use <em>importance
+sampling</em>, that is taking draws <span
+class="math inline">\(\theta_s\)</span>, <span class="math inline">\(s =
+1,\ldots, S\)</span> from some proposal distribution <span
+class="math inline">\(\theta_s \sim g(\theta)\)</span>. Then, noting
+that <span class="math display">\[
+I_h = \int h(\theta) p (\theta)\,d\theta = \int h(\theta)
+\underbrace{\frac{p(\theta)}{g(\theta)}}_{r(\theta)}g(\theta)\,d\theta,
+\]</span> we can use Monte Carlo to estimate the second integral. This
+leads to the importance sampling estimator <span class="math display">\[
+I_h^S = \sum_{s=1}^S h(\theta_s) r(\theta_s).
+\]</span></p>
+<p>This all seems marvellous, but there is a problem. Even though <span
+class="math inline">\(h\)</span> is probably a very pleasant function
+and <span class="math inline">\(g\)</span> is a nice friendly
+distribution, <span class="math inline">\(r(\theta)\)</span> can be an
+absolute beast. Why? Well it’s<a href="#fn1" class="footnote-ref"
+id="fnref1" role="doc-noteref"><sup>1</sup></a> the ratio of two
+densities and there is no guarantee that the ratio of two nice functions
+is itself a nice function. In particular, if the bulk of the
+distributions <span class="math inline">\(p\)</span> and <span
+class="math inline">\(g\)</span> are in different places, you’ll end up
+with the situation where for most draws <span
+class="math inline">\(r(\theta_s)\)</span> is very small<a href="#fn2"
+class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> and
+a few will be HUGE<a href="#fn3" class="footnote-ref" id="fnref3"
+role="doc-noteref"><sup>3</sup></a>.</p>
+<p>This will lead to an extremely unstable estimator.</p>
+<p>It is pretty well known that the raw importance sampler <span
+class="math inline">\(I_h^S\)</span> will behave nicely (that is will be
+unbiased with finite variance) precisely when the distribution of <span
+class="math inline">\(r_s = r(\theta_s)\)</span> has finite
+variance.</p>
+<p>Elementary treatments stop there, but they miss two very big
+problems. The most obvious one is that it’s basically impossible to
+check if the variance of <span class="math inline">\(r_s\)</span> is
+finite. A second, much larger but much more subtle problem, is that the
+variance can be finite but <em>massive</em>. This is probably the most
+common case in high dimensions. McKay has an excellent example where the
+importance ratios are <em>bounded</em>, but that bound is so large that
+it is infinite for all intents and purposes.</p>
+<p>All of which is to say that importance sampling doesn’t work unless
+you work on it.</p>
+<h2 id="truncated-importance-sampling">Truncated importance
+sampling</h2>
+<p>If the problem is the fucking ratios then by gum we will fix the
+fucking ratios. Or so the saying goes.</p>
+<p>The trick turns out to be modifying the largest ratios enough that we
+stabilise the variance, but not so much as to overly bias the
+estimate.</p>
+<p>The first version of this was <a
+href="https://www.jstor.org/stable/27594308?seq=1">truncated importance
+sampling</a> (TIS), which selects a threshold <span
+class="math inline">\(T\)</span> and estimates the expectation as <span
+class="math display">\[
+I_\text{TIS}^S = \frac{1}{S}\sum_{s= 1}^S h(\theta_s) \max\{r(\theta_s),
+T\}.
+\]</span> It’s pretty obvious that <span
+class="math inline">\(I^S_\text{TIS}\)</span> has finite variance for
+any fixed <span class="math inline">\(T\)</span>, but we should be
+pretty worried about the bias. Unsurprisingly, there is going to be a
+trade-off between the variance and the bias. So let’s explore that.</p>
+<h3 id="the-bias-of-tis">The bias of TIS</h3>
+<p>To get an expression for the bias, first let us write <span
+class="math inline">\(r_s = r(\theta_s)\)</span> and <span
+class="math inline">\(h_s = h(\theta_s)\)</span> for <span
+class="math inline">\(\theta_s \sim g\)</span>. Occasionally we will
+talk about the joint distribution or <span
+class="math inline">\((r_s,h_s) \sim (R,H)\)</span>. Sometimes we will
+also need to use the indicator variables <span class="math inline">\(z_i
+= 1_{r_i &lt; T}\)</span>.</p>
+<p>Then, we can write<a href="#fn4" class="footnote-ref" id="fnref4"
+role="doc-noteref"><sup>4</sup></a> <span class="math display">\[
+I = \mathbb{E}(HR \mid R \leq T) \Pr(R \leq T) + \mathbb{E}(HR \mid R
+&gt; T) \Pr(R &gt; T).
+\]</span></p>
+<p>How does this related to TIS? Well. Let <span class="math inline">\(M
+= \sum_{s=1}^S z_i\)</span> be the random variable denoting the number
+of times <span class="math inline">\(r_i &gt; T\)</span>. Then, <span
+class="math display">\[\begin{align*}
+\mathbb{E}(I_\text{TIC}^S) &amp;= \mathbb{E}\left(
+\frac{1}{S}\sum_{s=1}^Sz_ih_ir_i\right)  + \mathbb{E}\left(
+\frac{T}{S}\sum_{s=1}^S(1-z_i)h_i\right) \\
+&amp;=\mathbb{E}_M\left[\frac{S-M}{S}\mathbb{E}(HR \mid R &lt; T) +
+\frac{MT}{S}\mathbb{E}(H \mid R &gt; T)\right] \\
+&amp;=\mathbb{E}(HR \mid R \leq T) \Pr(R \leq T) + T\mathbb{E}(H \mid R
+&gt; T) \Pr(R &gt; T).
+\end{align*}\]</span></p>
+<p>Hence the bias in TIS is <span class="math display">\[
+I - \mathbb{E}(I_\text{TIS}^S) = \mathbb{E}(H(R-T) \mid R &gt; T) \Pr(R
+&gt; T).
+\]</span></p>
+<p>To be honest, this doesn’t look phenomenally interesting for fixed
+<span class="math inline">\(T\)</span>, however if we let <span
+class="math inline">\(T = T_S\)</span> depend on the sample size then as
+long as <span class="math inline">\(T_S \rightarrow \infty\)</span> we
+get vanishing bias.</p>
+<p>We can get more specific if we make the assumption about the tail of
+the importance ratios. In particular, we will assume that<a href="#fn5"
+class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>
+<span class="math inline">\(1-R(r) = \Pr(R &gt; r) =
+cr^{-1/k}(1+o(1))\)</span> for some<a href="#fn6" class="footnote-ref"
+id="fnref6" role="doc-noteref"><sup>6</sup></a> <span
+class="math inline">\(k&lt;1\)</span>.</p>
+<p>While it seems like this will only be useful for estimating <span
+class="math inline">\(\Pr(R&gt;T)\)</span>, it turns out that under some
+mild<a href="#fn7" class="footnote-ref" id="fnref7"
+role="doc-noteref"><sup>7</sup></a> technical conditions, the
+conditional excess distribution function<a href="#fn8"
+class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>
+<span class="math display">\[
+R_T(y) = \Pr(R - T \leq y \mid R &gt; T) = \frac{R(T + y) -
+R(T)}{1-R(T)},
+\]</span> is well approximated by a Generalised Pareto Distribution as
+<span class="math inline">\(T\rightarrow \infty\)</span>. Or, in maths,
+as <span class="math inline">\(T\rightarrow \infty\)</span>, <span
+class="math display">\[
+R_T(y) \rightarrow \begin{cases} 1- \left(1 +
+\frac{ky}{\sigma}\right)^{-1/k}, \quad &amp; k \neq 0 \\
+1- \mathrm{e}^{-y/\sigma}, \quad &amp;k = 0,
+\end{cases}
+\]</span> for some <span class="math inline">\(\sigma &gt; 0\)</span>
+and <span class="math inline">\(k \in \mathbb{R}\)</span>. The shape<a
+href="#fn9" class="footnote-ref" id="fnref9"
+role="doc-noteref"><sup>9</sup></a> parameter <span
+class="math inline">\(k\)</span> is very important for us, as it tells
+us how many moments the distribution has. In particular, if a
+distribution <span class="math inline">\(X\)</span> has shape parameter
+<span class="math inline">\(k\)</span>, then <span
+class="math display">\[
+\mathbb{E}|X|^\alpha &lt; \infty, \quad \forall \alpha &lt; \frac{1}{k}.
+\]</span> We will focus exclusively on the case where <span
+class="math inline">\(k &lt; 1\)</span>. When <span
+class="math inline">\(k &lt; 1/2\)</span>, the distribution has finite
+variance.</p>
+<p>If <span class="math inline">\(1- R(r) = cr^{-1/k}(1+ o(1))\)</span>,
+then the conditional exceedence function is <span
+class="math display">\[\begin{align*}
+R_T(y) &amp;=  \frac{cT^{-1/k}(1+  o(1)) -
+c(T+y)^{-1/k}(1+  o(1))}{cT^{-1/k}(1+  o(1)))} \\
+&amp;= \left[1 - \left(1 + \frac{y}{T}\right)^{-1/k}\right](1 + o(1)),
+\end{align*}\]</span> which suggests that as <span
+class="math inline">\(T\rightarrow \infty\)</span>, <span
+class="math inline">\(R_T\)</span> converges to a generalised Pareto
+distribution with shape parameter <span class="math inline">\(k\)</span>
+and scale parameter <span
+class="math inline">\(\mathcal{O}(T)\)</span>.</p>
+<p>All of this work lets us approximate the distribution of <span
+class="math inline">\((R-T \mid R&gt;T )\)</span> and use the formula
+for the mean of a generalised Pareto distribution. This gives us the
+estimate <span class="math display">\[
+\mathbb{E}(R- T \mid R&gt;T) \approx \frac{T}{1-k},
+\]</span> which estimates the bias when <span
+class="math inline">\(h(\theta)\)</span> is constant<a href="#fn10"
+class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>
+as <span class="math display">\[
+I - \mathbb{E}(I_\text{TIS}^S) \approx
+\mathcal{O}\left(T^{1-1/k}\right).
+\]</span></p>
+<p>For what it’s worth, Ionides got the same result more directly in the
+TIS paper, but he wasn’t trying to do what I’m trying to do.</p>
+<h3 id="the-variance-in-tis">The variance in TIS</h3>
+<p>The variance is a little bit more annoying. We want it to go to
+zero.</p>
+<p>As before, we condition on <span class="math inline">\(z_s\)</span>
+(or, equivalently, <span class="math inline">\(M\)</span>) and then use
+the law of total variance. We know from the bias calculation that <span
+class="math display">\[
+\mathbb{E}(I_\text{TIS}^S \mid M) =\frac{S-M}{S}\mathbb{E}(HR \mid
+R&gt;T) + \frac{TM}{S}\mathbb{E}(H \mid R&gt;T).
+\]</span></p>
+<p>A similarly quick calculation tells us that <span
+class="math display">\[
+\mathbb{V}(I_\text{TIS}^S \mid M) = \frac{S-M}{S^2}\mathbb{V}(HR \mid R
+\leq T) +\frac{MT^2}{S^2}\mathbb{V}(H \mid R&gt;T).
+\]</span> To close it out, we recall that <span
+class="math inline">\(M\)</span> is the sum of Bernoulli random
+variables so <span class="math display">\[
+M \sim \text{Binomial}(S, \Pr(R &gt; T)).
+\]</span></p>
+<p>With this, we can get an expression for the unconditional variance.
+To simplify the expression, let’s write <span class="math inline">\(p_T
+= \Pr(R &gt; T)\)</span>. Then, <span
+class="math display">\[\begin{align*}
+\mathbb{V}(I_\text{TIS}^S) &amp;=\mathbb{E}_M\mathbb{V}(I_\text{TIS}^S
+\mid M) + \mathbb{V}_M\mathbb{E}(I_\text{TIS}^S \mid M) \\
+&amp;= S^{-1}(1-p_T)\mathbb{V}(HR \mid R \leq T)
++S^{-1}T^2p_T\mathbb{V}(H \mid R&gt;T)\\
+&amp;\quad + S^{-1}p_T(1-p_T)\mathbb{E}(HR \mid R&gt;T)^2 +
+S^{-1}Tp_T(1-p_T)\mathbb{E}(H \mid R&gt;T)^2.
+\end{align*}\]</span></p>
+<p>There are four terms in the variance. The first and third terms are
+clearly harmless: they go to zero no matter how we choose <span
+class="math inline">\(T_S\)</span>. Our problem terms are the second and
+fourth. We can tame the fourth term if we choose <span
+class="math inline">\(T_S = o(S)\)</span>. But that doesn’t seem to help
+with the second term. But it turns out it is enough. To see this, we
+note that <span class="math display">\[\begin{align*}
+Tp_T\mathbb{V}(H\mid R&gt;T) &amp;=\leq Tp_T\mathbb{E}(H^2 \mid
+R&gt;T)\\
+&amp;\leq p_T\mathbb{E}(H^2 R\mid R&gt;T) \\
+&amp;\leq \mathbb{E}(H^2 R)\\
+&amp;= \int h(\theta)^2 p(\theta)\,d\theta &lt; \infty.
+\end{align*}\]</span> where the second inequality uses the fact that
+<span class="math inline">\(R&gt;T\)</span> and the third comes from the
+law of total probability.</p>
+<p>So the TIS estimator has vanishing bias and variance as long as the
+truncation <span class="math inline">\(T_S \rightarrow \infty\)</span>
+and <span class="math inline">\(T_S = o(S)\)</span>. Once again, this is
+in the TIS paper, where it is proved in a much more compact way.</p>
+<h3 id="asymptotic-properties">Asymptotic properties</h3>
+<p>It can also be useful to have an understanding of how wild the
+fluctuations <span class="math inline">\(I - I_\text{TIS}^S\)</span>
+are. For traditional importance sampling, we know that if <span
+class="math inline">\(\mathbb{E}(R^2)\)</span> is finite, then then the
+fluctuations are, asymptotically, normally distributed with mean zero.
+Non-asymptotic results were given by <a
+href="https://arxiv.org/abs/1511.01437">Chatterjee and Diaconis</a> that
+also hold even when the estimator has infinite variance.</p>
+<p>For TIS, it’s pretty obvious that for fixed <span
+class="math inline">\(T\)</span> and <span class="math inline">\(h \geq
+0\)</span>, <span class="math inline">\(I_\text{TIS}^S\)</span> will be
+asymptotically normal (it is, after all, the sum of bounded random
+variables). For growing sequences <span
+class="math inline">\(T_S\)</span> it’s a tiny bit more involved: it is
+now a triangular array<a href="#fn11" class="footnote-ref" id="fnref11"
+role="doc-noteref"><sup>11</sup></a> rather than a sequence of random
+variables. But in the end very classical results tell us that for
+bounded<a href="#fn12" class="footnote-ref" id="fnref12"
+role="doc-noteref"><sup>12</sup></a> <span
+class="math inline">\(h\)</span>, the fluctuations of the TIS estimator
+are asymptotically normal.</p>
+<p>It’s worth saying that when <span
+class="math inline">\(h(\theta)\)</span> is unbounded, it <em>might</em>
+be necessary to truncate the product <span
+class="math inline">\(h_ir_i\)</span> rather than just <span
+class="math inline">\(r_i\)</span>. This is especially relevant if <span
+class="math inline">\(\mathbb{E}(H \mid R=r)\)</span> grows rapidly with
+<span class="math inline">\(r\)</span>. Personally, I can’t think of a
+case where this happens: <span class="math inline">\(r(\theta)\)</span>
+usually grows (super-)exponentially in <span
+class="math inline">\(\theta\)</span> while <span
+class="math inline">\(h(\theta)\)</span> usually grows polynomially,
+which implies <span class="math inline">\(\mathbb{E}(H \mid
+R=r)\)</span> grows (poly-)logarithmically.</p>
+<p>The other important edge case is that when <span
+class="math inline">\(h(\theta)\)</span> can be both positive and
+negative, it might be necessary to truncate <span
+class="math inline">\(h_ir_i\)</span> both above <em>and</em> below.</p>
+<h2 id="winsorised-importance-sampling">Winsorised importance
+sampling</h2>
+<p>TIS has lovely theoretical properties, but it’s a bit challenging to
+use in practice. The problem is, there’s really no practical guidance on
+how to choose the truncation sequence.</p>
+<p>So let’s do this differently. What if instead of specifying a
+threshold directly, we instead decided that the largest <span
+class="math inline">\(M\)</span> values are potentially problematic and
+should be modified? Recall that for TIS, the number of samples that
+exceeded the threshold, <span class="math inline">\(M\)</span>, was
+random while the threshold was fixed. This is the opposite situation:
+the number of exceedences is fixed but the threshold is random.</p>
+<p>The threshold is now the <span class="math inline">\(M\)</span>th
+largest value of <span class="math inline">\(r_s\)</span>. We denote
+this using order statistics notation: we re-order the sample so that
+<span class="math display">\[
+r_{1:S} \leq r_{2:S}\leq \ldots r_{S:S}.
+\]</span> With this notation, the threshold is <span
+class="math inline">\(T = r_{S-M+1:S}\)</span> and the Winsorized
+importance sampler (WIS) is <span class="math display">\[
+I^S_\text{WIS} = \frac{1}{S}\sum_{s = 1}^{S-M} h_{s:S}r_{s:S} +
+\frac{r_{S-M+1:S}}{S}\sum_{s=S-M+1}^S h_{s:S},
+\]</span> where <span class="math inline">\((r_{s:S}, h_{s:S})\)</span>
+are the <span class="math inline">\((r_s, h_s)\)</span> pairs
+<em>ordered</em> so that <span class="math inline">\(r_{1:S} \leq
+r_{2:S}\leq \cdots \leq r_{S:S}\)</span>. Note that <span
+class="math inline">\(h_{s:S}\)</span> are not necessarily in increasing
+order: they are known as <em>concomitants</em> of <span
+class="math inline">\(r_{s:S}\)</span>, which is just a fancy way to say
+that they’re along for the ride. It’s <em>very</em> important that we
+reorder the <span class="math inline">\(h_s\)</span> when we reorder the
+<span class="math inline">\(r_s\)</span>, otherwise we won’t preserve
+the joint distribution and we’ll end up with absolute rubbish.</p>
+<p>We can already see that this is both much nicer and much wilder than
+the TIS distribution. It is <em>convenient</em> that <span
+class="math inline">\(M\)</span> is no longer random! But what the hell
+are we going to do about those order statistics? Well, the answer is
+very much the same thing as before: condition on them and hope for the
+best.</p>
+<p>Conditioned on the event<a href="#fn13" class="footnote-ref"
+id="fnref13" role="doc-noteref"><sup>13</sup></a> <span
+class="math inline">\(\{r_{S-M+1:S} = T\}\)</span>, we get <span
+class="math display">\[
+\mathbb{E}\left(I_\text{WIS}^S \mid r_{S-M+1:S} = T\right) = \left(1 -
+\frac{M}{S}\right)\mathbb{E}(RH \mid R &lt; T) + \frac{MT}{S}
+\mathbb{E}(H \mid R \geq T).
+\]</span> From this, we get that the bias, conditional on <span
+class="math inline">\(r_{S-M+1:S} = T\)</span> is <span
+class="math display">\[\begin{multline*}
+\left|I - \mathbb{E}\left(I_\text{WIS}^S \mid r_{S-M+1:S} =
+T\right)\right| =\left|\left[\Pr(R &lt; T) - \left(1 -
+\frac{M}{S}\right)\right]\mathbb{E}(RH \mid R &lt; T) \right.\\
+\left.+ \left[\Pr(R \geq T) - \frac{M}{S}\right] \mathbb{E}(H(R - T)
+\mid R \geq T)\right|.
+\end{multline*}\]</span></p>
+<p>You should immediately notice that we are in quite a different
+situation from TIS, where only the tail contributed to the bias. By
+fixing <span class="math inline">\(M\)</span> and randomising the
+threshold, we have bias contributions from both the bulk (due,
+essentially, to a weighting error) and from the tail (due to both the
+weighting error and the truncation). This is going to require us to be a
+bit creative.</p>
+<p>We could probably do something more subtle and clever here, but that
+is not my way. Instead, let’s use the triangle inequality to say <span
+class="math display">\[
+\left|\mathbb{E}(RH \mid R &gt; T)\right| \leq \frac{\mathbb{E}(R |H|
+1(R&lt;T))}{\Pr(R &lt;T)} \leq \frac{\|h\|_{L^1(p)}}{\Pr(R  &lt;T)}
+\]</span> and so the first term in the bias can be bounded if we can
+bound the relative error <span class="math display">\[
+\mathbb{E}\left|1 - \frac{1- M/S}{\Pr(R &lt; r_{S-M+1:S})}\right|.
+\]</span></p>
+<p>Now the more sensible among you will say <em><a
+href="https://www.youtube.com/watch?v=R-HryG35A2E">Daniel, No!</a>
+That’s a ratio! That’s going to be hard to bound</em>. And, of course,
+you are right. But here’s the thing: if <span
+class="math inline">\(M\)</span> is small relative to <span
+class="math inline">\(S\)</span>, it is <em>tremendously</em> unlikely
+that <span class="math inline">\(r_{S-M+1:S}\)</span> is anywhere near
+zero. This is intuitively true, but also mathematically true.</p>
+<p>To attack this expectation, we are going to look at a slightly
+different quantity that has the good grace of being non-negative.</p>
+<p><strong>Lemma</strong> Let <span class="math inline">\(X_s\)</span>,
+<span class="math inline">\(s= 1, \ldots S\)</span> be an iid sample
+from <span class="math inline">\(F_X\)</span>, let <span
+class="math inline">\(0\leq k\leq S\)</span> be an integer. Then <span
+class="math display">\[
+\frac{p}{F_X(x_{k:S})} -p \stackrel{d}{=} \frac{p(S-k+1)}{k}
+\mathcal{F},
+\]</span> and <span class="math display">\[
+\frac{1-p}{1- F_x/(x_{k:S})} - (1-p) \stackrel{d}{=}
+\frac{k(1-p)}{S-k+1}\mathcal{F}^{-1}
+\]</span> where <span class="math inline">\(\mathcal{F}\)</span> is an
+F-distributed random variable with parameters <span
+class="math inline">\((2(S-k+1), 2k)\)</span>.</p>
+<p><strong>Proof</strong></p>
+<p>For any <span class="math inline">\(t\geq 0\)</span>, <span
+class="math display">\[\begin{align*}
+\Pr\left(\frac{p}{F_X(x_{k:S})} - p \leq t\right) &amp;=\Pr\left(p -
+pF_X(x_{k:S}) \leq tF_X(x_{k:S})\right) \\
+&amp;= \Pr\left(p  \leq (t+p)F_X(x_{k:S})\right) \\
+&amp;=\Pr\left(F_X(x_{k:S}) \geq \frac{p}{p+t}\right)\\
+&amp;= \Pr\left(x_{k:S} \geq F_X^{-1}\left(\frac{p}{p+t}\right)\right)\\
+&amp;= 1- I_{\frac{p}{p+t}}(k, S-k+1) \\
+&amp;= I_{\frac{t}{p+t}}(S-k+1, k),
+\end{align*}\]</span> where <span
+class="math inline">\(I_p(a,b)\)</span> is the incomplete Beta
+function.</p>
+<p>You could, quite reasonably, ask where the hell that incomplete Beta
+function came from. And if I had thought to look this up, I would say
+that it came from Equation 2.1.5 in David and Nagaraja’s book on order
+statistics. Unfortunately, I did not look this up. I derived it, which
+is honestly not very difficult. The trick is to basically note that the
+event <span class="math inline">\(\{x_{k:S} \leq \tau\}\)</span> is the
+same as the event that at least <span class="math inline">\(k\)</span>
+of the samples <span class="math inline">\(x_s\)</span> are less than or
+equal to <span class="math inline">\(\tau\)</span>. Because the <span
+class="math inline">\(x_s\)</span> are independent, this is the
+probability of observing at least <span class="math inline">\(k\)</span>
+heads from a coin with the probability of a head <span
+class="math inline">\(\Pr(x \leq \tau) = F_X(\tau)\)</span>. If you look
+this up on Wikipedia<a href="#fn14" class="footnote-ref" id="fnref14"
+role="doc-noteref"><sup>14</sup></a> you see<a href="#fn15"
+class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a>
+that it is <span
+class="math inline">\(I_{1-F_X(\tau)}(k,S-k+1)\)</span>. The rest just
+come from noting that <span class="math inline">\(\tau =
+F_X^{-1}(t/(p+t))\)</span> and using the symmetry <span
+class="math inline">\(1-I_p(a,b) = I_{1-p}(b,a)\)</span>.</p>
+<p>To finish this off, we note that <span class="math display">\[
+\Pr(\mathcal{F} \leq x) = I_{\frac{S-k+1}{(S-k+1)x+ k}}(S-k+1,k).
+\]</span> From which, we see that <span
+class="math display">\[\begin{align*}
+\Pr\left(\frac{p}{F_X(x_{k:S})} - p \leq t\right)
+&amp;=\Pr\left(\mathcal{F} \leq \frac{k}{p(S-k+1)}t\right) \\
+&amp;= \Pr\left(\frac{p(S-k+1)}{k}\mathcal{F} \leq t\right).
+\end{align*}\]</span></p>
+<p>The second result follows the same way and by noting that <span
+class="math inline">\(\mathcal{F}^{-1}\)</span> is also F-distributed
+with parameters <span class="math inline">\((k, S-k+1)\)</span>.</p>
+<p><em>The proof has ended</em></p>
+<p>Now, obviously, in this house we do not trust mathematics. Which is
+to say that I made a stupid mistake the first time I did this and forgot
+that when <span class="math inline">\(Z\)</span> is binomial, <span
+class="math inline">\(\Pr(Z \geq k) = 1 - \Pr(Z \leq k-1)\)</span> and
+had a persistent off-by-one error in my derivation. But we test out our
+results so we don’t end up doing the dumb thing.</p>
+<p>So let’s do that. For this example, we will use generalised
+Pareto-distributed <span class="math inline">\(X\)</span>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
+<span class='va'>xi</span> <span class='op'>&lt;-</span> <span class='fl'>0.7</span>
+<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fl'>2</span>
+<span class='va'>u</span> <span class='op'>&lt;-</span> <span class='fl'>4</span>
+
+<span class='va'>samp</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>S</span>, <span class='va'>k</span>, <span class='va'>p</span>, 
+                 <span class='va'>Q</span> <span class='op'>=</span> \<span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='va'>u</span> <span class='op'>+</span> <span class='va'>s</span><span class='op'>*</span><span class='op'>(</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>-</span><span class='va'>x</span><span class='op'>)</span><span class='op'>^</span><span class='op'>(</span><span class='op'>-</span><span class='va'>xi</span><span class='op'>)</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>/</span><span class='va'>xi</span>, 
+                 <span class='va'>F</span> <span class='op'>=</span> \<span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='fl'>1</span> <span class='op'>-</span> <span class='op'>(</span><span class='fl'>1</span> <span class='op'>+</span> <span class='va'>xi</span><span class='op'>*</span><span class='op'>(</span><span class='va'>x</span> <span class='op'>-</span> <span class='va'>u</span><span class='op'>)</span><span class='op'>/</span><span class='va'>s</span><span class='op'>)</span><span class='op'>^</span><span class='op'>(</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>/</span><span class='va'>xi</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='co'># Use theory to draw x_{k:S}</span>
+  <span class='va'>xk</span> <span class='op'>&lt;-</span> <span class='fu'>Q</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Beta.html'>rbeta</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='va'>k</span>, <span class='va'>S</span> <span class='op'>-</span> <span class='va'>k</span> <span class='op'>+</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>-</span> <span class='va'>p</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/logical.html'>F</a></span><span class='op'>(</span><span class='va'>xk</span><span class='op'>)</span>, <span class='fl'>1</span><span class='op'>-</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>-</span><span class='va'>p</span><span class='op'>)</span><span class='op'>/</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>-</span><span class='fu'><a href='https://rdrr.io/r/base/logical.html'>F</a></span><span class='op'>(</span><span class='va'>xk</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
+
+<span class='va'>S</span> <span class='op'>&lt;-</span> <span class='fl'>1000</span>
+<span class='va'>M</span> <span class='op'>&lt;-</span> <span class='fl'>50</span>
+<span class='va'>k</span> <span class='op'>&lt;-</span> <span class='va'>S</span> <span class='op'>-</span> <span class='va'>M</span> <span class='op'>+</span> <span class='fl'>1</span>
+<span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>-</span><span class='va'>M</span><span class='op'>/</span><span class='va'>S</span>
+<span class='va'>N</span> <span class='op'>&lt;-</span> <span class='fl'>100000</span>
+
+<span class='va'>fs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Fdist.html'>rf</a></span><span class='op'>(</span><span class='va'>N</span>, <span class='fl'>2</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>S</span> <span class='op'>-</span> <span class='va'>k</span> <span class='op'>+</span> <span class='fl'>1</span><span class='op'>)</span>, <span class='fl'>2</span> <span class='op'>*</span> <span class='va'>k</span> <span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/pkg/tibble/man/tibble.html'>tibble</a></span><span class='op'>(</span>theoretical <span class='op'>=</span> <span class='fl'>1</span><span class='op'>-</span><span class='va'>p</span> <span class='op'>-</span> <span class='va'>p</span> <span class='op'>*</span> <span class='va'>fs</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>S</span> <span class='op'>-</span> <span class='va'>k</span> <span class='op'>+</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>/</span><span class='va'>k</span>,
+       xks <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/purrr/man/map.html'>map_dbl</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>N</span>, \<span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='fu'>samp</span><span class='op'>(</span><span class='va'>S</span>, <span class='va'>k</span>, <span class='va'>p</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://rdrr.io/pkg/magrittr/man/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/stat_ecdf.html'>stat_ecdf</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>xks</span><span class='op'>)</span>, colour <span class='op'>=</span> <span class='st'>"black"</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/stat_ecdf.html'>stat_ecdf</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>theoretical</span><span class='op'>)</span>, colour <span class='op'>=</span> <span class='st'>"red"</span>, linetype <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/labs.html'>ggtitle</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/expression.html'>expression</a></span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>-</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/plotmath.html'>frac</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>-</span><span class='va'>M</span><span class='op'>/</span><span class='va'>S</span> , <span class='fu'>R</span><span class='op'>(</span><span class='va'>r</span><span class='op'>[</span><span class='va'>S</span><span class='op'>-</span><span class='va'>M</span><span class='op'>+</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>S</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+<img src="that-psis-proof_files/figure-html5/unnamed-chunk-1-1.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/pkg/tibble/man/tibble.html'>tibble</a></span><span class='op'>(</span>theoretical <span class='op'>=</span> <span class='va'>p</span> <span class='op'>-</span> <span class='op'>(</span><span class='fl'>1</span><span class='op'>-</span><span class='va'>p</span><span class='op'>)</span> <span class='op'>*</span> <span class='va'>k</span><span class='op'>/</span><span class='op'>(</span><span class='va'>fs</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>S</span> <span class='op'>-</span> <span class='va'>k</span> <span class='op'>+</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>,
+       xks <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/purrr/man/map.html'>map_dbl</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>N</span>, \<span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='fu'>samp</span><span class='op'>(</span><span class='va'>S</span>, <span class='va'>k</span>, <span class='va'>p</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://rdrr.io/pkg/magrittr/man/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/stat_ecdf.html'>stat_ecdf</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>xks</span><span class='op'>)</span>, colour <span class='op'>=</span> <span class='st'>"black"</span><span class='op'>)</span> <span class='op'>+</span> 
+  <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/stat_ecdf.html'>stat_ecdf</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>theoretical</span><span class='op'>)</span>, colour <span class='op'>=</span> <span class='st'>"red"</span>, linetype <span class='op'>=</span> <span class='st'>"dashed"</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/labs.html'>ggtitle</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/expression.html'>expression</a></span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>-</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/plotmath.html'>frac</a></span><span class='op'>(</span><span class='va'>M</span><span class='op'>/</span><span class='va'>S</span> , <span class='fl'>1</span><span class='op'>-</span><span class='fu'>R</span><span class='op'>(</span><span class='va'>r</span><span class='op'>[</span><span class='va'>S</span><span class='op'>-</span><span class='va'>M</span><span class='op'>+</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>S</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+<p><img src="that-psis-proof_files/figure-html5/unnamed-chunk-1-2.png" width="624" /></p>
+</div>
+<p>Fabulous. It follow then that <span class="math display">\[
+\left|1 - \frac{1-M/S}{R(r_{S-M+1})} \right| \stackrel{d}=
+\left|\frac{M}{S} -  \frac{M(S-M)}{S(S-M-1)}\mathcal{F}\right| \leq
+\frac{M}{S} +  \frac{M(S-M)}{S(S-M-1)} \mathcal{F},
+\]</span> where <span class="math inline">\(\mathcal{F}\)</span> has an
+F-distribution with <span class="math inline">\((M, S-M+1)\)</span>
+degrees of freedom. As <span
+class="math inline">\(\mathbb{E}(\mathcal{F}) = 1 + 1/(S-M-1)\)</span>,
+it follows that this term goes to zero as long as <span
+class="math inline">\(M = o(S)\)</span>. This shows that the first term
+in the bias goes to zero.</p>
+<p>It’s worth noting here that we’ve also calculated that the bias is
+<em>at most</em> <span class="math inline">\(\mathcal{O}(M/S)\)</span>,
+however, this rate is extremely sloppy. That upper bound we just
+computed is <em>unlikely</em> to be tight. A better person than me would
+probably check, but honestly I just don’t give a shit<a href="#fn16"
+class="footnote-ref" id="fnref16"
+role="doc-noteref"><sup>16</sup></a></p>
+<p>The second term in the bias is <span class="math display">\[
+\left[\Pr(R \geq T) - \frac{M}{S}\right] \mathbb{E}(H(R - T) \mid R \geq
+T).
+\]</span> As before, we can write this as <span class="math display">\[
+\left(1 - \frac{M/S}{1-R(T)}\right)|\mathbb{E}(H(R - T) 1_{R \geq T})|
+\leq \left|1 - \frac{M/S}{1-R(T)}\right|\|h\|_{L^1(p)}.
+\]</span> By our lemma, we know that the distribution of the term in the
+absolute value when <span class="math inline">\(T = r_{S-M+1}\)</span>
+is the same as <span class="math display">\[
+1-\frac{M}{S} -\left(1 - \frac{M}{S} + \frac{1}{S}\right)\mathcal{F} =
+(\mu_F-\mathcal{F})  +\frac{M}{S}(\mathcal{F}-\mu_F) -
+\frac{1}{S}\mathcal{F} +  \frac{1}{M-1}\left(\frac{M}{S} - 1\right),
+\]</span> where <span class="math inline">\(\mathcal{F} \sim
+\text{F}_{2(S-M+1), 2M}\)</span>, which has mean <span
+class="math inline">\(\mu_F = 1+(M-1)^{-1}\)</span> and variance <span
+class="math display">\[
+\sigma^2_F = \frac{M^2S}{(S-M+1)(M-1)^2(M-2)} = \frac{1}{M}(1 +
+\mathcal{O}(M^{-1} + MS^{-1}).
+\]</span> From Jensen’s inequality, we get <span class="math display">\[
+\mathbb{E}(|\mathcal{F} - \mu_F|) \leq \sigma_F = M^{-1/2}(1 + o(1)).
+\]</span> If follows that <span class="math display">\[
+\mathbb{E}\left|1 - \frac{M/S}{1-R(r_{S-M+1:S})}\right| \leq
+M^{-1/2}(1+o(1))M^{1/2}S^{-1}(1 + o(1)) + S^{-1}(1+ o(1)) +
+(M-1)^{-1}(1+o(1)),
+\]</span> and so we get vanishing bias as long as <span
+class="math inline">\(M\rightarrow \infty\)</span> and <span
+class="math inline">\(M/S \rightarrow 0\)</span>.</p>
+<p>Once again, I make no claims of tightness<a href="#fn17"
+class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a>.
+Just because it’s a bit sloppy at this point doesn’t mean the job isn’t
+done.</p>
+<p><strong>Theorem</strong> Let <span
+class="math inline">\(\theta_s\)</span>, <span class="math inline">\(s =
+1,\ldots, S\)</span> be an iid sample from <span
+class="math inline">\(G\)</span> and let <span class="math inline">\(r_s
+= r(\theta_s) \sim R\)</span>. Assume that</p>
+<ol type="1">
+<li><p><span class="math inline">\(R\)</span> is absolutely
+continuous</p></li>
+<li><p><span class="math inline">\(M \rightarrow \infty\)</span> and
+<span class="math inline">\(S^{-1}M \rightarrow 0\)</span></p></li>
+<li><p><span class="math inline">\(h \in L^1(p)\)</span></p></li>
+</ol>
+<p>Then Winsorized importance sampling converges in <span
+class="math inline">\(L^1\)</span> and is asymptotically unbiased.</p>
+<p><strong>End of Theorem</strong></p>
+<p>Ok so that’s nice. But you’ll notice that I did not mention our
+piss-poor rate. That’s because there is absolutely no way in hell that
+the bias is <span class="math inline">\(\mathcal{O}(M^{-1/2})\)</span>!
+That rate is an artefact of a <em>very</em> sloppy bound on <span
+class="math inline">\(\mathbb{E}|1-\mathcal{F}|\)</span>.</p>
+<p>Unfortunately, Mathematica couldn’t help me out. Its asymptotic
+abilities shit the bed at the sight of <span
+class="math inline">\({}_2F_1(a,b;c;z))\)</span>, which is everywhere in
+the exact expression (which I’ve put below in the fold.</p>
+<details>
+<summary>
+Mathematica expression for <span
+class="math inline">\(\mathbb{E}|1-\mathcal{F}|\)</span>.
+</summary>
+<pre><code>-(((M/(1 + S))^(-(1/2) - S/2)*Gamma[(1 + S)/2]*
+     (6*(M/(1 + S))^(1/2 + M/2 + S/2)*((1 + S)/(1 - M + S))^(M/2 + S/2) - 
+        5*M*(M/(1 + S))^(1/2 + M/2 + S/2)*((1 + S)/(1 - M + S))^(M/2 + S/2) + 
+        M^2*(M/(1 + S))^(1/2 + M/2 + S/2)*((1 + S)/(1 - M + S))^(M/2 + S/2) + 
+        8*S*(M/(1 + S))^(1/2 + M/2 + S/2)*((1 + S)/(1 - M + S))^(M/2 + S/2) - 
+        6*M*S*(M/(1 + S))^(1/2 + M/2 + S/2)*((1 + S)/(1 - M + S))^(M/2 + S/2) + 
+        M^2*S*(M/(1 + S))^(1/2 + M/2 + S/2)*((1 + S)/(1 - M + S))^(M/2 + S/2) + 
+        2*S^2*(M/(1 + S))^(1/2 + M/2 + S/2)*((1 + S)/(1 - M + S))^(M/2 + S/2) - 
+        M*S^2*(M/(1 + S))^(1/2 + M/2 + S/2)*((1 + S)/(1 - M + S))^(M/2 + S/2) - 
+         6*Sqrt[-(M/(-1 + M - S))]*Sqrt[(-1 - S)/(-1 + M - S)]*
+        (M/(1 - M + S))^(M/2 + S/2)*Hypergeometric2F1[1, (1/2)*(-1 + M - S), 
+                                                      M/2, M/(-1 + M - S)] + 8*M*Sqrt[-(M/(-1 + M - S))]*
+        Sqrt[(-1 - S)/(-1 + M - S)]*(M/(1 - M + S))^(M/2 + S/2)*
+        Hypergeometric2F1[1, (1/2)*(-1 + M - S), M/2, M/(-1 + M - S)] - 
+        2*M^2*Sqrt[-(M/(-1 + M - S))]*Sqrt[(-1 - S)/(-1 + M - S)]*
+        (M/(1 - M + S))^(M/2 + S/2)*Hypergeometric2F1[1, (1/2)*(-1 + M - S), 
+                                                      M/2, M/(-1 + M - S)] - 8*Sqrt[-(M/(-1 + M - S))]*
+        Sqrt[(-1 - S)/(-1 + M - S)]*S*(M/(1 - M + S))^(M/2 + S/2)*
+        Hypergeometric2F1[1, (1/2)*(-1 + M - S), M/2, M/(-1 + M - S)] + 
+        4*M*Sqrt[-(M/(-1 + M - S))]*Sqrt[(-1 - S)/(-1 + M - S)]*S*
+        (M/(1 - M + S))^(M/2 + S/2)*Hypergeometric2F1[1, (1/2)*(-1 + M - S), 
+                                                      M/2, M/(-1 + M - S)] - 2*Sqrt[-(M/(-1 + M - S))]*
+        Sqrt[(-1 - S)/(-1 + M - S)]*S^2*(M/(1 - M + S))^(M/2 + S/2)*
+        Hypergeometric2F1[1, (1/2)*(-1 + M - S), M/2, M/(-1 + M - S)] + 
+        6*M*(M/(1 + S))^(M/2)*((1 + S)/(1 - M + S))^(M/2 + S/2)*
+        Hypergeometric2F1[(1 + S)/2, (1/2)*(1 - M + S), (1/2)*(3 - M + S), 
+                          (-1 + M - S)/M] - 5*M^2*(M/(1 + S))^(M/2)*((1 + S)/(1 - M + S))^
+        (M/2 + S/2)*Hypergeometric2F1[(1 + S)/2, (1/2)*(1 - M + S), 
+                                      (1/2)*(3 - M + S), (-1 + M - S)/M] + M^3*(M/(1 + S))^(M/2)*
+        ((1 + S)/(1 - M + S))^(M/2 + S/2)*Hypergeometric2F1[(1 + S)/2, 
+                                                            (1/2)*(1 - M + S), (1/2)*(3 - M + S), (-1 + M - S)/M] + 
+        2*M*S*(M/(1 + S))^(M/2)*((1 + S)/(1 - M + S))^(M/2 + S/2)*
+        Hypergeometric2F1[(1 + S)/2, (1/2)*(1 - M + S), (1/2)*(3 - M + S), 
+                          (-1 + M - S)/M] - M^2*S*(M/(1 + S))^(M/2)*((1 + S)/(1 - M + S))^
+        (M/2 + S/2)*Hypergeometric2F1[(1 + S)/2, (1/2)*(1 - M + S), 
+                                      (1/2)*(3 - M + S), (-1 + M - S)/M] - 2*M*(M/(1 + S))^(M/2)*
+        ((1 + S)/(1 - M + S))^(M/2 + S/2)*Hypergeometric2F1[(1 + S)/2, 
+                                                            (1/2)*(3 - M + S), (1/2)*(5 - M + S), (-1 + M - S)/M] + 
+        3*M^2*(M/(1 + S))^(M/2)*((1 + S)/(1 - M + S))^(M/2 + S/2)*
+        Hypergeometric2F1[(1 + S)/2, (1/2)*(3 - M + S), (1/2)*(5 - M + S), 
+                          (-1 + M - S)/M] - M^3*(M/(1 + S))^(M/2)*((1 + S)/(1 - M + S))^
+        (M/2 + S/2)*Hypergeometric2F1[(1 + S)/2, (1/2)*(3 - M + S), 
+                                      (1/2)*(5 - M + S), (-1 + M - S)/M] - 2*M*S*(M/(1 + S))^(M/2)*
+        ((1 + S)/(1 - M + S))^(M/2 + S/2)*Hypergeometric2F1[(1 + S)/2, 
+                                                            (1/2)*(3 - M + S), (1/2)*(5 - M + S), (-1 + M - S)/M] + 
+        M^2*S*(M/(1 + S))^(M/2)*((1 + S)/(1 - M + S))^(M/2 + S/2)*
+        Hypergeometric2F1[(1 + S)/2, (1/2)*(3 - M + S), (1/2)*(5 - M + S), 
+                          (-1 + M - S)/M]))/(((1 + S)/(1 - M + S))^S*
+                                               (2*(-2 + M)*M*Sqrt[(-1 - S)/(-1 + M - S)]*Gamma[M/2]*
+                                                  Gamma[(1/2)*(5 - M + S)])))</code></pre>
+</details>
+<p>But do not fear: we can recover. At the cost of an assumption about
+the tails of <span class="math inline">\(R\)</span>. (We’re also going
+to assume that <span class="math inline">\(h\)</span> is bounded because
+it makes things ever so slightly easier, although unbounded <span
+class="math inline">\(h\)</span> is ok<a href="#fn18"
+class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a>
+as long as it doesn’t grow too quickly relative to <span
+class="math inline">\(r\)</span>.)</p>
+<p>We are going to make the assumption that <span
+class="math inline">\(R - T \mid R\geq T\)</span> is in the domain of
+attraction of a generalized Pareto distribution with shape parameter
+<span class="math inline">\(k\)</span>. A sufficient condition, due to
+von Mises, is that <span class="math display">\[
+\lim_{r\rightarrow \infty} \frac{r R&#39;(r)}{1-R(r)} = \frac{1}{k}.
+\]</span></p>
+<p>This seems like a weird condition, but it’s basically just a
+regularity condition at infinity. For example if <span
+class="math inline">\(1-R(r)\)</span> is regularly varying at infinity<a
+href="#fn19" class="footnote-ref" id="fnref19"
+role="doc-noteref"><sup>19</sup></a> and <span
+class="math inline">\(R&#39;(r)\)</span> is, eventually, monotone<a
+href="#fn20" class="footnote-ref" id="fnref20"
+role="doc-noteref"><sup>20</sup></a> decreasing, then this condition
+holds.</p>
+<p>The von Mises condition is very natural for us as <a
+href="https://projecteuclid.org/journals/annals-of-probability/volume-21/issue-3/Von-Mises-Conditions-Revisited/10.1214/aop/1176989120.full">Falk
+and Marohn (1993)</a> show that the relative error we get when
+approximating the tail of <span class="math inline">\(R\)</span> by a
+generalised Pareto density is the same as the relative error in the von
+Mises condition. That is if <span class="math display">\[
+\frac{rR&#39;(r)}{1-R(r)} = \frac{1}{k}(1 + \mathcal{O}(r^{-\alpha}))
+\]</span> then <span class="math display">\[
+R&#39;(r) = c w(cr - d)(1 + \mathcal{O}(r^{-\alpha})),
+\]</span> where <span class="math inline">\(c,d\)</span> are constants
+and <span class="math inline">\(w\)</span> is the density of a
+generalised Pareto distribution.</p>
+<p>Anyway, under those two assumptions, we can swap out the density of
+<span class="math inline">\((R-T)\mid R&gt;T\)</span> with its
+asymptotic approximation and get that, conditional on <span
+class="math inline">\(T= r_{S-M+1:S}\)</span>, <span
+class="math display">\[
+\mathbb{E}(H(R-T) \mid R&gt;T) = (k-1)^{-1}T.
+\]</span></p>
+<p>Hence, the second term in the bias goes to zero if <span
+class="math display">\[
+\mathbb{E}\left(r_{S-M+1:S}\left(1 - R(r_{s-M+1:S}) -
+\frac{M}{S}\right)\right)
+\]</span> goes to zero.</p>
+<p>Now this is not particularly pleasant, but it helps to recognise that
+even if a distribution doesn’t have finite moments, away from the
+extremes, its order statistics always do. This means that we can use
+Cauchy-Schwartz to get <span class="math display">\[
+\left|\mathbb{E}\left(r_{S-M+1:S}\left(1 - R(r_{s-M+1:S}) -
+\frac{M}{S}\right)\right)\right|
+\leq\mathbb{E}\left(r_{S-M+1:S}^2\right)^{1/2}\mathbb{E}\left[\left(1 -
+R(r_{s-M+1:S}) - \frac{M}{S}\right)^2\right]^{1/2}.
+\]</span></p>
+<p>Arguably, the most alarming term is the first one, but that can<a
+href="#fn21" class="footnote-ref" id="fnref21"
+role="doc-noteref"><sup>21</sup></a> be tamed. To do this, we lean into
+a result from <a
+href="https://projecteuclid.org/proceedings/berkeley-symposium-on-mathematical-statistics-and-probability/Proceedings-of-the-Fifth-Berkeley-Symposium-on-Mathematical-Statistics-and/Chapter/Some-contributions-to-the-theory-of-order-statistics/bsmsp/1200513012">Bickel
+(1967)</a> who, if you examine the proof and translate some
+obscurely-stated conditions and fix a typo<a href="#fn22"
+class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a>,
+you get that <span class="math display">\[
+\mathbb{E}(r_{k:M}^2) \leq C k\begin{pmatrix} S \\ k\end{pmatrix}
+\int_0^1 t^{k-2-1}(1-t)^{S-k-2}\,dt.
+\]</span> You might worry that this is going to grow too quickly. But it
+doesn’t. Noting that <span class="math inline">\(B(n,m) =
+\Gamma(n)\Gamma(m)/\Gamma(n+m)\)</span>, we can rewrite the upper bound
+in terms of the Beta function to get <span class="math display">\[
+\mathbb{E}(r_{k:M}^2) \leq C \frac{\Gamma(S+1)}{\Gamma(S-3)}
+\frac{\Gamma(k-2)}{\Gamma(k+1)}\frac{\Gamma(S-k-1)}{\Gamma(S-k+1)}.
+\]</span></p>
+<p>To show that this doesn’t grow too quickly, we use the identity <span
+class="math display">\[
+\frac{\Gamma(x + a)}{\Gamma(x + b)} \propto x^{a-b}(1 +
+\mathcal{O}(x^{-1})).
+\]</span> From this, it follows that <span class="math display">\[
+\mathbb{E}(r_{k:M}^2) \leq C S^4k^{-3}(S-k)^{-2}(1+
+\mathcal{O}(S^{-1}))(1+ \mathcal{O}(k^{-1}))(1+
+\mathcal{O}((S+k)^{-1})).
+\]</span> In this case, we are interested in <span
+class="math inline">\(k = S-M+1\)</span>, so <span
+class="math display">\[
+\mathbb{E}(r_{k:M}^2) \leq C S^4S^{-3}M^{-2}(1 - M/S + 1/S)^{-3}(1 -
+1/M)^{-2}(1+ \mathcal{O}(S^{-1}))(1+ \mathcal{O}(S^{-1}))(1+
+\mathcal{O}(M^{-1})).
+\]</span></p>
+<p>Hence the we get that <span
+class="math inline">\(\mathbb{E}(r_{k:M}^2) =
+\mathcal{O}(SM^{-2})\)</span>. This is increasing<a href="#fn23"
+class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a>
+in <span class="math inline">\(S\)</span>, but we will see that it is
+not going up too fast.</p>
+<p>For the second half of this shindig, we are going to attack <span
+class="math display">\[
+\mathbb{E}\left[\left(1 - R(r_{s-M+1:S}) - \frac{M}{S}\right)^2\right] =
+\mathbb{E}\left[\left(1 - R(r_{s-M+1:S})\right)^2 - 2\left(1 -
+R(r_{s-M+1:S})\right)\frac{M}{S} +\left(\frac{M}{S}\right)^2\right].
+\]</span> A standard result<a href="#fn24" class="footnote-ref"
+id="fnref24" role="doc-noteref"><sup>24</sup></a> from extreme value
+theory is that <span class="math inline">\(R(r_{k:S})\)</span> has the
+same distribution as the <span class="math inline">\(k\)</span>th order
+statistics from a sample of <span class="math inline">\(S\)</span> iid
+<span class="math inline">\(\text{Uniform}([0,1])\)</span> random
+variables. Hence<a href="#fn25" class="footnote-ref" id="fnref25"
+role="doc-noteref"><sup>25</sup></a>, <span class="math display">\[
+R(r_{S-M+1:S}) \sim \text{Beta}(S-M+1, M).
+\]</span> If follows<a href="#fn26" class="footnote-ref" id="fnref26"
+role="doc-noteref"><sup>26</sup></a> that <span class="math display">\[
+\mathbb{E}(1- R(r_{S-M+1:S})) = \frac{M}{S+1} =
+\frac{M}{S}\frac{1}{1+S^{-1}}
+\]</span> and <span class="math display">\[
+\mathbb{E}((1- R(r_{S-M+1:S}))^2) = \frac{M(M+1)}{(S+1)(S+2)} =
+\frac{M^2}{S^2}\left(\frac{1 + M^{-1}}{1 + 3S^{-1} + 2S^{-2}}\right).
+\]</span> Adding these together and doing some asymptotic expansions, we
+get <span class="math display">\[
+\mathbb{E}\left[\left(1 - R(r_{s-M+1:S}) - \frac{M}{S}\right)^2\right] =
+\frac{M^2}{S^2} + \mathcal{O}\left(\frac{M}{S^2}\right),
+\]</span> which goes to zero<a href="#fn27" class="footnote-ref"
+id="fnref27" role="doc-noteref"><sup>27</sup></a> like <span
+class="math inline">\(\mathcal{O}(S^{-1})\)</span> if <span
+class="math inline">\(M = \mathcal{O}(S^{1/2})\)</span>.</p>
+<p>We can multiply this rate together and get that the second term in
+the bias is bounded above by <span class="math display">\[
+\left[\left(\frac{S}{M^2} (1 + \mathcal{O}(M^{-1} +
+MS^{-1}))\right)\left(\frac{M^2}{S^2} (1 + \mathcal{O}(M^{-1} +
+MS^{-1})\right)\right]^{1/2} = S^{-1/2}(1 + o(1)).
+\]</span></p>
+<p>Putting all of this together we have proved the following
+Corollary.</p>
+<p><strong>Corollary</strong> Let <span
+class="math inline">\(\theta_s\)</span>, <span class="math inline">\(s =
+1,\ldots, S\)</span> be an iid sample from <span
+class="math inline">\(G\)</span> and let <span class="math inline">\(r_s
+= r(\theta_s) \sim R\)</span>. Assume that</p>
+<ol type="1">
+<li><p><span class="math inline">\(R\)</span> is absolutely continuous
+and satisfies the von Mises condition<a href="#fn28"
+class="footnote-ref" id="fnref28" role="doc-noteref"><sup>28</sup></a>
+<span class="math display">\[
+\frac{rR&#39;(r)}{1-R(r)} = \frac{1}{k}(1 +\mathcal{O}(r^{-1})).
+\]</span></p></li>
+<li><p><span class="math inline">\(M = o(S)\)</span></p></li>
+<li><p><span class="math inline">\(h\)</span> is bounded<a href="#fn29"
+class="footnote-ref" id="fnref29"
+role="doc-noteref"><sup>29</sup></a></p></li>
+</ol>
+<p>Winsorized importance sampling converges in <span
+class="math inline">\(L^1\)</span> with rate of, at most, <span
+class="math inline">\(\mathcal{O}(MS^{-1} + S^{-1/2})\)</span>, which is
+balanced when <span class="math inline">\(M =
+\mathcal{O}(S^{1/2})\)</span>. Hence, WIS is<a href="#fn30"
+class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a>
+<span class="math inline">\(\sqrt{n}\)</span>-consistent.</p>
+<h3 id="variance-of-winsorized-importance-sampling">Variance of
+Winsorized Importance Sampling</h3>
+<p>Right, that was a bit of a journey, but let’s keep going to the
+variance.</p>
+<p>It turns out that following the route I thought I was going to follow
+does not end well. That lovely set of tricks breaking up the variance
+into two conditional terms turns out to be very very unnecessary. Which
+is good, because I thoroughly failed to make the argument work.</p>
+<p>If you’re curious, the problem is that the random variable <span
+class="math display">\[
+\frac{Mr_{S-M+1:S}}{S} \mathbb{E}(H \mid R \geq r_{S-M+1:S}) =
+\frac{Mr_{S-M+1:S}}{S(1-R(r_{S-M+1:S}))} \mathbb{E}(H 1_{R \geq
+r_{S-M+1:S}})
+\]</span> is an absolute <em>bastard</em> to bound. The problem is that
+<span class="math inline">\(1- R({r_{S-M+1:S}}) \approx M/S\)</span> and
+so the usual trick of bounding that truncated expectation by <span
+class="math inline">\(\|h\|\)</span> or some such thing will prove that
+the variance is <em>finite</em> but not that it goes to zero. There is a
+solid chance that the Cauchy-Schwartz inequality <span
+class="math display">\[
+\frac{Mr_{S-M+1:S}^{1/2}}{S(1-R(r_{S-M+1:S}))}
+\mathbb{E}(r_{S-M+1:S}^{1/2}H 1_{R \geq r_{S-M+1:S}})
+\leq\frac{Mr_{S-M+1:S}^{1/2}}{S(1-R(r_{S-M+1:S}))}R(r_{S-M+1:S})\|h\|_{L^2(p)}
+\]</span> would work. But truly that is just bloody messy<a href="#fn31"
+class="footnote-ref" id="fnref31"
+role="doc-noteref"><sup>31</sup></a>.</p>
+<p>So let’s do it the easy way, shall we. Fundamentally, we will use
+<span class="math display">\[
+\mathbb{V}\left(I_\text{WIS}^S\right) \leq
+\mathbb{E}\left([I_\text{WIS}^S]^2\right).
+\]</span> Noting that we can write <span
+class="math inline">\(I_\text{WIS}^S\)</span> compactly as <span
+class="math display">\[
+I_\text{WIS}^S = \frac{1}{S}\sum_{s=1}^S h(\theta_s)\min\{r(\theta_s),
+r_{S-M+1:S}\}.
+\]</span> Hence, <span class="math display">\[\begin{align*}
+\mathbb{E}\left([I_\text{WIS}^S]^2\right) &amp;= \mathbb{E}_{T\sim
+r_{S-M+1:S}}\left[\mathbb{E}\left([I_\text{WIS}^S]^2 \mid r_{S-M+1:S} =
+T\right)\right]\\
+&amp;=\frac{1}{S^2}\mathbb{E}_{T\sim
+r_{S-M+1:S}}\left[\mathbb{E}\left(H^2 \min\{R^2,T^2\} \mid r_{S-M+1:S} =
+T\right)\right]\\
+&amp;\leq\frac{1}{S^2}\mathbb{E}_{T\sim
+r_{S-M+1:S}}\left[\mathbb{E}\left(RTH^2 \mid r_{S-M+1:S} =
+T\right)\right] \\
+&amp;\leq\frac{1}{S^2}\mathbb{E}_{T\sim
+r_{S-M+1:S}}\left[T\|h\|_{L^2(p)}^2\right]
+\end{align*}\]</span></p>
+<p>This goes to zero as long as <span
+class="math inline">\(\mathbb{E}(r_{S-M+1:S}) = o(S^2)\)</span>.</p>
+<p><a
+href="https://projecteuclid.org/proceedings/berkeley-symposium-on-mathematical-statistics-and-probability/Proceedings-of-the-Fifth-Berkeley-Symposium-on-Mathematical-Statistics-and/Chapter/Some-contributions-to-the-theory-of-order-statistics/bsmsp/1200513012">Bickel
+(1967)</a> shows that, noting that <span
+class="math inline">\(\mathbb{E}(R) &lt; \infty\)</span>, <span
+class="math display">\[
+\mathbb{E}(r_{S-M+1:S}) \leq C
+(S-M+1)\frac{\Gamma(S+1)\Gamma(S-M+1-1)\Gamma(M)}{\Gamma(S-M+1+1)\Gamma(M+1)\Gamma(S-1)}
+= \frac{S}{M}(1 + o(1)),
+\]</span> and so the variance is bounded.</p>
+<p>The previous argument shows that the variance is <span
+class="math inline">\(\mathcal{O}(M^{-1}S^{-1})\)</span>. We can refine
+that if we assume the von Mises condition hold. In that case we know
+that <span class="math inline">\(R(r) = 1- cr^{-1/k} + o(1)\)</span> as
+<span class="math inline">\(r\rightarrow \infty\)</span> and therefore
+<span class="math display">\[\begin{align*}
+R\left(R^{-1}\left(1-\frac{M}{S}\right)\right) &amp;= 1-\frac{M}{S+1}\\
+1 - cR^{-1}\left(1-\frac{M}{S+1}\right)^{-1/k}(1+o(1)) &amp;= 1-
+\frac{M}{S+1} \\
+R^{-1}\left(1-\frac{M}{S+1}\right) &amp;=
+c^{-k}\left(\frac{M}{S+1}\right)^{-k}(1 + o(1)).
+\end{align*}\]</span> Bickel (1967) shows that <span
+class="math inline">\(\mathbb{E}(r_{k:S}) = R^{-1}(1-M/(S+1)) +
+o(1)\)</span> so combining this with the previous result gives a
+variance of <span
+class="math inline">\(\mathcal{O}((M/S)^{k-2})\)</span>. If we take
+<span class="math inline">\(M =\mathcal{O}(S^{1/2})\)</span>, this gives
+<span class="math inline">\(\mathcal{S}^{k/2-1}\)</span>, which is
+smaller than the previous bound for <span
+class="math inline">\(k&lt;1\)</span>. It’s worth noting that Hence the
+variance goes to zero.</p>
+<p>The argument that we used here is a modification of the argument in
+the TIS paper. This lead to a great deal of panic: did I just make my
+life extremely difficult? Could I have modified the TIS proof to show
+the bias goes to zero? To be honest, someone might be able to, but I
+can’t.</p>
+<p>So anyway, we’ve proved the following theorem.</p>
+<p><strong>Theorem</strong> Let <span
+class="math inline">\(\theta_s\)</span>, <span class="math inline">\(s =
+1,\ldots, S\)</span> be an iid sample from <span
+class="math inline">\(G\)</span> and let <span class="math inline">\(r_s
+= r(\theta_s) \sim R\)</span>. Assume that</p>
+<ol type="1">
+<li><p><span class="math inline">\(R\)</span> is absolutely
+continuous</p></li>
+<li><p><span class="math inline">\(M \rightarrow \infty\)</span> and
+<span class="math inline">\(M^{-1}S \rightarrow 0\)</span></p></li>
+<li><p><span class="math inline">\(h \in L^2(p)\)</span>.</p></li>
+</ol>
+<p>The variance in Winsorized importance sampling is at most <span
+class="math inline">\(\mathcal{O}(M^{-1}S)\)</span>.</p>
+<h2 id="pareto-smoothed-importance-sampling">Pareto-smoothed importance
+sampling</h2>
+<p>Pareto-smoothed importance sampling (or PSIS) takes the observation
+that the tails are approximately Pareto distributed to add some bias
+correction to the mix. Essentially, it works by noting that
+approximating <span class="math display">\[
+(1-R(r_{S-M+1:S}))\mathbb{E}(HR \mid R&gt;r_{S-M+1:S}) \approx
+\frac{1}{S}\sum_{m=1}^M w_m h_{S-M+m:S},
+\]</span> where <span class="math inline">\(w_m\)</span> is the median<a
+href="#fn32" class="footnote-ref" id="fnref32"
+role="doc-noteref"><sup>32</sup></a> <span
+class="math inline">\(m\)</span>th order statistic in an iid sample of
+<span class="math inline">\(M\)</span> Generalised Pareto random
+variables with tail parameters fitted to the distribution.</p>
+<p>This is a … funky … quadrature rule. To see that, we can write <span
+class="math display">\[
+\mathbb{E}(HR \mid R&gt;T) = \mathbb{E}(R \mathbb{E}(H \mid R)).
+\]</span> If we approximate the distribution of <span
+class="math inline">\(R &gt; T\)</span> by <span class="math display">\[
+\tilde{R}_\text{PSIS}(r) = \frac{1}{M}\sum_{m=1}^M 1( w_m&lt;r)
+\]</span> and approximate the conditional probability by <span
+class="math display">\[
+\Pr(H &lt; h\mid R = w_m) \approx 1(h_{S-M+m:S}&lt; h).
+\]</span></p>
+<p>Empirically, this is a very good choice (with the mild caveat that
+you need to truncate the largest expected order statistic by the
+observed maximum in order to avoid some variability issues). I would
+love to have a good analysis of why that is so, but honest I do not.</p>
+<p>But, to the issue of this blog post the convergence and vanishing
+variance still holds. To see this, we note that <span
+class="math display">\[
+w_m = r_{S-M+1}  + k^{-1}\sigma\left[\left(1-\frac{j-1/2}{M}\right)^{-k}
+-1\right].
+\]</span> So we are just re-weighting our tail <span
+class="math inline">\(H\)</span> samples by <span
+class="math display">\[
+1 + \frac{\sigma}{kr_{S-M+1:S}}\left[\left(1-\frac{j-1/2}{M}\right)^{-k}
+-1\right].
+\]</span></p>
+<p>Recalling that when <span class="math inline">\(R(r) = 1-
+cr^{-1/k}(1+ o(1))\)</span>, we had <span class="math inline">\(\sigma =
+\mathcal{O}(r_{S-M+1:S})\)</span>, this term is at most <span
+class="math inline">\(\mathcal{O}(1 + M^{-k})\)</span>. This will not
+trouble either of our convergence proofs.</p>
+<p>This leads to the following modification of our previous results.</p>
+<p><strong>Theorem</strong> Let <span
+class="math inline">\(\theta_s\)</span>, <span class="math inline">\(s =
+1,\ldots, S\)</span> be an iid sample from <span
+class="math inline">\(G\)</span> and let <span class="math inline">\(r_s
+= r(\theta_s) \sim R\)</span>. Assume that</p>
+<ol type="1">
+<li><p><span class="math inline">\(R\)</span> is absolutely
+continuous.</p></li>
+<li><p><span class="math inline">\(M =
+\mathcal{O}(S^{1/2})\)</span></p></li>
+<li><p><span class="math inline">\(h \in L^2(p)\)</span></p></li>
+<li><p><span class="math inline">\(k\)</span> and <span
+class="math inline">\(\sigma\)</span> are known with <span
+class="math inline">\(\sigma =
+\mathcal{O}(r_{S-M+1:S})\)</span>.</p></li>
+</ol>
+<p>Pareto smoothed importance sampling converges in <span
+class="math inline">\(L^1\)</span> and its variance goes to zero and it
+is consistent and asymptotically unbiased.</p>
+<p><strong>Corollary</strong></p>
+<p>Assume further that</p>
+<ol type="1">
+<li><p>R satisfies the von Mises condition<a href="#fn33"
+class="footnote-ref" id="fnref33" role="doc-noteref"><sup>33</sup></a>
+<span class="math display">\[
+\frac{rR&#39;(r)}{1-R(r)} = \frac{1}{k}(1 +\mathcal{O}(r^{-1})).
+\]</span></p></li>
+<li><p><span class="math inline">\(h\)</span> is bounded<a href="#fn34"
+class="footnote-ref" id="fnref34"
+role="doc-noteref"><sup>34</sup></a>.</p></li>
+</ol>
+<p>Then the L^1 convergence occurs at a rate of of, at most, <span
+class="math inline">\(\mathcal{O}(S^{-1/2})\)</span>. Furthermore, the
+variance of the PSIS estimator goes to zero at least as fast as <span
+class="math inline">\(\mathcal{O}(S^{k/2-1})\)</span>.</p>
+<p>Hence, under these additional conditions PSIS is<a href="#fn35"
+class="footnote-ref" id="fnref35" role="doc-noteref"><sup>35</sup></a>
+<span class="math inline">\(\sqrt{n}\)</span>-consistent.</p>
+<h2 id="final-thoughts">Final thoughts</h2>
+<p>So that’s what truncation and winsorization does to importance
+sampling estimates. I haven’t touched on the fairly important topic of
+asymptotic normality. Essentially, <a
+href="https://www.sciencedirect.com/science/article/pii/0304414988900312">Griffin
+(1988)</a>, in a fairly complex<a href="#fn36" class="footnote-ref"
+id="fnref36" role="doc-noteref"><sup>36</sup></a> paper that suggests
+that if you winsorize the product <span
+class="math inline">\((h(\theta_s)r(\theta_s))\)</span> <em>and</em>
+winsorize it at both ends, the von Mises condition<a href="#fn37"
+class="footnote-ref" id="fnref37" role="doc-noteref"><sup>37</sup></a>
+imply that the WIS estimator is asymptotically normal.</p>
+<p>Why is this important, well the same proof shows that doubly
+winsorized importance sampling (dWIS) applied to the vector valued
+function <span class="math inline">\(\tilde h(\theta) =
+(h(\theta),1)\)</span> will also be asymptotically normal, which
+implies, via the delta method, that the <em>self normalized</em> dWIS
+estimator <span class="math display">\[
+I^S_\text{SN-IS} = \frac{\sum_{s=1}^S\max\{\min\{h(\theta_i)
+r(\theta_i),T_{S-M+1:S}\},
+T_{M:S}\}}{\sum_{s=1}^S\max\{\min\{r(\theta_i),T_{S-M+1:S}\},T_{M:S}\}}
+\]</span> is consistent, where <span
+class="math inline">\(T_{m:S}\)</span> is the <span
+class="math inline">\(m\)</span>th order statistic of <span
+class="math inline">\(\max\{h(\theta_s)r(\theta_s),
+r(\theta_s)\}\)</span>.</p>
+<p>It is very very likely that this can be shown (perhaps under some
+assumptions) for something closer to the version of PSIS we use in
+practice. But that is an open question.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<section class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>proportional to<a href="#fnref1"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>because <span
+class="math inline">\(p(\theta_s)\)</span> is very small<a
+href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>because <span
+class="math inline">\(p(\theta_s)\)</span> is a reasonable size, but
+<span class="math inline">\(g(\theta_s)\)</span> is tiny.<a
+href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>I have surreptitiously dropped the
+<span class="math inline">\(h\)</span> subscript because I am gay and
+sneaky.<a href="#fnref4" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>That it’s parameterised by <span
+class="math inline">\(1/k\)</span> is an artefact of history.<a
+href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p>We need <span
+class="math inline">\(\mathbb{E}(R)\)</span> to be finite, so we need
+<span class="math inline">\(k&lt;1\)</span>.<a href="#fnref6"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7" role="doc-endnote"><p>very fucking complex<a href="#fnref7"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8" role="doc-endnote"><p>I have used that old trick of using
+the same letter for the CDF as the random variable when I have a lot of
+random variables. <a href="#fnref8" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn9" role="doc-endnote"><p>aka the tail index<a href="#fnref9"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10" role="doc-endnote"><p>This is a relevant case. But if you
+think a little bit about it, our problem happens when <span
+class="math inline">\(r(\theta)\)</span> grows <em>much</em> faster than
+<span class="math inline">\(h(\theta)\)</span>. For example if <span
+class="math inline">\(P = \operatorname{Exp}(1)\)</span> and <span
+class="math inline">\(G = \operatorname{Exp}(1/\lambda)\)</span> for
+<span class="math inline">\(\lambda&gt;1\)</span>, then <span
+class="math inline">\(k = 1-1/\lambda\)</span>, <span
+class="math inline">\(r(\theta) = \exp((\lambda-1)\theta)\)</span> and
+if <span class="math inline">\(|h(\theta)| &lt;
+|\theta|^\alpha\)</span>, then <span class="math inline">\(|h(\theta)|
+\leq C \log(r)^\alpha\)</span>, which is a slowly growing function.<a
+href="#fnref10" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn11" role="doc-endnote"><p>Because the truncation depends on
+<span class="math inline">\(S\)</span>, moving from the <span
+class="math inline">\(S\)</span>th partial sum to the <span
+class="math inline">\(S+1\)</span>th partial sum changes the
+distribution of <span class="math inline">\(z_ih_ir_i\)</span>. This is
+exactly why the dead Russians gifted us with triangular arrays.<a
+href="#fnref11" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn12" role="doc-endnote"><p>Also practical unbounded <span
+class="math inline">\(h\)</span>, but it’s just easier for bounded <span
+class="math inline">\(h\)</span><a href="#fnref12" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn13" role="doc-endnote"><p>Shut up. I know. Don’t care.<a
+href="#fnref13" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn14" role="doc-endnote"><p>or, hell, even in a book<a
+href="#fnref14" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn15" role="doc-endnote"><p>Straight up, though, I spent 2 days
+dicking around with tail bounds on sums of Bernoulli random variables
+for some bloody reason before I just looked at the damn formula.<a
+href="#fnref15" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn16" role="doc-endnote"><p>Ok. I checked. And yeah. Same
+technique as below using Jensen in its <span
+class="math inline">\(\mathbb{E}(|X-\mathbb{E}(X)|)^2 \leq
+\mathbb{V}(X)\)</span>. If you put that together you get something that
+goes to zero like <span class="math inline">\(M^{1/2}S^{-1}\)</span>,
+which is <span class="math inline">\(\mathcal{O}(S^{-3/4})\)</span> for
+our usual choice of <span class="math inline">\(M\)</span>. Which
+confirms the suspicion that the first term in the bias goes to zero
+<em>much</em> faster than the second (remembering, of course, that
+Jensen’s inequality is notoriously loose!).<a href="#fnref16"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17" role="doc-endnote"><p>It’s Pride month<a href="#fnref17"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18" role="doc-endnote"><p>The result holds exactly if <span
+class="math inline">\(\mathbb{E}(H \mid R=r) =
+\mathcal{O}(\log^k(r))\)</span> and with a <span
+class="math inline">\(k\)</span> turning up somewhere if it’s <span
+class="math inline">\(o(r^{1/k - 1})\)</span>.<a href="#fnref18"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19" role="doc-endnote"><p><span class="math inline">\(1-R(r)
+\sim c r^{(-1/k)}\mathcal{L(r)}\)</span> for a slowly varying function
+(eg a power of a logarithm) <span
+class="math inline">\(\mathcal{L}(r)\)</span>.<a href="#fnref19"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20" role="doc-endnote"><p>A property that implies this is that
+<span class="math inline">\(1-R(r)\)</span> is differentiable and
+<em>convex at infinity</em>, which is to say that there is some finite
+<span class="math inline">\(r_0\)</span> such that <span
+class="math inline">\(R&#39;(r)\)</span> exists for all <span
+class="math inline">\(r \geq r_0\)</span> and <span
+class="math inline">\(1-R(r)\)</span> is a monotone function on <span
+class="math inline">\([r_0, \infty)\)</span>.<a href="#fnref20"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21" role="doc-endnote"><p>There’s a condition here that <span
+class="math inline">\(S\)</span> has to be large enough, but it’s enough
+if <span class="math inline">\((S-M+1) &gt; 2\)</span>.<a
+href="#fnref21" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn22" role="doc-endnote"><p>The first <span
+class="math inline">\(k\)</span> in the equation below is missing in the
+paper. If you miss this, you suddenly get the expected value converging
+to zero, which would be <em>very</em> surprising. Always sense-check the
+proofs, people. Even if a famous person did it in the 60s.<a
+href="#fnref22" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn23" role="doc-endnote"><p>We need to take <span
+class="math inline">\(M = \mathcal{O}(S^{1/2})\)</span> to be able to
+estimate the tail index <span class="math inline">\(k\)</span> from a
+sample, which gives an upper bound by a constant.<a href="#fnref23"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24" role="doc-endnote"><p>Note that if <span
+class="math inline">\(U \sim \text{Unif}(0,1)\)</span>, then <span
+class="math inline">\(R^{-1}(U) \sim R\)</span>. Because this is
+monotone, it doesn’t change ordering of the sample<a href="#fnref24"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn25" role="doc-endnote"><p>This is, incidentally, how Bickel
+got the upper bound on the moments. He combined this with an upper bound
+on the quantile function.<a href="#fnref25" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn26" role="doc-endnote"><p>Save the cheerleader, save the
+world. Except it’s one minus a beta is still beta but with the
+parameters reversed.<a href="#fnref26" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn27" role="doc-endnote"><p>As long as <span
+class="math inline">\(M = o(S)\)</span><a href="#fnref27"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn28" role="doc-endnote"><p>The rate here is probably not
+optimal, but it will guarantee that the error in the Pareto
+approximation doesn’t swamp the other terms.<a href="#fnref28"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn29" role="doc-endnote"><p>Or <span
+class="math inline">\(\mathbb{E}(h(\theta) \mid r(\theta) = r)\)</span>
+doesn’t grow to quickly, with some modification of the rates in the
+unlikely case that it grows polynomially.<a href="#fnref29"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn30" role="doc-endnote"><p>almost, there’s an epsilon gap but I
+don’t give a shit<a href="#fnref30" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn31" role="doc-endnote"><p>And girl do not get me started on
+messy. I ended up going down a route where I used the [inequality]((<a
+href="https://www.sciencedirect.com/science/article/pii/0167715288900077"
+class="uri">https://www.sciencedirect.com/science/article/pii/0167715288900077</a>)
+<span class="math display">\[
+\mathbb{V}(g(U)) \leq \mathbb{E}(U)\int_0^1\left[F_U(u) -
+\frac{\mathbb{E}(U1_{U\leq u})}{\mathbb{E}(U)}\right][g&#39;(u)]^2\,du
+\]</span> which holds for any <span class="math inline">\(U\)</span>
+supported on <span class="math inline">\([0,1]\)</span> with
+differentiable density. And let me tell you. If you dick around with
+enough beta distributions you can get something. Is it what you want?
+Fucking no. It is <em>a lot</em> of work, including having to
+differentiate the conditional expectation, and it gives you sweet bugger
+all.<a href="#fnref31" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn32" role="doc-endnote"><p>Or, the expected within <span
+class="math inline">\(o(S^{-1/2})\)</span><a href="#fnref32"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn33" role="doc-endnote"><p>The rate here is probably not
+optimal, but it will guarantee that the error in the Pareto
+approximation doesn’t swamp the other terms.<a href="#fnref33"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn34" role="doc-endnote"><p>Or <span
+class="math inline">\(\mathbb{E}(h(\theta) \mid r(\theta) = r)\)</span>
+doesn’t grow to quickly, with some modification of the rates in the
+unlikely case that it grows polynomially.<a href="#fnref34"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn35" role="doc-endnote"><p>almost, there’s an epsilon gap but I
+don’t give a shit<a href="#fnref35" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn36" role="doc-endnote"><p>I mean, the tools are elementary.
+It’s just a lot of detailed estimates and Berry-Esseen as far as the eye
+can see.<a href="#fnref36" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn37" role="doc-endnote"><p>and more general things<a
+href="#fnref37" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+<!--radix_placeholder_article_footer-->
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom">
+<h3 id="updates-and-corrections">Corrections</h3>
+<p>If you see mistakes or want to suggest changes, please <a href="https://github.com/dpsimpson/blog/tree/master/_posts/2022-06-03-that-psis-proof/issues/new">create an issue</a> on the source repository.</p>
+<h3 id="reuse">Reuse</h3>
+<p>Text and figures are licensed under Creative Commons Attribution <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>. Source code is available at <a href="https://github.com/dpsimpson/blog/tree/master/_posts/2022-06-03-that-psis-proof">https://github.com/dpsimpson/blog/tree/master/_posts/2022-06-03-that-psis-proof</a>, unless otherwise noted. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: "Figure from ...".</p>
+</div>
+<!--/radix_placeholder_appendices-->
+<!--radix_placeholder_navigation_after_body-->
+<!--/radix_placeholder_navigation_after_body-->
+
+</body>
+
+</html>

@@ -1,11 +1,11 @@
 ---
 title: "About this blog"
 description: |
-  Nobody asked for this.
+  A footnote that got out of control.
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-There is no reason for this to exist.
+Nobody asked for this. There is no reason for this to exist.
