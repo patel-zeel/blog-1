@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://dansblog.netlify.app/posts/2021-10-11-n-sane-in-the-membrane/n-sane-in-the-membrane.html</loc>
-    <lastmod>2022-08-27T07:33:21.949Z</lastmod>
+    <loc>https://dansblog.netlify.app/posts/post_better/post_better.html</loc>
+    <lastmod>2022-08-27T07:51:34.548Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dansblog.netlify.app/posts/post_bad/post_bad.html</loc>
+    <lastmod>2022-08-27T07:51:35.007Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/old_distill/index.html</loc>
-    <lastmod>2022-08-27T07:33:22.272Z</lastmod>
+    <lastmod>2022-08-27T07:51:35.353Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/old_distill/about.html</loc>
-    <lastmod>2022-08-27T07:33:23.129Z</lastmod>
+    <lastmod>2022-08-27T07:51:36.167Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/index.html</loc>
-    <lastmod>2022-08-27T07:33:24.096Z</lastmod>
+    <lastmod>2022-08-27T07:51:36.485Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/about.html</loc>
-    <lastmod>2022-08-27T07:33:24.384Z</lastmod>
+    <lastmod>2022-08-27T07:51:36.744Z</lastmod>
   </url>
 </urlset>

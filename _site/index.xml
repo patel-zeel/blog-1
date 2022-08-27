@@ -12,9 +12,9 @@
 <generator>quarto-1.2.15</generator>
 <lastBuildDate>Wed, 13 Oct 2021 13:00:00 GMT</lastBuildDate>
 <item>
-  <title>(n-1)-sane in the membrane</title>
+  <title>(n-1)-sane in the membrane (better twitter card)</title>
   <dc:creator>Dan Simpson</dc:creator>
-  <link>https://dansblog.netlify.app/posts/2021-10-11-n-sane-in-the-membrane/n-sane-in-the-membrane.html</link>
+  <link>https://dansblog.netlify.app/posts/post_better/post_better.html</link>
   <description><![CDATA[ 
 
 
@@ -27,19 +27,50 @@
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2021,
   author = {Dan Simpson},
   editor = {},
-  title = {(N-1)-Sane in the Membrane},
+  title = {(N-1)-Sane in the Membrane (Better Twitter Card)},
   date = {2021-10-14},
   url = {https://dansblog.netlify.app/n-sane-in-the-membrane},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2021" class="csl-entry quarto-appendix-citeas">
-Dan Simpson. 2021. <span>“(N-1)-Sane in the Membrane.”</span> October
-14, 2021. <a href="https://dansblog.netlify.app/n-sane-in-the-membrane">https://dansblog.netlify.app/n-sane-in-the-membrane</a>.
+Dan Simpson. 2021. <span>“(N-1)-Sane in the Membrane (Better Twitter
+Card).”</span> October 14, 2021. <a href="https://dansblog.netlify.app/n-sane-in-the-membrane">https://dansblog.netlify.app/n-sane-in-the-membrane</a>.
 </div></div></section></div> ]]></description>
   <category>Teaching</category>
   <category>Fundamentals</category>
   <category>Opinionated</category>
-  <guid>https://dansblog.netlify.app/posts/2021-10-11-n-sane-in-the-membrane/n-sane-in-the-membrane.html</guid>
+  <guid>https://dansblog.netlify.app/posts/post_better/post_better.html</guid>
+  <pubDate>Wed, 13 Oct 2021 13:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>\((n-1)\)-sane in the membrane (bad twitter card)</title>
+  <dc:creator>Dan Simpson</dc:creator>
+  <link>https://dansblog.netlify.app/posts/post_bad/post_bad.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Stuff</p>
+
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2021,
+  author = {Dan Simpson},
+  editor = {},
+  title = {\$(N-1)\$-Sane in the Membrane (Bad Twitter Card)},
+  date = {2021-10-14},
+  url = {https://dansblog.netlify.app/n-sane-in-the-membrane},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2021" class="csl-entry quarto-appendix-citeas">
+Dan Simpson. 2021. <span>“$(N-1)$-Sane in the Membrane (Bad Twitter
+Card).”</span> October 14, 2021. <a href="https://dansblog.netlify.app/n-sane-in-the-membrane">https://dansblog.netlify.app/n-sane-in-the-membrane</a>.
+</div></div></section></div> ]]></description>
+  <category>Teaching</category>
+  <category>Fundamentals</category>
+  <category>Opinionated</category>
+  <guid>https://dansblog.netlify.app/posts/post_bad/post_bad.html</guid>
   <pubDate>Wed, 13 Oct 2021 13:00:00 GMT</pubDate>
 </item>
 </channel>

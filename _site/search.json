@@ -1,10 +1,17 @@
 [
   {
-    "objectID": "posts/2021-10-11-n-sane-in-the-membrane/n-sane-in-the-membrane.html",
-    "href": "posts/2021-10-11-n-sane-in-the-membrane/n-sane-in-the-membrane.html",
-    "title": "(n-1)-sane in the membrane",
+    "objectID": "posts/post_better/post_better.html",
+    "href": "posts/post_better/post_better.html",
+    "title": "(n-1)-sane in the membrane (better twitter card)",
     "section": "",
-    "text": "Reusehttps://creativecommons.org/licenses/by-nc/4.0/CitationBibTeX citation:@online{simpson2021,\n  author = {Dan Simpson},\n  editor = {},\n  title = {(N-1)-Sane in the Membrane},\n  date = {2021-10-14},\n  url = {https://dansblog.netlify.app/n-sane-in-the-membrane},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nDan Simpson. 2021. “(N-1)-Sane in the Membrane.” October\n14, 2021. https://dansblog.netlify.app/n-sane-in-the-membrane."
+    "text": "Reusehttps://creativecommons.org/licenses/by-nc/4.0/CitationBibTeX citation:@online{simpson2021,\n  author = {Dan Simpson},\n  editor = {},\n  title = {(N-1)-Sane in the Membrane (Better Twitter Card)},\n  date = {2021-10-14},\n  url = {https://dansblog.netlify.app/n-sane-in-the-membrane},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nDan Simpson. 2021. “(N-1)-Sane in the Membrane (Better Twitter\nCard).” October 14, 2021. https://dansblog.netlify.app/n-sane-in-the-membrane."
+  },
+  {
+    "objectID": "posts/post_bad/post_bad.html",
+    "href": "posts/post_bad/post_bad.html",
+    "title": "\\((n-1)\\)-sane in the membrane (bad twitter card)",
+    "section": "",
+    "text": "Reusehttps://creativecommons.org/licenses/by-nc/4.0/CitationBibTeX citation:@online{simpson2021,\n  author = {Dan Simpson},\n  editor = {},\n  title = {\\$(N-1)\\$-Sane in the Membrane (Bad Twitter Card)},\n  date = {2021-10-14},\n  url = {https://dansblog.netlify.app/n-sane-in-the-membrane},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nDan Simpson. 2021. “$(N-1)$-Sane in the Membrane (Bad Twitter\nCard).” October 14, 2021. https://dansblog.netlify.app/n-sane-in-the-membrane."
   },
   {
     "objectID": "old_distill/index.html",
@@ -25,7 +32,7 @@
     "href": "index.html",
     "title": "Un garçon pas comme les autres (Bayes)",
     "section": "",
-    "text": "(n-1)-sane in the membrane\n\n\nWindmills? Tilted. Topic? Boring. (n-1)? No.\n\n\n\n\nTeaching\n\n\nFundamentals\n\n\nOpinionated\n\n\n\n\n\n\n\n\n\n\n\nOct 14, 2021\n\n\nDan Simpson\n\n\n\n\n\n\nNo matching items"
+    "text": "(n-1)-sane in the membrane (better twitter card)\n\n\nWindmills? Tilted. Topic? Boring. (n-1)? No.\n\n\n\n\nTeaching\n\n\nFundamentals\n\n\nOpinionated\n\n\n\n\n\n\n\n\n\n\n\nOct 14, 2021\n\n\nDan Simpson\n\n\n\n\n\n\n\n\n\\((n-1)\\)-sane in the membrane (bad twitter card)\n\n\nWindmills? Tilted. Topic? Boring. (n-1)? No.\n\n\n\n\nTeaching\n\n\nFundamentals\n\n\nOpinionated\n\n\n\n\n\n\n\n\n\n\n\nOct 14, 2021\n\n\nDan Simpson\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",

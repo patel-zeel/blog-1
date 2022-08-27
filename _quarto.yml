@@ -6,9 +6,7 @@ website:
   repo-url: https://github.com/dpsimpson/blog
   site-url: https://dansblog.netlify.app
   open-graph: true
-  twitter-card:
-    creator: "@dan_p_simpson"
-    card-style: summary_large_image
+  
   navbar:
     right:
       - about.qmd
