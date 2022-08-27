@@ -264,12 +264,12 @@ The primal implementation
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Transpose = False:
-  Error A varying:  8.33e-08
+  Error A varying:  8.47e-08
   Error b varying:  0.00e+00
-  Error A and b varying:  4.97e-07
+  Error A and b varying:  4.20e-07
 
 Transpose = True:
-  Error A varying:  9.90e-08
+  Error A varying:  8.15e-08
   Error b varying:  0.00e+00
 </code></pre>
 </div>

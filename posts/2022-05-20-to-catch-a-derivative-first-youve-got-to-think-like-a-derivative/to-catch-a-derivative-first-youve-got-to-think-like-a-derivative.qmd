@@ -2,6 +2,10 @@
 title: "Sparse matrices 6: To catch a derivative, first you've got to think like a derivative"
 subtitle: |
   Open up the kennels, Kenneth. Mamma’s coming home tonight.
+twitter-card:
+  title: "twitter title"
+  description: "twitter description"
+  creator: "@dan_p_simpson"
 date: 2022-05-30
 categories: [JAX, Sparse matrices, Autodiff]
 citation: 
