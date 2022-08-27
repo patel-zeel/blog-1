@@ -9,6 +9,11 @@
 <link>https://dansblog.netlify.app/index.html</link>
 <atom:link href="https://dansblog.netlify.app/index.xml" rel="self" type="application/rss+xml"/>
 <description>A blog about statistics, I guess.</description>
+<image>
+<url>https://dansblog.netlify.app/better.JPG</url>
+<title>Un garçon pas comme les autres (Bayes)</title>
+<link>https://dansblog.netlify.app/index.html</link>
+</image>
 <generator>quarto-1.2.15</generator>
 <lastBuildDate>Tue, 14 Jun 2022 14:00:00 GMT</lastBuildDate>
 <item>
