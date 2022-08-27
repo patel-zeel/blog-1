@@ -1,0 +1,15 @@
+---
+title: "About this blog"
+about:
+  template: jolla
+  links:
+    - icon: twitter
+      text: Twitter
+      href: https://twitter.com/dan_p_simpson
+    - icon: github
+      text: Github
+      href: https://github.com/dpsimpson
+
+---
+
+A footnote that got out of control.

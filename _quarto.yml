@@ -1,0 +1,29 @@
+project:
+  type: website
+
+website:
+  title: "Un garçon pas comme les autres (Bayes)"
+  repo-url: https://github.com/dpsimpson/blog
+  site-url: https://dansblog.netlify.app
+  open-graph: true
+  twitter-card:
+    creator: "@dan_p_simpson"
+    card-style: summary_large_image
+  navbar:
+    right:
+      - about.qmd
+      - icon: twitter
+        aria-label: twitter
+        href: https://twitter.com/dan_p_simpson
+      - icon: github
+        aria-label: github
+        href: https://github.com/dpsimpson
+      - icon: person-circle
+        aria-label: website
+        href: https://dansblog.netlify.app
+
+format:
+  html:
+    theme: ember.scss
+    css: styles.css
+    include-after-body: plausible.html

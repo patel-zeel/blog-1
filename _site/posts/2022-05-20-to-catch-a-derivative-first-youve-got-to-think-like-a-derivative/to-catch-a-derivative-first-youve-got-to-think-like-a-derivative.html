@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.28">
+<meta name="generator" content="quarto-1.2.15">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -13,10 +13,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -55,7 +60,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -68,7 +73,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -128,7 +133,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <meta name="twitter:title" content="Un garçon pas comme les autres (Bayes) - Sparse matrices 6: To catch a derivative, first you’ve got to think like a derivative">
 <meta name="twitter:description" content="Open up the kennels, Kenneth. Mamma’s coming home tonight.">
 <meta name="twitter:creator" content="@dan_p_simpson">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="floating nav-fixed">
@@ -137,9 +142,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="../../index.html">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Un garçon pas comme les autres (Bayes)</span>
-  </a>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
@@ -149,12 +156,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="nav-link" href="../../about.html">About this blog</a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/dpsimpson"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://twitter.com/dan_p_simpson"><i class="bi bi-twitter" role="img" aria-label="twitter">
 </i> 
  </a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/dan_p_simpson"><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://github.com/dpsimpson"><i class="bi bi-github" role="img" aria-label="github">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://dansblog.netlify.app"><i class="bi bi-person-circle" role="img" aria-label="website">
 </i> 
  </a>
   </li>  
@@ -172,8 +184,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <p class="subtitle lead"></p><p>Open up the kennels, Kenneth. Mamma’s coming home tonight.</p><p></p>
                                 <div class="quarto-categories">
                 <div class="quarto-category">JAX</div>
-                <div class="quarto-category">sparse matrices</div>
-                <div class="quarto-category">autodiff</div>
+                <div class="quarto-category">Sparse matrices</div>
+                <div class="quarto-category">Autodiff</div>
               </div>
                   </div>
   </div>
@@ -201,7 +213,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
-    <nav id="TOC" role="doc-toc">
+    <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
@@ -247,12 +259,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="she-is-beauty-and-she-is-grace.-she-is-queen-of-50-states.-she-is-elegance-and-taste.-she-is-miss-autodiff">She is beauty and she is grace. She is queen of 50 states. She is elegance and taste. She is miss autodiff</h2>
 <p>Derivatives are computed in JAX through the glory and power of automatic differentiation. If you came to this blog hoping for a great description of how autodiff works, I am terribly sorry but I absolutely do not have time for that. Might I suggest google? Or maybe flick through <a href="https://arxiv.org/abs/1811.05031">this survey by Charles Margossian.</a>.</p>
 <p>The most important thing to remember about algorithmic differentiation is that it is <em>not</em> symbolic differentiation. That is, it does not create the functional form of the derivative of the function and compute that. Instead, it is a system for cleverly composing derivatives in each bit of the program to compute the <em>value</em> of the derivative of the function.</p>
-<p>But for that to work, we need to implement those clever little mini-derivatives. In particular, every function <span class="math inline">\(f(\cdot): \mathbb{R}^n \rightarrow \mathbb{R}^m\)</span> needs to have a function to compute the corresponding Jacobian-vector product</p>
-<p><span class="math display">\[
+<p>But for that to work, we need to implement those clever little mini-derivatives. In particular, every function <span class="math inline">\(f(\cdot): \mathbb{R}^n \rightarrow \mathbb{R}^m\)</span> needs to have a function to compute the corresponding Jacobian-vector product <span class="math display">\[
 (\theta, v) \rightarrow J(\theta) v,
-\]</span></p>
-<p>where the <span class="math inline">\(n \times m\)</span> matrix <span class="math inline">\(J(\theta)\)</span> has entries</p>
-<p><span class="math display">\[
+\]</span> where the <span class="math inline">\(n \times m\)</span> matrix <span class="math inline">\(J(\theta)\)</span> has entries <span class="math display">\[
 J(\theta)_{ij} = \frac{\partial f_j }{\partial \theta_j}.
 \]</span></p>
 <p>Ok. So let’s get onto this. We are going to derive and implement some Jacobian-vector products. And all of the assorted accoutrement. And by crikey. We are going to do it all in a JAX-traceable way.</p>
@@ -273,16 +282,12 @@ f(A + \Delta, b + \delta) &amp;= (A+\Delta)^{-1}(b + \delta) \\
 \end{align*}\]</span></p>
 <p>Easy<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> as.</p>
 <p>We’ve actually calculated the derivative now, but it’s a little more work to recognise it.</p>
-<p>To do that, we need to remember the practical definition of the Jacobian of a function <span class="math inline">\(f(x)\)</span> that takes an <span class="math inline">\(n\)</span>-dimensional input and produces an <span class="math inline">\(m\)</span>-dimensional output. It is the <span class="math inline">\(n \times m\)</span> matrix <span class="math inline">\(J_f(x)\)</span> such that</p>
-<p><span class="math display">\[
+<p>To do that, we need to remember the practical definition of the Jacobian of a function <span class="math inline">\(f(x)\)</span> that takes an <span class="math inline">\(n\)</span>-dimensional input and produces an <span class="math inline">\(m\)</span>-dimensional output. It is the <span class="math inline">\(n \times m\)</span> matrix <span class="math inline">\(J_f(x)\)</span> such that <span class="math display">\[
 f(x + \delta)  = f(x) + J_f(x)\delta + o(\|\delta\|).
 \]</span></p>
-<p>The formulas further simplify if we write <span class="math inline">\(c = A^{-1}b\)</span>. Then, if we want the Jacobian-vector product for the first argument, it is</p>
-<p><span class="math display">\[
+<p>The formulas further simplify if we write <span class="math inline">\(c = A^{-1}b\)</span>. Then, if we want the Jacobian-vector product for the first argument, it is <span class="math display">\[
 -A^{-1}\Delta c,
-\]</span></p>
-<p>while the Jacobian-vector product for the second argument is</p>
-<p><span class="math display">\[
+\]</span> while the Jacobian-vector product for the second argument is <span class="math display">\[
 A^{-1}\delta.
 \]</span></p>
 <p>The only wrinkle in doing this is we need to remember that we are only storing the lower triangle of <span class="math inline">\(A\)</span>. Because we need to represent <span class="math inline">\(\Delta\)</span> the same way, it is represented as a vector <code>Delta_x</code> that contains only the lower triangle of <span class="math inline">\(\Delta\)</span>. So we need to make sure we remember to form the <em>whole</em> matrix before we do the matrix-vector product <span class="math inline">\(\Delta c\)</span>!</p>
@@ -298,6 +303,7 @@ A^{-1}\delta.
 <summary>
 The primal implementation
 </summary>
+<div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">from</span> scipy <span class="im">import</span> sparse</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="im">from</span> jax <span class="im">import</span> numpy <span class="im">as</span> jnp</span>
@@ -329,9 +335,11 @@ The primal implementation
 <span id="cb1-29"><a href="#cb1-29"></a>  <span class="cf">assert</span> L_indices.shape[<span class="dv">0</span>] <span class="op">==</span> L_x.shape[<span class="dv">0</span>]</span>
 <span id="cb1-30"><a href="#cb1-30"></a>  <span class="cf">assert</span> b.shape[<span class="dv">0</span>] <span class="op">==</span> L_indptr.shape[<span class="dv">0</span>] <span class="op">-</span> <span class="dv">1</span></span>
 <span id="cb1-31"><a href="#cb1-31"></a>  <span class="cf">return</span> abstract_arrays.ShapedArray(b.shape, b.dtype)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </details>
 <section id="the-jacobian-vector-product" class="level3">
 <h3 class="anchored" data-anchor-id="the-jacobian-vector-product">The Jacobian-vector product</h3>
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> jax._src <span class="im">import</span> ad_util</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="im">from</span> jax.interpreters <span class="im">import</span> ad</span>
 <span id="cb2-3"><a href="#cb2-3"></a><span class="im">from</span> jax <span class="im">import</span> lax</span>
@@ -380,6 +388,7 @@ The primal implementation
 <span id="cb2-46"><a href="#cb2-46"></a>  <span class="cf">return</span> value, jvp_b <span class="op">-</span> jvp_Lx</span>
 <span id="cb2-47"><a href="#cb2-47"></a></span>
 <span id="cb2-48"><a href="#cb2-48"></a>ad.primitive_jvps[sparse_triangular_solve_p] <span class="op">=</span> sparse_triangular_solve_value_and_jvp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Before we see if this works, let’s first have talk about the structure of the function I just wrote. Generally speaking, we want a function that takes in the primals and tangents at tuples and then returns the value and the<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> Jacobian-vector product.</p>
 <p>The main thing you will notice in the code is that there is <em>a lot</em> of checking for <code>ad.Zero</code>. This is a special type defined in JAX that is, essentially, telling the autodiff system that we are not differentiating wrt that variable. This is different to a tangent that just happens to be numerically equal to zero. Any code for a Jacobian-vector product needs to handle this special value.</p>
 <p>As we have two arguments, we have 3 interesting options:</p>
@@ -399,28 +408,25 @@ The primal implementation
 <p>One of the odder little innovations in JAX is that instead of forcing you to implement this as well<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a>, you only need to implement half of it.</p>
 <p>You see, some clever analysis that, as far as I far as I can tell<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a>, is detailed in <a href="https://arxiv.org/abs/2204.10923">this paper</a> shows that you only need to form explicit vector-Jacobian products for the structurally linear arguments of the function.</p>
 <p>In JAX (and maybe elsewhere), this is known as a <em>transposition rule</em>. The combination of a transopition rule and a JAX-traceable Jacobian-vector product is enough for JAX to compute all of the directional derivatives and gradients we could ever hope for.</p>
-<p>As far as I understand, it is all about functions that are <em>structurally linear</em> in some arguments. For instance, if <span class="math inline">\(A(x)\)</span> is a matrix-valued function and <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are vectors, then the function</p>
-<p><span class="math display">\[
+<p>As far as I understand, it is all about functions that are <em>structurally linear</em> in some arguments. For instance, if <span class="math inline">\(A(x)\)</span> is a matrix-valued function and <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are vectors, then the function <span class="math display">\[
 f(x, y) = A(x)y + g(x)
-\]</span></p>
-<p>is structurally linear in <span class="math inline">\(y\)</span> in the sense that for every fixed value of <span class="math inline">\(x\)</span>, the function</p>
-<p><span class="math display">\[
+\]</span> is structurally linear in <span class="math inline">\(y\)</span> in the sense that for every fixed value of <span class="math inline">\(x\)</span>, the function <span class="math display">\[
 f_x(y) = A(x) y + g(x)
-\]</span></p>
-<p>is linear in <span class="math inline">\(y\)</span>. The resulting transpositon rule is then</p>
+\]</span> is linear in <span class="math inline">\(y\)</span>. The resulting transpositon rule is then</p>
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">def</span> f_transpose(x, y):</span>
 <span id="cb3-2"><a href="#cb3-2"></a>  Ax <span class="op">=</span> A(x)</span>
 <span id="cb3-3"><a href="#cb3-3"></a>  gx <span class="op">=</span> g(x)</span>
 <span id="cb3-4"><a href="#cb3-4"></a>  <span class="cf">return</span> (<span class="va">None</span>, Ax.T <span class="op">@</span> y <span class="op">+</span> gx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>The first element of the return is <code>None</code> because <span class="math inline">\(f(x,y)\)</span> is not<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a> structurally linear in <span class="math inline">\(x\)</span> so there is nothing to transpose. The second element simply takes the matrix in the linear function and transposes it.</p>
 <p>If you know anything about autodiff, you’ll think “this doesn’t <em>feel</em> like enough” and it’s not. JAX deals with the non-linear part of <span class="math inline">\(f(x,y)\)</span> by tracing the evaluation tree for its Jacobian-vector product and … manipulating<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> it.</p>
 <p>We already built the abstract evaluation function last time around, so the tracing part can be done. All we need is the transposition rule.</p>
-<p>The linear solve <span class="math inline">\(f(A, b) = A^{-1}b\)</span> is non-linear in the first argument but linear in the second argument. So we only need to implement</p>
-<p><span class="math display">\[
+<p>The linear solve <span class="math inline">\(f(A, b) = A^{-1}b\)</span> is non-linear in the first argument but linear in the second argument. So we only need to implement <span class="math display">\[
 J^T_b(A,b)w = A^{-T}w,
-\]</span></p>
-<p>where the subscript <span class="math inline">\(b\)</span> indicates we’re only computing the Jacobian wrt <span class="math inline">\(b\)</span>.</p>
+\]</span> where the subscript <span class="math inline">\(b\)</span> indicates we’re only computing the Jacobian wrt <span class="math inline">\(b\)</span>.</p>
 <p>Initially, I struggled to work out what needed to be implemented here. The thing that clarified the process for me was looking at JAX’s <a href="https://github.com/google/jax/blob/41417d70c03b6089c93a42325111a0d8348c2fa3/jax/_src/lax/linalg.py#L747">internal implementation</a> of the Jacobian-vector product for a dense matrix. From there, I understood what this had to look like for a vector-valued function and this is the result.</p>
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">def</span> sparse_triangular_solve_transpose_rule(cotangent, L_indices, L_indptr, L_x, b, <span class="op">*</span>, transpose):</span>
 <span id="cb4-2"><a href="#cb4-2"></a>  <span class="co">"""</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="co">  Transposition rule for the triangular solve. </span></span>
@@ -441,28 +447,24 @@ J^T_b(A,b)w = A^{-T}w,
 <span id="cb4-18"><a href="#cb4-18"></a>  <span class="cf">return</span> <span class="va">None</span>, <span class="va">None</span>, <span class="va">None</span>, cot_b</span>
 <span id="cb4-19"><a href="#cb4-19"></a></span>
 <span id="cb4-20"><a href="#cb4-20"></a>ad.primitive_transposes[sparse_triangular_solve_p] <span class="op">=</span> sparse_triangular_solve_transpose_rule</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>If this doesn’t make a lot of sense to you, that’s because it’s confusing.</p>
 <p>One way to think of it is in terms of the more ordinary notation. Mike Giles has <a href="https://people.maths.ox.ac.uk/gilesm/files/NA-08-01.pdf">a classic paper</a> that covers these results for basic linear algebra. The idea is to imagine that, as part of your larger program, you need to compute <span class="math inline">\(c = A^{-1}b\)</span>.</p>
-<p>Forward-mode autodiff computes the <em>sensitivity</em> of <span class="math inline">\(c\)</span>, usually denoted <span class="math inline">\(\dot c\)</span> from the sensitivies <span class="math inline">\(\dot A\)</span> and <span class="math inline">\(\dot b\)</span>. These have already been computed. The formula in Giles is</p>
-<p><span class="math display">\[
+<p>Forward-mode autodiff computes the <em>sensitivity</em> of <span class="math inline">\(c\)</span>, usually denoted <span class="math inline">\(\dot c\)</span> from the sensitivies <span class="math inline">\(\dot A\)</span> and <span class="math inline">\(\dot b\)</span>. These have already been computed. The formula in Giles is <span class="math display">\[
 \dot c = A^{-1}(\dot b - \dot A c).
-\]</span></p>
-<p>The canny reader will recognise this as exactly<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a> the formula for the Jacobian-vector product.</p>
+\]</span> The canny reader will recognise this as exactly<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a> the formula for the Jacobian-vector product.</p>
 <p>So what does reverse-mode autodiff do? Well it moves through the program in the other direction. So instead of starting with the sensitivities <span class="math inline">\(\dot A\)</span> and <span class="math inline">\(\dot b\)</span> already computed, we instead start with the<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a> <em>adjoint sensitivity</em> <span class="math inline">\(\bar c\)</span>. Our aim is to compute <span class="math inline">\(\bar A\)</span> and <span class="math inline">\(\bar b\)</span> from <span class="math inline">\(\bar c\)</span>.</p>
-<p>The details of how to do this are<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> <em>beyond the scope</em>, but without tooooooo much effort you can show that</p>
-<p><span class="math display">\[
+<p>The details of how to do this are<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> <em>beyond the scope</em>, but without tooooooo much effort you can show that <span class="math display">\[
 \bar b = A^{-T} \bar c,
-\]</span></p>
-<p>which you should recognise as the equation that was just implemented.</p>
-<p>The thing that we <em>do not</em> have to implement in JAX is the other adjoint that, for dense matrices<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a>, is</p>
-<p><span class="math display">\[
+\]</span> which you should recognise as the equation that was just implemented.</p>
+<p>The thing that we <em>do not</em> have to implement in JAX is the other adjoint that, for dense matrices<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a>, is <span class="math display">\[
 \bar{A} = -\bar{b}c^T.
-\]</span></p>
-<p>Through the healing power of … something?—Truly I do not know.— JAX can work that bit out itself. woo.</p>
+\]</span> Through the healing power of … something?—Truly I do not know.— JAX can work that bit out itself. woo.</p>
 </section>
 <section id="testing-the-numerical-implementation-of-the-jacobian-vector-product" class="level3">
 <h3 class="anchored" data-anchor-id="testing-the-numerical-implementation-of-the-jacobian-vector-product">Testing the numerical implementation of the Jacobian-vector product</h3>
 <p>So let’s see if this works. I’m not going to lie, I’m flying by the seat of my pants here. I’m not super familiar with the JAX internals, so I have written a lot of test cases. You may wish to skip this part. But rest assured that almost every single one of these cases was useful to me working out how this thing actually worked!</p>
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">def</span> make_matrix(n):</span>
 <span id="cb5-2"><a href="#cb5-2"></a>    one_d <span class="op">=</span> sparse.diags([[<span class="op">-</span><span class="fl">1.</span>]<span class="op">*</span>(n<span class="op">-</span><span class="dv">1</span>), [<span class="fl">2.</span>]<span class="op">*</span>n, [<span class="op">-</span><span class="fl">1.</span>]<span class="op">*</span>(n<span class="op">-</span><span class="dv">1</span>)], [<span class="op">-</span><span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>])</span>
 <span id="cb5-3"><a href="#cb5-3"></a>    A <span class="op">=</span> (sparse.kronsum(one_d, one_d) <span class="op">+</span> sparse.eye(n<span class="op">*</span>n)).tocsc()</span>
@@ -473,6 +475,7 @@ J^T_b(A,b)w = A^{-T}w,
 <span id="cb5-8"><a href="#cb5-8"></a>    <span class="cf">return</span> (A_index, A_indptr, A_x, A)</span>
 <span id="cb5-9"><a href="#cb5-9"></a></span>
 <span id="cb5-10"><a href="#cb5-10"></a>A_indices, A_indptr, A_x, A <span class="op">=</span> make_matrix(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>This is the same test case as the last blog. We will just use the lower triangle of <span class="math inline">\(A\)</span> as the test matrix.</p>
 <p>First things first, let’s check out the numerical implementation of the function. We will do that by comparing the implemented Jacobian-vector product with the <em>definition</em> of the Jacobian-vector product (aka the forward<a href="#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a> difference approximation).</p>
 <p>There are lots of things that we could do here to turn these into <em>actual</em> tests. For instance, the test suite inside JAX has a lot of nice convenience functions for checking implementations of derivatives. But I went with homespun because that was how I was feeling.</p>
@@ -519,12 +522,12 @@ J^T_b(A,b)w = A^{-T}w,
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Transpose = False:
-  Error A varying:  1.13e-07
+  Error A varying:  8.33e-08
   Error b varying:  0.00e+00
-  Error A and b varying:  4.59e-07
+  Error A and b varying:  4.97e-07
 
 Transpose = True:
-  Error A varying:  1.26e-07
+  Error A varying:  9.90e-08
   Error b varying:  0.00e+00
 </code></pre>
 </div>
@@ -666,6 +669,7 @@ No diff:
 <p>When <code>sparse_cholesky()</code> is called with concrete inputs<a href="#fn26" class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a>, then it can quite happily work out the sparsity structure of <span class="math inline">\(L\)</span>. But when JAX is preparing to transform the code, eg when it’s building a gradient, it calls <code>sparse_cholesky()</code> using abstract arguments that only share the shape information from the inputs. This is <em>not</em> enough to compute the sparsity structure. We <em>need</em> the <code>indices</code> and <code>indptr</code> arrays.</p>
 <p>This means that we need <code>sparse_cholesky()</code> to throw an error if <code>L_nse</code> isn’t passed. This wasn’t implemented well last time, so here it is done properly.</p>
 <p>(If you’re wondering about that <code>None</code> argument, it is the identity transform. So if <code>A_indices</code> is a concrete value, <code>ind = A_indices</code>. Otherwise an error is called.)</p>
+<div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>sparse_cholesky_p <span class="op">=</span> core.Primitive(<span class="st">"sparse_cholesky"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2"></a></span>
 <span id="cb10-3"><a href="#cb10-3"></a><span class="kw">def</span> sparse_cholesky(A_indices, A_indptr, A_x, <span class="op">*</span>, L_nse: <span class="bu">int</span> <span class="op">=</span> <span class="va">None</span>):</span>
@@ -678,10 +682,12 @@ No diff:
 <span id="cb10-10"><a href="#cb10-10"></a>    L_nse <span class="op">=</span> <span class="bu">len</span>(L_ind)</span>
 <span id="cb10-11"><a href="#cb10-11"></a>  </span>
 <span id="cb10-12"><a href="#cb10-12"></a>  <span class="cf">return</span> sparse_cholesky_p.bind(A_indices, A_indptr, A_x, L_nse <span class="op">=</span> L_nse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <details>
 <summary>
 The rest of the Choleksy code
 </summary>
+<div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="at">@sparse_cholesky_p.def_impl</span></span>
 <span id="cb11-2"><a href="#cb11-2"></a><span class="kw">def</span> sparse_cholesky_impl(A_indices, A_indptr, A_x, <span class="op">*</span>, L_nse):</span>
 <span id="cb11-3"><a href="#cb11-3"></a>  <span class="co">"""The implementation of the sparse cholesky This is not JAX traceable."""</span></span>
@@ -755,10 +761,12 @@ The rest of the Choleksy code
 <span id="cb11-71"><a href="#cb11-71"></a>  <span class="cf">return</span> core.ShapedArray((L_nse,), A_indices.dtype),                   <span class="op">\</span></span>
 <span id="cb11-72"><a href="#cb11-72"></a>         core.ShapedArray(A_indptr.shape, A_indptr.dtype),             <span class="op">\</span></span>
 <span id="cb11-73"><a href="#cb11-73"></a>         core.ShapedArray((L_nse,), A_x.dtype)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </details>
 <section id="why-do-we-need-a-new-pattern-for-this-very-very-similar-problem" class="level3">
 <h3 class="anchored" data-anchor-id="why-do-we-need-a-new-pattern-for-this-very-very-similar-problem">Why do we need a new pattern for this very very similar problem?</h3>
 <p>Ok. So now on to the details. If we try to repeat our previous pattern it would look like this.</p>
+<div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">def</span> sparse_solve_value_and_jvp(arg_values, arg_tangents, <span class="op">*</span>, L_nse):</span>
 <span id="cb12-2"><a href="#cb12-2"></a>  <span class="co">""" </span></span>
 <span id="cb12-3"><a href="#cb12-3"></a><span class="co">  Jax-traceable jacobian-vector product implmentation for sparse_solve.</span></span>
@@ -790,6 +798,7 @@ The rest of the Choleksy code
 <span id="cb12-29"><a href="#cb12-29"></a>    jvp_b <span class="op">=</span> lax.zeros_like_array(primal_out)</span>
 <span id="cb12-30"><a href="#cb12-30"></a></span>
 <span id="cb12-31"><a href="#cb12-31"></a>  <span class="cf">return</span> primal_out, jvp_b <span class="op">-</span> jvp_Ax</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>That’s all well and good. Nothing weird there.</p>
 <p>The problem comes when you need to implement the transposition rule. Remembering that <span class="math inline">\(\bar b = A^{-T}\bar c = A^{-1}\bar c\)</span>, you might see the issue: we are going to need the Cholesky factorisation. <em>But we have no way to pass</em> <span class="math inline">\(L\)</span> <em>to the transpose function</em>.</p>
 <p>This means that we would need to compute <em>two</em> Cholesky factorisations per gradient instead of one. As the Cholesky factorisation is our slowest operation, we do not want to do extra ones! We want to compute the Cholesky triangle once and pass it around like a party bottom<a href="#fn27" class="footnote-ref" id="fnref27" role="doc-noteref"><sup>27</sup></a>. We do not want each of our functions to have to make a deep and meaningful connection with the damn matrix<a href="#fn28" class="footnote-ref" id="fnref28" role="doc-noteref"><sup>28</sup></a>.</p>
@@ -805,6 +814,7 @@ The rest of the Choleksy code
 <li><code>symmetric</code>: A boolean indicating if <span class="math inline">\(A\)</span> is symmetric.</li>
 </ul>
 <p>The idea (happily copped from the implementation of <code>jax.scipy.linalg.solve</code>) is to wrap our Cholesky decomposition in the solve function. Through the never ending miracle of partial evaluation.</p>
+<div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="im">from</span> functools <span class="im">import</span> partial</span>
 <span id="cb13-2"><a href="#cb13-2"></a></span>
 <span id="cb13-3"><a href="#cb13-3"></a><span class="kw">def</span> sparse_solve(A_indices, A_indptr, A_x, b, <span class="op">*</span>, L_nse <span class="op">=</span> <span class="va">None</span>):</span>
@@ -834,6 +844,7 @@ The rest of the Choleksy code
 <span id="cb13-27"><a href="#cb13-27"></a>    symmetric <span class="op">=</span> <span class="va">True</span>)</span>
 <span id="cb13-28"><a href="#cb13-28"></a></span>
 <span id="cb13-29"><a href="#cb13-29"></a>  <span class="cf">return</span> solver(b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>There are three things of note in that implementation.</p>
 <ol type="1">
 <li><p>The calls to <code>lax.stop_gradient()</code>: These tell JAX to not bother computing the gradient of these terms. The relevant parts of the derivatives are computed explicitly by <code>lax.custom_linear_solve</code> in terms of <code>matmult</code> and <code>solve</code>, neither of which need the explicit derivative of the cholesky factorisation.!</p></li>
@@ -942,10 +953,12 @@ Variable A and b:
 <section id="why-is-this-better-than-just-differentiating-through-the-cholesky-factorisation" class="level3">
 <h3 class="anchored" data-anchor-id="why-is-this-better-than-just-differentiating-through-the-cholesky-factorisation">Why is this better than just differentiating through the Cholesky factorisation?</h3>
 <p>The other option for making this work would’ve been to implement the Cholesky factorisation as a primitive (~which we are about to do!~ which we will do another day) and then write the sparse solver directly as a pure JAX function.</p>
+<div class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">def</span> sparse_solve_direct(A_indices, A_indptr, A_x, b, <span class="op">*</span>, L_nse <span class="op">=</span> <span class="va">None</span>):</span>
 <span id="cb16-2"><a href="#cb16-2"></a>  L_indices, L_indptr, L_x <span class="op">=</span> sparse_cholesky(A_indices, A_indptr, A_x)</span>
 <span id="cb16-3"><a href="#cb16-3"></a>  out <span class="op">=</span> sparse_triangular_solve(L_indices, L_indptr, L_x, b)</span>
 <span id="cb16-4"><a href="#cb16-4"></a>  <span class="cf">return</span> sparse_triangular_solve(L_indices, L_indptr, L_x, out, transpose <span class="op">=</span> <span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>This function is JAX-traceable<a href="#fn36" class="footnote-ref" id="fnref36" role="doc-noteref"><sup>36</sup></a> and, therefore, we could compute the gradient of it directly. It turns out that this is going to be a bad idea.</p>
 <p>Why? Because the derivative of <code>sparse_cholesky</code>, which we would have to chain together with the derivatives from the solver, is pretty complicated. Basically, this means that we’d have to do a lot more work<a href="#fn37" class="footnote-ref" id="fnref37" role="doc-noteref"><sup>37</sup></a> than we do if we just implement the symbolic formula for the derivatives.</p>
 </section>
@@ -958,18 +971,15 @@ Variable A and b:
 &amp;= \log(|A|) + \log\left( \left|I + A^{-1/2}\Delta A^{-1/2}\right|\right).
 \end{align*}\]</span></p>
 <p>It is harder to convince yourself how this could possibly be a useful fact.</p>
-<p>If we write <span class="math inline">\(\lambda_i\)</span>, <span class="math inline">\(i = 1, \ldots, n\)</span> as the eigenvalues of <span class="math inline">\(A^{-1/2}\Delta A^{-1/2}\)</span>, then we have</p>
-<p><span class="math display">\[
+<p>If we write <span class="math inline">\(\lambda_i\)</span>, <span class="math inline">\(i = 1, \ldots, n\)</span> as the eigenvalues of <span class="math inline">\(A^{-1/2}\Delta A^{-1/2}\)</span>, then we have <span class="math display">\[
 \log(|A + \Delta |) = \log(|A|) + \sum_{i=1}^n \log( 1 + \lambda_i).
-\]</span></p>
-<p>Remembering that <span class="math inline">\(\Delta\)</span> is very small, it follows that <span class="math inline">\(A^{-1/2}\Delta A^{-1/2}\)</span> will <em>also</em> be small. That translates to the eigenvalues of <span class="math inline">\(A^{-1/2}\Delta A^{-1/2}\)</span> all being small. Therefore, we can use the approximation <span class="math inline">\(\log(1 + \lambda_i) = \lambda_i + \mathcal{O}(\lambda_i^2)\)</span>.</p>
+\]</span> Remembering that <span class="math inline">\(\Delta\)</span> is very small, it follows that <span class="math inline">\(A^{-1/2}\Delta A^{-1/2}\)</span> will <em>also</em> be small. That translates to the eigenvalues of <span class="math inline">\(A^{-1/2}\Delta A^{-1/2}\)</span> all being small. Therefore, we can use the approximation <span class="math inline">\(\log(1 + \lambda_i) = \lambda_i + \mathcal{O}(\lambda_i^2)\)</span>.</p>
 <p>This means that<a href="#fn38" class="footnote-ref" id="fnref38" role="doc-noteref"><sup>38</sup></a> <span class="math display">\[\begin{align*}
 \log(|A + \Delta |) &amp;= \log(|A|) + \sum_{i=1}^n  \lambda_i + \mathcal{O}\left(\|\Delta\|^2\right) \\
 &amp;=\log(|A|) + \operatorname{tr}\left(A^{-1/2} \Delta A^{-1} \right) + \mathcal{O}\left(\|\Delta\|^2\right) \\
 &amp;= \log(|A|) + \operatorname{tr}\left(A^{-1} \Delta \right) + \mathcal{O}\left(\|\Delta\|^2\right),
 \end{align*}\]</span> which follows from the cyclic property of the trace.</p>
-<p>If we recall the formula from the last section defining the Jacobian-vector product, in our context <span class="math inline">\(m = 1\)</span>, <span class="math inline">\(x\)</span> is the vector of non-zero entries of the lower triangle of <span class="math inline">\(A\)</span> stacked by column, and <span class="math inline">\(\delta\)</span> is the vector of non-zero entries of the lower triangle of <span class="math inline">\(\Delta\)</span>. That means the Jacobian-vector product is</p>
-<p><span class="math display">\[
+<p>If we recall the formula from the last section defining the Jacobian-vector product, in our context <span class="math inline">\(m = 1\)</span>, <span class="math inline">\(x\)</span> is the vector of non-zero entries of the lower triangle of <span class="math inline">\(A\)</span> stacked by column, and <span class="math inline">\(\delta\)</span> is the vector of non-zero entries of the lower triangle of <span class="math inline">\(\Delta\)</span>. That means the Jacobian-vector product is <span class="math display">\[
 J(x)\delta = \operatorname{tr}\left(A^{-1} \Delta \right) = \sum_{i=1}^n\sum_{j=1}^n[A^{-1}]_{ij} \Delta_{ij}.
 \]</span></p>
 <p>Remembering that <span class="math inline">\(\Delta\)</span> is sparse with the same sparsity pattern as <span class="math inline">\(A\)</span>, we see that the Jacobian-vector product requires us to know the values of <span class="math inline">\(A^{-1}\)</span> that correspond to non-zero elements of <span class="math inline">\(A\)</span>. That’s good news because we will see that these entries are relatively cheap and easy to compute. Whereas the full inverse is dense and very expensive to compute.</p>
@@ -981,17 +991,17 @@ J(x)\delta = \operatorname{tr}\left(A^{-1} \Delta \right) = \sum_{i=1}^n\sum_{j=
 <li>Compute <code>Ainv_x</code> (aka the non-zero elements of <span class="math inline">\(A^{-1}\)</span> that correspond to the sparsity pattern of <span class="math inline">\(A\)</span>)</li>
 <li>Compute the matrix vector product as</li>
 </ol>
+<div class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a>jvp <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> <span class="bu">sum</span>(Ainv_x <span class="op">*</span> v) <span class="op">-</span> <span class="bu">sum</span>(Ainv_x[A_indptr[:<span class="op">-</span><span class="dv">1</span>]] <span class="op">*</span> v[A_indptr[:<span class="op">-</span><span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Why does it look like that? Well we need to add the contribution from the upper triangle as well as the lower triangle. And one way to do that is to just double the sum and then subtract off the diagonal terms that we’ve counted twice.</p>
 <p>(I’m making a pretty big assumption here, which is fine in our context, that <span class="math inline">\(A\)</span> has a non-zero diagonal. If that doesn’t hold, it’s just a change of the indexing in the second term to just pull out the diagonal terms.)</p>
-<p>Using similar reasoning, we can compute the Jacobian as</p>
-<p><span class="math display">\[
+<p>Using similar reasoning, we can compute the Jacobian as <span class="math display">\[
 [J_f(x)]_{i1} = \begin{cases}
 \operatorname{partial-inverse}(x)_i, \qquad &amp; x_i  \text{ is a diagonal element of }A \\
 2\operatorname{partial-inverse}(x)_i, \qquad &amp; \text{otherwise},
 \end{cases}
-\]</span></p>
-<p>where <span class="math inline">\(\operatorname{partial-inverse}(x)\)</span> is the vector that stacks the columns of the elements of <span class="math inline">\(A^{-1}\)</span> that correspond to the non-zero elements of <span class="math inline">\(A\)</span>. (Yikes!)</p>
+\]</span> where <span class="math inline">\(\operatorname{partial-inverse}(x)\)</span> is the vector that stacks the columns of the elements of <span class="math inline">\(A^{-1}\)</span> that correspond to the non-zero elements of <span class="math inline">\(A\)</span>. (Yikes!)</p>
 <section id="computing-the-partial-inverse" class="level3">
 <h3 class="anchored" data-anchor-id="computing-the-partial-inverse">Computing the partial inverse</h3>
 <p>So now we need to actually work out how to compute this <em>partial inverse</em> of a symmetric positive definite matrix <span class="math inline">\(A\)</span>. To do this, we are going to steal a technique that goes back to Takahashi, Fagan, and Chen<a href="#fn42" class="footnote-ref" id="fnref42" role="doc-noteref"><sup>42</sup></a> in 1973. (For this presentation, I’m basically pillaging <a href="https://www.sciencedirect.com/science/article/pii/S0378375807000845">Håvard Rue and Sara Martino’s 2007 paper.</a>)</p>
@@ -1007,8 +1017,7 @@ S &amp;= D^{-1}V^{-1} + (I - V^T)S.
 </ol>
 <p>These two things together lead to the somewhat unexpected situation where the upper triangle of <span class="math inline">\(S = D^{-1}V^{-1} + (I- V^T)S\)</span> defines a set of recursions for the upper triangle of <span class="math inline">\(S\)</span>. (And, therefore, all of <span class="math inline">\(S\)</span> because <span class="math inline">\(S\)</span> is symmetric!) These are sometimes referred to as the Takahashi recursions.</p>
 <p>But we don’t want the whole upper triangle of <span class="math inline">\(S\)</span>, we just want the ones that correspond to the non-zero elements of <span class="math inline">\(A\)</span>. Unfortunately, the set of recursions are not, in general, solveable using only that subset of <span class="math inline">\(S\)</span>. But we are in luck: they are solveable using the elements of <span class="math inline">\(S\)</span> that correspond to the non-zeros of <span class="math inline">\(L + L^T\)</span>, which, as we know from a few posts ago, is a superset of the non-zero elements of <span class="math inline">\(A\)</span>!</p>
-<p>From this, we get the recursions running from <span class="math inline">\(i = n, \ldots, 1\)</span>, <span class="math inline">\(j = n, \ldots, i\)</span> (the order is important!) such that <span class="math inline">\(L_{ji} \neq 0\)</span></p>
-<p><span class="math display">\[
+<p>From this, we get the recursions running from <span class="math inline">\(i = n, \ldots, 1\)</span>, <span class="math inline">\(j = n, \ldots, i\)</span> (the order is important!) such that <span class="math inline">\(L_{ji} \neq 0\)</span> <span class="math display">\[
 S_{ji} =   \begin{cases}
 \frac{1}{L_{ii}^2} - \frac{1}{L_{ii}}\sum_{k=i+1}^{n} L_{ki} S_{kj} \qquad&amp;  \text{if } i=j, \\         
 - \frac{1}{L_{ii}}\sum_{k=i+1}^{n} L_{ki} S_{kj}  &amp; \text{otherwise}.
@@ -1017,6 +1026,7 @@ S_{ji} =   \begin{cases}
 <p>If you recall our discussion way back when about the way the non-zero structure of the <span class="math inline">\(j\)</span> the column of <span class="math inline">\(L\)</span> relates to the non-zero structure of the <span class="math inline">\(i\)</span> th column for <span class="math inline">\(j \geq i\)</span>, it’s clear that we have computed enough<a href="#fn44" class="footnote-ref" id="fnref44" role="doc-noteref"><sup>44</sup></a> of <span class="math inline">\(S\)</span> at every step to complete the recursions.</p>
 <p>Now we just need to Python it. (And thanks to Finn Lindgren who helped me understand how to implement this, which he may or may not remember because it happened about five years ago.)</p>
 <p>Actually, we need this to be JAX-traceable, so we are going to implement a very basic primitive. In particular, we don’t need to implement a derivative or anything like that, just an abstract evaluation and an implementation.</p>
+<div class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a>sparse_partial_inverse_p <span class="op">=</span> core.Primitive(<span class="st">"sparse_partial_inverse"</span>)</span>
 <span id="cb18-2"><a href="#cb18-2"></a></span>
 <span id="cb18-3"><a href="#cb18-3"></a><span class="kw">def</span> sparse_partial_inverse(L_indices, L_indptr, L_x, out_indices, out_indptr):</span>
@@ -1057,6 +1067,7 @@ S_{ji} =   \begin{cases}
 <span id="cb18-38"><a href="#cb18-38"></a>      out_indices[out_indptr[col]:out_indptr[col<span class="op">+</span><span class="dv">1</span>]]))[<span class="dv">0</span>]</span>
 <span id="cb18-39"><a href="#cb18-39"></a>    out_x[out_indptr[col]:out_indptr[col<span class="op">+</span><span class="dv">1</span>]] <span class="op">=</span> Linv_x[L_indptr[col] <span class="op">+</span> ind]</span>
 <span id="cb18-40"><a href="#cb18-40"></a>  <span class="cf">return</span> out_x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>The implementation makes use of the<a href="#fn45" class="footnote-ref" id="fnref45" role="doc-noteref"><sup>45</sup></a> <em>dictionary of keys</em> representation of a sparse matrix from <code>scipy.sparse</code>. This is an efficient storage scheme when you need to modify the sparsity structure (as we are doing here) or do a lot of indexing. It would definitely be possible to implement this directly on the CSC data structure, but it gets a little bit tricky to access the elements of <code>L_inv</code> that are above the diagonal. The resulting code is honestly a mess and there’s lots of non-local memory access anyway, so I implemented it this way.</p>
 <p>But let’s be honest: this thing is crying out for a proper symmetric matrix class with sensible reverse iterators. But hey. Python.</p>
 <p>The second chunk of the code is just the opposite of our <code>_structured_copy()</code> function. It takes a matrix with the sparsity pattern of <span class="math inline">\(L\)</span> and returns one with the sparsity pattern of <code>out</code> (which is assumed to be a subset, and is usually the sparsity pattern of <span class="math inline">\(A\)</span> or a diagonal matrix).</p>
@@ -1097,6 +1108,7 @@ Error in partial inverse (all of A):  1.53e-15
 <h3 class="anchored" data-anchor-id="putting-the-log-determinant-together">Putting the log-determinant together</h3>
 <p>All of our bits are in place, so now all we need is to implement the primitive for the log-determinant. One nice thing here is that we don’t need to implement a transposition rule as the function is not structurally linear in any of its arguments. At this point we take our small wins where we can get them.</p>
 <p>There isn’t anything particularly interesting in the implementation. But do note that the trace has been implemented in a way that’s aware that we’re only storing the bottom triangle of <span class="math inline">\(A\)</span>.</p>
+<div class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a>sparse_log_det_p <span class="op">=</span> core.Primitive(<span class="st">"sparse_log_det"</span>)</span>
 <span id="cb21-2"><a href="#cb21-2"></a></span>
 <span id="cb21-3"><a href="#cb21-3"></a><span class="kw">def</span> sparse_log_det(A_indices, A_indptr, A_x):</span>
@@ -1121,6 +1133,7 @@ Error in partial inverse (all of A):  1.53e-15
 <span id="cb21-22"><a href="#cb21-22"></a>  <span class="cf">return</span> value, jvp</span>
 <span id="cb21-23"><a href="#cb21-23"></a></span>
 <span id="cb21-24"><a href="#cb21-24"></a>ad.primitive_jvps[sparse_log_det_p] <span class="op">=</span> sparse_log_det_value_and_jvp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Finally, we can test it out.</p>
 <div class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a>ld_true <span class="op">=</span> np.log(np.linalg.det(A.todense())) <span class="co">#np.sum(np.log(lu.U.diagonal()))</span></span>
@@ -1238,59 +1251,60 @@ Variable A:
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1" role="doc-endnote"><p>I am sorry Cholesky factorisation, this blog is already too long and there is simply too much code I need to make nicer to even start on that journey. So it will happen in a later blog.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2" role="doc-endnote"><p>Which I have spent <em>zero</em> effort making pretty or taking to any level above scratch code<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p>Like making it clear how this works for a <em>sparse</em> matrix compared to a general one<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4" role="doc-endnote"><p>To the best of my knowledge, for example, we don’t know how to differentiate with respect to the order parameter <span class="math inline">\(\nu\)</span> in the modified Bessel function of the second kind <span class="math inline">\(K_\nu(x)\)</span>. This is important in spatial statistics (and general GP stuff).<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5" role="doc-endnote"><p><em>You</em> may need to convince yourself that this is possible. But it is. The cone of SPD matrices is very nice.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6" role="doc-endnote"><p>Don’t despair if you don’t recognise the third line, it’s the Neumann series, which gives an approximation to <span class="math inline">\((I + B)^{-1}\)</span> whenever <span class="math inline">\(\|B\| \ll 1\)</span>.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn7" role="doc-endnote"><p>I recognise that I’ve not explained why everything needs to be JAX-traceable. Basically it’s because JAX does clever transformations to the Jacobian-vector product code to produce things like gradients. And the only way that can happen is if the JVP code can take abstract JAX types. So we need to make it traceable because we <em>really</em> want to have gradients!<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8" role="doc-endnote"><p>Why not now, Daniel? Why not now? Well mostly because I might need to do some tweaking down the line, so I am not messing around until I am done.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn9" role="doc-endnote"><p>This is the primary difference between implementing forward mode and reverse mode: there is only one output here. When we move onto reverse mode, we will output a tuple Jacobian-transpose-vector products, one for each input. You can see the structure of that reflected in the transposition rule we are going to write later.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn10" role="doc-endnote"><p>Some things: Firstly your function needs to have the correct signature for this to work. Secondly, you could also use <code>ad.defjvp()</code> if you didn’t need to use the primal value to define the tangent (recall one of our tangents is <span class="math inline">\(A^{-1}\Delta c\)</span>, where <span class="math inline">\(c = A^{-1}b\)</span> is the primal value).<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn11" role="doc-endnote"><p>This is because it is the efficient way of computing a gradient. Forward-mode autodiff chains together Jacobian-vector products in such a way that a single sweep of the entire function computes a single directional derivative. Reverse-mode autodiff chains together Jacobian-transpose-vector products (aka vector-Jacobian products) in such a way that a single sweep produces an entire gradient. (This happens at the cost of quite a bit of storage.) Depending on what you are trying to do, you usually want one or the other (or sometimes a clever combination of both).<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn12" role="doc-endnote"><p>or gradients or some sort of thing.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn13" role="doc-endnote"><p>to be honest, in Stan we sometimes just don’t dick around with the forward-mode autodiff, because gradients are our bread and butter.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn14" role="doc-endnote"><p>I mean, love you programming language people. But fuck me this paper could’ve been written in Babylonic cuneiform for all I understood it.<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn15" role="doc-endnote"><p>That is, if you fix a value of <span class="math inline">\(y\)</span>, <span class="math inline">\(f_y(x) = f(x, y)\)</span> is not an affine function.<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn16" role="doc-endnote"><p>Details bore me.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn17" role="doc-endnote"><p>In general, there might need to be a little bit of reshaping, but it’s equivalent.<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn18" role="doc-endnote"><p>Have you noticed this is like the third name I’ve used for this equivalent concept. Or the fourth? The code calls it a cotangent because that’s another damn synonym. I’m so very sorry.<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn19" role="doc-endnote"><p>not difficult, I’m just lazy and Mike does it better that I can. Read his paper.<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn20" role="doc-endnote"><p>For sparse matrices it’s just the non-zero mask of that.<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn21" role="doc-endnote"><p>Yes. I know. Central differences. I am what I am.<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn22" role="doc-endnote"><p>Some of the stuff I’ve done like normalising all of the inputs would help make these tests more stable. You should also just pick up Nick Higham’s backwards error analysis book to get some ideas of what your guarantees actually are in floating point, but I truly cannot be bothered. This is scratch code.<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn23" role="doc-endnote"><p>It should be slightly bigger, it isn’t.<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn24" role="doc-endnote"><p>The largest number <span class="math inline">\(\epsilon\)</span> such that <code>float(1.0) == float(1.0 + machine_eps)</code> in single precision floating point.<a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn25" role="doc-endnote"><p>Fun fact: I implemented this and the error never spawned, so I guess JAX is keeping the index arrays concrete, which is very nice of it!<a href="#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn26" role="doc-endnote"><p>actual damn numbers<a href="#fnref26" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn27" role="doc-endnote"><p>We want that <a href="https://youtu.be/wrnUJoj14ag?t=288">auld triangle to go jingle bloody jangle</a><a href="#fnref27" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn28" role="doc-endnote"><p>We definitely do not want someone to write an eight hour, two part play that really seems to have the point of view that our Cholesky triangle deserved his downfall. Espoused while periodically reading deadshit tumblr posts. I mean, it would win a Tony. But we still do not want that.<a href="#fnref28" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn29" role="doc-endnote"><p>There are more arguments. Read the help. This is what we need<a href="#fnref29" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn30" role="doc-endnote"><p>What if I told you that this would work perfectly well if <span class="math inline">\(A\)</span> was a linear partial differential operator or an integral operator? Probably not much because why would you give a shit?<a href="#fnref30" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn31" role="doc-endnote"><p>It can be more general, but it isn’t<a href="#fnref31" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn32" role="doc-endnote"><p>I think there is a typo in the docs<a href="#fnref32" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn33" role="doc-endnote"><p>Full disclosure: I screwed this up multiple times today and my tests caught it. What does that look like? The derivatives for <span class="math inline">\(A\)</span> being off, but everything else being good.<a href="#fnref33" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn34" role="doc-endnote"><p>And some optional keyword arguments, but we don’t need to worry about those<a href="#fnref34" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn35" role="doc-endnote"><p>This is not quite the same but similar to something that functional programming people call <em>currying</em>, which was named after famous Australian Olympic swimmer Lisa Curry.<a href="#fnref35" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn36" role="doc-endnote"><p>and a shitload simpler!<a href="#fnref36" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn37" role="doc-endnote"><p>And we have to store a bunch more. This is less of a big deal when <span class="math inline">\(L\)</span> is sparse, but for an ordinary linear solve, we’d be hauling around an extra <span class="math inline">\(\mathcal{O}(n^2)\)</span> floats containing tangents for no good reason.<a href="#fnref37" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn38" role="doc-endnote"><p>If you are worrying about the suppressed constant, remember that <span class="math inline">\(A\)</span> (and therefore <span class="math inline">\(n\)</span> and <span class="math inline">\(\|A\|\)</span>) is fixed.<a href="#fnref38" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn39" role="doc-endnote"><p>I think I’ve made this mistake about four times already while writing this blog. So I am going to write it <em>out</em>.<a href="#fnref39" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn40" role="doc-endnote"><p>Not to “some of my best friends are physicists”, but I do love them. I just wished a man would talk about me the way they talk about being coordinate free. Rather than with the same ambivalence physicist use when speaking about a specific atlas. I’ve been listening to lesbian folk music all evening. I’m having feelings.<a href="#fnref40" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn41" role="doc-endnote"><p>pronoun on purpose<a href="#fnref41" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn42" role="doc-endnote"><p>Takahashi, K., Fagan, J., Chen, M.S., 1973. Formation of a sparse bus impedance matrix and its application to short circuit study. In: Eighth PICA Conference Proceedings.IEEE Power Engineering Society, pp.&nbsp;63–69 (Papers Presented at the 1973 Power Industry Computer Application Conference in Minneapolis, MN).<a href="#fnref42" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn43" role="doc-endnote"><p>Thanks to Jerzy Baranowski for finding a very very bad LaTeX error that made these questions quite wrong!<a href="#fnref43" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn44" role="doc-endnote"><p>Indeed, in the notation of post two <span class="math inline">\(\mathcal{L}_i \cap \{i+1, \dots, n\} \subseteq \mathcal{L}_j\)</span> for all <span class="math inline">\(i \leq j\)</span>, where <span class="math inline">\(\mathcal{L}_i\)</span> is the set of non-zeros in the <span class="math inline">\(i\)</span>th column of <span class="math inline">\(L\)</span>.<a href="#fnref44" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn45" role="doc-endnote"><p>The sparse matrix is stored as a dictionary <code>{(i,j): value}</code>, which is a very natural way to build a sparse matrix, even if its quite inefficient to do anything with it in that form.<a href="#fnref45" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn46" role="doc-endnote"><p>You can’t just use <code>jnp.linalg.det()</code> because there’s a tendency towards <code>nan</code>s. (The true value is something like <code>r exp(250.49306761204593)</code>!)<a href="#fnref46" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn47" role="doc-endnote"><p>Would it be less tedious if my implementation of the Cholesky was less shit? Yes. But hey. It was the first non-trivial piece of python code I’d written in more than a decade (or maybe ever?) so it is what it is. Anyway. I’m gonna run into the same problem I had in <a href="https://dansblog.netlify.app/posts/2022-05-14-jax-ing-a-sparse-cholesky-factorisation-part-3-in-an-ongoing-journey/">Part 3</a><a href="#fnref47" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>I am sorry Cholesky factorisation, this blog is already too long and there is simply too much code I need to make nicer to even start on that journey. So it will happen in a later blog.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Which I have spent <em>zero</em> effort making pretty or taking to any level above scratch code<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Like making it clear how this works for a <em>sparse</em> matrix compared to a general one<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>To the best of my knowledge, for example, we don’t know how to differentiate with respect to the order parameter <span class="math inline">\(\nu\)</span> in the modified Bessel function of the second kind <span class="math inline">\(K_\nu(x)\)</span>. This is important in spatial statistics (and general GP stuff).<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p><em>You</em> may need to convince yourself that this is possible. But it is. The cone of SPD matrices is very nice.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Don’t despair if you don’t recognise the third line, it’s the Neumann series, which gives an approximation to <span class="math inline">\((I + B)^{-1}\)</span> whenever <span class="math inline">\(\|B\| \ll 1\)</span>.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>I recognise that I’ve not explained why everything needs to be JAX-traceable. Basically it’s because JAX does clever transformations to the Jacobian-vector product code to produce things like gradients. And the only way that can happen is if the JVP code can take abstract JAX types. So we need to make it traceable because we <em>really</em> want to have gradients!<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Why not now, Daniel? Why not now? Well mostly because I might need to do some tweaking down the line, so I am not messing around until I am done.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>This is the primary difference between implementing forward mode and reverse mode: there is only one output here. When we move onto reverse mode, we will output a tuple Jacobian-transpose-vector products, one for each input. You can see the structure of that reflected in the transposition rule we are going to write later.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>Some things: Firstly your function needs to have the correct signature for this to work. Secondly, you could also use <code>ad.defjvp()</code> if you didn’t need to use the primal value to define the tangent (recall one of our tangents is <span class="math inline">\(A^{-1}\Delta c\)</span>, where <span class="math inline">\(c = A^{-1}b\)</span> is the primal value).<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>This is because it is the efficient way of computing a gradient. Forward-mode autodiff chains together Jacobian-vector products in such a way that a single sweep of the entire function computes a single directional derivative. Reverse-mode autodiff chains together Jacobian-transpose-vector products (aka vector-Jacobian products) in such a way that a single sweep produces an entire gradient. (This happens at the cost of quite a bit of storage.) Depending on what you are trying to do, you usually want one or the other (or sometimes a clever combination of both).<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>or gradients or some sort of thing.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>to be honest, in Stan we sometimes just don’t dick around with the forward-mode autodiff, because gradients are our bread and butter.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>I mean, love you programming language people. But fuck me this paper could’ve been written in Babylonic cuneiform for all I understood it.<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>That is, if you fix a value of <span class="math inline">\(y\)</span>, <span class="math inline">\(f_y(x) = f(x, y)\)</span> is not an affine function.<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>Details bore me.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>In general, there might need to be a little bit of reshaping, but it’s equivalent.<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p>Have you noticed this is like the third name I’ve used for this equivalent concept. Or the fourth? The code calls it a cotangent because that’s another damn synonym. I’m so very sorry.<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>not difficult, I’m just lazy and Mike does it better that I can. Read his paper.<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20"><p>For sparse matrices it’s just the non-zero mask of that.<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21"><p>Yes. I know. Central differences. I am what I am.<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn22"><p>Some of the stuff I’ve done like normalising all of the inputs would help make these tests more stable. You should also just pick up Nick Higham’s backwards error analysis book to get some ideas of what your guarantees actually are in floating point, but I truly cannot be bothered. This is scratch code.<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn23"><p>It should be slightly bigger, it isn’t.<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24"><p>The largest number <span class="math inline">\(\epsilon\)</span> such that <code>float(1.0) == float(1.0 + machine_eps)</code> in single precision floating point.<a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn25"><p>Fun fact: I implemented this and the error never spawned, so I guess JAX is keeping the index arrays concrete, which is very nice of it!<a href="#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn26"><p>actual damn numbers<a href="#fnref26" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn27"><p>We want that <a href="https://youtu.be/wrnUJoj14ag?t=288">auld triangle to go jingle bloody jangle</a><a href="#fnref27" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn28"><p>We definitely do not want someone to write an eight hour, two part play that really seems to have the point of view that our Cholesky triangle deserved his downfall. Espoused while periodically reading deadshit tumblr posts. I mean, it would win a Tony. But we still do not want that.<a href="#fnref28" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn29"><p>There are more arguments. Read the help. This is what we need<a href="#fnref29" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn30"><p>What if I told you that this would work perfectly well if <span class="math inline">\(A\)</span> was a linear partial differential operator or an integral operator? Probably not much because why would you give a shit?<a href="#fnref30" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn31"><p>It can be more general, but it isn’t<a href="#fnref31" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn32"><p>I think there is a typo in the docs<a href="#fnref32" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn33"><p>Full disclosure: I screwed this up multiple times today and my tests caught it. What does that look like? The derivatives for <span class="math inline">\(A\)</span> being off, but everything else being good.<a href="#fnref33" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn34"><p>And some optional keyword arguments, but we don’t need to worry about those<a href="#fnref34" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn35"><p>This is not quite the same but similar to something that functional programming people call <em>currying</em>, which was named after famous Australian Olympic swimmer Lisa Curry.<a href="#fnref35" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn36"><p>and a shitload simpler!<a href="#fnref36" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn37"><p>And we have to store a bunch more. This is less of a big deal when <span class="math inline">\(L\)</span> is sparse, but for an ordinary linear solve, we’d be hauling around an extra <span class="math inline">\(\mathcal{O}(n^2)\)</span> floats containing tangents for no good reason.<a href="#fnref37" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn38"><p>If you are worrying about the suppressed constant, remember that <span class="math inline">\(A\)</span> (and therefore <span class="math inline">\(n\)</span> and <span class="math inline">\(\|A\|\)</span>) is fixed.<a href="#fnref38" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn39"><p>I think I’ve made this mistake about four times already while writing this blog. So I am going to write it <em>out</em>.<a href="#fnref39" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn40"><p>Not to “some of my best friends are physicists”, but I do love them. I just wished a man would talk about me the way they talk about being coordinate free. Rather than with the same ambivalence physicist use when speaking about a specific atlas. I’ve been listening to lesbian folk music all evening. I’m having feelings.<a href="#fnref40" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn41"><p>pronoun on purpose<a href="#fnref41" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn42"><p>Takahashi, K., Fagan, J., Chen, M.S., 1973. Formation of a sparse bus impedance matrix and its application to short circuit study. In: Eighth PICA Conference Proceedings.IEEE Power Engineering Society, pp.&nbsp;63–69 (Papers Presented at the 1973 Power Industry Computer Application Conference in Minneapolis, MN).<a href="#fnref42" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn43"><p>Thanks to Jerzy Baranowski for finding a very very bad LaTeX error that made these questions quite wrong!<a href="#fnref43" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn44"><p>Indeed, in the notation of post two <span class="math inline">\(\mathcal{L}_i \cap \{i+1, \dots, n\} \subseteq \mathcal{L}_j\)</span> for all <span class="math inline">\(i \leq j\)</span>, where <span class="math inline">\(\mathcal{L}_i\)</span> is the set of non-zeros in the <span class="math inline">\(i\)</span>th column of <span class="math inline">\(L\)</span>.<a href="#fnref44" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn45"><p>The sparse matrix is stored as a dictionary <code>{(i,j): value}</code>, which is a very natural way to build a sparse matrix, even if its quite inefficient to do anything with it in that form.<a href="#fnref45" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn46"><p>You can’t just use <code>jnp.linalg.det()</code> because there’s a tendency towards <code>nan</code>s. (The true value is something like <code>r exp(250.49306761204593)</code>!)<a href="#fnref46" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn47"><p>Would it be less tedious if my implementation of the Cholesky was less shit? Yes. But hey. It was the first non-trivial piece of python code I’d written in more than a decade (or maybe ever?) so it is what it is. Anyway. I’m gonna run into the same problem I had in <a href="https://dansblog.netlify.app/posts/2022-05-14-jax-ing-a-sparse-cholesky-factorisation-part-3-in-an-ongoing-journey/">Part 3</a><a href="#fnref47" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2022,
   author = {Dan Simpson},
+  editor = {},
   title = {Sparse Matrices 6: {To} Catch a Derivative, First You’ve Got
     to Think Like a Derivative},
   date = {2022-05-30},
@@ -1370,7 +1384,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
