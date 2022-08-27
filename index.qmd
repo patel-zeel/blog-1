@@ -1,6 +1,6 @@
 ---
 title: "Un garçon pas comme les autres (Bayes)"
-subtitle: A blog about statistics, I guess.
+description: A blog about statistics, I guess.
 listing:
   feed: true
   contents: posts
@@ -26,7 +26,7 @@ slugs <- gsub("^.*_", "", posts)
 # lines to insert to a netlify _redirect file
 redirects <- paste0("/", slugs, " ", "/posts/", posts)
 # write the _redirect file
-#writeLines(redirects, here::here("_site", "_redirects"))
+writeLines(redirects, here::here("_site", "_redirects"))
 ```
 
 

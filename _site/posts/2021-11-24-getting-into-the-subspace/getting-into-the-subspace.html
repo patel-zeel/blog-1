@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.15">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dan Simpson">
+<meta name="dcterms.date" content="2021-11-24">
+<meta name="description" content="Fuck man, I don’t know about this one. A lot of stuff happens. At some point there’s a lot of PDEs. There are proofs. Back away.">
+
+<title>Un garçon pas comme les autres (Bayes) - Getting into the subspace; or what happens when you approximate a Gaussian process</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Un garçon pas comme les autres (Bayes) - Getting into the subspace; or what happens when you approximate a Gaussian process">
+<meta property="og:description" content="Fuck man, I don’t know about this one. A lot of stuff happens. At some point there’s a lot of PDEs. There are proofs. Back away.">
+<meta property="og:image" content="https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/pika.JPG">
+<meta property="og:site-name" content="Un garçon pas comme les autres (Bayes)">
+<meta name="twitter:title" content="Getting into the subspace; or what happens when you approximate a Gaussian process">
+<meta name="twitter:description" content="Fuck man, I don’t know about this one. A lot of stuff happens. At some point there’s a lot of PDEs. There are proofs. Back away.">
+<meta name="twitter:image" content="https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/pika.JPG">
+<meta name="twitter:creator" content="@dan_p_simpson">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Un garçon pas comme les autres (Bayes)</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About this blog</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/dan_p_simpson"><i class="bi bi-twitter" role="img" aria-label="twitter">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/dpsimpson"><i class="bi bi-github" role="img" aria-label="github">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://dansblog.netlify.app"><i class="bi bi-person-circle" role="img" aria-label="website">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Getting into the subspace; or what happens when you approximate a Gaussian process</h1>
+                  <div>
+        <div class="description">
+          <p>Fuck man, I don’t know about this one. A lot of stuff happens. At some point there’s a lot of PDEs. There are proofs. Back away.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Gaussian processes</div>
+                <div class="quarto-category">Fundamentals</div>
+                <div class="quarto-category">Theory</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Dan Simpson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 24, 2021</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#so.-gaussian-processes-eh." id="toc-so.-gaussian-processes-eh." class="nav-link active" data-scroll-target="#so.-gaussian-processes-eh.">So. Gaussian processes, eh.</a></li>
+  <li><a href="#a-tangent-or-can-we-just-be-smarter" id="toc-a-tangent-or-can-we-just-be-smarter" class="nav-link" data-scroll-target="#a-tangent-or-can-we-just-be-smarter">A tangent; or Can we just be smarter?</a></li>
+  <li><a href="#so-can-we-make-things-better" id="toc-so-can-we-make-things-better" class="nav-link" data-scroll-target="#so-can-we-make-things-better">So can we make things better?</a></li>
+  <li><a href="#some-notation-that-rapidly-degenerates-into-a-story-thats-probably-not-interesting" id="toc-some-notation-that-rapidly-degenerates-into-a-story-thats-probably-not-interesting" class="nav-link" data-scroll-target="#some-notation-that-rapidly-degenerates-into-a-story-thats-probably-not-interesting">Some notation that rapidly degenerates into a story that’s probably not interesting</a>
+  <ul class="collapse">
+  <li><a href="#here-comes-the-anecdote.-just-skip-to-the-next-bit.-i-know-youre-like-but-daniel-just-delete-the-bullshit-text-but-that-is-clearly-not-how-this-works." id="toc-here-comes-the-anecdote.-just-skip-to-the-next-bit.-i-know-youre-like-but-daniel-just-delete-the-bullshit-text-but-that-is-clearly-not-how-this-works." class="nav-link" data-scroll-target="#here-comes-the-anecdote.-just-skip-to-the-next-bit.-i-know-youre-like-but-daniel-just-delete-the-bullshit-text-but-that-is-clearly-not-how-this-works.">Here comes the anecdote. Just skip to the next bit. I know you’re like “but Daniel just delete the bullshit text” but that is clearly not how this works.</a></li>
+  </ul></li>
+  <li><a href="#how-do-we-measure-if-a-posterior-approximation-is-good" id="toc-how-do-we-measure-if-a-posterior-approximation-is-good" class="nav-link" data-scroll-target="#how-do-we-measure-if-a-posterior-approximation-is-good">How do we measure if a posterior approximation is good?</a></li>
+  <li><a href="#convergence-of-finite-dimensional-gaussian-processes" id="toc-convergence-of-finite-dimensional-gaussian-processes" class="nav-link" data-scroll-target="#convergence-of-finite-dimensional-gaussian-processes">Convergence of finite dimensional Gaussian processes</a>
+  <ul class="collapse">
+  <li><a href="#example-1-an-orthogonal-truncation" id="toc-example-1-an-orthogonal-truncation" class="nav-link" data-scroll-target="#example-1-an-orthogonal-truncation">Example 1: An orthogonal truncation</a></li>
+  <li><a href="#example-2-subset-of-regressors" id="toc-example-2-subset-of-regressors" class="nav-link" data-scroll-target="#example-2-subset-of-regressors">Example 2: Subset of regressors</a></li>
+  <li><a href="#example-3-the-spde-method" id="toc-example-3-the-spde-method" class="nav-link" data-scroll-target="#example-3-the-spde-method">Example 3: The SPDE method</a></li>
+  <li><a href="#a-bit-of-perspective" id="toc-a-bit-of-perspective" class="nav-link" data-scroll-target="#a-bit-of-perspective">A bit of perspective</a></li>
+  </ul></li>
+  <li><a href="#bounding-the-approximation-error" id="toc-bounding-the-approximation-error" class="nav-link" data-scroll-target="#bounding-the-approximation-error">Bounding the approximation error</a></li>
+  <li><a href="#dealing-with-the-approximation-error" id="toc-dealing-with-the-approximation-error" class="nav-link" data-scroll-target="#dealing-with-the-approximation-error">Dealing with the approximation error</a></li>
+  <li><a href="#wrapping-it-up" id="toc-wrapping-it-up" class="nav-link" data-scroll-target="#wrapping-it-up">Wrapping it up</a></li>
+  </ul>
+</nav>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="so.-gaussian-processes-eh." class="level2">
+<h2 class="anchored" data-anchor-id="so.-gaussian-processes-eh.">So. Gaussian processes, eh.</h2>
+<p><a href="https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/">Now that we know what they are</a>, I guess we should do something with a Gaussian process. But we immediately hit a problem. You see, Gaussian processes are charming things, sweet and caring. But they have a dark side. Used naively<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, they’re computationally expensive when you’ve got a lot of data.</p>
+<p><strong>Stab of dramatic music</strong></p>
+<p>Yeah. So. What’s the problem here? Well, the first problem is people seem to really like having a lot of data. Fuck knows why. Most of it is rubbish<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. But they do.</p>
+<p>This is a problem for our poor little Gaussian processes because of how the data tends to come.</p>
+<p>A fairly robust model for data is that it comes like <span class="math display">\[
+(y_i, s_i, x_i),
+\]</span> where <span class="math inline">\(y_i\)</span> is our measurement of choice (which might be a continuous, discrete or weird<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>), <span class="math inline">\(s_i\)</span> is our location<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> in the index set<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> <span class="math inline">\(\Omega\)</span> (usually <span class="math inline">\(\Omega \subset \mathbb{R}^d\)</span>) of the Gaussian process, and <span class="math inline">\(x_i\)</span> is whatever other information we have<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. If we want to be really saucy, we could also assume these things are iid samples from some unknown distribution and then pretend like that isn’t a wildly strong structural assumption. But I’m not like that. I’ll assume the joint distribution of the samples is exchangeable<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> <a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> <a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>. Or something. I’m writing this sequentially, so I have no idea where this is going to end up.</p>
+<p>So where is the problem? The problem is that, if we use the most immediately computational definition of a Gaussian process, then we need to build <span class="math display">\[
+\begin{pmatrix} u(s_1)\\ u(s_2) \\ \vdots \\ u(s_n)\end{pmatrix} \sim N\left(
+\begin{pmatrix} \mu(s_1)\\ \mu(s_2) \\ \vdots \\ \mu(s_n)\end{pmatrix},
+\begin{pmatrix} c(s_1, s_1) &amp; c(s_1, s_2) &amp; \cdots &amp; c(s_1, s_n)  \\ c(s_2, s_1) &amp; c(s_2, s_2) &amp; \cdots &amp; c(s_2, s_n) \\\vdots &amp;\vdots  &amp;\ddots &amp;\vdots \\ c(s_n, s_1) &amp; c(s_n, s_2) &amp; \cdots &amp; c(s_n, s_n)\end{pmatrix}\right).
+\]</span> Where <span class="math inline">\(s_1,\ldots, s_n\)</span> are all of the <em>distinct</em> values of <span class="math inline">\(s_i\)</span> in the dataset. If there are a lot of these, the covariance matrix is <em>very</em> large and this becomes a problem. First, we must construct it. Then we must solve it. <em>Then</em> we must do actual computations with it. The storage scales quadratically in <span class="math inline">\(n\)</span>. The computation scales cubically in <span class="math inline">\(n\)</span>. This is too much storage and too much computation if the data set has a lot of distinct GP evaluations, it will simply be too expensive to do the matrix work that we need to do in order to make this run.</p>
+<p>So we need to do something else.</p>
+</section>
+<section id="a-tangent-or-can-we-just-be-smarter" class="level2">
+<h2 class="anchored" data-anchor-id="a-tangent-or-can-we-just-be-smarter">A tangent; or Can we just be smarter?</h2>
+<p>On a tangent, because straight lines are for poor souls who don’t know about Gaussian processes, there’s a body of work on trying to circumvent this problem by being good at maths. The idea is to try to find some cases where we don’t need to explicitly form the covariance matrix in order to do all of the calculations. There’s a somewhat under-cooked<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a> literature on this. It dances around an idea that traces back to fast multipole methods for integral equations: We know that correlations decay as points get further apart, so we do not need to calculate the correlations between points that are far apart as well as we need to calculate the correlations between points that are close together. For a fixed covariance kernel that decays in a certain way, you can modify the fast multipole method, however it’s more fruitful to use an algebraic<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> method. H-matrices was the first real version of this, and there’s a <a href="https://ins.uni-bonn.de/media/public/publication-media/gpWithH2.pdf">paper from 2008</a> using them to approximate GPs. A solid chunk of time later, there have been two good papers recently on this stuff. <a href="https://arxiv.org/pdf/1808.03215.pdf">Paper 1</a> <a href="https://www.sciencedirect.com/science/article/pii/S0167947319300374">Paper 2</a>. These methods really only provide gradient descent type methods for maximum likelihood estimation and it’s not clear to me that you’d be able to extend these ideas easily to a Bayesian setting (particularly when you need to infer some parameters in the covariance function)<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>.</p>
+<p>I think this sort of stuff is cool for a variety of reasons, but I also don’t think it’s the entire solution. (There was also a 2019 NeurIPS paper that scales a GP fit to a million observations as if that’s a good idea. It is technically impressive, however.) But I think the main possibility of the H-matrix work is that it allows us to focus on the modelling and not have to make premature trade offs with the computation.</p>
+<p>The problem with modelling a large dataset using a GP is that GPs are usually fit with a bunch of structural assumptions (like stationarity and isotropy) that are great simplifying assumptions for moderate data sizes but emphatically do not capture the complex dependency structures when there is a large amount of data. As you get more data, your model should become correspondingly more complex<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a> and stationary, and/or isotropic Gaussian processes emphatically do not do this.</p>
+<p>This isn’t to say that you shouldn’t use GPs on a large data set (I am very much on record as thinking you should), but that it needs to be a <em>part</em> of your modelling arsenal and probably not the whole thing. The real glory of GPs is that they are a flexible enough structure to play well with other modelling techniques. Even if you end up modelling a large data set with a single GP, that GP will most likely be anisotropic, non-stationary, and built up from multiple scales. Which is a different way to say that it likely does not have a squared exponential kernel with different length scales for each feature.</p>
+<p>(It’s probably worth making the disclaimer at this point, but when I’m thinking about GPs, I’m typically thinking about them in 1-4 dimensions. My background is in spatial statistics, so that makes sense. Some of my reasoning doesn’t apply in more typical machine learning applications where <span class="math inline">\(s_i\)</span> might be quite high-dimensional. That said, you simply get a different end of the same problem. In that case you need to balance the smoothness needed to interpolate in high dimensions with the structure needed to allow your variables to be a) scaled differently and b) correlated. Life is pain either way.)</p>
+</section>
+<section id="so-can-we-make-things-better" class="level2">
+<h2 class="anchored" data-anchor-id="so-can-we-make-things-better">So can we make things better?</h2>
+<p>The problem with Gaussian processes, at least from a computational point of view, is that they’re just too damn complicated. Because they are supported on some infinite dimensional Banach space <span class="math inline">\(B\)</span>, the more we need to see of them (for instance because we have a lot of unique <span class="math inline">\(s_i\)</span>s) the more computational power they require. So the obvious solution is to <em>somehow</em> make Gaussian processes less complex.</p>
+<p>This <em>somehow</em> has occupied a lot of people’s time over the last 20 years and there are many many many many possible options. But for the moment, I just want to focus on one of the generic classes of solutions: You can make Gaussian processes less computationally taxing by making them less expressive.</p>
+<p>Or to put it another way, if you choose an <span class="math inline">\(m\)</span> dimensional subspace <span class="math inline">\(V_m \subset B\)</span> and rep;ace the GP <span class="math inline">\(u\)</span>, which is supported on the whole of <span class="math inline">\(B\)</span>, with a <em>different</em> Gaussian process <span class="math inline">\(u_m\)</span> supported on <span class="math inline">\(V_m\)</span>, then all of your problems go away.</p>
+<p>Why? Well because the Gaussian process on <span class="math inline">\(V_m\)</span> can be represented in terms of an <span class="math inline">\(m\)</span>-dimensional Gaussian random vector. Just take <span class="math inline">\(\phi_j\)</span>, <span class="math inline">\(j=1,\ldots, m\)</span> to be a basis for <span class="math inline">\(V_m\)</span>, then the GP <span class="math inline">\(u_m\)</span> can be written as <span class="math display">\[
+u_m = \sum_{j=1}^m w_j \phi_j,
+\]</span> where <span class="math inline">\(w \sim N(\mu, \Sigma)\)</span>, for some <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\Sigma\)</span>. (The critical thing here is that the <span class="math inline">\(\phi_j\)</span> are functions so <span class="math inline">\(u_m\)</span> is still a random function! That link between the multivariate Gaussian <span class="math inline">\(w\)</span> and the function <span class="math inline">\(u_m\)</span> that can be evaluated at any <span class="math inline">\(s_i\)</span> is really important!)</p>
+<p>This means that I can express my Gaussian process prior in terms of the multivariate Gaussian prior on <span class="math inline">\(w\)</span>, and I only need <span class="math inline">\(\mathcal{O}(m^3)\)</span> operations to evaluate its log-density.</p>
+<p>If our observation model is such that <span class="math inline">\(p(y_i \mid u) = p(y_i \mid u(s_i))\)</span>, and we assume conditional<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> independence, then we can eval the log-likelihood term <span class="math display">\[
+\sum_{i=1}^n p(y \mid u_m(s_i)) = \sum_{i=1}^n p(y \mid a_i^Tw)
+\]</span> in <span class="math inline">\(\mathcal{O}(m^2 n)\)</span> operations. Here <span class="math inline">\([a_i]_j = \phi_j(s_i)\)</span> is the vector that links the basis in <span class="math inline">\(u_n\)</span> that we use to define <span class="math inline">\(w\)</span> to the observation locations<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a>.</p>
+<p>Many have been tempted to look at the previous paragraph and conclude that a single evaluation of the log-posterior (or its gradient) will be <span class="math inline">\(\mathcal{O}(n)\)</span>, as if that <span class="math inline">\(m^2\)</span> multiplier were just a piece of fluff to be flicked away into oblivion.</p>
+<p>This is, of course, sparkly bullshit.</p>
+<p>The subspace size <span class="math inline">\(m\)</span> controls the trade off between bias and computational cost and, if we want that bias to be reasonably small, we need <span class="math inline">\(m\)</span> to be quite large. In a lot of cases, it needs to grow with <span class="math inline">\(n\)</span>. <a href="https://arxiv.org/pdf/2008.00323.pdf">A nice paper by David Burt, Carl Rasmussen, and Mark van der Wilk</a> suggests that <span class="math inline">\(m(n)\)</span> needs to depend on the covariance function<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a>. In the best case (when you assume your function is so spectacularly smooth that a squared-exponential covariance function is ok), you need something like <span class="math inline">\(m = \mathcal{O}(\log(n)^d)\)</span>, while if you’re willing to make a more reasonable assumption that your function has <span class="math inline">\(\nu\)</span> continuous<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a> derivatives, then you need something like <span class="math inline">\(m = \mathcal{O}(n^\frac{2d}{2\nu-d})\)</span>.</p>
+<p>You might look at those two options for <span class="math inline">\(m\)</span> and say to yourself “well shit. I’m gonna use a squared exponential from now on”. But it is never as simple as that. You see, if you assume a function is so smooth it is analytic<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a>, then you’re assuming that it lacks the derring-do to be particularly interesting between its observed values<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a>. This translates to relatively narrow uncertainty bands. Whereas a function with <span class="math inline">\(\nu\)</span> derivatives has more freedom to move around the smaller <span class="math inline">\(\nu\)</span> is. This naturally results in wider uncertainty bands.</p>
+<p>I think<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a> in every paper I’ve seen that compares a squared exponential covariance function to a Matérn-type covariance function (aka the ones that let you have <span class="math inline">\(\nu\)</span>-times differentiable sample paths), the Matérn family has performed better (in my mind this is also in terms of squared error, but it’s definitely the case when you’re also evaluating the uncertainty of the prediction intervals). So I guess the lesson is that cheap isn’t always good?</p>
+<p>Anyway. The point of all of this is that if we can somehow restrict our considerations to an <span class="math inline">\(m\)</span>-dimensional subspace of <span class="math inline">\(B\)</span>, then we can get some decent (if not perfect) computational savings.</p>
+<p>But what are the costs?</p>
+</section>
+<section id="some-notation-that-rapidly-degenerates-into-a-story-thats-probably-not-interesting" class="level2">
+<h2 class="anchored" data-anchor-id="some-notation-that-rapidly-degenerates-into-a-story-thats-probably-not-interesting">Some notation that rapidly degenerates into a story that’s probably not interesting</h2>
+<p>So I guess the key question we need to answer before we commit to any particular approximation of our Gaussian process is <em>what does it cost?</em> That is, how does the approximation affect the posterior distribution?</p>
+<p>To quantify this, we need a way to describe the posterior of a Gaussian process in general. As happens so often when dealing with Gaussian processes, shit is about to get wild.</p>
+<p>A real challenge with working with Gaussian processes theoretically is that they are objects that naturally live on some (separable<a href="#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a>) Banach space <span class="math inline">\(B\)</span>. One of the consequences of this is that we <em>cannot</em> just write the density of <span class="math inline">\(u\)</span> as <span class="math display">\[
+p(u) \propto  \exp\left(-\frac{1}{2}C_u(u, u)\right)
+\]</span> because there is no measure<a href="#fn22" class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a> on <span class="math inline">\(B\)</span> such that <span class="math display">\[
+\Pr(u \in A) = \int_A p(u)\,du.
+\]</span></p>
+<p>This means that we can’t just work with densities to do all of our Bayesian stuff. We need to work with posterior probabilities properly.</p>
+<p>Ugh. Measures.</p>
+<p>So let’s do this. We are going to need a prior probability associated with the Gaussian process <span class="math inline">\(u\)</span>, which we will write as <span class="math display">\[
+\mu_0(A) = \Pr(u \in A),
+\]</span> where <span class="math inline">\(A\)</span> is a nice<a href="#fn23" class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a> set in <span class="math inline">\(B\)</span>. We can then use this as a <em>base</em> for our posterior, which we define as <span class="math display">\[
+\mu^y(A) = \Pr(u \in A \mid y) = \frac{1}{Z}\mathrm{e}^{-\Phi(u;y)},
+\]</span> where <span class="math inline">\(\Phi(u;y)\)</span> is the negative log-likelihood function. Here <span class="math inline">\(Z\)</span> is the normalising constant <span class="math display">\[
+Z = \mathbb{E}_\mu\left( \mathrm{e}^{-\Phi(u;y)}\right),
+\]</span> which is finite as long as <span class="math inline">\(\exp(-\Phi(u;y)) \leq C(\epsilon)\exp(\epsilon\|u\|^2)\)</span> for all <span class="math inline">\(\epsilon &gt; 0\)</span>, where <span class="math inline">\(C(\epsilon)\geq 0\)</span> is a constant. This is a <em>very</em> light condition.</p>
+<p>This way of looking at posteriors resulting Gaussian process priors was popularised in the inverse problems literature<a href="#fn24" class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a>. It very much comes from a <em>numerical analysis</em> lens: the work is framed as <em>here is an object, how do we approximate it?</em>.</p>
+<p>These questions are different to the traditional ones answered by a theoretical statistics papers, which are almost always riffs on <em>“what happens in asymptopia?”</em>.</p>
+<p>I came across this work for two reasons: one is because I have been low-key fascinated by Gaussian measures ever since I saw a talk about them during my PhD; and secondly my PhD was in numerical analysis, so I was reading the journals when these papers came out.</p>
+<p>That’s not why I explored these questions, though. That is a longer story. The tl;dr is</p>
+<blockquote class="blockquote">
+<p>I had to learn this so I could show a particular point process model converges, and so now the whole rest of this blog post is contained in a technical appendix that no one has ever read in <a href="https://arxiv.org/abs/1111.0641">this paper</a>.</p>
+</blockquote>
+<section id="here-comes-the-anecdote.-just-skip-to-the-next-bit.-i-know-youre-like-but-daniel-just-delete-the-bullshit-text-but-that-is-clearly-not-how-this-works." class="level3">
+<h3 class="anchored" data-anchor-id="here-comes-the-anecdote.-just-skip-to-the-next-bit.-i-know-youre-like-but-daniel-just-delete-the-bullshit-text-but-that-is-clearly-not-how-this-works.">Here comes the anecdote. Just skip to the next bit. I know you’re like “but Daniel just delete the bullshit text” but that is clearly not how this works.</h3>
+<details>
+<summary>
+Expand at your peril
+</summary>
+<p>I know these papers pretty much backwards for the usual academic reason: out of absolute spite. One of my postdocs involved developing some approximation methods for Markovian Gaussian processes<a href="#fn25" class="footnote-ref" id="fnref25" role="doc-noteref"><sup>25</sup></a>, which allowed for fast computation, especially when combined with INLA<a href="#fn26" class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a>, which is a fabulous method for approximating posterior distributions when a big chunk of the unobserved parameters have a joint Gaussian prior<a href="#fn27" class="footnote-ref" id="fnref27" role="doc-noteref"><sup>27</sup></a>.</p>
+<p>One of the things that INLA was already pretty good at doing was fitting log-Gaussian Cox processes (LGCP), which are a type of model for point patterns<a href="#fn28" class="footnote-ref" id="fnref28" role="doc-noteref"><sup>28</sup></a> that can be approximated over a regular grid by a Poisson regression with a log-mean given by (covariates +) a Gaussian process defined on the grid. If that process is Markov, you can get full posterior inference quickly and accurately using INLA. This compared very favourably with pre-INLA methods, which gave you full posterior inference laboriously using a truncated gradient MALA scheme in about the same amount of time it would take the US to get a high-speed rail system.</p>
+<p>Anyway. I was in Trondheim working on INLA and the, at that stage, very new SPDE<a href="#fn29" class="footnote-ref" id="fnref29" role="doc-noteref"><sup>29</sup></a> stuff (the <a href="https://rss.onlinelibrary.wiley.com/doi/full/10.1111/j.1467-9868.2011.00777.x">2011 JRSSSB read paper</a> had not been written yet, let alone been read). <a href="https://www.gla.ac.uk/schools/mathematicsstatistics/staff/janineillian/">Janine Illian</a>, who is a very excellent statistician and an all round fabulous person, had been working on the grided LGCP stuff in INLA and came to Trondheim to work with Håvard<a href="#fn30" class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a> and she happened to give a seminar on using these new LGCP methods to do species distribution mapping. I was strongly encouraged to work with Janine to extend her grid methods to the new shiny SPDE methods, which did not need a grid.</p>
+<p>Janine had to tell me what a Poisson distribution was.</p>
+<p>Anyway. A little while later<a href="#fn31" class="footnote-ref" id="fnref31" role="doc-noteref"><sup>31</sup></a> we had a method that worked and we<a href="#fn32" class="footnote-ref" id="fnref32" role="doc-noteref"><sup>32</sup></a> wrote it up. We submitted it to Series B and they desk rejected it. We then, for obscure reasons<a href="#fn33" class="footnote-ref" id="fnref33" role="doc-noteref"><sup>33</sup></a>, submitted it to Biometrika. Due to the glory of arXiv, <a href="https://arxiv.org/pdf/1111.0641v1.pdf">I can link to the original version</a>.</p>
+<p>Although it was completely unlike anything else that Biometrika publishes, we got some quite nice reviews and either major revisions or a revise and resubmit. But one of the reviewer comments pissed me off: they said that we hadn’t demonstrated that our method converges. Now, I was young at the time and new to the field and kinda shocked by all of the shonky numerics that was all over statistics at the time. So this comment<a href="#fn34" class="footnote-ref" id="fnref34" role="doc-noteref"><sup>34</sup></a> pissed me off. More than that, though, I was fragile and I hated the comment because I was new to this and had absolutely no fucking idea how to prove this method would converge. Rasmus Waagepetersen <a href="https://www.sciencedirect.com/science/article/abs/pii/S0167715203003079">had proven convergence of the grid approximation</a> but a) I didn’t understand the proof and b) our situation was so far away there was no chance of piggybacking off it.</p>
+<p>It was also very hard to use other existing statistics literature, because, far from being an iid situation, the negative log-likelihood for a Poisson process<a href="#fn35" class="footnote-ref" id="fnref35" role="doc-noteref"><sup>35</sup></a> on an observation window <span class="math inline">\(\Omega\)</span> is <span class="math display">\[
+\Phi(u;y) = \int_\Omega e^{u(s)}\,ds - \sum_{s_i \in y}e^{u(s_i)} - |\Omega|,
+\]</span> where the point pattern <span class="math inline">\(y\)</span> is a (random) collection of points <span class="math inline">\(s_j\)</span> and <span class="math inline">\(|\Omega|\)</span> is the area/volume of the observation window. This is fundamentally not like a standard GP regression.</p>
+<p>So, long story short<a href="#fn36" class="footnote-ref" id="fnref36" role="doc-noteref"><sup>36</sup></a>, I was very insecure and rather than admit that it was difficult to show that these approximations converged, I worked on and off for like 2 years trying to work out how to do this<a href="#fn37" class="footnote-ref" id="fnref37" role="doc-noteref"><sup>37</sup></a> and eventually came up with a fairly full convergence theory for posteriors derived from approximate likelihoods and finite dimensional approximations to Gaussian processes<a href="#fn38" class="footnote-ref" id="fnref38" role="doc-noteref"><sup>38</sup></a>. Which I then put into the appendix of a paper that was essentially about something completely different.</p>
+<p>I don’t have all that many professional regrets (which is surprising because I’ve made a lot of questionable choices), but I do regret not just making that appendix its own paper. Because it was really good work.</p>
+<p>But anyway, I took the inverse problems<a href="#fn39" class="footnote-ref" id="fnref39" role="doc-noteref"><sup>39</sup></a> work of Andrew Stuart and Masoumeh Dashti and extended it out to meet my needs. And to that end, I’m going to bring out a small corner of that appendix because it tells us what happens to a posterior when we replace a Gaussian process by a finite dimensional approximation.</p>
+</details>
+</section>
+</section>
+<section id="how-do-we-measure-if-a-posterior-approximation-is-good" class="level2">
+<h2 class="anchored" data-anchor-id="how-do-we-measure-if-a-posterior-approximation-is-good">How do we measure if a posterior approximation is good?</h2>
+<p>Part of the struggle when you’re working with Gaussian processes as actual objects rather than as a way to generate a single finite-dimensional Gaussian distribution that you use for analysis is that, to quote Cosma Shalizi<a href="#fn40" class="footnote-ref" id="fnref40" role="doc-noteref"><sup>40</sup></a>, <em>“the topology of such spaces is somewhat odd, and irritatingly abrupt”</em>. Or to put it less mathematically, it is <em>hard</em> to quantify which Gaussian processes are close together.</p>
+<p>We actually saw this in the last blog where we noted that the distribution of <span class="math inline">\(v = cu\)</span> has no common support with the distribution of <span class="math inline">\(u\)</span> if <span class="math inline">\(|c| \neq 1\)</span>. This means, for instance, that the total variation between <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> is 2 (which is it’s largest possible value) even if <span class="math inline">\(c = 1 + \epsilon\)</span> for some <em>tiny</em> <span class="math inline">\(\epsilon\)</span>.</p>
+<p>More generally, if you’re allowed to choose what you mean by “these distributions are close” you can get a whole range of theoretical results for the posteriors of infinite dimensional parameters, ranging from <em>this will never work and Bayes in bullshit</em> to <em>everything is wonderful and you never have to worry</em>.</p>
+<p>So this is not a neutral choice.</p>
+<p>In the absence of a neutral choice, we should try to make a meaningful one! An ok option for that is to try to find functions <span class="math inline">\(G(u)\)</span> that we may be interested in. Classically, we would choose <span class="math inline">\(G\)</span> to be bounded (weak<a href="#fn41" class="footnote-ref" id="fnref41" role="doc-noteref"><sup>41</sup></a> convergence / convergence in distribution) or bounded Lipschitz<a href="#fn42" class="footnote-ref" id="fnref42" role="doc-noteref"><sup>42</sup></a>. This is good but it precludes things like means and variances, which we would quite like to converge!</p>
+<p>The nice thing about everything being based off a Gaussian process is that we know<a href="#fn43" class="footnote-ref" id="fnref43" role="doc-noteref"><sup>43</sup></a> that there is some <span class="math inline">\(\epsilon &gt; 0\)</span> (which may be very small) such that <span class="math display">\[
+\mathbb{E}_{\mu_0}\left(\mathrm{e}^{\epsilon \|u\|_B^2}\right) &lt; \infty.
+\]</span> This suggests that as long as the likelihood isn’t too evil, the posterior will also have a whole arseload of moments.</p>
+<p>This is great because it suggests that we can be more ambitious than just looking at bounded Lipschitz functions. It turns out that we can consider convergence over the class of functionals <span class="math inline">\(G\)</span> such that <span class="math display">\[
+|G(u) - G(v)| \leq L(u) \|u - v\|_B,
+\]</span> where <span class="math inline">\(\mathbb{E}_{\mu_0}(L(u)) &lt; \infty\)</span>. Critically this includes functions like moments of <span class="math inline">\(\|u\|_B\)</span> and, assuming all of the functions in <span class="math inline">\(B\)</span> are continuous, moments of <span class="math inline">\(u(s)\)</span>. These <em>are</em> the functions we tend to care about!</p>
+</section>
+<section id="convergence-of-finite-dimensional-gaussian-processes" class="level2">
+<h2 class="anchored" data-anchor-id="convergence-of-finite-dimensional-gaussian-processes">Convergence of finite dimensional Gaussian processes</h2>
+<p>In order to discuss the convergence of finite dimensional Gaussian processes, we need to define them and, in particular, we need to link them to some Gaussian process on <span class="math inline">\(B\)</span> that they are approximating.</p>
+<p>Let <span class="math inline">\(u\)</span> be a Gaussian process supported on a Banach space <span class="math inline">\(B\)</span>. We define a <em>finite dimensional Gaussian process</em> to be a Gaussian process supported on some space <span class="math inline">\(V_m \subset B\)</span> that satisfies <span class="math display">\[
+u_n = R_m u,
+\]</span> where <span class="math inline">\(R_m: B \rightarrow V_m\)</span> is some operator. (For this to be practical we want this to be a family of operators indexed by <span class="math inline">\(m\)</span>.)</p>
+<p>It will turn out that <em>how</em> this restriction is made is important. In particular, we are going to need to see how <em>stable</em> this restriction is. This can be quantified by examining <span class="math display">\[
+\sup_{\|f\|_V = 1} \|R_m f\|_{B} \leq A_m \|f\|_V,
+\]</span> where <span class="math inline">\(A_m &gt; 0\)</span> is a constant that could vary with <span class="math inline">\(m\)</span> and <span class="math inline">\(V \subseteq B\)</span> is some space we will talk about later. (Confusingly, I have set up the notation so that it’s not necessarily true that <span class="math inline">\(V_m \subset V\)</span>. Don’t hate me because I’m pretty, hate me because I do stupid shit like that.)</p>
+<section id="example-1-an-orthogonal-truncation" class="level3">
+<h3 class="anchored" data-anchor-id="example-1-an-orthogonal-truncation">Example 1: An orthogonal truncation</h3>
+<p>There is a prototypical example of <span class="math inline">\(R_m\)</span>. Every Gaussian process on a separable Banach space admits a Karhunen-Loève representation <span class="math display">\[
+u = \sum_{k = 0}^\infty \lambda_k^{1/2} z_k \phi_k,
+\]</span> <span class="math inline">\(z_k\)</span> are iid standard normal random variables and <span class="math inline">\((\lambda_k, \phi_k)\)</span> are the eigenpairs<a href="#fn44" class="footnote-ref" id="fnref44" role="doc-noteref"><sup>44</sup></a> of the covariance operator <span class="math inline">\(C_u\)</span>. The natural restriction operator is then <span class="math display">\[
+R_m f = \sum_{j=0}^m \langle f, \phi_j\rangle_{L^2}\phi_j.
+\]</span> This was the case considered by Dashti and Stuart in their 2011 paper. Although it’s prototypical, we typically do not work with the Karhunen-Loève basis directly, as it tends to commit us to a domain <span class="math inline">\(\Omega\)</span>. (Also because we almost<a href="#fn45" class="footnote-ref" id="fnref45" role="doc-noteref"><sup>45</sup></a> never know what the <span class="math inline">\(\phi_j\)</span> are.)</p>
+<p>Because this truncation is an orthogonal projection, it follows that we have the stability bound with <span class="math inline">\(A_m = 1\)</span> for all <span class="math inline">\(m\)</span>.</p>
+</section>
+<section id="example-2-subset-of-regressors" class="level3">
+<h3 class="anchored" data-anchor-id="example-2-subset-of-regressors">Example 2: Subset of regressors</h3>
+<p>Maybe a more interesting example is the <em>subset of regressors</em><a href="#fn46" class="footnote-ref" id="fnref46" role="doc-noteref"><sup>46</sup></a>. In this case, there are a set of inducing points <span class="math inline">\(s_1, \ldots, s_m\)</span> and <span class="math display">\[
+R_m f = \sum_{j=1}^m w_j r_u(\cdot, s_j),
+\]</span> where the weights solve <span class="math display">\[
+K_m w = b,
+\]</span> <span class="math inline">\([K_m]_{ij} = r_u(s_i, s_j)\)</span> and <span class="math inline">\(b_j = f(s_j)\)</span>.</p>
+<p>It’s a bit harder to get the stability result in this case. But if we let <span class="math inline">\(V_m\)</span> have the RKHS<a href="#fn47" class="footnote-ref" id="fnref47" role="doc-noteref"><sup>47</sup></a> norm, then <span class="math display">\[\begin{align*}
+\|R_m f\|^2_{H_u} &amp;= w^TK_m w \\
+&amp;= b^T K^{-1} b \\
+&amp;\leq \|K^{-1}\|_2 \|b\|_2^2
+\end{align*}\]</span></p>
+<p>Assuming that <span class="math inline">\(B\)</span> contains continuous functions, then <span class="math inline">\(\|b\|_2 \leq C\sqrt{m} \|f\|_B\)</span>. I’m pretty lazy so I’m choosing not to give a shit about that <span class="math inline">\(\sqrt{m}\)</span> but I doubt it’s unimprovable<a href="#fn48" class="footnote-ref" id="fnref48" role="doc-noteref"><sup>48</sup></a>. To be honest, I haven’t thought deeply about these bounds, I am doing them live, on my couch, after a couple of red wines. If you want a good complexity analysis of subset of regressors, google.</p>
+<p>More interestingly, <span class="math inline">\(\|K_m^{-1}\|_2\)</span> can be bounded, under mild conditions on the locations of the <span class="math inline">\(s_j\)</span> by the <span class="math inline">\(m\)</span>-th largest eigenvalue of the operator <span class="math inline">\(Kf = \int_\Omega r_u(s,t)f(t)\,dt\)</span>. This eigenvalue is controlled by how differentiable <span class="math inline">\(u\)</span> is, and is roughly <span class="math inline">\(\mathcal{O}\left(m^{-\alpha - d/2}\right)\)</span> if <span class="math inline">\(u\)</span> has a version with <span class="math inline">\(\alpha\)</span>-almost sure (Hölder) derivatives. In the (common) case where <span class="math inline">\(u\)</span> is analytic (eg if you used the squared exponential covariance function), then this bound increases exponentially (or squared exponentially for the squared exponential) in <span class="math inline">\(m\)</span>.</p>
+<p>This means that the stability constant <span class="math inline">\(A_m \geq \|K_m^{-1}\|\)</span> will increase with <span class="math inline">\(m\)</span>, sometimes quite alarmingly. <a href="https://www.jstor.org/stable/26164293?seq=1#metadata_info_tab_contents">Wing</a> argues that it is always at least <span class="math inline">\(\mathcal{O}(m^2)\)</span>. <a href="https://core.ac.uk/download/pdf/9695548.pdf">Wathan and Zhu</a> have a good discussion for the one-dimensional case and a lot of references to the more general situation.</p>
+</section>
+<section id="example-3-the-spde-method" class="level3">
+<h3 class="anchored" data-anchor-id="example-3-the-spde-method">Example 3: The SPDE method</h3>
+<p>My personal favourite way to approximate Gaussian processes works when they are <em>Markovian</em>. The Markov property, in general, says that if, for every<a href="#fn49" class="footnote-ref" id="fnref49" role="doc-noteref"><sup>49</sup></a> set of disjoint open domains <span class="math inline">\(S_1\)</span> and <span class="math inline">\(S_2 = \Omega \backslash \bar S_1\)</span> such that <span class="math inline">\(S_1 \cup \Gamma \cup S_2\)</span>, where <span class="math inline">\(\Gamma\)</span> is the <em>boundary</em> between <span class="math inline">\(S_1\)</span> and <span class="math inline">\(S_2\)</span>, then <span class="math display">\[
+\Pr(A_1 \cup A_2 \mid B_\epsilon) = \Pr(A_1 \mid B_\epsilon) \Pr(A_2 \mid B_\epsilon),
+\]</span> where <span class="math inline">\(A_j \in \sigma\left(\{u(s), s \in S_j\}\right)\)</span> and<a href="#fn50" class="footnote-ref" id="fnref50" role="doc-noteref"><sup>50</sup></a> <span class="math inline">\(B_\epsilon \in \sigma\left(\{u(s); d(s, \Gamma) &lt; \epsilon\}\right)\)</span> and <span class="math inline">\(\epsilon&gt;0\)</span>.</p>
+<p>Which is to say that it’s the normal Markov property, but you may need to fatten out the boundary between disjoint domains infinitesimally for it to work.</p>
+<p>In this case, we<a href="#fn51" class="footnote-ref" id="fnref51" role="doc-noteref"><sup>51</sup></a> know that the reproducing kernel Hilbert space has the property that the inner product is <em>local</em>. That means that if <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> are in <span class="math inline">\(H_u\)</span> and have disjoint support<a href="#fn52" class="footnote-ref" id="fnref52" role="doc-noteref"><sup>52</sup></a> then <span class="math display">\[
+\langle f, g\rangle_{H_u} = 0,
+\]</span> which, if you squint, implies that the precision operator <span class="math inline">\(\mathcal{Q}\)</span> is a differential operator. (That the RKHS inner product being local basically defines the Markov property.)</p>
+<p>We are going to consider a special case<a href="#fn53" class="footnote-ref" id="fnref53" role="doc-noteref"><sup>53</sup></a>, where <span class="math inline">\(u\)</span> solves the partial differential equation <span class="math display">\[
+L u = W,
+\]</span> where <span class="math inline">\(L\)</span> is some differential operator and <span class="math inline">\(W\)</span> is <em>white noise</em><a href="#fn54" class="footnote-ref" id="fnref54" role="doc-noteref"><sup>54</sup></a>.</p>
+<p>We make sense of this equation by saying a Gaussian process <span class="math inline">\(u\)</span> solves it if <span class="math display">\[
+\int_\Omega \left(L^*\phi(s)\right)\left( u(s)\right)\,ds  \sim N\left(0, \int_\Omega \phi^2(s)\,ds\right),
+\]</span> for every smooth function <span class="math inline">\(\phi\)</span>, where <span class="math inline">\(L^*\)</span> is the adjoint of <span class="math inline">\(L\)</span> (we need to do this because, in general, the derivatives of <span class="math inline">\(u\)</span> could be a bit funky).</p>
+<p>If we are willing to believe this exists (it does—it’s a linear filter of white noise, electrical engineers would die if it didn’t) then <span class="math inline">\(u\)</span> is a Gaussian process with zero mean and covariance operator <span class="math display">\[
+\mathcal{C} = (L^*L)^{-1},
+\]</span> where <span class="math inline">\(L^*\)</span> is the adjoint of <span class="math inline">\(L\)</span>.</p>
+<p>This all seems like an awful lot of work, but it’s the basis of one of the more powerful methods for approximating Gaussian processes on low-dimensional spaces (or low-dimensional manifolds). In particular in 1-3 dimensions<a href="#fn55" class="footnote-ref" id="fnref55" role="doc-noteref"><sup>55</sup></a> or in (1-3)+1 dimensions<a href="#fn56" class="footnote-ref" id="fnref56" role="doc-noteref"><sup>56</sup></a> (as in space-time), Gaussian processes that are built this way can be extremely efficient.</p>
+<p>This representation was probably first found by <a href="https://academic.oup.com/biomet/article-abstract/41/3-4/434/230856?redirectedFrom=fulltext">Peter Whittle</a> and <a href="https://rss.onlinelibrary.wiley.com/doi/full/10.1111/j.1467-9868.2011.00777.x">Finn Lindgren, Johan Lindström and Håvard Rue</a> combined it with the finite element method to produce the SPDE method<a href="#fn57" class="footnote-ref" id="fnref57" role="doc-noteref"><sup>57</sup></a> A good review of the work that’s been done can be <a href="https://arxiv.org/pdf/2111.01084.pdf">found here</a>. There’s also a whole literature on linear filters and stochastic processes.</p>
+<p>We can use this <em>SDPE</em> representation of <span class="math inline">\(u\)</span> to construct a finite-dimensional Gaussian process and a restriction operator <span class="math inline">\(R_m\)</span>. To do this, we define <span class="math inline">\(L_m\)</span> as the operator defined implicitly through the equation <span class="math display">\[
+\langle \phi, L\psi\rangle_{L^2} = \langle \phi, L_m\psi\rangle_{L^2}, \quad \forall \phi,\psi \in V_m.
+\]</span> This is often called the Galerkin projection<a href="#fn58" class="footnote-ref" id="fnref58" role="doc-noteref"><sup>58</sup></a>. It is at the heart of the finite element method for solving elliptic partial differential equations.</p>
+<p>We can use <span class="math inline">\(L_m\)</span> to construct a Gaussian process with covariance function <span class="math display">\[
+\mathcal{C}_m = (L_m^*L_m)^\dagger,
+\]</span> where <span class="math inline">\(^\dagger\)</span> is a pseudo-inverse<a href="#fn59" class="footnote-ref" id="fnref59" role="doc-noteref"><sup>59</sup></a>.</p>
+<p>It follows that <span class="math display">\[
+\mathcal{C}_m  =(L_m)^\dagger L L^{-1}(L^*)^{-1}L^*(L_m^*)^\dagger = R_m \mathcal{C} R_m^*,
+\]</span> where <span class="math inline">\(R_m = L_m^\dagger L\)</span>.</p>
+<p>Before we can get a stability estimate, we definitely need to choose our space <span class="math inline">\(V_m\)</span>. In general, the space will depend on the order of the PDE<a href="#fn60" class="footnote-ref" id="fnref60" role="doc-noteref"><sup>60</sup></a>, so to make things concrete we will work with second-order elliptic<a href="#fn61" class="footnote-ref" id="fnref61" role="doc-noteref"><sup>61</sup></a> PDE <span class="math display">\[
+Lu = -\sum_{i,j = 1}^d\frac{\partial}{\partial s_j}\left(a_{ij}(s) \frac{\partial u}{\partial s_i} \right) +\sum_{i=1}^d b_i\frac{\partial u}{\partial s_i} + b_0(s)u(s),
+\]</span> where all of the <span class="math inline">\(a_{ij}(s)\)</span> and <span class="math inline">\(b_j(s)\)</span> are <span class="math inline">\(L^\infty(\Omega)\)</span> and the uniform ellipticity condition<a href="#fn62" class="footnote-ref" id="fnref62" role="doc-noteref"><sup>62</sup></a> holds.</p>
+<p>These operators induce (potentially non-stationary) Gaussian processes that have continuous versions as long as<a href="#fn63" class="footnote-ref" id="fnref63" role="doc-noteref"><sup>63</sup></a> <span class="math inline">\(d \leq 3\)</span>.</p>
+<p>With this fixed, the natural finite element space to use is the space of continuous piecewise linear functions. Traditionally, this is done using combinations of tent functions on a triangular mesh.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="fem.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">A piecewise linear approximation. <a href="https://arxiv.org/pdf/1110.6796.pdf">Source</a></figcaption><p></p>
+</figure>
+</div>
+<p>With this basis, we can get stability estimates by defining <span class="math inline">\(v\)</span> and <span class="math inline">\(v_m\)</span> by <span class="math inline">\(Lv = f\)</span> and <span class="math inline">\(L_m v_m = f_m\)</span>, from which we get <span class="math display">\[
+\|R_m v\|_B = \|v_m\|_{V_m} \leq A\|f\|_{L_2}
+\]</span> which holds, in particular, when the <span class="math inline">\(L\)</span> has no first order derivatives<a href="#fn64" class="footnote-ref" id="fnref64" role="doc-noteref"><sup>64</sup></a>.</p>
+<p>An oddity about this structure is that functions in <span class="math inline">\(V_m\)</span> are not not continuously differentiable, while the sample paths of <span class="math inline">\(u\)</span> almost surely are<a href="#fn65" class="footnote-ref" id="fnref65" role="doc-noteref"><sup>65</sup></a>. This means that <span class="math inline">\(V_m\)</span> isn’t necessarily a subset of <span class="math inline">\(B\)</span> as we would naturally define it. In this case, we need to inflate <span class="math inline">\(B\)</span> to be big enough to contain the <span class="math inline">\(V_m\)</span>. So instead of taking <span class="math inline">\(B = C^1(\Omega)\)</span>, we need to take <span class="math inline">\(B = C(\Omega)\)</span> or <span class="math inline">\(B = L^2(\Omega)\)</span>.</p>
+<p>This has implications on the smoothness assumptions on <span class="math inline">\(\Phi(u;y)\)</span>, which will need to hold uniformly over <span class="math inline">\(B\)</span> and <span class="math inline">\(V_m\)</span> if <span class="math inline">\(V_m \not \subset B\)</span> and on the set of functionals <span class="math inline">\(G(u)\)</span> that we use to measure convergence.</p>
+</section>
+<section id="a-bit-of-perspective" class="level3">
+<h3 class="anchored" data-anchor-id="a-bit-of-perspective">A bit of perspective</h3>
+<p>The critical difference between the SPDE method and the subset-of-regressors approximation is that for the SPDE method, the stability constant <span class="math inline">\(A_m = A\)</span> is independent of <span class="math inline">\(m\)</span>. This will be important, as this constant pops up somewhere important when we are trying to quantify the error in the finite dimensional approximation.</p>
+<p>On the other hand, the SPDE method only works in three and fewer dimensions and while it allows for quite flexible covariance structures<a href="#fn66" class="footnote-ref" id="fnref66" role="doc-noteref"><sup>66</sup></a>, it is can only directly construct Gaussian processes with integer numbers of continuous derivatives. Is this a problem? The asymptotics say yes, but they only hold if we are working with the exact Gaussian process (or, I guess, if we let the dimension of <span class="math inline">\(V_m\)</span> hurtle off towards infinity as we get more and more data).</p>
+<p>In practice, the Gaussian processes constructed via SPDE methods perform very well on real data<a href="#fn67" class="footnote-ref" id="fnref67" role="doc-noteref"><sup>67</sup></a>. I suspect part of this is that the stable set of basis functions are very good at approximating functions and the misspecification error plays off against the approximation error.</p>
+</section>
+</section>
+<section id="bounding-the-approximation-error" class="level2">
+<h2 class="anchored" data-anchor-id="bounding-the-approximation-error">Bounding the approximation error</h2>
+<p>With all of this setup, we are finally ready to bound the error between the posterior we would get with the full Gaussian process prior and the posterior we would get using the finite dimensional Gaussian process prior.</p>
+<p>We are going to deal with a simpler scenario than <a href="https://arxiv.org/abs/1111.0641">the paper we are (sort of) following</a>, because in that situation, I was forced to deal with simultaneously approximating the likelihood and honestly who needs that trouble.</p>
+<p>To remind ourselves, we have two priors: the full fat Gaussian process prior, the law of which we denote <span class="math inline">\(\mu_0\)</span> and the one we could possibly work with <span class="math inline">\(\mu_0^m\)</span>. These lead to two different posteriors <span class="math inline">\(\mu_y\)</span> and <span class="math inline">\(\mu_y^m\)</span> given by <span class="math display">\[
+\frac{d\mu_y}{d\mu_0}(u) = \frac{1}{Z}\mathrm{e}^{-\Phi(u;y)} \quad \text{and}\quad \frac{d\mu_y^m}{d\mu_0^m}(u) = \frac{1}{Z_m}\mathrm{e}^{-\Phi(u;y)} ,
+\]</span> where <span class="math inline">\(Z_1\)</span> and <span class="math inline">\(Z_m\)</span> are normalising constants.</p>
+<p>We assume that the Gaussian process <span class="math inline">\(u\)</span> is supported on some Banach space <span class="math inline">\(V \subseteq B\)</span> and the approximating spaces <span class="math inline">\(V_m \subset B\)</span>. This covers the case where the approximating functions are rougher than the true realisations of the Gaussian process we are approximating. With this notation, we have the restriction operator <span class="math inline">\(R_m\)</span> that satisfies <span class="math display">\[
+\|R_mf\|_{V_m} \leq A_m \|f\|_V,
+\]</span> which is a slightly more targeted bound when <span class="math inline">\(B\)</span> is larger than <span class="math inline">\(V\)</span>.</p>
+<p>We will make the following assumptions about the negative log-likelihood (or potential function) <span class="math inline">\(\Phi\)</span>: For every <span class="math inline">\(\epsilon &gt; 0\)</span>, <span class="math inline">\(r&gt; 0\)</span>, and<a href="#fn68" class="footnote-ref" id="fnref68" role="doc-noteref"><sup>68</sup></a> <span class="math inline">\(\|y\| &lt; r\)</span>, there exist positive constants <span class="math inline">\(C_1, C_2, C_3, C_4\)</span> that may depend on <span class="math inline">\(\epsilon\)</span> and <span class="math inline">\(r\)</span> such that the following 4 conditions hold. (Note: when the norm isn’t specified, we want it to hold over both the <span class="math inline">\(V\)</span> and <span class="math inline">\(B\)</span> norms.)</p>
+<ol type="1">
+<li><p>For all <span class="math inline">\(u \in V \cup \left(\bigcup_{m\geq 1} V_m\right)\)</span> <span class="math display">\[
+\Phi(u;y) \geq C_1 - \epsilon \|u\|^2
+\]</span></p></li>
+<li><p>For every <span class="math inline">\(u\in B\)</span>, <span class="math inline">\(y \in Y\)</span> with <span class="math inline">\(\max \{\|u\|, \|y\|_Y\} &lt; r\)</span>, <span class="math display">\[
+\Phi(u;y) \leq C_2
+\]</span></p></li>
+<li><p>For every <span class="math inline">\(\max \{\|u_1\|_V, \|u_2\|_B, \|y\|_Y\} &lt; r\)</span>, <span class="math display">\[
+|\Phi(u_1; y) - \Phi(u_2; y )| \leq \exp\left(\epsilon\max\{\|u_1\|_V^2, \|u_2\|_B^2\} - C_3\right) \|u_1 - u_2\|_B
+\]</span></p></li>
+<li><p>For every <span class="math inline">\(u\in B\)</span> and <span class="math inline">\(\max \{\|y_1\|_Y, \|y_2\|_Y\} &lt; r\)</span>, <span class="math display">\[
+|\Phi(u; y_1) - \Phi(u; y_2) | \leq  \exp\left(\epsilon \|u\|^2 + C_4\right)\|y_1 - y_2\|_Y
+\]</span></p></li>
+</ol>
+<p>These restrictions are pretty light and are basically what are needed to make sure the posteriors exist. The first one say “don’t grow too fast” to the likelihood and is best explained while humming ABBA’s <a href="https://www.youtube.com/watch?v=hRr7qRb-7k4">Slipping Through My Fingers</a>. The second one makes sure the likelihood isn’t <a href="https://www.youtube.com/watch?v=3wk7C64kaP4">zero</a>. The third and fourth are <a href="https://www.youtube.com/watch?v=0Z-Orh7dpKU">Lipschitz conditions</a> that basically make sure that a small change in <span class="math inline">\(u\)</span> (or <span class="math inline">\(y\)</span>) doesn’t make a big change in the likelihood. It should be pretty clear that if that could happen, the two posteriors wouldn’t be close.</p>
+<p>We are also going to need some conditions on our test functions. Once again, we need them to apply over <span class="math inline">\(V\)</span> and <span class="math inline">\(B\)</span> when no space is specified for the norm.</p>
+<ol type="1">
+<li><p>For all <span class="math inline">\(u \in V\)</span>, <span class="math inline">\(G(u) = \exp(\epsilon \|u\|^2_V+ C_5)\)</span></p></li>
+<li><p>For all <span class="math inline">\(u_1 \in V\)</span>, <span class="math inline">\(u_2 \in V_m\)</span>, <span class="math display">\[
+|G(u_1) - G(u_2)| \leq \exp(\epsilon\max\{\|u_1\|^2_V, \|u_2\|^2_B\})\|u_1 - u_2\|_B.
+\]</span></p></li>
+</ol>
+<p>Under these conditions, we get the following theorem, which is a simplified version of <a href="https://arxiv.org/abs/1111.0641">Theorem A2 here</a>.</p>
+<div id="thm-bound1" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 1 </strong></span>Under the above assumptions, <span class="math display">\[
+\left|\mathbb{E}_{\mu_y}(G(u)) - \mathbb{E}_{\mu^m_y}(G(u_m))\right| \leq C_m \sup_{f \in V}\left(\frac{\|f - R_m f\|_B}{\|f\|_V}\right),
+\]</span> where <span class="math inline">\(C_m\)</span> only depends on <span class="math inline">\(m\)</span> through <span class="math inline">\(A_m\)</span>.</p>
+</div>
+<p>I seriously doubt that the dependence on <span class="math inline">\(A_m\)</span> is exponential, as it is in the proof, but I’m not going to try to track that down. That said, I’m also quite sure that the dependence <span class="math inline">\(C_m\)</span> is not uniform in <span class="math inline">\(m\)</span> unless <span class="math inline">\(A_m\)</span> is constant.</p>
+<p>It’s also worth noting that there’s nothing special about <span class="math inline">\(G\)</span> being real-valued. In general it can take values in any Banach space <span class="math inline">\(E\)</span>. Just replace all those absolute values with norms. That means that the result covers convergence of approximations to things like covariance matrices.</p>
+<details>
+<summary>
+Proof, if you’re interested
+</summary>
+<p>We are interested in approximating <span class="math display">\[
+e_G = \left|\mathbb{E}_{\mu_y}(G(u)) - \mathbb{E}_{\mu^m_y}(G(u_m))\right|.
+\]</span> We can expand this to get <span class="math display">\[\begin{align*}
+e_G \leq &amp; \frac{1}{Z}\left|\mathbb{E}_{\mu_0}\left(G(u)\exp(-\Phi(u;y))\right)
+- \mathbb{E}_{\mu_0^m}\left(G(u_m)\exp(-\Phi(u_mm;y))\right)\right| \\
+&amp;\quad +
+\left|\frac{1}{Z}
+- \frac{1}{Z_m}\right|\mathbb{E}_{\mu_0^m}\left(|G(u_m)|\exp(-\Phi(u_m;y))\right). \\
+&amp;= B_1 + B_2.
+\end{align*}\]</span></p>
+<p>It follows from <a href="https://homepages.warwick.ac.uk/~masdr/BOOKCHAPTERS/stuart15c.pdf">Andrew Stuart’s work</a> that the normalising constants <span class="math inline">\(Z\)</span> and <span class="math inline">\(Z_m\)</span> can be bounded above and below independently of <span class="math inline">\(m\)</span>, so the above expression makes sense.</p>
+<p>We will now attack <span class="math inline">\(B_1\)</span> and <span class="math inline">\(B_2\)</span> separately. To do this, we need to consider the joint prior <span class="math inline">\(\lambda_0(u, u_m)\)</span> that is the joint law of the Gaussian process <span class="math inline">\(u\)</span> and its finite dimensional approximation <span class="math inline">\(u_m = R_m u\)</span>.</p>
+<p>For <span class="math inline">\(B_1\)</span> we basically use the same trick again. <span class="math display">\[\begin{align*}
+ZB_1 \leq &amp; \mathbb{E}_{\lambda_0}\left(|G(u)|\left|\exp(-\Phi(u;y)) -\exp(\Phi(u;y))\right| \right) \\
+&amp;\quad + \mathbb{E}_{\lambda_0}\left(\exp(-\Phi(u_m;y)) | G(u) - G(u_m)|\right) \\
+&amp;\leq  \mathbb{E}_{\lambda_0}\left(\mathrm{e}^{C_5 + \epsilon \|u\|_V^2}\mathrm{e}^{\epsilon\max\{1,A_m\}\|u\|_v^2 - C_1} \mathrm{e}^{\epsilon\max\{1,A_m\}\|u\|_V^2 + C_3}\|u - u_m\|_B\right) \\
+&amp; \quad +\mathbb{E}_{\lambda_0}\left(\mathrm{e}^{\epsilon A_m\|u\|_V^2 - C_1}\mathrm{e}^{\epsilon\max\{1,A_m\}\|u\|_V^2 + C_6}\|u - u_m\|_V\right) \\
+&amp;\leq \sup_{f \in V}\left(\frac{\|f - R_m f\|_B}{\|f\|_V}\right)
+\mathrm{e}^{C_3 + C_5 + C_6 -2 C_1}\mathbb{E}_{\mu_0}\left(\|u\|_V\mathrm{e}^{(1+3\max\{1,A_m\} + A_m)\epsilon \|u\|_V^2}\right)\\
+&amp;\leq C_7 \sup_{f \in V}\left(\frac{\|f - R_m f\|_B}{\|f\|_V}\right),
+\end{align*}\]</span> where the second inequality comes from using all of the assumptions on <span class="math inline">\(\Phi\)</span> and <span class="math inline">\(G\)</span> and noting that <span class="math inline">\(\left|e^{-x} - e^{-y}\right| \leq e^{-\min\{x,y\}}|x-y|\)</span>; and the final inequality comes from Fernique’s theorem, which implies that expectation is finite.</p>
+We can also bound <span class="math inline">\(B_2\)</span> by noting that <span class="math display">\[\begin{align*}
+\left|Z^{-1} - Z_m^{-1} \right| &amp; \leq \max \{Z^{-2}, Z_m^{-2}\}\mathbb{E}_{\lambda_0}\left(|\exp(-\Phi(u;y)) - \exp(-\Phi(u_m;z))\right) \\
+&amp;\leq C_8 \sup_{f \in V}\left(\frac{\|f - R_m f\|_B}{\|f\|_V}\right)
+\end{align*}\]</span> by the same reasoning as above.
+</details>
+</section>
+<section id="dealing-with-the-approximation-error" class="level2">
+<h2 class="anchored" data-anchor-id="dealing-with-the-approximation-error">Dealing with the approximation error</h2>
+<p>The theorem above shows that the worst-case error in posterior functionals caused by replacing a Gaussian process <span class="math inline">\(u\)</span> with it’s approximation <span class="math inline">\(u_m = R_m u\)</span> is driven entirely by how well a general function from <span class="math inline">\(V\)</span> can be approximated by a function in <span class="math inline">\(V_m\)</span>. This is not really a surprising result: if the approximation <span class="math inline">\(u_m\)</span> is unable to approximate the sample paths of <span class="math inline">\(u\)</span> it is very unlikely it will do a good job with <em>all</em> functionals.</p>
+<p>Thankfully, approximation error is one of the better studied things in this world. Especially in the case where <span class="math inline">\(V = B\)</span>.</p>
+<p>For instance, it’s pretty easy to show<a href="#fn69" class="footnote-ref" id="fnref69" role="doc-noteref"><sup>69</sup></a> that if <span class="math inline">\(u\)</span> has <span class="math inline">\(\nu\)</span> derivatives, then <span class="math inline">\(e_G \leq Cm^{-\frac{\nu}{d} + \epsilon}\)</span> for all <span class="math inline">\(\epsilon&gt;0\)</span>.</p>
+<p>If you dive deep enough into the literature, you can get similar results for the type of approximation underneath the subset of regressors approximation.</p>
+<p>For the SPDE approximation, it’s all a little bit more tricky as <span class="math inline">\(V_m \not \subset V\)</span>. But ultimately, you get that, for any <span class="math inline">\(\epsilon &gt;0\)</span>, <span class="math inline">\(e_G \leq C h^{1-\epsilon}\)</span>, where <span class="math inline">\(h\)</span> is a measure of the mesh size<a href="#fn70" class="footnote-ref" id="fnref70" role="doc-noteref"><sup>70</sup></a>. This is roughly what you’d expect, there’s a loss of <span class="math inline">\(\epsilon\)</span> from the ordinary interpolation rate which may or may not be a result of me being a bit shit at maths.</p>
+<p>The argument that gets us here is really cute so I’ll sketch it below. This is here for two reasons: firstly, because I think it’s cool and secondly because the paper is so compressed it’s hard to completely follow the argument, so I thought it would be nice to put on here. (It also took me a whole afternoon to decipher the proof in the paper, which is usually a sign that it could do with a bit of a re-write. How successfully I clarified it is something I will leave up to others to decide.)</p>
+<details>
+<summary>
+Finite element shit
+</summary>
+<p><strong>Setup. Gird yourselves!</strong></p>
+<p>We are going to bound that error rate in a way that’s relevant for the finite element method. The natural choices for the function spaces are <span class="math inline">\(V = H^{1-\epsilon}(\Omega)\)</span> for some fixed <span class="math inline">\(0 &lt; \epsilon &lt; 1/2\)</span> (close to zero is what we want). and <span class="math inline">\(B = L^2(\Omega)\)</span>. (To be honest the domain <span class="math inline">\(\Omega\)</span> isn’t changing so I’m gonna forget it sometimes.)</p>
+<p>Once again, we’re going to assume that <span class="math inline">\(L\)</span> is a second order uniformly elliptic PDE with no first-order terms (aka <span class="math inline">\(b_1 = \cdots = b_d = 0\)</span>) and that <span class="math inline">\(b_0(s) &gt;0\)</span> on some subset of <span class="math inline">\(\Omega\)</span>. We will use the symmetric, coercive bilinear form associated<a href="#fn71" class="footnote-ref" id="fnref71" role="doc-noteref"><sup>71</sup></a> with <span class="math inline">\(L\)</span>, which we can define, for any <span class="math inline">\(u,v \in H^1\)</span>, as <span class="math display">\[
+a(u, v) = \int_\Omega (A(s)\nabla u(s))\cdot \nabla v(s)\,ds + \int_\Omega b_0(s) u(s)v(s)\,ds
+\]</span></p>
+<p>Remembering that <span class="math inline">\(R_m = LL_m^\dagger\)</span>, we have <span class="math display">\[
+\sup_{v \in V}\frac{ \left\|v - R_m v\right\|_B}{\|v\|_V} =\sup_{f\in LV}\frac{ \left\|L^{-1}f - L_n^{\dagger}f\right\|_B}{\|L^{-1}f\|_V}.
+\]</span></p>
+<p>The set of functions <span class="math inline">\(f \in LV\)</span> is the set of all functions <span class="math inline">\(f = Lv\)</span> for some <span class="math inline">\(v \in V\)</span>. It can be shown that <span class="math inline">\(LV = H^{-1-\epsilon}\)</span>, where the negative index indicates a dual Sobolev space (aka the space of continuous linear functionals on <span class="math inline">\(H^{1+ \epsilon}\)</span>).</p>
+<p>This means that we are looking at the difference between the solution to <span class="math inline">\(Lu = f\)</span> and <span class="math inline">\(L_m u_m = f_m\)</span>, where <span class="math inline">\(f_m\)</span> is the <span class="math inline">\(L^2\)</span>-orthogonal projection of <span class="math inline">\(f\)</span> onto <span class="math inline">\(V_m\)</span>, which is the space of piecewise linear functions on some<a href="#fn72" class="footnote-ref" id="fnref72" role="doc-noteref"><sup>72</sup></a> triangular mesh <span class="math inline">\(\mathcal{T}_m\)</span>.</p>
+<p>We define the projection of the function <span class="math inline">\(f \in H^{-1-\epsilon}(\Omega)\)</span> onto <span class="math inline">\(V_m\)</span> as the unique function <span class="math inline">\(f_m \in V_m\)</span> such that<a href="#fn73" class="footnote-ref" id="fnref73" role="doc-noteref"><sup>73</sup></a> <span class="math display">\[
+\int_\Omega f_n(s) v_n(s)\,ds = \int f(s) v_n(s)\,ds, \quad \forall v_n \in V_n.
+\]</span></p>
+<p><strong>Now let’s do this!</strong></p>
+<p>With all of this in place, we can actually do something. We want to bound <span class="math display">\[
+\frac{\|u - u_m\|_{L^2}}{\|u\|_{H^{1+\epsilon}}},
+\]</span> where<a href="#fn74" class="footnote-ref" id="fnref74" role="doc-noteref"><sup>74</sup></a> <span class="math inline">\(a(u, \phi) = \int_\Omega f(s) \phi(s)\,ds\)</span> for all <span class="math inline">\(\phi \in H^{1+\epsilon}\)</span> and <span class="math inline">\(a(u_m, \phi_m) = \int_\Omega f(s) \phi_m(s)\,ds\)</span> for all <span class="math inline">\(\phi_m \in V_m \subset H^{1+\epsilon}\)</span>.</p>
+<p>The key observation is that <span class="math display">\[
+\int_\Omega f(s) \phi_m(s)\,ds = \int_\Omega f_m(s) \phi_m(s)\,ds,
+\]</span> which suggests that <span class="math inline">\(u_m(s)\)</span> is an approximation to <em>two different problems</em>!</p>
+<p>Let’s write this second problem down! We want to find <span class="math inline">\(z^{(m)}\)</span> such that <span class="math display">\[
+a({z}^{(m)}, \phi) = \int_\Omega f_n(s) \phi(s)\,ds \quad \forall \phi \in H^{1} ,
+\]</span> where the <span class="math inline">\(m\)</span> superscript indicates that it depends on <span class="math inline">\(m\)</span> through it’s right hand side. The projection <span class="math inline">\(f_n \in L^2\)</span>, which means that we are in the realm of usual PDEs and (assuming some regularity) <span class="math inline">\(z^{(m)} \in H^2\)</span>.</p>
+<p>Hence, we can write <span class="math display">\[
+\|u - u_m\|_{L^2}\leq \|u - z^{(m)}\|_{L^2} + \|z^{(m)} - u_m\|_{L^2}.
+\]</span></p>
+<p>We can bound the second term almost immediately from standard finite element theory, which says that <span class="math display">\[
+\|z^{(m)} - u_m\|_{L^2} \leq Ch^2 \|f_n\|_{L^2}.
+\]</span></p>
+<p>To estimate <span class="math inline">\(\|f_m\|\)</span> we use the inverse estimates of <a href="https://etna.math.kent.edu/vol.12.2001/pp134-148.dir/pp134-148.pdf">Ben Belgacem and Brenner</a> to show that, for any <span class="math inline">\(v\in L^2(\Omega)\)</span>, <span class="math display">\[
+\int_\Omega f_m(s) v(s) \,ds = \int_\Omega f(s)v_m(s)  \,ds\leq\|f\|_{H^{-1-\epsilon}}\|v_m\|_{H^{1+\epsilon}} \leq Ch^{-1-\epsilon} \|f\|_{H^{-1-\epsilon}} \|v\|_{L^2},
+\]</span> where <span class="math inline">\(v_m\)</span> is the orthogonal projection of <span class="math inline">\(v\)</span> onto <span class="math inline">\(V_m\)</span>.</p>
+<p>If we set <span class="math inline">\(v = f_m\)</span> in the above equation, we get <span class="math inline">\(\|f_m\|_{L^2} \leq Ch^{-1-\epsilon} \|f\|_{H^{-1-\epsilon}}\)</span>, which combines with our previous estimate to give <span class="math display">\[
+\|z^{(m)} - u_m\|_{L^2} \leq Ch^{1-\epsilon} \|f_n\|_{L^2}.
+\]</span></p>
+<p>Finally, to bound <span class="math inline">\(\|u - z^{(m)}\|_{L^2}\)</span> we are going to use one of my<a href="#fn75" class="footnote-ref" id="fnref75" role="doc-noteref"><sup>75</sup></a> favourite arguments. Fix <span class="math inline">\(w \in L^2\)</span> and let <span class="math inline">\(W\)</span> be the solution of the <em>dual</em> equation <span class="math inline">\(a(\phi, W) = \int_\Omega \phi(s)w(s)\,ds\)</span>. It then follows that, for any <span class="math inline">\(v_m \in V_m\)</span>, <span class="math display">\[\begin{align*}
+\left|\int_\Omega (u(s) - z^{(m)}(s))w(s)\,ds\right| &amp;= \left|a(u - z^{(m)}, W)\right| \\
+&amp;= \left|\int_\Omega (f(s) - f_m(s))W(s)\,ds\right|\\
+&amp;= \left|\int_\Omega (f(s) - f_m(s))(W(s) - v_m(s))\,ds\right|\\
+&amp;\leq\left|\int_\Omega f(s)(W(s) - v_m(s))\,ds\right|+  \left|\int_\Omega f_m(s)(W(s) - v_m(s))\,ds\right| \\
+&amp;\leq \|f\|_{H^{-1-\epsilon}}\|W - v_m\|_{H^{1+\epsilon}} + Ch^{-1-\epsilon} \|f\|_{H^{-1-\epsilon}} \|W - v_m\|_{L^2} \\
+&amp;\leq C \|f\|_{H^{-1-\epsilon}} h^{-1 -\epsilon}\left(h^{1+\epsilon}\|W - v_m\|_{H^{1+\epsilon}} +  \|W - v_m\|_{L^2} \right),
+\end{align*}\]</span> where the first line uses the definition of <span class="math inline">\(W\)</span>; the second uses the definition of <span class="math inline">\(u\)</span> and <span class="math inline">\(z^{(m)}\)</span>; the third uses the fact that <span class="math inline">\((f - f_m) \perp V_m\)</span> so subtracting off <span class="math inline">\(v_m\)</span> doesn’t change anything; the fourth is the triangle inequality; the fifth is the Hölder inequality on the left and the estimate from half a screen up on the right; and the sixth line is clean up.</p>
+<p>Because the above bound holds for <em>any</em> <span class="math inline">\(v_m \in V_m\)</span>, we can choose the one that makes the bound the smallest. This leads to <span class="math display">\[\begin{align*}
+\left|\int_\Omega (u(s) - z^{(m)}(s))w(s)\,ds\right| &amp;\leq  C \|f\|_{H^{-1-\epsilon}} h^{-1 -\epsilon}\inf_{v \in V_m}\left(h^{1+\epsilon}\|W - v_m\|_{H^{1+\epsilon}} +  \|W - v_m\|_{L^2} \right) \\
+&amp; \leq C\|f\|_{H^{-1-\epsilon}} h^{-1 -\epsilon} h^2 \|W\|_{H^2}\\
+&amp;\leq C h^{1-\epsilon} \|w\|_{L^2},
+\end{align*}\]</span> where the last two inequalities are Theorem 14.4.2 from Brenner and Scott and a standard estimate of the solution to an elliptic PDE by it’s RHS.</p>
+<p>Putting this all together we get the result. Phew.</p>
+<p>This whole argument was a journey, but I think it’s quite pretty. It’s clobbered together from a lot of sleepless nights and an argument inspired by strip-mining<a href="#fn76" class="footnote-ref" id="fnref76" role="doc-noteref"><sup>76</sup></a> a <a href="https://www.jstor.org/stable/2005390">Ridgeway Scott paper from 1976</a>. Anyway, I think it’s nifty.</p>
+</details>
+</section>
+<section id="wrapping-it-up" class="level2">
+<h2 class="anchored" data-anchor-id="wrapping-it-up">Wrapping it up</h2>
+<p>So. That was quite a lot. I enjoyed it, but I’m weird like that. This has mostly been me trying to remember what I did in 2015. Why? Because I felt like it.</p>
+<p>I also think that there’s some value in this way of thinking about Gaussian processes and it’s nice to show off some ways to use all of that weird shit in <a href="https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/">the last post</a>.</p>
+<p>All of these words can be boiled down to this take away:</p>
+<blockquote class="blockquote">
+<p>If your finite dimensional GP <span class="math inline">\(u_m\)</span> is linked to a GP <span class="math inline">\(u\)</span> by some (potentially non-linear relationship) <span class="math inline">\(u_m= R_m u\)</span>, then the posterior error will be controlled by how well you can approximate a function <span class="math inline">\(v\)</span> that <em>could</em> be a realisation of the GP by <span class="math inline">\(R_m v\)</span>.</p>
+</blockquote>
+<p>This is a very intuitive result if you are already thinking of GP approximation as approximating a random function. But a lot of the literature takes a view that we are approximating a covariance matrix or a multivariate normal. This might be enough to approximate a maximum likelihood estimator, but it’s insufficient for approximating a posterior<a href="#fn77" class="footnote-ref" id="fnref77" role="doc-noteref"><sup>77</sup></a></p>
+<p>Furthermore, because most of the constants in the bounds don’t depend too heavily on the specific finite dimensional approximation (except through <span class="math inline">\(A_m\)</span>), we can roughly say that if we have two methods for approximating a GP, the one that does a better job at approximating functions will be the better choice.</p>
+<p>As long as it was, this isn’t a complete discussion of the problem. We have not considered hyper-parameters! This is a little bit tricky because if <span class="math inline">\(\mu_0\)</span> depends on parameters <span class="math inline">\(\theta\)</span>, then <span class="math inline">\(R_m\)</span> will also depend on parameters (and for subset of regressors, <span class="math inline">\(V_m\)</span> also depends on the parameters).</p>
+<p>In theory, we could use this to bound the error in the posterior <span class="math inline">\(p(\theta \mid y)\)</span>. To see how we would do that, let’s consider the case where we have Gaussian observations.</p>
+<p>Then we get <span class="math display">\[\begin{align*}
+p(\theta \mid y) &amp; \frac{\exp(-\Phi(u;y))}{p(y)} \left[\frac{d\mu_y}{d\mu_0}\right]^{-1} p(\theta) \\
+&amp;= \frac{Z(\theta) p(\theta)}{\int_\Theta Z(\theta)p(\theta)\,d\theta},
+\end{align*}\]</span> where <span class="math inline">\(Z(\theta) = \mathbb{E}_{\mu_0}\left(e^{-\Phi(u;y)}\right)\)</span>.</p>
+<p>We could undoubtedly bound the error in this using similar techniques to the ones we’ve already covered (in fact, we’ve already got a bound on <span class="math inline">\(|Z - Z_m|\)</span>). And then it would just be a matter of piecing it all together.</p>
+<p><a href="https://www.youtube.com/watch?v=bZvNmcU_pUM">But I’m tired and I just want to cry for me.</a></p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Naively: a condescending way to say “the way you were told to use them”<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Is it better to have a large amount of crappy data or a small amount of decent data? Depends on if you’re trying to impress people by being right or by being flashy.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Who doesn’t love a good shape. Or my personal favourite: a point pattern.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Or, hell, this is our information about how to query the Gaussian process to get the information we need for this observation. Because, again, this does not have to be as simple as evaluating the function at a point!<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>This could be time, space, space-time, covariate space, a function space, a lattice, a graph, an orthogonal frame, a manifold, a perversion, whatever. It doesn’t matter. It’s all just Gaussian processes. Don’t let people try to tell you this shit is fancy.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>This could be covariate information, group information, hierarchy information, causal information, survey information, or really anything else you want it to be. Take a deep breath. Locate your inner peace. Add whatever you need to the model to make it go boop.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>I will never use this assumption. Think of it like the probability space at the top of a annals of stats paper.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>So the thing is that this is here because it was funny to me when I wrote it, but real talk: just being like “it’s iid” is some real optimism (optimism, like hope, has no place in statistics.) and pretending that this is a light or inconsequential assumption is putting some bad energy out into the world. But that said, I was once a bit drunk at a bar with a subjective Bayesian (if you want to pick your drinking Bayesian, that’s not a bad choice. They’re all from The North) and he was screaming at me for thinking about what would happen if I had more data, and I was asking him quietly and politely how the data could possibly inform models as complex as he seemed to be proposing. And he said to me: what you do is you look for structures within your data that are exchangeable in some sense (probably after conditioning) and you use those as weak replicates. And, of course, I knew that but I’d never thought about it that way. Modelling, eh. Do it properly.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>These (and the associated parenthetical girls) were supposed to be nested footnotes but Markdown is homophobic and doesn’t allow them. I am being oppressed.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>It’s an interesting area, but the tooling isn’t there for people who don’t want to devote a year of their lives to this to experiment.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>This is what matrix nerds say when they mean “I love you”. Or when they mean that it’s all derived from the structure of a matrix rather than from some structural principles stolen from the underlying problem. The matrix people are complicated.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>The reason for this is that, while there are clever methods for getting determinants of H-matrices, they don’t actually scale all that well. So Geoga, Anitescu, and Stein paper use a Hutchinson estimator of the log-determinant. This has ok relative accuracy, but unfortunately, we need it to have excellent absolute accuracy to use it in a Bayesian procedure (believe me, I have tried). On the other hand, the Hutchinson estimator of the <em>gradient</em> of the log-determinant is pretty stable and gives a really nice approximate gradient. This is why MLE type methods for learning the hyper-parameters of a GP can be made scalable with H-matrix techniques.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>Otherwise, why bother. Just sub-sample and get on the beers. Or the bears. Or both. Whatever floats your boat.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>on <span class="math inline">\(u\)</span> and probably other parameters in the model<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>Dual spaces, y’all. This vector was inevitable because <span class="math inline">\(m\)</span>-dimensional row vectors are the dual space of <span class="math inline">\(\mathbb{R}^m\)</span>, while <span class="math inline">\(s_i \rightarrow u(s_i)\)</span> is in <span class="math inline">\(B^*\)</span>.<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>This is not surprising if you’re familiar with the <a href="https://arxiv.org/abs/1501.06195">sketching-type bounds that Yang, Pilanci and Wainwright did a while back</a> (or, for that matter, with any non-asymptotic bounds involving the the complexity of the RKHS). Isn’t maths fun.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>Hölder<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p>Think “infinitely differentiable but more so”.<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>An analytic function is one that you know will walk straight home from the pub, whereas a <span class="math inline">\(\nu\)</span>-differentiable function might just go around the corner, hop on grindr, and get in a uber. Like he’s not going to go to the other side of the city, but he might pop over to a nearby suburb. A generalised function texts you a photo of a doorway covered by a bin bag with a conveniently placed hole at 2am with no accompanying message other than an address<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20"><p>I mean, I cannot be sure, but I’m pretty sure.<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21"><p>Again, not strictly necessary but it removes a tranche of really annoying technicalities and isn’t an enormous restriction in practice.<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn22"><p>The result is that there is no non-trivial translation invariant measure on a separable Banach space (aka there is no analogue of the Lebesgue measure). You can prove this by using separability to make a disjoint cover of equally sized balls, realise that they would all have to have the same measure, and then say “Fuck. I’ve got too many balls”.<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn23"><p>Borel. Because we have assumed <span class="math inline">\(B\)</span> is separable, the cylindrical <span class="math inline">\(\sigma\)</span>-algebra is identical to the Borel <span class="math inline">\(\sigma\)</span>-algebra and <span class="math inline">\(\mu_0\)</span> is a Radon measure. Party.<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24"><p>See <a href="http://stuart.caltech.edu/publications/pdf/stuart15c.pdf">Andrew Stuart’s long article on formulating Bayesian problems in this context</a> and <a href="http://stuart.caltech.edu/publications/pdf/stuart89.pdf">Masoumeh Dashti and Andrew Stuart’s paper paper on (simple) finite dimensional approximations</a>.<a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn25"><p>The SPDE approach. Read on Macduff.<a href="#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn26"><p>the <a href="https://r-inla.org/">Irish National Liberation Army</a><a href="#fnref26" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn27"><p>This covers GP models, GAMs, lots of spatial models, and a bunch of other stuff.<a href="#fnref27" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn28"><p>Like, the data is a single observation of a point pattern. Or, to put it a different way, a list of (x,y) coordinates of (<em>a priori</em>) unknown length.<a href="#fnref28" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn29"><p>Approximate Markovian GPs in 2-4 dimensions. <a href="https://arxiv.org/abs/2111.01084">See here for some info</a><a href="#fnref29" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn30"><p>Rue. The king of INLA. Another all round fabulous person. And a person foolish enough to hire me twice even though I was very very useless.<a href="#fnref30" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn31"><p>In the interest of accuracy, Janine and I were giving back to back talks at a conference that we decided for some reason to give as a joint talk and I remember her getting more and more agitated as I was sitting in the back row of the conference desperately trying to contort the innards of INLA to the form I needed to make the damn thing work. It worked and we had results to present. We also used the <a href="https://r-inla.org/">INLA software</a> in any number of ways it had not been used before that conference. The talk was pretty well received and I was very relieved. It was also my first real data analysis and I didn’t know to do things like “look at the data” to check assumptions, so it was a bit of a clusterfuck and again Janine was very patient. I was a <em>very</em> useless 25 year old and a truly shit statistician. But we get better if we practice and now I’m a perfectly ok statistician.<a href="#fnref31" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn32"><p>Janine and I, with Finn Lindgren, Sigrunn Sørbye and Håvard Rue, who were all heavily involved throughout but I’m sure I’ve already exhausted people’s patience.<a href="#fnref32" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn33"><p>IIRC, Sigrunn’s university has one of those stupid lists where venue matters more than quality. Australia is also obsessed with this. It’s dumb.<a href="#fnref33" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn34"><p>In hindsight, the reviewer was asking for a simulation study, which is a perfectly reasonable thing to ask for but at the time I couldn’t work out how to do that because, in my naive numerical analyst ways, I thought we would need to compare our answer to a ground truth and I didn’t know how to do that. Now I know that the statistician way is to compute the same thing two different ways on exactly one problem that’s chosen pretty carefully and saying “it looks similar”.<a href="#fnref34" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn35"><p>Conditional on the log-intensity surface, a LGCP is a Poisson process<a href="#fnref35" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn36"><p>is it, though<a href="#fnref36" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn37"><p>My co-authors are all very patient.<a href="#fnref37" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn38"><p>with fixed hyper-parameters<a href="#fnref38" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn39"><p>The thing about inverse problems is that they assume <span class="math inline">\(\Phi(u;y)\)</span> is the solution of some PDE or integral equation, so they don’t make any convenient simplifying assumptions that make their results inapplicable to LGCPs!<a href="#fnref39" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn40"><p>https://arxiv.org/pdf/0901.1342.pdf<a href="#fnref40" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn41"><p>star<a href="#fnref41" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn42"><p>Also weak convergence but metrized by the Wasserstein-1 distance.<a href="#fnref42" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn43"><p>Fernique’s Theorem. I am using “we” very liberally here. Fernique knew and said so in French a while back. Probably the Soviet probabilists knew too but, like, I’m not going to write a history of exponential moments.<a href="#fnref43" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn44"><p>On <span class="math inline">\(L^2\)</span>, which is a Hilbert space so the basis really is countable. The result is a shit-tonne easier to parse if we make <span class="math inline">\(B\)</span> a separable Hilbert space but I’m feeling perverse. If you want the most gloriously psychotic expression of this theorem, check out Theorem 7.3 <a href="https://maths.anu.edu.au/files/CMAproc44-vanNeerven-href.pdf">here</a><a href="#fnref44" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn45"><p>There are tonnes of examples where people do actually use the Karhunen-Loève basis or some other orthogonal basis expansion. Obviously all of this theory holds over there.<a href="#fnref45" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn46"><p>This has many names throughout the literature. I cannae be arsed listing them. But <a href="https://homepages.inf.ed.ac.uk/ckiw/postscript/lskm_chap.pdf">Quiñonero-Candela, Rasmussen, and Williams</a> attribute it to Wahba’s book in 1990.<a href="#fnref46" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn47"><p>Functions of the form <span class="math inline">\(\sum_{i=1}^m a_j r_u(\cdot, s_j)\)</span> are in the RKHS corresponding to covariance function <span class="math inline">\(r_u\)</span>. In fact, you can characterise the whole space as limits of sums that look like that.<a href="#fnref47" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn48"><p>I mean, we are not going to be using the <span class="math inline">\(A_m\)</span> to do anything except grow with <span class="math inline">\(m\)</span>, so the specifics aren’t super important. Because <em>this is a blog post</em>.<a href="#fnref48" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn49"><p>Not every. You do this for nice sets. See Rozanov’s book on Markov random fields if you care.<a href="#fnref49" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn50"><p><span class="math inline">\(d(s, A) = \inf_{s'\in A} \|s - s'\|\)</span><a href="#fnref50" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn51"><p>Rozanov<a href="#fnref51" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn52"><p>The sets on which they are non-zero are different<a href="#fnref52" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn53"><p>For general Markov random fields, this representation still exists, but <span class="math inline">\(L\)</span> is no longer a differential operator (although <span class="math inline">\(L^*L\)</span> must be!). All of the stuff below follows, probably with some amount of hard work to get the theory right.<a href="#fnref53" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn54"><p>What is white noise? It is emphatically not a stochastic process that has the delta function as it’s covariance function. That thing is just ugly. In order to make any of this work, we need to be able to integrate deterministic functions with respect to white noise. Hence, we view it as an independently scattered random measure that satisfies <span class="math inline">\(W(A) \sim N(0, |A|)\)</span> and <span class="math inline">\(\int_A f(s)W(ds) \sim N(0, \int_A f(s)^2\, ds)\)</span>. Section 5.2 of Adler and Taylor’s book Random Fields and Geometry is one place to learn more.<a href="#fnref54" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn55"><p><a href="https://arxiv.org/abs/1802.06350">This paper is a solid review</a><a href="#fnref55" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn56"><p><a href="https://arxiv.org/abs/2006.04917">This paper</a><a href="#fnref56" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn57"><p>Finite element methods had been used before, especially in the splines community, with people like <a href="https://www.jstor.org/stable/3088802?seq=1#metadata_info_tab_contents">Tim Ramsay</a> doing some interesting work. The key insight of Finn’s paper was to link this all to corresponding infinite dimensional Gaussian processes.<a href="#fnref57" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn58"><p>We’re assuming <span class="math inline">\(V_m\subset L^2(\Omega)\)</span>, which is not a big deal.<a href="#fnref58" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn59"><p>See the paper for details of exactly which pseudo-inverse. It doesn’t really matter tbh, it’s just we’ve got to do something with the other degrees of freedom.<a href="#fnref59" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn60"><p>Consult your favourite finite element book and then get pissed off it doesn’t cover higher-order PDEs in any detail.<a href="#fnref60" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn61"><p>It looks like this is vital, but it isn’t. The main thing that changes if your PDE is hyperbolic or parabolic or hypo-elliptic is how you do the discretisation. As long as the PDE is <em>linear</em>, this whole thing works in principle.<a href="#fnref61" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn62"><p>For some <span class="math inline">\(\alpha&gt;0\)</span>, <span class="math inline">\(\sum_{i,j=1}^d w_iw_ja_{ij}(s) \geq \alpha \sum_{i=1}^d w_i^2\)</span> holds for all <span class="math inline">\(s \in \Omega\)</span>.<a href="#fnref62" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn63"><p>For this construction to work in higher dimensions, you need to use a higher-order differential operator. In particular, if you want a continuous field on some subset of <span class="math inline">\(\mathbb{R}^d\)</span>, you need <span class="math inline">\(L\)</span> to be a differential operator of order <span class="math inline">\(&gt;d/2\)</span> or higher. So in 4 dimensions, we need the highest order derivative to be at least 4th order (technically <span class="math inline">\(L\)</span> could be the square root of a 6th order operator, but that gets hairy).<a href="#fnref63" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn64"><p>It holds in general, but if the linear terms are dominant (a so-called advection-driven diffusion), then you will need a different numerical method to get a stable estimate.<a href="#fnref64" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn65"><p>Modulo some smoothness requirements on <span class="math inline">\(\Omega\)</span> and <span class="math inline">\(a_{ij}(s)\)</span>.<a href="#fnref65" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn66"><p>It’s very easy to model <a href="https://arxiv.org/abs/1304.6949">weird anisotropies</a> and to work on manifolds<a href="#fnref66" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn67"><p><a href="https://arxiv.org/abs/1710.05013">eg this comparison</a><a href="#fnref67" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn68"><p>Let’s not let any of the data fly off to infinity!<a href="#fnref68" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn69"><p>Corollary A2 in the paper we’re following<a href="#fnref69" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn70"><p>Think of it as the triangle diameter if you want.<a href="#fnref70" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn71"><p>Integration by parts gives us <span class="math inline">\(\int_\Omega (Lu(s))v(s)\,ds = a(u,v)\)</span> if everything is smooth enough. We do this to confuse people and because it makes all of the maths work.<a href="#fnref71" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn72"><p>not weird<a href="#fnref72" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn73"><p><span class="math inline">\(f\)</span> is a generalised function so we are interpreting the integrals as duality pairings. This makes sense because <span class="math inline">\(V_m \subset H^{1+\epsilon}\)</span> if we allow for a mesh-dependent embedding constant (this is why we don’t use <span class="math inline">\(B = H^{1+\epsilon}\)</span>)<a href="#fnref73" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn74"><p>This is how fancy people define solutions to PDEs. We’re fancy.<a href="#fnref74" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn75"><p>Also everyone else’s, but it’s so elegantly deployed here. This is what I stole from <a href="https://www.jstor.org/stable/2005390">Scott 1976)</a><a href="#fnref75" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn76"><p>Real talk. I can sorta see where this argument is in the Scott paper, but I must’ve been really in the pocket when I wrote this because phew it is not an obvious transposition.<a href="#fnref76" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn77"><p>Unless the approximation is very, very good. If we want to be pedantic, we’re approximating everything by floating point arithmetic. But we’re usually doing a good job.<a href="#fnref77" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2021,
+  author = {Dan Simpson},
+  editor = {},
+  title = {Getting into the Subspace; or What Happens When You
+    Approximate a {Gaussian} Process},
+  date = {2021-11-24},
+  url = {https://dansblog.netlify.app/getting-into-the-subspace},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2021" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Dan Simpson. 2021. <span>“Getting into the Subspace; or What Happens
+When You Approximate a Gaussian Process.”</span> November 24, 2021. <a href="https://dansblog.netlify.app/getting-into-the-subspace">https://dansblog.netlify.app/getting-into-the-subspace</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.15">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dan Simpson">
+<meta name="dcterms.date" content="2022-05-16">
+<meta name="description" content="Just some harmeless notes. Like the ones Judy Dench took in that movie.">
+
+<title>Un garçon pas comme les autres (Bayes) - Sparse Matrices 4: Design is my passion</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Un garçon pas comme les autres (Bayes) - Sparse Matrices 4: Design is my passion">
+<meta property="og:description" content="Just some harmeless notes. Like the ones Judy Dench took in that movie.">
+<meta property="og:image" content="https://dansblog.netlify.app/posts/2022-05-16-design-is-my-passion-sparse-matrices-part-four/scrod.JPG">
+<meta property="og:site-name" content="Un garçon pas comme les autres (Bayes)">
+<meta name="twitter:title" content="Sparse Matrices 4: Design is my passion">
+<meta name="twitter:description" content="Just some harmeless notes. Like the ones Judy Dench took in that movie.">
+<meta name="twitter:image" content="https://dansblog.netlify.app/posts/2022-05-16-design-is-my-passion-sparse-matrices-part-four/scrod.JPG">
+<meta name="twitter:creator" content="@dan_p_simpson">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Un garçon pas comme les autres (Bayes)</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About this blog</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/dan_p_simpson"><i class="bi bi-twitter" role="img" aria-label="twitter">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/dpsimpson"><i class="bi bi-github" role="img" aria-label="github">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://dansblog.netlify.app"><i class="bi bi-person-circle" role="img" aria-label="website">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Sparse Matrices 4: Design is my passion</h1>
+                  <div>
+        <div class="description">
+          <p>Just some harmeless notes. Like the ones Judy Dench took in that movie.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Sparse matrices</div>
+                <div class="quarto-category">Sparse Cholesky factorisation</div>
+                <div class="quarto-category">Python</div>
+                <div class="quarto-category">JAX</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Dan Simpson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 16, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#what-are-we-trying-to-do-here" id="toc-what-are-we-trying-to-do-here" class="nav-link active" data-scroll-target="#what-are-we-trying-to-do-here">What are we trying to do here?</a></li>
+  <li><a href="#option-1-the-direct-design" id="toc-option-1-the-direct-design" class="nav-link" data-scroll-target="#option-1-the-direct-design">Option 1: The direct design</a></li>
+  <li><a href="#option-2-implement-all-of-the-combinations-of-functions-that-we-need" id="toc-option-2-implement-all-of-the-combinations-of-functions-that-we-need" class="nav-link" data-scroll-target="#option-2-implement-all-of-the-combinations-of-functions-that-we-need">Option 2: Implement all of the combinations of functions that we need</a></li>
+  <li><a href="#option-3-just-compute-the-cholesky" id="toc-option-3-just-compute-the-cholesky" class="nav-link" data-scroll-target="#option-3-just-compute-the-cholesky">Option 3: Just compute the Cholesky</a></li>
+  <li><a href="#option-4-functors" id="toc-option-4-functors" class="nav-link" data-scroll-target="#option-4-functors">Option 4: Functors!</a></li>
+  <li><a href="#which-one-should-we-use" id="toc-which-one-should-we-use" class="nav-link" data-scroll-target="#which-one-should-we-use">Which one should we use?</a></li>
+  </ul>
+</nav>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>This is the fourth post in a series where I try to squeeze autodiffable sparse matrices into JAX with the aim to speed up some model classes in PyMC. So far, I have:</p>
+<ul>
+<li>Outlined the problem <a href="https://dansblog.netlify.app/posts/2022-03-22-a-linear-mixed-effects-model/">Post 1</a></li>
+<li>Worked through a basic python implementation of a sparse Cholesky decomposition <a href="https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/">Post 2</a></li>
+<li>Failed to get JAX to transform some numpy code into efficient, JIT-compileable code <a href="https://dansblog.netlify.app/posts/2022-05-14-jax-ing-a-sparse-cholesky-factorisation-part-3-in-an-ongoing-journey/">Post 3</a></li>
+</ul>
+<p>I am in the process of writing a blog on building new primitives<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> into JAX, but as I was doing it I accidentally wrote a long section about options for exposing sparse matrices. It really didn’t fit very well into that blog, so here it is.</p>
+<section id="what-are-we-trying-to-do-here" class="level2">
+<h2 class="anchored" data-anchor-id="what-are-we-trying-to-do-here">What are we trying to do here?</h2>
+<p>If you recall from <a href="">the first blog</a>, we need to be able to compute the value and gradients of the (un-normalised) log-posterior <span class="math display">\[
+\log(p(\theta \mid y)) = \frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TA^TW^{-1}y + \frac{1}{2} \log(|Q(\theta)|) - \frac{1}{2}\log(|Q_{u\mid y, \theta}(\theta)|) + \text{const},
+\]</span> where <span class="math inline">\(Q(\theta)\)</span> is a sparse matrix, and <span class="math display">\[
+\mu_{u\mid y, \theta}(\theta) = \frac{1}{\sigma^2} Q_{u\mid y,\theta}(\theta)^{-1} A^TW^{-1}y.
+\]</span></p>
+<p>Overall, our task is to design a system where this un-normalised log-posterior can be evaluated and differentiated efficiently. As with all design problems, there are a lot of different ways that we can implement it. They share a bunch of similarities, so we will actually end up implementing the guts of all of the systems.</p>
+<p>To that end, let’s think of all of the ways we can implement our target<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+</section>
+<section id="option-1-the-direct-design" class="level2">
+<h2 class="anchored" data-anchor-id="option-1-the-direct-design">Option 1: The direct design</h2>
+<ul>
+<li><span class="math inline">\(A \rightarrow \log(|A|)\)</span>, for a sparse, symmetric positive definite matrix <span class="math inline">\(A\)</span></li>
+<li><span class="math inline">\((A,b) \rightarrow A^{-1}b\)</span>, for a sparse, symmetric positive definite matrix <span class="math inline">\(A\)</span> and a vector <span class="math inline">\(b\)</span></li>
+</ul>
+<p>This option is, in some sense, the most straightforward. We implement primitives for both of the major components of our target and combine them using existing JAX primitives (like addition, scalar multiplication, and dot products).</p>
+<p>This is a bad idea.</p>
+<p>The problem is that both primitives require the Cholesky decomposition of <span class="math inline">\(A\)</span>, so if we take this route we might end up computing an extra Cholesky decomposition. And you may ask yourself: <em>what’s an extra Cholesky decomposition between friends?</em></p>
+<p>Well, Jonathan, it’s the most expensive operation we are doing for these models, so perhaps we should avoid the 1/3 increase in running time!</p>
+<p>There are some ways around this. We might implement sparse, symmetric positive definite matrices as a class that, upon instantiation, computes the Cholesky factorisation.</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">class</span> SPDSparse: </span>
+<span id="cb1-2"><a href="#cb1-2"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, A_indices, A_indptr, A_x):</span>
+<span id="cb1-3"><a href="#cb1-3"></a>    <span class="va">self</span>._perm, <span class="va">self</span>._iperm <span class="op">=</span> _find_perm(A_indices, A_indptr)</span>
+<span id="cb1-4"><a href="#cb1-4"></a>    <span class="va">self</span>._A_indices, <span class="va">self</span>._A_indptr, <span class="va">self</span>._A_x <span class="op">=</span> _twist(<span class="va">self</span>._perm, A_indices, A_indptr, A_x)</span>
+<span id="cb1-5"><a href="#cb1-5"></a>    <span class="cf">try</span>:</span>
+<span id="cb1-6"><a href="#cb1-6"></a>      <span class="va">self</span>._L_indices, <span class="va">self</span>._L_indptr, <span class="va">self</span>._L_x <span class="op">=</span> _compute_cholesky()</span>
+<span id="cb1-7"><a href="#cb1-7"></a>    <span class="cf">except</span> SPDError:</span>
+<span id="cb1-8"><a href="#cb1-8"></a>      <span class="bu">print</span>(<span class="st">"Matrix is not symmetric positive definite to machine precision."</span>)</span>
+<span id="cb1-9"><a href="#cb1-9"></a>  </span>
+<span id="cb1-10"><a href="#cb1-10"></a>  <span class="kw">def</span> _find_perm(<span class="va">self</span>, indices, indptr):</span>
+<span id="cb1-11"><a href="#cb1-11"></a>    <span class="co">"""Finds the best fill-reducing permutation"""</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a>    <span class="cf">raise</span> <span class="va">NotImplemented</span>(<span class="st">"_find_perm"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13"></a>  </span>
+<span id="cb1-14"><a href="#cb1-14"></a>  <span class="kw">def</span> _twist(<span class="va">self</span>, perm, indices, indptr, x):</span>
+<span id="cb1-15"><a href="#cb1-15"></a>    <span class="co">"""Returns A[perm, perm]"""</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a>    <span class="cf">raise</span> <span class="va">NotImplemented</span>(<span class="st">"_twist"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17"></a>  </span>
+<span id="cb1-18"><a href="#cb1-18"></a>  <span class="kw">def</span> _compute_cholesky():</span>
+<span id="cb1-19"><a href="#cb1-19"></a>    <span class="co">"""Compute the Cholesky decomposition of the permuted matrix"""</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a>    <span class="cf">raise</span> <span class="va">NotImplemented</span>(<span class="st">"_compute_cholesky"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21"></a>  </span>
+<span id="cb1-22"><a href="#cb1-22"></a>  <span class="co"># Not pictured: a whole forest of gets</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In contexts where we need a Cholesky decomposition of every SPD matrix we instantiate, this design might be useful. It might also be useful to write a constructor that takes a <code>jax.experimental.CSCMatrix</code>, so that we could build a differentiable matrix and then just absolutely <em>slam</em> it into our filthy little Cholesky context<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
+<p>In order to use this type of pattern with JAX, we would need to register it as a Pytree class, which involves writing flatten and unflatten routines. The <a href="https://github.com/google/jax/blob/712ab66f2855acf8a3f3c3977f80edb4447e7644/jax/experimental/sparse/csr.py">CSCSparse class</a> is a good example of how to implement this type of thing. Some care would be needed to make sure the differentiation rules don’t try to do something stupid like differentiate with respect to <code>self.iperm</code> or <code>self.L_x</code>. This is beyond the extra <a href="https://github.com/google/jax/blob/712ab66f2855acf8a3f3c3977f80edb4447e7644/jax/experimental/sparse/ad.py">autodiff sugar</a> in the experimental sparse library.</p>
+<p>Implementing this would be quite an undertaking, but it’s certainly an option. The most obvious downside of this pattern (plus a fully functional sparse matrix class) is that it may end up being quite delicate to have this volume of auxillary information<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> in a pytree while making everything differentiate properly. This doesn’t seem to be how most parts of JAX has been built. There are also a couple of <a href="https://jax.readthedocs.io/en/latest/pytrees.html#custom-pytrees-and-initialization">sharp corners</a> we could run into with instantiation.</p>
+<p>To close this out, it’s worth noting a variation on this pattern that comes up: the optional Cholesky. The idea is that rather than compute the permutations and the Cholesky factorisation on initialisation, we store a boolean flag in the class <code>is_cholesky</code> and, whenever we need a Cholesky factor we check <code>is_cholesky</code> and if it’s <code>True</code> we use the computed Cholesky factor and otherwise we compute it and set <code>is_cholesky = True</code>.</p>
+<p>This pattern introduces state to the object: it is no longer <em>set and forget</em>. This will not work within JAX<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>, where objects need to be immutable. It’s also not an exceptional pattern in general: it is considerably easier to debug code with stateless objects.</p>
+</section>
+<section id="option-2-implement-all-of-the-combinations-of-functions-that-we-need" class="level2">
+<h2 class="anchored" data-anchor-id="option-2-implement-all-of-the-combinations-of-functions-that-we-need">Option 2: Implement all of the combinations of functions that we need</h2>
+<p>Rather than dicking around with classes, we could just implement primitives that compute</p>
+<ul>
+<li><span class="math inline">\(A \rightarrow \log(|A|)\)</span>, for a sparse, symmetric positive definite matrix <span class="math inline">\(A\)</span></li>
+<li><span class="math inline">\((A,b, c) \rightarrow \log(|A|) + c^TA^{-1}b\)</span>, for a sparse, symmetric positive definite matrix <span class="math inline">\(A\)</span> and vectors <span class="math inline">\(b\)</span> and <span class="math inline">\(c\)</span>.</li>
+</ul>
+<p>This is exactly what we need to do our task and nothing more. It won’t result in any unnecessary Cholesky factors. It doesn’t need us to store computed Cholesky factors. We can simply eat, prey, love.</p>
+<p>The obvious downside to this option is it’s going to just massively expand the codebase if there are more things that we want to do. It’s also not obvious why we would do this instead of just making <span class="math inline">\(\log p(\theta \mid y)\)</span> a primitive<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>.</p>
+</section>
+<section id="option-3-just-compute-the-cholesky" class="level2">
+<h2 class="anchored" data-anchor-id="option-3-just-compute-the-cholesky">Option 3: Just compute the Cholesky</h2>
+<p>Our third option is to simply compute (and differentiate) the Cholesky factor directly. We can then compute <span class="math inline">\(\log(|A|)\)</span> and <span class="math inline">\(A^{-1}b\)</span> through a combination of differentiable operations on the elements of the Cholesky factor (for <span class="math inline">\(\log(|A|)\)</span>) and triangular linear solves <span class="math inline">\(L^{-1}b\)</span> and <span class="math inline">\(L^{-T}c\)</span> (for <span class="math inline">\(A^{-1}b\)</span>).</p>
+<p>Hence we require the following two<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> JAX primitives:</p>
+<ul>
+<li><span class="math inline">\(A \rightarrow \operatorname{chol}(A)\)</span>, where <span class="math inline">\(\operatorname{chol}(A)\)</span> is the Cholesky factor of <span class="math inline">\(A\)</span>,</li>
+<li><span class="math inline">\((L, b) \rightarrow L^{-1} b\)</span> and <span class="math inline">\((L, b) \rightarrow L^{-T}b\)</span> for lower-triangular sparse matrix <span class="math inline">\(L\)</span>.</li>
+</ul>
+<p>This is pretty close to how the dense version of this function would be implemented.</p>
+<p>There are two little challenges with this pattern:</p>
+<ol type="1">
+<li><p>We are adding another large-ish node <span class="math inline">\(L\)</span> to our autodiff tree. As we saw in other patterns, this is unnecessary storage for our problem at hand.</p></li>
+<li><p>The number of non-zeros in <span class="math inline">\(L\)</span> is a function of the non-zero pattern of <span class="math inline">\(A\)</span>. This means the Cholesky will need to be implemented very carefully to ensure that its traceable enough.</p></li>
+</ol>
+<p>The second point here might actually be an issue. To be honest, I have no idea. I think maybe it’s fine? But I need to do a close read on <a href="https://jax.readthedocs.io/en/latest/notebooks/How_JAX_primitives_work.html#reverse-differentiation">the adding primitives doc</a>. Essentially, as long as the abstract traces just need shapes but not dimensions, we should be ok.</p>
+<p>For adding this to something like Stan, however, we will likely need to do some extra work to make sure we know the number of parameters.</p>
+<p>The advantage of this type of design pattern is that it gives users the flexibility to do whatever perverted thing they want to do with the Cholesky triangle. For example, they might want to do a centring/non-centring transformation. In Option 1, we would need to write explicit functions to let them do that (not difficult, but there’s a lot of code to write, which has the annoying tendency to increases the maintainence burden).</p>
+</section>
+<section id="option-4-functors" class="level2">
+<h2 class="anchored" data-anchor-id="option-4-functors">Option 4: Functors!</h2>
+<p>A slightly wilder design pattern would be to abandon sparse matrices and just make functions <code>A(theta, ...)</code> that return a sparse matrix. If that function is differentiable wrt its first argument, then we can build this whole thing up that way.</p>
+<p>In reality, the only way I can think of to implement this pattern would be to implement a whole differentiable sparse matrix arithmetic (make operations like <code>alpha * A + beta * B</code>, <code>C * D</code> work for sparse matrices). At which point, we’ve basically just recreated option 1.</p>
+<p>I’m really only bringing up functors because unlike sparse matrices, it is actually a pretty good model for implementing Gaussian Processes with general covariance functions. There’s a little bit of the idea in <a href="https://github.com/stan-dev/math/issues/1011">this Stan issue</a> that, to my knowledge, hasn’t gone anywhere. More recently, a variant has been used successfully in the (as yet un-merged) <a href="https://github.com/stan-dev/math/tree/try-laplace_student/stan/math/laplace">Laplace approximation feature</a> in Stan.</p>
+</section>
+<section id="which-one-should-we-use" class="level2">
+<h2 class="anchored" data-anchor-id="which-one-should-we-use">Which one should we use?</h2>
+<p>We don’t really need to make that choice yet. So we won’t.</p>
+<p>But personally, I like option 1. I expect everyone else on earth would prefer option 3. For densities that see a lot of action, it would make quite a bit of sense to consider making that density a primitive when it has a complex derivative (<em>à la</em> option 2).</p>
+<p>But for now, let’s park this and start getting in on the implementations.</p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>functions that have explicit transformations written for them (eg explicit instruction on how to JIT or how to differentiate)<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>I get sick of typing “unnormalised log-posterior”<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>I am sorry. I have had some wine.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Permuations, cholesky, etc<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>This also won’t work in Stan, because all Stan objects are stateless.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>This is actually what Stan has done for a bunch of its <a href="https://mc-stan.org/docs/2_29/functions-reference/poisson-log-glm.html">GLM-type models</a>. It’s very efficient and fast. But with a maintainance burden.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>or three, but you can implement both triangular solves in one function<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2022,
+  author = {Dan Simpson},
+  editor = {},
+  title = {Sparse {Matrices} 4: {Design} Is My Passion},
+  date = {2022-05-16},
+  url = {https://dansblog.netlify.app/2022-05-16-design-is-my-passion-sparse-matrices-part-four},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Dan Simpson. 2022. <span>“Sparse Matrices 4: Design Is My
+Passion.”</span> May 16, 2022. <a href="https://dansblog.netlify.app/2022-05-16-design-is-my-passion-sparse-matrices-part-four">https://dansblog.netlify.app/2022-05-16-design-is-my-passion-sparse-matrices-part-four</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

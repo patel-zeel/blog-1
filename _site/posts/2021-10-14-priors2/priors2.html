@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.15">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dan Simpson">
+<meta name="dcterms.date" content="2021-10-16">
+<meta name="description" content="Conjugate Priors? The crystal deoderant of Bayesian statistics">
+
+<title>Un garçon pas comme les autres (Bayes) - Priors: Whole New Way (Track 2)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Un garçon pas comme les autres (Bayes) - Priors: Whole New Way (Track 2)">
+<meta property="og:description" content="Conjugate Priors? The crystal deoderant of Bayesian statistics">
+<meta property="og:image" content="https://dansblog.netlify.app/posts/2021-10-14-priors2/nun.JPG">
+<meta property="og:site-name" content="Un garçon pas comme les autres (Bayes)">
+<meta name="twitter:title" content="Priors: Whole New Way (Track 2)">
+<meta name="twitter:description" content="Conjugate Priors? The crystal deoderant of Bayesian statistics">
+<meta name="twitter:image" content="https://dansblog.netlify.app/posts/2021-10-14-priors2/nun.JPG">
+<meta name="twitter:creator" content="@dan_p_simpson">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Un garçon pas comme les autres (Bayes)</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About this blog</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/dan_p_simpson"><i class="bi bi-twitter" role="img" aria-label="twitter">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/dpsimpson"><i class="bi bi-github" role="img" aria-label="github">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://dansblog.netlify.app"><i class="bi bi-person-circle" role="img" aria-label="website">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Priors: Whole New Way (Track 2)</h1>
+                  <div>
+        <div class="description">
+          <p>Conjugate Priors? The crystal deoderant of Bayesian statistics</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Prior distributions</div>
+                <div class="quarto-category">Fundamentals</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Dan Simpson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 16, 2021</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#what-is-a-conjugate-prior" id="toc-what-is-a-conjugate-prior" class="nav-link active" data-scroll-target="#what-is-a-conjugate-prior">What is a conjugate prior?</a></li>
+  <li><a href="#who-uses-conjugate-priors" id="toc-who-uses-conjugate-priors" class="nav-link" data-scroll-target="#who-uses-conjugate-priors">Who uses conjugate priors?</a></li>
+  <li><a href="#should-i-use-conjugate-priors" id="toc-should-i-use-conjugate-priors" class="nav-link" data-scroll-target="#should-i-use-conjugate-priors">Should I use conjugate priors?</a></li>
+  <li><a href="#ok.-maybe-we-should-try-again" id="toc-ok.-maybe-we-should-try-again" class="nav-link" data-scroll-target="#ok.-maybe-we-should-try-again">Ok. Maybe we should try again</a>
+  <ul class="collapse">
+  <li><a href="#what-is-a-conjugate-prior-1" id="toc-what-is-a-conjugate-prior-1" class="nav-link" data-scroll-target="#what-is-a-conjugate-prior-1">What is a conjugate prior?</a></li>
+  <li><a href="#who-uses-conjugate-priors-1" id="toc-who-uses-conjugate-priors-1" class="nav-link" data-scroll-target="#who-uses-conjugate-priors-1">Who uses conjugate priors?</a></li>
+  <li><a href="#should-i-use-conjugate-priors-1" id="toc-should-i-use-conjugate-priors-1" class="nav-link" data-scroll-target="#should-i-use-conjugate-priors-1">Should I use conjugate priors?</a></li>
+  <li><a href="#a-conclusion-such-as-it-is" id="toc-a-conclusion-such-as-it-is" class="nav-link" data-scroll-target="#a-conclusion-such-as-it-is">A conclusion, such as it is</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>If we’re going to talk about priors, let’s talk about priors. And let’s talk about the most prior-y priors in the whole damn prior universe. Let’s talk about <em>conjugate priors</em>.</p>
+<section id="what-is-a-conjugate-prior" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-a-conjugate-prior">What is a conjugate prior?</h3>
+<p>Who cares.</p>
+</section>
+<section id="who-uses-conjugate-priors" class="level3">
+<h3 class="anchored" data-anchor-id="who-uses-conjugate-priors">Who uses conjugate priors?</h3>
+<p>90s revivalists.</p>
+</section>
+<section id="should-i-use-conjugate-priors" class="level3">
+<h3 class="anchored" data-anchor-id="should-i-use-conjugate-priors">Should I use conjugate priors?</h3>
+<p>Live your life.</p>
+</section>
+<section id="ok.-maybe-we-should-try-again" class="level2">
+<h2 class="anchored" data-anchor-id="ok.-maybe-we-should-try-again">Ok. Maybe we should try again</h2>
+<p>Deep breaths. You soul is an island of positivity.</p>
+<section id="what-is-a-conjugate-prior-1" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-a-conjugate-prior-1">What is a conjugate prior?</h3>
+<p>Conjugate priors are wild and fabulous beasts. They roam the strange, mathematic plains and live forever in our dreams of a better future.</p>
+<p>Too much?</p>
+<p>OK.</p>
+<p>Conjugate priors are a mathematical curiosity that occasional turn out to be slightly useful.</p>
+<p>A prior distribution <span class="math inline">\(p(\theta)\)</span> is <em>conjugate</em> to the likelihood<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="math inline">\(p(y \mid \theta)\)</span> if the <em>posterior distribution</em> <span class="math inline">\(p(\theta \mid y)\)</span> is in the same distributional family as the prior.</p>
+<p>Moreover, there is an rule to update the parameters in the prior to get the parameters in the posterior based on some simple summaries of the data. This means that you can simply write the posterior down as a specific distribution that you can<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> easily sample from and get on with your life.</p>
+<p>Really, it seems like a pretty good thing. But there is, unsurprisingly, a hitch: almost no likelihoods have conjugate priors. And if you happen to have a model with a nice<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> conjugate prior then good for you, but if you modify your model even slightly, you will no longer have one.</p>
+<p>That is, the restriction to conjugate priors is a massive restriction on your <em>entire</em> model.</p>
+</section>
+<section id="who-uses-conjugate-priors-1" class="level3">
+<h3 class="anchored" data-anchor-id="who-uses-conjugate-priors-1">Who uses conjugate priors?</h3>
+<p>Conjugate priors are primarily used by two types of people:</p>
+<ol type="1">
+<li>People who need to write exam questions for undergraduate Bayesian statistics courses<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>,</li>
+<li>People who need to implement a Gibbs sampler and don’t want to live through the nightmare<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> that is Metropolis-within-Gibbs.</li>
+</ol>
+<p>For the most part, we can ignore the first group of people as a drain on society.</p>
+<p>The second group is made up of:</p>
+<ul>
+<li><p>people who are using software that forces it on them. And like we don’t all have time to learn new software<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. Leave, as hero<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> Chris Crocker, Britney alone.</p></li>
+<li><p>people who are writing their own Gibbs sampler. Annie Lennox said it best: <a href="https://www.youtube.com/watch?v=HG7I4oniOyA">Why-y-y-y-y-y-y-y-y-y-y?</a> For a very large variety of problems, <em>you do not have to do this</em><a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>. The exception is when you have a discrete parameter in your model that you can’t marginalise out<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>, like an exponential random graph model or something equally hideous. Thankfully, a lot of work in machine learning has expanded the options for Bayesian and pseudo-semi-kinda Bayesian<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a> estimation of these types of models. Anyway. Discrete parameters are disgusting. I am tremendously indiscrete.</p></li>
+</ul>
+<p>The third type are the odd ducks who insist that because the posterior and the prior being in the same family means that the prior can be interpreted as the outcome of Bayesian analysis on a previous experiment. Instead of the much more realistic way of arriving at a conjugate prior where you find yourself waking up alone in a bathtub full of ice and using an <span class="math inline">\(\text{Inverse-Gamma}(1/2, 0.0005)\)</span> prior on the variance (which is conjugate for a Gaussian likelihood) because some paper from 1995<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> told you it was a good choice.</p>
+</section>
+<section id="should-i-use-conjugate-priors-1" class="level3">
+<h3 class="anchored" data-anchor-id="should-i-use-conjugate-priors-1">Should I use conjugate priors?</h3>
+<p>There is actually one situation where they can be pretty useful. If your parameter space breaks down into <span class="math inline">\(\theta = (\eta, \phi)\)</span>, where <span class="math inline">\(\eta\)</span> is a high-dimensional variable, then if <span class="math inline">\(p(y \mid \theta) = p(y \mid \eta)\)</span> and <span class="math inline">\(p(\eta \mid \phi)\)</span> is conjugate for <span class="math inline">\(p(y \mid \eta)\)</span>, then a <em>magical</em> thing happens: you can compute <span class="math inline">\(p(\eta \mid y, \phi)\)</span> explicitly (using the conjugate property) and then you can greatly simplify the posterior as <span class="math inline">\(p(\theta\mid y ) = p(\eta \mid y, \phi) p(\phi \mid y)\)</span>, where<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> <span class="math display">\[
+p(\phi \mid y) = \frac{p(y \mid \eta)p(\eta \mid \phi)p(\phi)}{p(y) p(\eta \mid y, \phi)} \propto \left.\frac{p(y \mid \eta)p(\eta \mid \phi)p(\phi)}{p(\eta \mid y, \phi)}\right|_{\eta = \text{anything}},
+\]</span> where every term on the right hand side is able to be calculated<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a>. Even if this doesn’t have a known distribution form, it is much much lower-dimensional than the original problem and much more amenable to MCMC or <a href="https://arxiv.org/abs/2101.04468">possibly deterministic integration methods</a>.</p>
+<p>This really does feel a bit abstract, so I will give you the one case where I know it’s used very commonly.This is the case where <span class="math inline">\(y \sim N(A\eta, R)\)</span> and<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> <span class="math inline">\(\eta \mid \phi \sim N(0, \Sigma(\phi))\)</span>, where <span class="math inline">\(\Sigma(\phi)\)</span> is a covariance matrix and <span class="math inline">\(A\)</span> is a matrix (the dimension of <span class="math inline">\(\eta\)</span> is often higher than the dimension of <span class="math inline">\(y\)</span>).</p>
+<p>This is an example of a class of models that occur <em>constantly</em> in statistics: Håvard Rue<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a> calls them Latent Gaussian models. They basically extend<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> <code>(geostatistical)? linear|additive (mixed)? models</code>. So for all of these models, we can explicitly integrate out the high-dimensional Gaussian component, which makes inference <em>a breeze</em><a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a>.</p>
+<p>It gets slightly better than that because if you combine this observation with a clever asymptotic approximation, you get an approximately conjugate model and can produce Laplace approximations, nested Laplace approximations<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a>, and Integrated Nested Laplace approximations<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a>, depending on how hard you are willing to work.</p>
+</section>
+<section id="a-conclusion-such-as-it-is" class="level3">
+<h3 class="anchored" data-anchor-id="a-conclusion-such-as-it-is">A conclusion, such as it is</h3>
+<p>Yes we have drifted somewhat from the topic, but that’s because the topic is boring.</p>
+<p>Conjugate priors are mostly a mathematical curiosity and their role in Bayesian statistics is inexplicably inflated<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a> to make them seem like a core topic. If you never learn about conjugate priors your Bayesian education will not be lacking anything. It will not meaningfully impact your practice. But even stopped clocks are right 2-3 times a day<a href="#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a></p>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Like all areas of Bayesian statistics, conjugate priors push back against the notion of Arianism.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>often, but not always<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Christian Robert’s book The Bayesian Choice has an example where a model has a conjugate prior but it doesn’t normalise easily.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Or, in my case, it’s explicitly listed on the syllabus.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Not a nightmare.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>I’m equally likely to learn Julia and Stata. Which is is to say I’m tremendously unlikely to put the effort in to either. I wish them both well. Live your life and let me live mine.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>I have not fact checked this recently, and we all know white gays sometimes go bad. But he started from a good place, so I’m sure it’s fine.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>There is pedagogical value in learning how MCMC methods work by implementing them yourself. But girl it is 2021. Go fuck with a bouncy particle sampler or something. Live your live out loud! <a href="https://www.youtube.com/watch?v=qZ88c7Wb-34">Young Bayesians run free</a><a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>Often, like with mixture models or hidden markov models, you can eg https://mc-stan.org/docs/2_22/stan-users-guide/latent-discrete-chapter.html<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>The difference between these things is pretty slight in the usual situation where your MCMC scheme doesn’t explore the space particularly well. I’m not of the opinion that you either explore the full posterior or you don’t use the model. Most of the time you do perfectly fine with approximate exploration or, at least, you do as well as anything else will.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>BERNARDINELLI, L., CLAYTON, D. and MONTOMOLI, C. (1995). Bayesian estimates of disease maps: How important are priors? Stat. Med. 14 2411–2431.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>Multiply both sides of the first equation by the denominator and it’s equivalent to <span class="math inline">\(p(y, \eta, \phi) = p(y, \eta, \phi)\)</span>, which is tautologically true.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>The constant of proportionality does not depend on <span class="math inline">\(\eta\)</span>. All of the <span class="math inline">\(\eta\)</span> parts cancel!<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>The mean doesn’t have to be zero but you can usually make it zero using … magic.<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>Famous for <a href="https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/j.1467-9868.2008.00700.x">INLA</a><a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>apologies for the regexp.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>See also Rasmussen and Williams doing marginal inference with GPs. Exactly the same process.<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p>https://arxiv.org/abs/2004.12550<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>https://www.r-inla.org<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20"><p>I assume this is so people don’t need to update their lecture notes.<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21"><p>daylight savings time fades the curtains and wreaks havoc with metaphors.<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2021,
+  author = {Dan Simpson},
+  editor = {},
+  title = {Priors: {Whole} {New} {Way} {(Track} 2)},
+  date = {2021-10-16},
+  url = {https://dansblog.netlify.app/priors2},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2021" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Dan Simpson. 2021. <span>“Priors: Whole New Way (Track 2).”</span>
+October 16, 2021. <a href="https://dansblog.netlify.app/priors2">https://dansblog.netlify.app/priors2</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

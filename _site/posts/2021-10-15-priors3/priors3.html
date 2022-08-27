@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.15">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dan Simpson">
+<meta name="dcterms.date" content="2021-10-17">
+<meta name="description" content="Objective priors? In finite dimensions? A confidence trick? Yes.">
+
+<title>Un garçon pas comme les autres (Bayes) - Priors: Fire With Fire (Track 3)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Un garçon pas comme les autres (Bayes) - Priors: Fire With Fire (Track 3)">
+<meta property="og:description" content="Objective priors? In finite dimensions? A confidence trick? Yes.">
+<meta property="og:image" content="https://dansblog.netlify.app/posts/2021-10-15-priors3/strictly.JPG">
+<meta property="og:site-name" content="Un garçon pas comme les autres (Bayes)">
+<meta name="twitter:title" content="Priors: Fire With Fire (Track 3)">
+<meta name="twitter:description" content="Objective priors? In finite dimensions? A confidence trick? Yes.">
+<meta name="twitter:image" content="https://dansblog.netlify.app/posts/2021-10-15-priors3/strictly.JPG">
+<meta name="twitter:creator" content="@dan_p_simpson">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Un garçon pas comme les autres (Bayes)</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About this blog</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/dan_p_simpson"><i class="bi bi-twitter" role="img" aria-label="twitter">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/dpsimpson"><i class="bi bi-github" role="img" aria-label="github">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://dansblog.netlify.app"><i class="bi bi-person-circle" role="img" aria-label="website">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Priors: Fire With Fire (Track 3)</h1>
+                  <div>
+        <div class="description">
+          <p>Objective priors? In finite dimensions? A confidence trick? Yes.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Prior distributions</div>
+                <div class="quarto-category">Fundamentals</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Dan Simpson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 17, 2021</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#what-is-an-objective-prior" id="toc-what-is-an-objective-prior" class="nav-link active" data-scroll-target="#what-is-an-objective-prior">What is an objective prior</a></li>
+  <li><a href="#who-uses-objective-priors" id="toc-who-uses-objective-priors" class="nav-link" data-scroll-target="#who-uses-objective-priors">Who uses objective priors</a></li>
+  <li><a href="#should-i-use-objective-priors" id="toc-should-i-use-objective-priors" class="nav-link" data-scroll-target="#should-i-use-objective-priors">Should I use objective priors</a></li>
+  <li><a href="#ok-lets-try-again." id="toc-ok-lets-try-again." class="nav-link" data-scroll-target="#ok-lets-try-again.">Ok let’s try again.</a>
+  <ul class="collapse">
+  <li><a href="#what-is-an-objective-prior-1" id="toc-what-is-an-objective-prior-1" class="nav-link" data-scroll-target="#what-is-an-objective-prior-1">What is an objective prior</a></li>
+  <li><a href="#who-uses-objective-priors-1" id="toc-who-uses-objective-priors-1" class="nav-link" data-scroll-target="#who-uses-objective-priors-1">Who uses objective priors</a></li>
+  <li><a href="#should-i-use-objective-priors-1" id="toc-should-i-use-objective-priors-1" class="nav-link" data-scroll-target="#should-i-use-objective-priors-1">Should I use objective priors</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>It is Friday night, I am in lockdown, and I have had a few drinks. So let’s talk about objective priors.</p>
+<p>The first and most obvious thing is that they are not fucking objective. It is bad/unethical marketing from the 90s that has stuck. I dislike it. I think it’s unethical (and, personally, immoral) to proclaim a statistical method <em>objective</em> in any context, let alone one in which all you did was compute some derivatives and maybe sent something that isn’t going to fucking infinity to infinity. It’s fucking trash and I hate it.</p>
+<p>But let’s talk about some objective priors.</p>
+<section id="what-is-an-objective-prior" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-an-objective-prior">What is an objective prior</h3>
+<p>Fuck knows.</p>
+</section>
+<section id="who-uses-objective-priors" class="level3">
+<h3 class="anchored" data-anchor-id="who-uses-objective-priors">Who uses objective priors</h3>
+<p>No one (see above). But otherwise, a lot of people who are being sold a mislabeled bill of goods. People who tell you, unprompted, that they went to Duke.</p>
+</section>
+<section id="should-i-use-objective-priors" class="level3">
+<h3 class="anchored" data-anchor-id="should-i-use-objective-priors">Should I use objective priors</h3>
+<p>No.</p>
+</section>
+<section id="ok-lets-try-again." class="level2">
+<h2 class="anchored" data-anchor-id="ok-lets-try-again.">Ok let’s try again.</h2>
+<p>No I do not think I will.</p>
+<p>I am willing to talk about finite dimensional priors that add minimal information or are otherwise related to MLEs.</p>
+<p>Later, I guess because I’m mathematically interested in it, I’ll talk about the infinite dimensional case. But not today. Because I’m pissed off.</p>
+<p>Anyway.</p>
+<section id="what-is-an-objective-prior-1" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-an-objective-prior-1">What is an objective prior</h3>
+<p>Honestly, still a pretty vague and stupid concept. It is difficult to define for interesting (aka not univariate) cases, but maybe the most practical definition is <em>priors that come from rules</em>.</p>
+<p>But that’s not a … great definition. Many priors that I will talk about over the next little while could probably be shoved under the <em>objective</em> banner. But in this post I’m going to talk about the OG concept of an <em>objective</em> prior: the type of priors that try to add minimal information beyond the data.</p>
+<p>Nominally, the aim of these priors is to <em>let the data speak for itself</em>. And I’ve been doing this a while, and no matter how long I’ve listened to my <code>.csv</code> file, it has never said a word. But if it weren’t for silly justifications, we wouldn’t have silly concepts.</p>
+<p>There are, essentially, three main types of priors that fall into this traditionally <em>objective</em> category:</p>
+<ul>
+<li>Jeffreys priors</li>
+<li>Reference priors</li>
+<li>Matching priors</li>
+</ul>
+<p>Jefferys priors argue, for a bunch of very sensible and solid geometrical reasons, that the value of the parameter <span class="math inline">\(\theta\)</span> is less important than the way that moving from <span class="math inline">\(\theta\)</span> to <span class="math inline">\(\theta + d\theta\)</span> will change the likelihood <span class="math inline">\(p(y \mid \theta)\)</span>. This push back against the <a href="https://statmodeling.stat.columbia.edu/2018/08/21/against-arianism/">Arianist notion</a> that the prior can be separated from its context is welcome!</p>
+<p>The actual prior itself comes from, I guess, the idea that the prior should be invariant to reparameterisations and after some maths you get <span class="math display">\[
+p(\theta ) \propto |I(\theta)|^{1/2},
+\]</span> where <span class="math inline">\(|I(\theta)|\)</span> is the determinant of the Fisher<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> information matrix <span class="math display">\[
+I(\theta)_{ij} = \frac{\partial^2}{\partial \theta_i \theta_j} \log p(y \mid \theta).
+\]</span></p>
+<p>This immediately turns out to be a terrible idea for general models. When <span class="math inline">\(\theta\)</span> has more than one component, the Jeffreys prior tends to concentrate in silly places in the parameter space.</p>
+<p>But when <span class="math inline">\(\theta\)</span> is one dimensional, it works fine. In fact, if you use it you will get the sampling distribution Maximum Likelihood estimator (or withing <span class="math inline">\(\mathcal{O}_p(n^{-1})\)</span> of it). So there’s very little purpose pursing this line of reasoning.</p>
+<p>There’s actually a bit of a theme that develops here: for models with a single parameter a lot of things work perfectly. Sadly the intersection of one-dimensional statistical models that are regular enough for all this maths to work and interesting statistical problems is not exactly hefty.</p>
+<p>Reference priors are an attempt to extend Jeffreys priors to multiple parameters while avoiding some of the more egregious problems of multivariate Jeffreys priors. They were also the topic of the most boring talk I have ever seen at a conference<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. It was 45 minutes going through all of the different reference priors you can make for inferring a bivariate normal (you see, to construct a reference prior you need to order your parameters and this ordering matters). If I didn’t already think that reference priors were an impractical waste of time, that certainly convinced me. A lot of people seem to mention reference priors, but it is rarer to see them in use.</p>
+<p>Matching priors try to spin off Jeffreys priors in a different direction. They are a mathematically very interesting idea asking if there is a prior that will produce a posterior uncertainty interval that is exactly the same as (or very close to) the sampling distribution of the MLE. It turns out that for one parameter models you can totally do this (the Jeffreys prior does it! And you can get even closer). But when there are nuisance parameters (aka parameters that aren’t of direct inferential interest but are important to modelling the data), the resulting prior tends to be data-dependent. A really nice example of the literature is <a href="https://www.jstor.org/stable/4356229">Reid, Mukerjee, and Fraser’s 2003 paper</a>. To some extent the matching priors literature is asking “should we even Bayes?”, which is not the worst question to ask<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
+<p>These three ideas have a number of weird bastard children. Most of these are not recommended by anyone, but used prominently. These are the vague priors. The <span class="math inline">\(N(0,100^2)\)</span> priors. The <span class="math inline">\(\text{Inverse-Gamma}(\epsilon, \epsilon)\)</span> priors. The Uniform over large interval priors. The misinformed concept behind these priors is that <em>wider prior = less information</em>. This is, of course, bullshit. As many<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> many<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> many<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> examples show.</p>
+<p>The one big thing that I haven’t mentioned so far is that most of the time the priors produced using these methods are not proper, which is to say that you can’t integrate them. That isn’t a big deal mathematically as long as <span class="math inline">\(\int_\Theta p(y \mid \theta)p(\theta)\,d\theta\)</span> is finite for all<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> data sets <span class="math inline">\(y\)</span>. This is a fairly difficult thing to check for most models and if you want to really upset a grad student at a Bayesian conference spend some time staring at their poster and then grimace and ask “are you sure that posterior is proper?”<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> The frequent impropriety of these classes of means you can’t simulate from them, can’t really consider them a representation of prior information, and can’t easily transfer them from one problem to another without at least a little bit of fear that the whole house of cards is gonna come tumbling down.</p>
+</section>
+<section id="who-uses-objective-priors-1" class="level3">
+<h3 class="anchored" data-anchor-id="who-uses-objective-priors-1">Who uses objective priors</h3>
+<p>Frequentists. People who are obsessed with statistical bias of their estimators (the Venn diagram here isn’t a circle, but it’s also not the poster child for diversity of thought or modernity). People who read boring textbooks. People who write boring textbook. People who believe that it’s the choice of prior and somehow not the choice of the likelihood or, you know, their choice of data that will somehow lead to incorrect inferences<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>. People who tell you, without being asked<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>, that they went to Duke.</p>
+</section>
+<section id="should-i-use-objective-priors-1" class="level3">
+<h3 class="anchored" data-anchor-id="should-i-use-objective-priors-1">Should I use objective priors</h3>
+<p>If you’ve more parameters than a clumsy butcher has fingers on their non-dominant hand, you probably shouldn’t use objective priors. In these cases, you almost always need to inject some form of regularisation, prior information, or just plain hope into your model to make it behave sensibly<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>.</p>
+<p>But if you have less, I mean, live your life I guess. But why go to the effort. Just compute a maximum likelihood if you’re looking for something that is very very similar to a maximum likelihood estimate. It’s faster, it’s cleaner, and it’s not pretending to be something it isn’t.</p>
+<p>I actually think you can usually make stronger, more explicitly justified choices using other things we can talk about later. But I’m not the boss of statistics so you don’t have to listen to me.</p>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>ewwwwwww<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>This is a very high bar. I have seen (and given) a lot of very very very dull talks. But this is the one that sticks in my mind.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>If it seems like I like matching priors more than the other two, I do.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>https://projecteuclid.org/journals/bayesian-analysis/volume-1/issue-3/Prior-distributions-for-variance-parameters-in-hierarchical-models-comment-on/10.1214/06-BA117A.full<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Put a wide normal prior on the logit mean, simulate and back transform. Explain how that is uninformative.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Some people love a wide uniform distribution <span class="math inline">\(\text{Unif}(0,U)\)</span> on the degrees of freedom of a student-t distribution. As <span class="math inline">\(U\)</span> increases, you are putting more and more prior mass on the <span class="math inline">\(t\)</span> distribution being very close to a normal distribution. Oops.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>or all after some minimal restrictions<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Allegedly, Jim Berger’s wife, who is not a statistician but was frequently at conferences, used to do this.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>Like seriously. I don’t want to repeat that old canard that the choice of likelihood is as subjective as the choice of prior because a) Arianism and b) the choice of likelihood is a waaaaaaaaaay more important subjective modelling choice than the choice of prior in all but the most outre circumstances!<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>I promise I have never asked and I will never ask.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>There are ideas of <em>objective</em> priors in these cases, which we will talk about later, but these usually take the form of priors that guarantee optimal frequentist behaviour. And again, there is often another way to get that.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2021,
+  author = {Dan Simpson},
+  editor = {},
+  title = {Priors: {Fire} {With} {Fire} {(Track} 3)},
+  date = {2021-10-17},
+  url = {https://dansblog.netlify.app/priors3},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2021" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Dan Simpson. 2021. <span>“Priors: Fire With Fire (Track 3).”</span>
+October 17, 2021. <a href="https://dansblog.netlify.app/priors3">https://dansblog.netlify.app/priors3</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.15">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dan Simpson">
+<meta name="dcterms.date" content="2022-03-31">
+<meta name="description" content="Come for the details, stay for the shitty Python, leave with disappointment. Not unlike the experience of dating me.">
+
+<title>Un garçon pas comme les autres (Bayes) - Sparse Matrices 2: An invitation to a sparse Cholesky factorisation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Un garçon pas comme les autres (Bayes) - Sparse Matrices 2: An invitation to a sparse Cholesky factorisation">
+<meta property="og:description" content="Come for the details, stay for the shitty Python, leave with disappointment. Not unlike the experience of dating me.">
+<meta property="og:image" content="https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/tori.JPG">
+<meta property="og:site-name" content="Un garçon pas comme les autres (Bayes)">
+<meta name="twitter:title" content="Sparse Matrices 2: An invitation to a sparse Cholesky factorisation">
+<meta name="twitter:description" content="Come for the details, stay for the shitty Python, leave with disappointment. Not unlike the experience of dating me.">
+<meta name="twitter:image" content="https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/tori.JPG">
+<meta name="twitter:creator" content="@dan_p_simpson">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Un garçon pas comme les autres (Bayes)</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About this blog</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/dan_p_simpson"><i class="bi bi-twitter" role="img" aria-label="twitter">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/dpsimpson"><i class="bi bi-github" role="img" aria-label="github">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://dansblog.netlify.app"><i class="bi bi-person-circle" role="img" aria-label="website">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Sparse Matrices 2: An invitation to a sparse Cholesky factorisation</h1>
+                  <div>
+        <div class="description">
+          <p>Come for the details, stay for the shitty Python, leave with disappointment. Not unlike the experience of dating me.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Sparse matrices</div>
+                <div class="quarto-category">Sparse Cholesky factorisation</div>
+                <div class="quarto-category">Python</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Dan Simpson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 31, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-choleksy-factorisation" id="toc-the-choleksy-factorisation" class="nav-link active" data-scroll-target="#the-choleksy-factorisation">The Choleksy factorisation</a>
+  <ul class="collapse">
+  <li><a href="#so-how-do-we-store-a-sparse-matrix" id="toc-so-how-do-we-store-a-sparse-matrix" class="nav-link" data-scroll-target="#so-how-do-we-store-a-sparse-matrix">So how do we store a sparse matrix?</a></li>
+  <li><a href="#how-sparse-is-a-cholesky-factor-of-a-sparse-matrix" id="toc-how-sparse-is-a-cholesky-factor-of-a-sparse-matrix" class="nav-link" data-scroll-target="#how-sparse-is-a-cholesky-factor-of-a-sparse-matrix">How sparse is a Cholesky factor of a sparse matrix?</a>
+  <ul class="collapse">
+  <li><a href="#a-toy-example" id="toc-a-toy-example" class="nav-link" data-scroll-target="#a-toy-example">A toy example</a></li>
+  <li><a href="#so-what-is-the-lesson-here" id="toc-so-what-is-the-lesson-here" class="nav-link" data-scroll-target="#so-what-is-the-lesson-here">So what is the lesson here?</a></li>
+  </ul></li>
+  <li><a href="#which-elements-of-the-cholesky-factor-are-non-zero-aka-symbolic-factorisation" id="toc-which-elements-of-the-cholesky-factor-are-non-zero-aka-symbolic-factorisation" class="nav-link" data-scroll-target="#which-elements-of-the-cholesky-factor-are-non-zero-aka-symbolic-factorisation">Which elements of the Cholesky factor are non-zero (aka symbolic factorisation)</a>
+  <ul class="collapse">
+  <li><a href="#the-elimination-tree" id="toc-the-elimination-tree" class="nav-link" data-scroll-target="#the-elimination-tree">The elimination tree</a></li>
+  <li><a href="#the-symbolic-factorisation" id="toc-the-symbolic-factorisation" class="nav-link" data-scroll-target="#the-symbolic-factorisation">The symbolic factorisation</a></li>
+  </ul></li>
+  <li><a href="#computing-the-cholesky-factorisation" id="toc-computing-the-cholesky-factorisation" class="nav-link" data-scroll-target="#computing-the-cholesky-factorisation">Computing the Cholesky factorisation</a></li>
+  <li><a href="#ok-we-are-done-for-today." id="toc-ok-we-are-done-for-today." class="nav-link" data-scroll-target="#ok-we-are-done-for-today.">Ok we are done for today.</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div class="cell">
+
+</div>
+<p>This is part two of an ongoing exercise in hubris. <a href="https://dansblog.netlify.app/posts/2022-03-22-a-linear-mixed-effects-model/">Part one is here.</a></p>
+<section id="the-choleksy-factorisation" class="level1">
+<h1>The Choleksy factorisation</h1>
+<p>So first things first: Cholesky wasn’t Russian. I don’t know why I always thought he was, but you know. Sometime you should do a little googling first. Cholesky was French and died in the First World War.</p>
+<p>But now that’s out of the way, let’s talk about matrices. If <span class="math inline">\(A\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> is a symmetric positive definite matrix, then there is a unique lower-triangular matrix <span class="math inline">\(L\)</span> such that <span class="math inline">\(A = LL^T\)</span>.</p>
+<p>Like all good theorems in numerical linear algebra, the proof of the existence of the Cholesky decomposition gives a pretty clear algorithm for constructing <span class="math inline">\(L\)</span>. To sketch<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> it, let us see what it looks like if build up our Choleksy factorisation from left to right, so the first <span class="math inline">\(j-1\)</span> columns have been modified and we are looking at how to build the <span class="math inline">\(j\)</span>th column. In order to make <span class="math inline">\(L\)</span> lower-triangular, we need the first <span class="math inline">\(j-1\)</span> elements of the <span class="math inline">\(j\)</span>th column to be zero. Let’s see if we can work out what the other columns have to be.</p>
+<p>Writing this as a matrix equation, we get <span class="math display">\[
+\begin{pmatrix} A_{11} &amp; a_{12} &amp; A_{32}^T \\
+a_{12}^T &amp; a_{22} &amp; a_{32}^T \\
+A_{31} &amp; a_{32} &amp; A_{33}\end{pmatrix} =
+\begin{pmatrix} L_{11}&amp;&amp; \\
+l_{12}^T &amp; l_{22}&amp;\\
+L_{31} &amp; l_{32} &amp; L_{33}\end{pmatrix}
+\begin{pmatrix}L_{11}^T  &amp;l_{12} &amp; L_{31}^T\\
+&amp; l_{22}&amp;l_{32}^T\\
+&amp;  &amp; L_{33}^T\end{pmatrix},
+\]</span> where <span class="math inline">\(L_{11}\)</span> is lower-triangular (and <span class="math inline">\(A_{11} = L_{11}L_{11}^T\)</span>) and lower-case letters are vectors<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> and everything is of the appropriate dimension to make <span class="math inline">\(A_{11}\)</span> the top-left <span class="math inline">\((j-1) \times (j-1)\)</span> submatrix of <span class="math inline">\(A\)</span>.</p>
+<p>If we can find equations for <span class="math inline">\(l_{22}\)</span> and <span class="math inline">\(l_{32}\)</span> that don’t depend on <span class="math inline">\(L_{33}\)</span> (ie we can express them in terms of things we already know), then we have found an algorithm that marches from the left of the matrix to the right leaving a Choleksy factorisation in its wake!</p>
+<p>If we do our matrix multiplications, we get the following equation for <span class="math inline">\(a_{22} = A_{jj}\)</span>: <span class="math display">\[
+a_{22} = l_{12}^Tl_{12} + l_{22}^2.
+\]</span> Rearranging, we get <span class="math display">\[
+l_{22}  = \sqrt{a_{22} - l_{12}^Tl_{12}}.
+\]</span> The canny amongst you will be asking “yes but is that a real number”. The answer turns out to be “yes” for all diagonals if and only if<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> <span class="math inline">\(A\)</span> is symmetric positive definite.</p>
+<p>Ok! We have expressed <span class="math inline">\(l_{22}\)</span> in terms of things we know, so we are half way there. Now to attack the vector <span class="math inline">\(l_{3,2}\)</span>. Looking at the (3,2) equation implied by the above block matrices, we get <span class="math display">\[
+a_{32} = L_{31}l_{12} + l_{32} l_{22}.
+\]</span> Remembering that <span class="math inline">\(l_{22}\)</span> is a scalar (that we have already computed!), we get <span class="math display">\[
+l_{32} = (a_{32} - L_{31}l_{12}) / l_{22}.
+\]</span></p>
+<p>Success!</p>
+<p>This then gives us the<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Cholesky factorisation<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>:</p>
+<pre><code>for j in range(0,n) (using python slicing notation because why notation)
+  L[j,j] = sqrt(A[j,j] - L[j, 1:(j-1)] * L[j, 1:(j-1)]')
+  L[(j+1):n, j] = (A[(j+1):n, j] - L[(j+1):n, 1:(j-1)] * L[j, 1:(j-1)]') / L[j,j]</code></pre>
+<p>Easy as.</p>
+<p>When <span class="math inline">\(A\)</span> is a dense matrix, this costs <span class="math inline">\(\mathcal{O}(n^3)\)</span> floating point operations<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>.</p>
+<p>So how can we take advantage of the observation that most of the entries of <span class="math inline">\(A\)</span> are zero (aka <span class="math inline">\(A\)</span> is a sparse matrix)? Well. That is the topic of this post. In order, we are going to look at the following:</p>
+<ol type="1">
+<li>Storing a sparse matrix so it works with the algorithm</li>
+<li>How sparse is a Cholesky factor?</li>
+<li>Which elements of the Cholesky factor are non-zero (aka symbolic factorisation)</li>
+<li>Computing the Cholesky factorisation</li>
+<li><del>What about JAX? (or: fucking immutable arrays are trying to ruin my fucking life)</del> (This did not happen. Next time. The post is long enough.)</li>
+</ol>
+<section id="so-how-do-we-store-a-sparse-matrix" class="level2">
+<h2 class="anchored" data-anchor-id="so-how-do-we-store-a-sparse-matrix">So how do we store a sparse matrix?</h2>
+<p>If we look at the Cholesky algorithm, we notice that we are scanning through the matrix column-by-column. When a computer stores a matrix, it stores it as a long 1D array with some side information. How this array is constructed from the matrix depends on the language.</p>
+<p>There are (roughly) two options: column-major or row-major storage. Column major storage (used by Fortran<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>, R, Matlab, Julia, Eigen, etc) stacks a matrix column by column. A small example: <span class="math display">\[
+\begin{pmatrix}1&amp;3&amp;5\\2&amp;4&amp;6 \end{pmatrix} \Rightarrow [1,2,3,4,5,6].
+\]</span> Row-mjor ordering (C/C++ arrays, SAS, Pascal, numpy<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>) stores things row-by-row.</p>
+<p>Which one do we use? Well. If you look at the Cholesky algorithm, it scans through the matrix column-by-column. It is much much much more memory efficient in this case to have the whole column available in one contiguous chunk of memory. So we are going to use column-major storage.</p>
+<p>But there’s an extra wrinkle: Most of the entries in our matrix are zero. It would be very inefficient to store all of those zeros. You may be sceptical about this, but it’s true. It helps to realize that even in the examples at the bottom of this post that are not trying very hard to minimise the fill in, only 3-4% of the potential elements in <span class="math inline">\(L\)</span> are non-zero.</p>
+<p>It is far more efficient to just store the locations<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a> of the non-zeros and their values. If only 4% of your matrix is non-zero, you are saving<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> a lot of memory!</p>
+<p>The storage scheme we are inching towards is called <em>compressed sparse column (CSC)</em> storage. This stores the matrix in three arrays. The first array <code>indices</code> (which has as many entries as there are non-zeros) stores the row numbers for each non-zero element. So if <span class="math display">\[
+B = \begin{pmatrix}
+1 &amp;&amp;5 \\
+2&amp;3&amp; \\
+&amp;4&amp;6
+\end{pmatrix}
+\]</span> then (using zero-based indices because I’ve to to make this work in Python)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>B_indices <span class="op">=</span> [<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The second array <code>indptr</code> is an <span class="math inline">\(n+1\)</span>-dimensional array that indexes the first element of each row. The final element of <code>indptr</code> is <code>nnz(B)</code><a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>. This leads to</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>B_indptr <span class="op">=</span> [<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This means that the entries in column<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a> j are have row numbers</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>B_indices[B_indptr[j]:B_indptr[j<span class="op">+</span><span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The third and final array is <code>x</code>, which stores the <em>values</em> of the non-negative entries of <span class="math inline">\(A\)</span> <em>column-by-column</em>. This gives</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>B_x <span class="op">=</span> [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Using these three arrays we can get access to the <code>j</code>th row of <span class="math inline">\(B\)</span> by accessing</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>B_x[B_indptr[j]:B_indptr[j<span class="op">+</span><span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This storage scheme is very efficient for what we are about to do. But it is fundamentally a static scheme: it is <em>extremely</em> expensive to add a new non-zero element. There are other sparse matrix storage schemes that make this work better.</p>
+</section>
+<section id="how-sparse-is-a-cholesky-factor-of-a-sparse-matrix" class="level2">
+<h2 class="anchored" data-anchor-id="how-sparse-is-a-cholesky-factor-of-a-sparse-matrix">How sparse is a Cholesky factor of a sparse matrix?</h2>
+<p>Ok. So now we’ve got that out of the way, we need to work out the sparsity structure of a Choleksy factorisation. At this point we need to close our eyes, pray, and start thinking about graphs.</p>
+<p>Why graphs? I promise, it is not because I love discrete<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> maths. It is because symmetric sparse matrices are strongly related to graphs.</p>
+<p>To remind people, a graph<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a> (in a mathematical sense) <span class="math inline">\(\mathcal{G} = (\mathcal{V}, \mathcal{E})\)</span> consists of two lists:</p>
+<ol type="1">
+<li>A list of vertices <span class="math inline">\(\mathcal{V}\)</span> numbered from <span class="math inline">\(1\)</span> to <span class="math inline">\(n\)</span><a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a>.</li>
+<li>A list of edges <span class="math inline">\(\mathcal{E}\)</span> in the graph (aka all the pairs <span class="math inline">\((i,j)\)</span> such that <span class="math inline">\(i&lt;j\)</span> and there is an edge between <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>).</li>
+</ol>
+<p>Every symmetric sparse matrix <span class="math inline">\(A\)</span> has a graph naturally associated with it. The relationship is that <span class="math inline">\((i,j)\)</span> (for <span class="math inline">\(i\neq j\)</span>) is an edge in <span class="math inline">\(\mathcal{G}\)</span> if and only if <span class="math inline">\(A_{ij} \neq 0\)</span>.</p>
+<p>So, for instance, if <span class="math display">\[
+A = \begin{pmatrix}
+1&amp;2&amp;&amp;8 \\
+2&amp;3&amp;&amp; 5\\
+&amp;&amp;4&amp;6 \\
+8&amp;5&amp;6&amp;7
+\end{pmatrix},
+\]</span></p>
+<p>then we can plot the associated graph, <span class="math inline">\(\mathcal{G}\)</span>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="getting-jax-to-love-sparse-matrices_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>But why do we care about graphs?</p>
+<p>We care because they let us answer our question for this section: <em>which elements of the Cholesky factor <span class="math inline">\(L\)</span> are non-zero?</em></p>
+<p>It is useful to write the algorithm out for a second time<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a>, but this time closer to how we will implement it.</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>L <span class="op">=</span> np.tril(A)</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(j<span class="op">-</span><span class="dv">1</span>):</span>
+<span id="cb7-4"><a href="#cb7-4"></a>    L[j:n, j] <span class="op">-=</span> L[j, k] <span class="op">*</span> L[j:n, k]</span>
+<span id="cb7-5"><a href="#cb7-5"></a>  L[j,j]<span class="op">=</span> np.sqrt(L[j,j])</span>
+<span id="cb7-6"><a href="#cb7-6"></a>  L[j<span class="op">+</span><span class="dv">1</span>:n, j] <span class="op">=</span> L[j<span class="op">+</span><span class="dv">1</span>:n] <span class="op">/</span> L[j, j]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If we stare at this long enough we can work out when <span class="math inline">\(L_{ij}\)</span> is going to be potentially non-zero.</p>
+<p>And here is where we have to take a quick zoom out. We are <em>not</em> interested if the numerical entry <span class="math inline">\(L_{ij}\)</span> is <em>actually</em> non-zero. We are interested if it <em>could be</em> non-zero. Why? Because this will allow us to set up our storage scheme for the sparse Cholesky factor. And it will tell us exactly which bits of the above loops we actually need to do!</p>
+<p>So with that motivation in mind, can we spot the non-zeros? Well. I’ll be honest with you. I struggle at this game. This is part of why I do not like thinking about graphs<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a>. But with a piece of paper and a bit of time, I can convince myslef that <span class="math inline">\(L_ij\)</span> is potentially non-zero (or a <em>structural</em> non-zero) if:</p>
+<ul>
+<li><span class="math inline">\(A_{ij}\)</span> is non-zero (because <code>tmp[i-j]</code> is non-zero!), or</li>
+<li><span class="math inline">\(L_{ik} \neq 0\)</span> <em>and</em> <span class="math inline">\(L_{jk} \neq 0\)</span> for some <span class="math inline">\(k &lt; \min\{i, j\}\)</span> (because that is the only time an element of <code>tmp</code> is updated through <code>tmp[i] = tmp[i] - L[i, k] * L[j, k]</code>)</li>
+</ul>
+<p>If we dig into the second condition a bit more,<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> we notice that the second case can happen if and only if there is a path in <span class="math inline">\(\mathcal{G}\)</span><a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a> from node <span class="math inline">\(i\)</span> to node <span class="math inline">\(j\)</span> <span class="math display">\[
+i \rightarrow v_1 \rightarrow v_2 \rightarrow \ldots \rightarrow v_{\ell-1} \rightarrow j
+\]</span> with <span class="math inline">\(v_1, \ldots v_{\ell-1} &lt; \min\{i,j\}\)</span>. The proof is an induction on <span class="math inline">\(\min\{i,j\}\)</span> that I can’t be arsed typing out.</p>
+<p>(As an aside, Theorem 2.8 in <a href="https://www.routledge.com/Gaussian-Markov-Random-Fields-Theory-and-Applications/Rue-Held/p/book/9781584884323">Rue and Held’s book</a> gives a very clearn nice statistical proof of this result.)</p>
+<p>This is enough to see that fill in patterns are going to be a complex thing.</p>
+<section id="a-toy-example" class="level3">
+<h3 class="anchored" data-anchor-id="a-toy-example">A toy example</h3>
+<p>Consider the following graph</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="getting-jax-to-love-sparse-matrices_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>It’s pretty clear that there is a path between <span class="math inline">\((i,j)\)</span> for every pair <span class="math inline">\((i,j)\)</span> (the path goes through the fully connected vertex, which is labelled <code>1</code>).</p>
+<p>And indeed, we can check this numerically<a href="#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">library</span>(Matrix)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>n <span class="ot">&lt;-</span> <span class="dv">6</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>A <span class="ot">&lt;-</span> <span class="fu">sparseMatrix</span>(<span class="at">i =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="fu">rep</span>(<span class="dv">1</span>,n)), </span>
+<span id="cb8-4"><a href="#cb8-4"></a>                  <span class="at">j =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>,n),<span class="dv">1</span><span class="sc">:</span>n), </span>
+<span id="cb8-5"><a href="#cb8-5"></a>                  <span class="at">x =</span> <span class="sc">-</span><span class="fl">0.2</span>, </span>
+<span id="cb8-6"><a href="#cb8-6"></a>                  <span class="at">dims =</span> <span class="fu">c</span>(n,n)) <span class="sc">+</span> </span>
+<span id="cb8-7"><a href="#cb8-7"></a>      <span class="fu">Diagonal</span>(n)</span>
+<span id="cb8-8"><a href="#cb8-8"></a>A <span class="sc">!=</span> <span class="dv">0</span> <span class="co">#print the non-zero structrure</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>6 x 6 sparse Matrix of class "lgCMatrix"
+                
+[1,] | | | | | |
+[2,] | | . . . .
+[3,] | . | . . .
+[4,] | . . | . .
+[5,] | . . . | .
+[6,] | . . . . |</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>L <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">chol</span>(<span class="fu">as.matrix</span>(A))) <span class="co"># transpose is for R reasons</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="fu">round</span>(L, <span class="at">digits =</span> <span class="dv">1</span>) <span class="co"># Fully dense!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]  0.8  0.0  0.0  0.0  0.0    0
+[2,] -0.3  1.0  0.0  0.0  0.0    0
+[3,] -0.3 -0.1  1.0  0.0  0.0    0
+[4,] -0.3 -0.1 -0.1  1.0  0.0    0
+[5,] -0.3 -0.1 -0.1 -0.1  1.0    0
+[6,] -0.3 -0.1 -0.1 -0.1 -0.1    1</code></pre>
+</div>
+</div>
+<p>But what if we changed the labels of our vertices? What is the fill in pattern implied by a labelling where the fully collected vertex is labelled last instead of first?</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="getting-jax-to-love-sparse-matrices_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>There are now <em>no paths</em> from <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span> that only go through lower-numbered vertices. So there is no fill in! We can check this numerically!<a href="#fn22" class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>A2 <span class="ot">&lt;-</span> A[n<span class="sc">:</span><span class="dv">1</span>,n<span class="sc">:</span><span class="dv">1</span>]</span>
+<span id="cb12-2"><a href="#cb12-2"></a>L2 <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">chol</span>(A2))</span>
+<span id="cb12-3"><a href="#cb12-3"></a>L2<span class="sc">!=</span><span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>6 x 6 sparse Matrix of class "ltCMatrix"
+                
+[1,] | . . . . .
+[2,] . | . . . .
+[3,] . . | . . .
+[4,] . . . | . .
+[5,] . . . . | .
+[6,] | | | | | |</code></pre>
+</div>
+</div>
+</section>
+<section id="so-what-is-the-lesson-here" class="level3">
+<h3 class="anchored" data-anchor-id="so-what-is-the-lesson-here">So what is the lesson here?</h3>
+<p>The lesson is that the sparse Cholesky algorithm cares <em>deeply</em> about what order the rows and columns of the matrix are in. This is why, <a href="https://dansblog.netlify.app/posts/2022-03-22-a-linear-mixed-effects-model/">in the previous post</a>, we put the dense rows and columns of <span class="math inline">\(Q_{u \mid y, \theta}\)</span> at the <em>end</em> of the matrix!</p>
+<p>Luckily, a lot of clever graph theorists got on the job a while back and found a number of good algorithms for finding decent<a href="#fn23" class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a> ways to reorder the vertices of a graph to minimise fill in. There are two particularly well-known reorderings: the approximate minimum degree (AMD) reordering and the nested-dissection reordering. Neither of these are easily available in Python<a href="#fn24" class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a>.</p>
+<p>AMD is a bog-standard black box that is a greedy reordering that tries to label the next vertex so that graph you get after removing that vertex and adding edges between all of the nodes that connect to that vertex isn’t too fucked.</p>
+<p>Nested dissection tries to generalise the toy example above by finding nodes that separate the graph into two minimally connected components. The separator node is then labelled last. The process is repeated until you run out of nodes. This algorithm can be very efficient in some cases (eg if the graph is planar<a href="#fn25" class="footnote-ref" id="fnref25" role="doc-noteref"><sup>25</sup></a>, the sparse Cholesky algorithm using this reordering <a href="https://link.springer.com/article/10.1007/BF01396660">provably costs</a> at most <span class="math inline">\(\mathcal{O}(n^{3/2})\)</span>).</p>
+<p>Typically, you compute multiple reorderings<a href="#fn26" class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a> and pick the one that results in the least fill in.</p>
+</section>
+</section>
+<section id="which-elements-of-the-cholesky-factor-are-non-zero-aka-symbolic-factorisation" class="level2">
+<h2 class="anchored" data-anchor-id="which-elements-of-the-cholesky-factor-are-non-zero-aka-symbolic-factorisation">Which elements of the Cholesky factor are non-zero (aka symbolic factorisation)</h2>
+<p>Ok. So I guess we’ve got to work out an algorithm for computing the non-zero structure of a sparse Cholesky factor. Naively, this seems easy: just use the Cholesky algorithm and mark which elements are non-zero.</p>
+<p>But this is slow and inefficient. You’re not thinking like a programmer! Or a graph theorist. So let’s talk about how to do this efficiently.</p>
+<section id="the-elimination-tree" class="level3">
+<h3 class="anchored" data-anchor-id="the-elimination-tree">The elimination tree</h3>
+<p>Let’s consider the graph <span class="math inline">\(\mathcal{G}_L\)</span> that contains the sparsity pattern of <span class="math inline">\(L\)</span>. We <em>know</em> that the non-zero structure consists of all <span class="math inline">\((i,j)\)</span> such that <span class="math inline">\(i &lt; j\)</span> and there is a path <span class="math inline">\(in \mathcal{G}\)</span> from <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span>. This means we could just compute that and make <span class="math inline">\(\mathcal{G}_L\)</span>.</p>
+<p>The thing that you should notice immediately is that there is a lot of redundancy in this structure. Remember that if <span class="math inline">\(L_{ik}\)</span> is non-zero and <span class="math inline">\(L_{jk}\)</span> is also non-zero, then <span class="math inline">\(L_{ij}\)</span> is also non-zero.</p>
+<p>This suggests that if we have <span class="math inline">\((i,k)\)</span> and <span class="math inline">\((j,k)\)</span> in the graph, we can remove the edge <span class="math inline">\((i,j)\)</span> from <span class="math inline">\(\mathcal{G}_L\)</span> and still be able to work out that <span class="math inline">\(L_{ij}\)</span> is non-zero. This new graph is no longer the graph associated with <span class="math inline">\(L\)</span> but, for our purposes, it contains the same information.</p>
+<p>If we continue pruning the graph this way, we are going to end up with a<a href="#fn27" class="footnote-ref" id="fnref27" role="doc-noteref"><sup>27</sup></a> rooted tree! From this tree, which is called the <em>elimination tree</em> of <span class="math inline">\(A\)</span><a href="#fn28" class="footnote-ref" id="fnref28" role="doc-noteref"><sup>28</sup></a> we can easily work out the non-zero structure of <span class="math inline">\(L\)</span>.</p>
+<p>The elimination tree is the fundamental structure needed to build an efficient sparse Cholesky algorithm. We are not going to use it to its full potential, but it is very cheap to compute (roughly<a href="#fn29" class="footnote-ref" id="fnref29" role="doc-noteref"><sup>29</sup></a> <span class="math inline">\(\mathcal{O}(\operatorname{nnz}(A))\)</span> operations).</p>
+<p>Once we have the elimination tree, it’s cheap to compute properties of <span class="math inline">\(L\)</span> like the number of non-zeros in a column, the exact sparsity pattern of every column, which columns can be grouped together to form supernodes<a href="#fn30" class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a>, and the approximate minimum degree reordering.</p>
+<p>All of those things would be necessary for a modern, industrial-strength sparse Cholesky factorisation. But, and I cannot stress this enough, fuck that shit.</p>
+</section>
+<section id="the-symbolic-factorisation" class="level3">
+<h3 class="anchored" data-anchor-id="the-symbolic-factorisation">The symbolic factorisation</h3>
+<p>We are doing the easy version. Which is to say I <em>refuse</em> to do anything here that couldn’t be easily done in the early 90s. Specifically, we are going to use the version of this that<a href="http://heath.cs.illinois.edu/courses/cs598mh/george_liu.pdf">George, Liu, and Ng</a> wrote about<a href="#fn31" class="footnote-ref" id="fnref31" role="doc-noteref"><sup>31</sup></a> in the 90s. Understanding this is, I think, enough to see how things like supernodal factorisations work, but it’s so much less to keep track of.</p>
+<p>The nice thing about this method is that we compute the elimination tree implicitly as we go along.</p>
+<p>Let <span class="math inline">\(\mathcal{L}_j\)</span> be the non-zero entries in the <span class="math inline">\(j\)</span>th column of <span class="math inline">\(L\)</span>. Then our discussion in the previous section tells us that we need to determine the <em>reach</em> of the node i <span class="math display">\[
+\text{Reach}(j, S_j) = \left\{i: \text{there is a path from } i\text{ to }j\text{ through }S_j\right\},
+\]</span> where <span class="math inline">\(S_j = \{1,\ldots, j-1\}\)</span>.</p>
+<p>If we can compute the reach, then <span class="math inline">\(\mathcal{L}_j = \text{Reach}(j, S_j) \cup\{j\}\)</span>!</p>
+<p>This is where the elimination tree comes in: it is an efficient representation of these sets. Indeed, <span class="math inline">\(i \in \text{Reach}(j, S_j)\)</span> <em>if and only if</em> there is a directed<a href="#fn32" class="footnote-ref" id="fnref32" role="doc-noteref"><sup>32</sup></a> path from <span class="math inline">\(j\)</span> to <span class="math inline">\(i\)</span> in the elimination tree! Now this tree is ordered<a href="#fn33" class="footnote-ref" id="fnref33" role="doc-noteref"><sup>33</sup></a> so that if <span class="math inline">\(i\)</span> is a child of <span class="math inline">\(j\)</span> (aka directly below it in the tree), then <span class="math inline">\(i &lt; j\)</span>. This means that its column in the Cholesky factorisation has already been computed. So all of the nodes that can be reached from <span class="math inline">\(j\)</span> by going through <span class="math inline">\(i\)</span> are in <span class="math inline">\(\mathcal{L}_{i} \cap \{j+1, \ldots, n\}\)</span>.</p>
+<p>This means that we can compute the non-zeros of the <span class="math inline">\(j\)</span>th column of <span class="math inline">\(L\)</span> efficiently from the non-zeros of all of the (very few, hopefully) columns associated with the child nodes of <span class="math inline">\(j\)</span>.</p>
+<p>So all that’s left is to ask “how can we find the child?” (as phones around the city start buzzing). Well, a little bit of thinking time should convince you that if <span class="math display">\[
+p = \min\{i : i \in \text{Reach}(j, S_j) \},
+\]</span> then <span class="math inline">\(p\)</span> is the parent of <span class="math inline">\(i\)</span>. Or, the parent of column <span class="math inline">\(j\)</span> is the index of its first<a href="#fn34" class="footnote-ref" id="fnref34" role="doc-noteref"><sup>34</sup></a> non-zero below the diagonal.</p>
+<p>We can put all of these observations together into the following algorithm. We assume that we are given the non-zero structure of <code>tril(A)</code> (aka the lower-triangle of <span class="math inline">\(A\)</span>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb14-2"><a href="#cb14-2"></a></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="kw">def</span> _symbolic_factor_csc(A_indices, A_indptr):</span>
+<span id="cb14-4"><a href="#cb14-4"></a>  <span class="co"># Assumes A_indices and A_indptr index the lower triangle of $A$ ONLY.</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a>  n <span class="op">=</span> <span class="bu">len</span>(A_indptr) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a>  L_sym <span class="op">=</span> [np.array([], dtype<span class="op">=</span><span class="bu">int</span>) <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n)]</span>
+<span id="cb14-7"><a href="#cb14-7"></a>  children <span class="op">=</span> [np.array([], dtype<span class="op">=</span><span class="bu">int</span>) <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n)]</span>
+<span id="cb14-8"><a href="#cb14-8"></a>  </span>
+<span id="cb14-9"><a href="#cb14-9"></a>  <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb14-10"><a href="#cb14-10"></a>    L_sym[j] <span class="op">=</span> A_indices[A_indptr[j]:A_indptr[j <span class="op">+</span> <span class="dv">1</span>]]</span>
+<span id="cb14-11"><a href="#cb14-11"></a>    <span class="cf">for</span> child <span class="kw">in</span> children[j]:</span>
+<span id="cb14-12"><a href="#cb14-12"></a>      tmp <span class="op">=</span> L_sym[child][L_sym[child] <span class="op">&gt;</span> j]</span>
+<span id="cb14-13"><a href="#cb14-13"></a>      L_sym[j] <span class="op">=</span> np.unique(np.append(L_sym[j], tmp))</span>
+<span id="cb14-14"><a href="#cb14-14"></a>    <span class="cf">if</span> <span class="bu">len</span>(L_sym[j]) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb14-15"><a href="#cb14-15"></a>      p <span class="op">=</span> L_sym[j][<span class="dv">1</span>]</span>
+<span id="cb14-16"><a href="#cb14-16"></a>      children[p] <span class="op">=</span> np.append(children[p], j)</span>
+<span id="cb14-17"><a href="#cb14-17"></a>        </span>
+<span id="cb14-18"><a href="#cb14-18"></a>  L_indptr <span class="op">=</span> np.zeros(n<span class="op">+</span><span class="dv">1</span>, dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb14-19"><a href="#cb14-19"></a>  L_indptr[<span class="dv">1</span>:] <span class="op">=</span> np.cumsum([<span class="bu">len</span>(x) <span class="cf">for</span> x <span class="kw">in</span> L_sym])</span>
+<span id="cb14-20"><a href="#cb14-20"></a>  L_indices <span class="op">=</span> np.concatenate(L_sym)</span>
+<span id="cb14-21"><a href="#cb14-21"></a>  </span>
+<span id="cb14-22"><a href="#cb14-22"></a>  <span class="cf">return</span> L_indices, L_indptr</span>
+<span id="cb14-23"><a href="#cb14-23"></a>  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This was the first piece of Python I’ve written in about 13 years<a href="#fn35" class="footnote-ref" id="fnref35" role="doc-noteref"><sup>35</sup></a>, so it’s a bit shit. Nevertheless, it works. It is possible to replace the <code>children</code> structure by a linked list implemented in an n-dimensional integer array<a href="#fn36" class="footnote-ref" id="fnref36" role="doc-noteref"><sup>36</sup></a>, but why bother. This function is run once.</p>
+<p>It’s also worth noting that the <code>children</code> array expresses the elimination tree. If we were going to do something with it explicitly, we could just spit it out and reshape it into a more useful data structure.</p>
+<p>There’s one more piece of tedium before we can get to the main event: we need to do a deep copy of <span class="math inline">\(A\)</span> into the data structure of <span class="math inline">\(L\)</span>. There is no<a href="#fn37" class="footnote-ref" id="fnref37" role="doc-noteref"><sup>37</sup></a> avoiding this.</p>
+<p>Here is the code.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">def</span> _deep_copy_csc(A_indices, A_indptr, A_x, L_indices, L_indptr):</span>
+<span id="cb15-2"><a href="#cb15-2"></a>  n <span class="op">=</span> <span class="bu">len</span>(A_indptr) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a>  L_x <span class="op">=</span> np.zeros(<span class="bu">len</span>(L_indices))</span>
+<span id="cb15-4"><a href="#cb15-4"></a>  </span>
+<span id="cb15-5"><a href="#cb15-5"></a>  <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n):</span>
+<span id="cb15-6"><a href="#cb15-6"></a>    copy_idx <span class="op">=</span> np.nonzero(np.in1d(L_indices[L_indptr[j]:L_indptr[j <span class="op">+</span> <span class="dv">1</span>]],</span>
+<span id="cb15-7"><a href="#cb15-7"></a>                                  A_indices[A_indptr[j]:A_indptr[j<span class="op">+</span><span class="dv">1</span>]]))[<span class="dv">0</span>]</span>
+<span id="cb15-8"><a href="#cb15-8"></a>    L_x[L_indptr[j] <span class="op">+</span> copy_idx] <span class="op">=</span> A_x[A_indptr[j]:A_indptr[j<span class="op">+</span><span class="dv">1</span>]]</span>
+<span id="cb15-9"><a href="#cb15-9"></a>  <span class="cf">return</span> L_x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="computing-the-cholesky-factorisation" class="level2">
+<h2 class="anchored" data-anchor-id="computing-the-cholesky-factorisation">Computing the Cholesky factorisation</h2>
+<p>It feels like we’ve been going for a really long time and we still don’t have a Cholesky factorisation. Mate. I feel your pain. Believe me.</p>
+<p>But we are here now: everything is in place. We can now write down the Cholesky algorithm!</p>
+<p>The algorithm is as it was before, with the main difference being that we now know two things:</p>
+<ol type="1">
+<li>We only need to update <code>tmp</code> with descendent of <code>j</code> in the elimination tree.</li>
+<li>That’s it. That is the only thing we know.</li>
+</ol>
+<p>Of course, we could use the elimination tree to do this very efficiently, but, <em>as per my last email</em>, I do not care. So we will simply build up a copy of all of the descendants. This will obviously be less efficient, but it’s fine for our purposes. Let’s face it, we’re all going to die eventually.</p>
+<p>So here it goes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">def</span> _sparse_cholesky_csc_impl(L_indices, L_indptr, L_x):</span>
+<span id="cb16-2"><a href="#cb16-2"></a>    n <span class="op">=</span> <span class="bu">len</span>(L_indptr) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a>    descendant <span class="op">=</span> [[] <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n)]</span>
+<span id="cb16-4"><a href="#cb16-4"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, n):</span>
+<span id="cb16-5"><a href="#cb16-5"></a>        tmp <span class="op">=</span> L_x[L_indptr[j]:L_indptr[j <span class="op">+</span> <span class="dv">1</span>]]</span>
+<span id="cb16-6"><a href="#cb16-6"></a>        <span class="cf">for</span> bebe <span class="kw">in</span> descendant[j]:</span>
+<span id="cb16-7"><a href="#cb16-7"></a>            k <span class="op">=</span> bebe[<span class="dv">0</span>]</span>
+<span id="cb16-8"><a href="#cb16-8"></a>            Ljk<span class="op">=</span> L_x[bebe[<span class="dv">1</span>]]</span>
+<span id="cb16-9"><a href="#cb16-9"></a>            pad <span class="op">=</span> np.nonzero(                                                <span class="op">\</span></span>
+<span id="cb16-10"><a href="#cb16-10"></a>              L_indices[L_indptr[k]:L_indptr[k<span class="op">+</span><span class="dv">1</span>]] <span class="op">==</span> L_indices[L_indptr[j]])[<span class="dv">0</span>][<span class="dv">0</span>]</span>
+<span id="cb16-11"><a href="#cb16-11"></a>            update_idx <span class="op">=</span> np.nonzero(np.in1d(                                 <span class="op">\</span></span>
+<span id="cb16-12"><a href="#cb16-12"></a>              L_indices[L_indptr[j]:L_indptr[j<span class="op">+</span><span class="dv">1</span>]],                          <span class="op">\</span></span>
+<span id="cb16-13"><a href="#cb16-13"></a>              L_indices[(L_indptr[k] <span class="op">+</span> pad):L_indptr[k<span class="op">+</span><span class="dv">1</span>]]))[<span class="dv">0</span>]</span>
+<span id="cb16-14"><a href="#cb16-14"></a>            tmp[update_idx] <span class="op">=</span> tmp[update_idx] <span class="op">-</span>                              <span class="op">\</span></span>
+<span id="cb16-15"><a href="#cb16-15"></a>              Ljk <span class="op">*</span> L_x[(L_indptr[k] <span class="op">+</span> pad):L_indptr[k <span class="op">+</span> <span class="dv">1</span>]]</span>
+<span id="cb16-16"><a href="#cb16-16"></a>            </span>
+<span id="cb16-17"><a href="#cb16-17"></a>        diag <span class="op">=</span> np.sqrt(tmp[<span class="dv">0</span>])</span>
+<span id="cb16-18"><a href="#cb16-18"></a>        L_x[L_indptr[j]] <span class="op">=</span> diag</span>
+<span id="cb16-19"><a href="#cb16-19"></a>        L_x[(L_indptr[j] <span class="op">+</span> <span class="dv">1</span>):L_indptr[j <span class="op">+</span> <span class="dv">1</span>]] <span class="op">=</span> tmp[<span class="dv">1</span>:] <span class="op">/</span> diag</span>
+<span id="cb16-20"><a href="#cb16-20"></a>        <span class="cf">for</span> idx <span class="kw">in</span> <span class="bu">range</span>(L_indptr[j] <span class="op">+</span> <span class="dv">1</span>, L_indptr[j <span class="op">+</span> <span class="dv">1</span>]):</span>
+<span id="cb16-21"><a href="#cb16-21"></a>            descendant[L_indices[idx]].append((j, idx))</span>
+<span id="cb16-22"><a href="#cb16-22"></a>    <span class="cf">return</span> L_x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The one thing that you’ll note in this code<a href="#fn38" class="footnote-ref" id="fnref38" role="doc-noteref"><sup>38</sup></a> is that we are implicitly using things that we know about the sparsity structure of the <span class="math inline">\(j\)</span>th column. In particular, we <em>know</em> that the sparsity structure of the <span class="math inline">\(j\)</span>th column is the <em>union</em> of the relevant parts of the sparsity structure of their dependent columns. This allows a lot of our faster indexing to work.</p>
+<p>Finally, we can put it all together.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">def</span> sparse_cholesky_csc(A_indices, A_indptr, A_x):</span>
+<span id="cb17-2"><a href="#cb17-2"></a>    L_indices, L_indptr<span class="op">=</span> _symbolic_factor_csc(A_indices, A_indptr)</span>
+<span id="cb17-3"><a href="#cb17-3"></a>    L_x <span class="op">=</span> _deep_copy_csc(A_indices, A_indptr, A_x, L_indices, L_indptr)</span>
+<span id="cb17-4"><a href="#cb17-4"></a>    L_x <span class="op">=</span> _sparse_cholesky_csc_impl(L_indices, L_indptr, L_x)</span>
+<span id="cb17-5"><a href="#cb17-5"></a>    <span class="cf">return</span> L_indices, L_indptr, L_x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Right. Let’s test it. We’re going to work on a particular<a href="#fn39" class="footnote-ref" id="fnref39" role="doc-noteref"><sup>39</sup></a> sparse matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a><span class="im">from</span> scipy <span class="im">import</span> sparse</span>
+<span id="cb18-2"><a href="#cb18-2"></a></span>
+<span id="cb18-3"><a href="#cb18-3"></a>n <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a>one_d <span class="op">=</span> sparse.diags([[<span class="op">-</span><span class="fl">1.</span>]<span class="op">*</span>(n<span class="op">-</span><span class="dv">1</span>), [<span class="fl">2.</span>]<span class="op">*</span>n, [<span class="op">-</span><span class="fl">1.</span>]<span class="op">*</span>(n<span class="op">-</span><span class="dv">1</span>)], [<span class="op">-</span><span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>])</span>
+<span id="cb18-5"><a href="#cb18-5"></a>A <span class="op">=</span> sparse.kronsum(one_d, one_d) <span class="op">+</span> sparse.eye(n<span class="op">*</span>n)</span>
+<span id="cb18-6"><a href="#cb18-6"></a>A_lower <span class="op">=</span> sparse.tril(A, <span class="bu">format</span> <span class="op">=</span> <span class="st">"csc"</span>)</span>
+<span id="cb18-7"><a href="#cb18-7"></a>A_indices <span class="op">=</span> A_lower.indices</span>
+<span id="cb18-8"><a href="#cb18-8"></a>A_indptr <span class="op">=</span> A_lower.indptr</span>
+<span id="cb18-9"><a href="#cb18-9"></a>A_x <span class="op">=</span> A_lower.data</span>
+<span id="cb18-10"><a href="#cb18-10"></a></span>
+<span id="cb18-11"><a href="#cb18-11"></a>L_indices, L_indptr, L_x <span class="op">=</span> sparse_cholesky_csc(A_indices, A_indptr, A_x)</span>
+<span id="cb18-12"><a href="#cb18-12"></a>L <span class="op">=</span> sparse.csc_array((L_x, L_indices, L_indptr), shape <span class="op">=</span> (n<span class="op">**</span><span class="dv">2</span>, n<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb18-13"><a href="#cb18-13"></a></span>
+<span id="cb18-14"><a href="#cb18-14"></a>err <span class="op">=</span> np.<span class="bu">sum</span>(np.<span class="bu">abs</span>((A <span class="op">-</span> L <span class="op">@</span> L.transpose()).todense()))</span>
+<span id="cb18-15"><a href="#cb18-15"></a><span class="bu">print</span>(<span class="ss">f"Error in Cholesky is </span><span class="sc">{</span>err<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Error in Cholesky is 3.871041263071504e-12</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a>nnz <span class="op">=</span> <span class="bu">len</span>(L_x)</span>
+<span id="cb20-2"><a href="#cb20-2"></a><span class="bu">print</span>(<span class="ss">f"Number of non-zeros is </span><span class="sc">{</span>nnz<span class="sc">}</span><span class="ss"> (fill in of </span><span class="sc">{</span><span class="bu">len</span>(L_x) <span class="op">-</span> <span class="bu">len</span>(A_x)<span class="sc">}</span><span class="ss">)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of non-zeros is 125049 (fill in of 117649)</code></pre>
+</div>
+</div>
+<p>Finally, let’s demonstrate that we can reduce the amount of fill-in with a reordering. Obviously, the built in permutation in <code>scipy</code> is crappy, so we will not see much of a difference. But nevertheless. It’s there.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a>perm <span class="op">=</span> sparse.csgraph.reverse_cuthill_mckee(A, symmetric_mode<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="bu">print</span>(perm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[2499 2498 2449 ...   50    1    0]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1"></a>A_perm <span class="op">=</span> A[perm[:,<span class="va">None</span>], perm]</span>
+<span id="cb24-2"><a href="#cb24-2"></a>A_perm_lower <span class="op">=</span> sparse.tril(A_perm, <span class="bu">format</span> <span class="op">=</span> <span class="st">"csc"</span>)</span>
+<span id="cb24-3"><a href="#cb24-3"></a>A_indices <span class="op">=</span> A_perm_lower.indices</span>
+<span id="cb24-4"><a href="#cb24-4"></a>A_indptr <span class="op">=</span> A_perm_lower.indptr</span>
+<span id="cb24-5"><a href="#cb24-5"></a>A_x <span class="op">=</span> A_perm_lower.data</span>
+<span id="cb24-6"><a href="#cb24-6"></a></span>
+<span id="cb24-7"><a href="#cb24-7"></a>L_indices, L_indptr, L_x <span class="op">=</span> sparse_cholesky_csc(A_indices, A_indptr, A_x)</span>
+<span id="cb24-8"><a href="#cb24-8"></a>L <span class="op">=</span> sparse.csc_array((L_x, L_indices, L_indptr), shape <span class="op">=</span> (n<span class="op">**</span><span class="dv">2</span>, n<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb24-9"><a href="#cb24-9"></a>err <span class="op">=</span> np.<span class="bu">sum</span>(np.<span class="bu">abs</span>((A_perm <span class="op">-</span> L <span class="op">@</span> L.transpose()).todense()))</span>
+<span id="cb24-10"><a href="#cb24-10"></a><span class="bu">print</span>(<span class="ss">f"Error in Cholesky is </span><span class="sc">{</span>err<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Error in Cholesky is 3.0580421951974465e-12</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1"></a>nnz_rcm <span class="op">=</span> <span class="bu">len</span>(L_x)</span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="bu">print</span>(<span class="ss">f"Number of non-zeros is </span><span class="sc">{</span>nnz_rcm<span class="sc">}</span><span class="ss"> (fill in of </span><span class="sc">{</span><span class="bu">len</span>(L_x) <span class="op">-</span> <span class="bu">len</span>(A_x)<span class="sc">}</span><span class="ss">),</span><span class="ch">\n</span><span class="ss">which is less than the unpermuted matrix, which had </span><span class="sc">{</span>nnz<span class="sc">}</span><span class="ss"> non-zeros."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of non-zeros is 87025 (fill in of 79625),
+which is less than the unpermuted matrix, which had 125049 non-zeros.</code></pre>
+</div>
+</div>
+<p>And finally, let’s check that we’ve not made some fake non-zeros. To do this we need to wander back into <code>R</code> because <code>scipy</code> doesn’t have a sparse Cholesky<a href="#fn40" class="footnote-ref" id="fnref40" role="doc-noteref"><sup>40</sup></a> factorisation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>ind <span class="ot">&lt;-</span> py<span class="sc">$</span>A_indices</span>
+<span id="cb28-2"><a href="#cb28-2"></a>indptr <span class="ot">&lt;-</span> py<span class="sc">$</span>A_indptr</span>
+<span id="cb28-3"><a href="#cb28-3"></a>x <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(py<span class="sc">$</span>A_x)</span>
+<span id="cb28-4"><a href="#cb28-4"></a>A <span class="ot">=</span> <span class="fu">sparseMatrix</span>(<span class="at">i =</span> ind <span class="sc">+</span> <span class="dv">1</span>, <span class="at">p =</span> indptr, <span class="at">x=</span>x, <span class="at">symmetric =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb28-5"><a href="#cb28-5"></a></span>
+<span id="cb28-6"><a href="#cb28-6"></a>L <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">chol</span>(A))</span>
+<span id="cb28-7"><a href="#cb28-7"></a><span class="fu">sum</span>(L<span class="sc">@</span>i <span class="sc">-</span> py<span class="sc">$</span>L_indices)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">sum</span>(L<span class="sc">@</span>p <span class="sc">-</span> py<span class="sc">$</span>L_indptr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<p>Perfect.</p>
+</section>
+<section id="ok-we-are-done-for-today." class="level2">
+<h2 class="anchored" data-anchor-id="ok-we-are-done-for-today.">Ok we are done for today.</h2>
+<p>I was hoping that we were going to make it to the JAX implementation, but this is long enough now. And I suspect that there will be some <em>issues</em> that are going to come up.</p>
+<p>If you want some references, I recommend:</p>
+<ul>
+<li><a href="http://heath.cs.illinois.edu/courses/cs598mh/george_liu.pdf">George, Liu, and Ng’s notes</a> (warning: FORTRAN).</li>
+<li><a href="https://epubs.siam.org/doi/book/10.1137/1.9780898718881">Timothy Davis’ book</a> (warning: pure C).</li>
+<li>Liu’s <a href="https://epubs.siam.org/doi/10.1137/0611010">survey paper about elimination trees</a> (warning: trees).</li>
+<li><a href="https://www.routledge.com/Gaussian-Markov-Random-Fields-Theory-and-Applications/Rue-Held/p/book/9781584884323">Rue and Held’s book</a> (Statistically motivated).</li>
+</ul>
+<p>Obviously this is a massive area and I obviously did not do it justice in a single blog post. It’s well worth looking further into. It is very cool. And obviously, <em>I go through all this</em><a href="#fn41" class="footnote-ref" id="fnref41" role="doc-noteref"><sup>41</sup></a> to get a prototype that I can play with all of the bits of. For the love of god, use Cholmod or Eigen or MUMPS or literally anything else. The only reason to write these yourself is to learn how to understand it.</p>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>The old numerical linear algebra naming conventions: Symmetric letters are symmetric matrices, upper case is a matrix, lower case is a vector, etc etc etc. Obviously, all conventions in statistics go against this so who really cares. Burn it all down.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Go girl. Give us nothing.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>or scalars<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>This is actually how you check if a matrix is SPD. Such a useful agorithm!<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>This variant is called the left-looking Cholesky. There are 6 distinct ways to rearrange these computations that lead to algorithms that are well-adapted to different structures. The left-looking algorithm is well adapted to matrices stored column-by-column. But it is not the only one! The variant of the sparse Cholesky in Matlab and Eigen is the upward-looking Cholesky. CHOLMOD uses the left-looking Cholesky (because that’s how you get supernodes). MUMPS uses the right-looking variant. Honestly this is a fucking fascinating wormhole you can fall down. A solid review of some of the possibilities is in Chapter 4 of Tim Davis’ book.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Here <code>A</code> is a <span class="math inline">\(n\times n\)</span> matrix and <code>u'</code> is the transpose of the vector <code>u</code>.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>You can also see that if <span class="math inline">\(A\)</span> is stored in memory by stacking the columns, this algorithm is set up to be fairly memory efficient. Of course, if you find yourself caring about what your cache is doing, you’ve gone astray somewhere. That is why professionals have coded this up (only a fool competes with LAPACK).<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>The ultimate language of scientific computing. Do not slide into my DMs and suggest Julia is.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>You may be thinking <em>well surely we have to use a row-major ordering</em>. But honey let me tell you. We are building our own damn storage method, so we can order it however we bloody want. Also, somewhere down the line I’m going to do this in Eigen, which is column major by default.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>If you look at the algorithm, you’ll see that we only need to store the diagonal and the entries below. This is enough (in general) because we know the matrix is symmetric!<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>CPU operations are a lot less memory-limited than they used to be, but nevertheless it piles up. GPU operations still very much are, but sparse matrix operations mostly don’t have the arithmetic intensity to be worth putting on a GPU.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>(NB: zero-based indexing!) This is a superfluous entry (the information is available elsewhere), but having it in makes life just a million times easier because you don’t have to treat the final column separately!.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>ZERO BASED, PYTHON SLICES<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>I am not a headless torso that can’t host. I differentiate.<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>We only care about undirected graphs<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>Or from <span class="math inline">\(0\)</span> to <span class="math inline">\(n-1\)</span> if you have hate in your heart and darkness in your soul.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>To get from the previous version of the algorithm to this, we unwound all of those beautiful vectorised matrix-vector products. This would be a terrible idea if we were doing a dense Cholesky, but as general rule if you are implementing your own dense Cholesky factorisation you have already committed to a terrible idea. (The same, to be honest, is true for sparse Choleskys. But nevertheless, she persisted.)<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p>or trees or really any discrete structure.<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>Don’t kid yourself, <a href="https://epubs.siam.org/doi/10.1137/0205021">we look this shit up</a>.<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20"><p>This means that all of the pairs <span class="math inline">\((i, v_1)\)</span>, <span class="math inline">\((v_i, v_{i+1})\)</span> and <span class="math inline">\((v_{\ell-1}, v_j)\)</span> are all in the edge set <span class="math inline">\(\mathcal{E}\)</span><a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21"><p>The specific choices building this matrix are to make sure it’s positive definite. The transpose is there because in R, <code>R &lt;- chol(A)</code> returns an <em>upper</em> triangular matrix that satisfies <span class="math inline">\(A = R^TR\)</span>. I assume this is because C has row-major storage, but I honestly don’t care enough to look it up.<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn22"><p>Here the <code>pivot = FALSE</code> option is needed because the default for a sparse Cholesky decomposition in R is to re-order the vertices to try to minimise the fill-in. But that goes against the example!<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn23"><p>Finding the minimum fill reordering is NP-hard, so everything is heuristic.<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24"><p>scipy has the reverse Cuthill-McKee reordering—which is shit—easily available. As far as I can tell, the easiest way to get AMD out is to factorise a sparse matrix in scipy and pull the reordering out. If I were less lazy, I’d probably just bind SuiteSparse’s AMD algorithm, which is permissively licensed. But nah. The standard nested-dissection implementation is in the METIS package, which used to have a shit license but is now Apache2.0. Good on you METIS!<a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn25"><p>and some other cases<a href="#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn26"><p>They are cheap to compute<a href="#fnref26" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn27"><p>Actually, you get a forest in general. You get a tree if <span class="math inline">\(\mathcal{G}\)</span> has a single connected component, otherwise you get a bunch of disjoint trees. But we still call it a tree because maths is wild.<a href="#fnref27" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn28"><p>Fun fact: it is the spanning tree of the graph of <span class="math inline">\(L + L^T\)</span>. Was that fun? I don’t think that was fun.<a href="#fnref28" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn29"><p>This is morally but not actually true. There is a variant (slower in practice, faster asymptotically), that costs <span class="math inline">\(\mathcal{O}\left(\operatorname{nnz}(A)\alpha(\operatorname{nnz}(A), n)\right)\)</span>, where <span class="math inline">\(\alpha(m,n)\)</span> is the inverse Ackerman function, which is a very slowly growing function that is always equal to 4 for our purposes. The actual version that people use is technically <span class="math inline">\(\mathcal{O}(\operatorname{nnz}(A) \log n)\)</span>, but is faster and the <span class="math inline">\(\log n\)</span> is never seen in practice.<a href="#fnref29" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn30"><p>This is beyond the scope, but basically it’s trying to find groups of nodes that can be eliminated as a block using dense matrix operations. This leads to a much more efficient algorithm.<a href="#fnref30" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn31"><p>There is, of course, a typo in the algorithm we’re about to implement. We’re using the correct version from <a href="https://epubs.siam.org/doi/10.1137/0611010">here</a>.<a href="#fnref31" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn32"><p>from parent to child (aka in descending node order)<a href="#fnref32" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn33"><p>by construction<a href="#fnref33" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn34"><p>If there are no non-zeros below the diagonal, then we have a root of one of the trees in the forest!<a href="#fnref34" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn35"><p>I did not make it prettier because a) I think it’s useful to show bad code sometimes, and b) I can’t be arsed. The real file has some comments in it because I am not a monster, but in some sense this whole damn blog is a code comment.<a href="#fnref35" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn36"><p>The George, Liu, Ng book does that in FORTRAN. Enjoy decoding it.<a href="#fnref36" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn37"><p>Well, there is some avoiding this. If the amount of fill in is small, it may be more efficient to do insertions instead. But again, I am not going to bother. And anyway. If <code>A_x</code> is a JAX array, it’s going to be immutable and we are not going to be able to avoid the deep copy.<a href="#fnref37" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn38"><p>and in the deep copy code<a href="#fnref38" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn39"><p>This is the discretisation of a 2D laplacian on a square with some specific boundary conditions<a href="#fnref39" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn40"><p>Cholmod, which is the natural choice, is GPL’d, which basically means it can’t be used in something like Scipy. R does not have this problem.<a href="#fnref40" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn41"><p>Björk voice<a href="#fnref41" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2022,
+  author = {Dan Simpson},
+  editor = {},
+  title = {Sparse {Matrices} 2: {An} Invitation to a Sparse {Cholesky}
+    Factorisation},
+  date = {2022-03-31},
+  url = {https://dansblog.netlify.app/2022-03-23-getting-jax-to-love-sparse-matrices},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Dan Simpson. 2022. <span>“Sparse Matrices 2: An Invitation to a Sparse
+Cholesky Factorisation.”</span> March 31, 2022. <a href="https://dansblog.netlify.app/2022-03-23-getting-jax-to-love-sparse-matrices">https://dansblog.netlify.app/2022-03-23-getting-jax-to-love-sparse-matrices</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

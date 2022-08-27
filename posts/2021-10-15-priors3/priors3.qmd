@@ -1,0 +1,92 @@
+---
+title: "Priors: Fire With Fire (Track 3)"
+description: |
+  Objective priors? In finite dimensions? A confidence trick? Yes.
+date: 10-17-2021
+image: strictly.JPG
+repository_url: https://github.com/dpsimpson/blog/tree/master/_posts/2021-10-15-priors3
+categories: [Prior distributions, Fundamentals]
+twitter-card:
+  title:  "Priors: Fire With Fire (Track 3)"
+  creator: "@dan_p_simpson"
+citation: 
+  url: https://dansblog.netlify.app/priors3
+---
+
+It is Friday night, I am in lockdown, and I have had a few drinks. So let's talk about objective priors.
+
+The first and most obvious thing is that they are not fucking objective. It is bad/unethical marketing from the 90s that has stuck. I dislike it. I think it's unethical (and, personally, immoral) to proclaim a statistical method _objective_ in any context, let alone one in which all you did was compute some derivatives and maybe sent something that isn't going to fucking infinity to infinity. It's fucking trash and I hate it.
+
+But let's talk about some objective priors.
+
+
+### What is an objective prior
+
+Fuck knows.
+
+### Who uses objective priors
+No one (see above). But otherwise, a lot of people who are being sold a mislabeled bill of goods. People who tell you, unprompted, that they went to Duke.
+
+### Should I use objective priors
+
+No.
+
+## Ok let's try again.
+
+No I do not think I will.
+
+I am willing to talk about finite dimensional priors that add minimal information or are otherwise related to MLEs.
+
+Later, I guess because I'm mathematically interested in it, I'll talk about the infinite dimensional case. But not today. Because I'm pissed off.
+
+Anyway.
+
+### What is an objective prior
+
+Honestly, still a pretty vague and stupid concept. It is difficult to define for interesting (aka not univariate) cases, but maybe the most practical definition is _priors that come from rules_.
+
+But that's not a ... great definition. Many priors that I will talk about over the next little while could probably be shoved under the _objective_ banner. But in this post I'm going to talk about the OG concept of an _objective_ prior: the type of priors that try to add minimal information beyond the data.
+
+Nominally, the aim of these priors is to _let the data speak for itself_. 
+And I've been doing this a while, and no matter how long I've listened to my 
+`.csv` file, it has never said a word. But if it weren't for silly justifications, we wouldn't have silly concepts.
+
+There are, essentially, three main types of priors that fall into this traditionally _objective_ category:
+
+- Jeffreys priors
+- Reference priors
+- Matching priors
+
+Jefferys priors argue, for a bunch of very sensible and solid geometrical reasons, that the value of the parameter $\theta$ is less important than the way that moving from $\theta$ to $\theta + d\theta$ will change the likelihood $p(y \mid \theta)$. This push back against the [Arianist notion](https://statmodeling.stat.columbia.edu/2018/08/21/against-arianism/) that the prior can be separated from its context is welcome!
+
+The actual prior itself comes from, I guess, the idea that the prior should be invariant to reparameterisations and after some maths you get $$
+p(\theta ) \propto |I(\theta)|^{1/2},
+$$ where $|I(\theta)|$ is the determinant of the Fisher^[ewwwwwww] information matrix $$
+I(\theta)_{ij} = \frac{\partial^2}{\partial \theta_i \theta_j} \log p(y \mid \theta).
+$$
+
+This immediately turns out to be a terrible idea for general models. When $\theta$ has more than one component, the Jeffreys prior tends to concentrate in silly places in the parameter space. 
+
+But when $\theta$ is one dimensional, it works fine. In fact, if you use it you will get the sampling distribution Maximum Likelihood estimator (or withing $\mathcal{O}_p(n^{-1})$ of it). So there's very little purpose pursing this line of reasoning.  
+
+There's actually a bit of a theme that develops here: for models with a single parameter a lot of things work perfectly. Sadly the intersection of one-dimensional statistical models that are regular enough for all this maths to work and interesting statistical problems is not exactly hefty. 
+
+Reference priors are an attempt to extend Jeffreys priors to multiple parameters while avoiding some of the more egregious problems of multivariate Jeffreys priors. They were also the topic of the most boring talk I have ever seen at a conference^[This is a very high bar. I have seen (and given) a lot of very very very dull talks. But this is the one that sticks in my mind.]. It was 45 minutes going through all of the different reference priors you can make for inferring a bivariate normal (you see, to construct a reference prior you need to order your parameters and this ordering matters). If I didn't already think that reference priors were an impractical waste of time, that certainly convinced me. A lot of people seem to mention reference priors, but it is rarer to see them in use.
+
+Matching priors try to spin off Jeffreys priors in a different direction. They are a mathematically very interesting idea asking if there is a prior that will produce a posterior uncertainty interval that is exactly the same as (or very close to) the sampling distribution of the MLE.  It turns out that for one parameter models you can totally do this (the Jeffreys prior does it! And you can get even closer). But when there are nuisance parameters (aka parameters that aren't of direct inferential interest but are important to modelling the data), the resulting prior tends to be data-dependent. A really nice example of the literature is [Reid, Mukerjee, and Fraser's 2003 paper](https://www.jstor.org/stable/4356229).  To some extent the matching priors literature is asking "should we even Bayes?", which is not the worst question to ask^[If it seems like I like matching priors more than the other two, I do.].
+
+These three ideas have a number of weird bastard children. Most of these are not recommended by anyone, but used prominently. These are the vague priors. The $N(0,100^2)$ priors. The $\text{Inverse-Gamma}(\epsilon, \epsilon)$ priors. The Uniform over large interval priors. The misinformed concept behind these priors is that _wider prior = less information_. This is, of course, bullshit. As many^[https://projecteuclid.org/journals/bayesian-analysis/volume-1/issue-3/Prior-distributions-for-variance-parameters-in-hierarchical-models-comment-on/10.1214/06-BA117A.full] many^[Put a wide normal prior on the logit mean, simulate and back transform. Explain how that is uninformative.] many^[Some people love a wide uniform distribution $\text{Unif}(0,U)$ on the degrees of freedom of a student-t distribution. As $U$ increases, you are putting more and more prior mass on the $t$ distribution being very close to a normal distribution. Oops.] examples show.
+
+The one big thing that I haven't mentioned so far is that most of the time the priors produced using these methods are not proper, which is to say that you can't integrate them. That isn't a big deal mathematically as long as $\int_\Theta p(y \mid \theta)p(\theta)\,d\theta$ is finite for all^[or all after some minimal restrictions] data sets $y$. This is a fairly difficult thing to check for most models and if you want to really upset a grad student at a Bayesian conference spend some time staring at their poster and then grimace and ask "are you sure that posterior is proper?"^[Allegedly, Jim Berger's wife, who is not a statistician but was frequently at conferences, used to do this.] The frequent impropriety of these classes of means you can't simulate from them, can't really consider them a representation of prior information, and can't easily transfer them from one problem to another without at least a little bit of fear that the whole house of cards is gonna come tumbling down.
+
+### Who uses objective priors
+
+Frequentists. People who are obsessed with statistical bias of their estimators (the Venn diagram here isn't a circle, but it's also not the poster child for diversity of thought or modernity). People who read boring textbooks. People who write boring textbook. People who believe that it's the choice of prior and somehow not the choice of the likelihood or, you know, their choice of data that will somehow lead to incorrect inferences^[Like seriously. I don't want to repeat that old canard that the choice of likelihood is as subjective as the choice of prior because a) Arianism and b) the choice of likelihood is a waaaaaaaaaay more important subjective modelling choice than the choice of prior in all but the most outre circumstances!]. People who tell you, without being asked^[I promise I have never asked and I will never ask.], that they went to Duke.
+
+### Should I use objective priors
+
+If you've more parameters than a clumsy butcher has fingers on their non-dominant hand, you probably shouldn't use objective priors. In these cases, you almost always need to inject some form of regularisation, prior information, or just plain hope into your model to make it behave sensibly^[There are ideas of _objective_ priors in these cases, which we will talk about later, but these usually take the form of priors that guarantee optimal frequentist behaviour. And again, there is often another way to get that.].
+
+But if you have less, I mean, live your life I guess. But why go to the effort. Just compute a maximum likelihood if you're looking for something that is very very similar to a maximum likelihood estimate. It's faster, it's cleaner, and it's not pretending to be something it isn't.
+
+I actually think you can usually make stronger, more explicitly justified choices using other things we can talk about later. But I'm not the boss of statistics so you don't have to listen to me.

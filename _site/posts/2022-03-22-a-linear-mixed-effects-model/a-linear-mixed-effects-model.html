@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.15">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dan Simpson">
+<meta name="dcterms.date" content="2022-03-22">
+<meta name="description" content="Hubris. Just hubris. But before the fall comes the statement of purpose. This is that statement.">
+
+<title>Un garçon pas comme les autres (Bayes) - Sparse Matrices 1: The linear algebra of linear mixed effects models and their generalisations</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="box.css">
+<meta property="og:title" content="Un garçon pas comme les autres (Bayes) - Sparse Matrices 1: The linear algebra of linear mixed effects models and their generalisations">
+<meta property="og:description" content="Hubris. Just hubris. But before the fall comes the statement of purpose. This is that statement.">
+<meta property="og:image" content="https://dansblog.netlify.app/posts/2022-03-22-a-linear-mixed-effects-model/patti.JPG">
+<meta property="og:site-name" content="Un garçon pas comme les autres (Bayes)">
+<meta name="twitter:title" content="Sparse Matrices 1: The linear algebra of linear mixed effects models and their generalisations">
+<meta name="twitter:description" content="Hubris. Just hubris. But before the fall comes the statement of purpose. This is that statement.">
+<meta name="twitter:image" content="https://dansblog.netlify.app/posts/2022-03-22-a-linear-mixed-effects-model/patti.JPG">
+<meta name="twitter:creator" content="@dan_p_simpson">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Un garçon pas comme les autres (Bayes)</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About this blog</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/dan_p_simpson"><i class="bi bi-twitter" role="img" aria-label="twitter">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/dpsimpson"><i class="bi bi-github" role="img" aria-label="github">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://dansblog.netlify.app"><i class="bi bi-person-circle" role="img" aria-label="website">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Sparse Matrices 1: The linear algebra of linear mixed effects models and their generalisations</h1>
+                  <div>
+        <div class="description">
+          <p>Hubris. Just hubris. But before the fall comes the statement of purpose. This is that statement.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Sparse matrices</div>
+                <div class="quarto-category">Linear mixed models</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Dan Simpson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 22, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#a-generalised-linear-mixed-effects-ish-model" id="toc-a-generalised-linear-mixed-effects-ish-model" class="nav-link active" data-scroll-target="#a-generalised-linear-mixed-effects-ish-model">A generalised linear mixed effects-ish model</a></li>
+  <li><a href="#lets-get-the-posterior" id="toc-lets-get-the-posterior" class="nav-link" data-scroll-target="#lets-get-the-posterior">Let’s get the posterior!</a>
+  <ul class="collapse">
+  <li><a href="#the-full-conditional" id="toc-the-full-conditional" class="nav-link" data-scroll-target="#the-full-conditional">The full conditional</a></li>
+  <li><a href="#writing-down-ptheta-mid-y" id="toc-writing-down-ptheta-mid-y" class="nav-link" data-scroll-target="#writing-down-ptheta-mid-y">Writing down <span class="math inline">\(p(\theta \mid y)\)</span></a></li>
+  </ul></li>
+  <li><a href="#so-why-isnt-this-just-a-gaussian-process" id="toc-so-why-isnt-this-just-a-gaussian-process" class="nav-link" data-scroll-target="#so-why-isnt-this-just-a-gaussian-process">So why isn’t this just a Gaussian process?</a></li>
+  <li><a href="#what-i-what-i-what-i-gotta-do-what-i-gotta-do-to-get-this-model-in-pymc" id="toc-what-i-what-i-what-i-gotta-do-what-i-gotta-do-to-get-this-model-in-pymc" class="nav-link" data-scroll-target="#what-i-what-i-what-i-gotta-do-what-i-gotta-do-to-get-this-model-in-pymc">What I? What I? What I gotta do? What I gotta do to get this model in PyMC?</a>
+  <ul class="collapse">
+  <li><a href="#what-comes-next" id="toc-what-comes-next" class="nav-link" data-scroll-target="#what-comes-next">What comes next?</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>Back in the early days of the pandemic I though “I’ll have a pandemic project”. I never did my pandemic project.</p>
+<p>But I did think briefly about what it would be. I want to get the types of models I like to use in everyday life efficiently implemented inside Stan. These models encapsulate (generalised) linear mixed models<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, (generalised) additive models, Markovian spatial models<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, and other models. A good description of the types of models I’m talking about <a href="https://arxiv.org/abs/1604.00860">can be found here</a>.</p>
+<p>Many of these models can be solved efficiently via <a href="https://www.r-inla.org/">INLA</a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, a great R package for fast posterior inference for an extremely useful set of Bayesian models. In focussing on a particular class of Bayesian models, INLA leverages a bunch of structural features to make a very very fast and accurate posterior approximation. I love this stuff. It’s where I started my stats career.</p>
+<p>None of the popular MCMC packages really implement the lessons learnt from INLA to help speed up their inference. I want to change that.</p>
+<p>The closest we’ve gotten so far is the <a href="https://arxiv.org/abs/2004.12550">nice work Charles Margossian has been doing</a> to get Laplace approximations into Stan.</p>
+<p>But I want to focus on the other key tool in INLA: <em>using sparse linear algebra to make things fast and scalable</em>.</p>
+<p>I usually work with Stan, but the scale of the C++ coding<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> required to even tell if these ideas are useful in Stan was honestly just too intimidating.</p>
+<p>But the other day I remembered Python. Now I am a shit Python programmer<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> and I’m not fully convinced I ever achieved object permanence. So it took me a while to remember it existed. But eventually I realised that I could probably make a decent prototype<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> of this idea using some modern Python tools (specifically JAX). I checked with some PyMC devs and they pointed me at what the appropriate bindings would look like.</p>
+<p>So I decided to go for it.</p>
+<p>Of course, I’m pretty busy and these sort of projects have a way of dying in the arse. So I’m motivating myself by blogging it. I do not know if these ideas will work<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>. I do not know if my coding skills are up to it<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>. I do not know if I will lose interest. But it should be fun to find out.</p>
+<p>So today I’m going to do the easiest part: I’m going to scope out the project. Read on, MacDuff.</p>
+<section id="a-generalised-linear-mixed-effects-ish-model" class="level2">
+<h2 class="anchored" data-anchor-id="a-generalised-linear-mixed-effects-ish-model">A generalised linear mixed effects-ish model</h2>
+<p>If you were to open the correct textbook, or the <a href="https://www.jstatsoft.org/article/view/v067i01">Bates, Mächler, Boler, and Walker 2015 masterpiece paper</a> that describes the workings of <code>lme4</code>, you will see the linear mixed model written as <span class="math display">\[
+y = X\beta + Zb + \epsilon,
+\]</span> where</p>
+<ul>
+<li>the columns of <span class="math inline">\(X\)</span> contain the covariates<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>,</li>
+<li><span class="math inline">\(\beta\)</span> is a vector of unknown regression coefficients,</li>
+<li><span class="math inline">\(Z\)</span> is a known matrix that describes the random effects (basically which observation is linked to which random effect),</li>
+<li><span class="math inline">\(b \sim N(0, \Sigma_b)\)</span> is the vector of random effects with some unknown covariance matrix <span class="math inline">\(\Sigma_b\)</span>,</li>
+<li>and <span class="math inline">\(\epsilon \sim N(0 ,\sigma^2 W)\)</span> is the observation noise (here <span class="math inline">\(W\)</span> is a known diagonal matrix<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>).</li>
+</ul>
+<p>But unlike Doug Bates and his friends, my aim is to do Bayesian computation. In this situation, <span class="math inline">\(\beta\)</span> <em>also</em> has a prior on it! In fact, I’m going to put a Gaussian prior <span class="math inline">\(\beta \sim N(0, R)\)</span> on it, for some typically known<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> matrix <span class="math inline">\(R\)</span>.</p>
+<p>This means that I can treat <span class="math inline">\(\beta\)</span> and <span class="math inline">\(b\)</span> the same<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> way! And I’m going to do just that. I’m going to put them together into a vector <span class="math inline">\(u = (\beta^T, b^T)^T\)</span>. Because the prior on <span class="math inline">\(u\)</span> is Gaussian<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a>, I’m sometimes going to call <span class="math inline">\(u\)</span> the <em>Gaussian component</em> or even the <em>latent</em><a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> Gaussian component.</p>
+<p>Now that I’ve smooshed my fixed and random effects together, I don’t really need to keep <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span> separate. So I’m going push them together into a rectangular matrix <span class="math display">\[
+A = [X \vdots Z].
+\]</span></p>
+<p>This allows us to re-write the model as <span class="math display">\[\begin{align*}
+y \mid u, \sigma &amp; \sim N(A u, \sigma^2 W)\\
+u \mid \theta &amp;\sim N(0, Q(\theta)^{-1}).
+\end{align*}\]</span></p>
+<p><em>What the hell is <span class="math inline">\(Q(\theta)\)</span> and why are we suddenly parameterising a multivariate normal distribution by the inverse of its covariance matrix (which, if you’re curious, is known as a <em>precision</em> matrix)???</em></p>
+<p>I will take your questions in reverse order.</p>
+<p>We are parameterising by the precision<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a> matrix because it will simplify our formulas and lead to faster computations. This will be a major topic for us later!</p>
+<p>As to what <span class="math inline">\(Q(\theta)\)</span> is, it is the matrix <span class="math display">\[
+Q(\theta) = \begin{pmatrix} \Sigma_b^{-1} &amp; 0 \\ 0 &amp; R^{-1}\end{pmatrix}
+\]</span> and <span class="math inline">\(\theta = (\sigma, \Sigma_b)\)</span> is the collection of all<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> non-Gaussian parameters in the model. Later, we will assume<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a> that <span class="math inline">\(\Sigma_b\)</span> has quite a lot of structure.</p>
+<p>This is a <em>very</em> generic model. It happily contains things like</p>
+<ul>
+<li>Linear regression!</li>
+<li>Linear regression with horseshoe priors!</li>
+<li>Linear mixed effects models!</li>
+<li>Linear regression with splines (smoothing or basis)!</li>
+<li>Spatial models like <a href="https://arxiv.org/abs/1601.01180">ICARs, BYMs</a>, etc etc etc</li>
+<li>Gaussian processes (with the caveat that we’re mostly focussing on those that can be formulated via precision matrices rather than covariance matrices. <a href="https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/">A whole blog post, I have.</a>)</li>
+<li>Any combination of these things!</li>
+</ul>
+<p>So if I manage to get this implemented efficiently, all of these models will become efficient too. All it will cost is a truly shithouse<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a> interface.</p>
+<p>The only downside of this degree of flexibility compared to just implementing a straight linear mixed model with <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span> and <span class="math inline">\(\beta\)</span> and <span class="math inline">\(b\)</span> all living separately is that there are a couple of tricks<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> to improve numerical stability that we can’t use.</p>
+</section>
+<section id="lets-get-the-posterior" class="level2">
+<h2 class="anchored" data-anchor-id="lets-get-the-posterior">Let’s get the posterior!</h2>
+<p>The nice thing about thing about this model is that it is a normal likelihood with a normal prior, so we can directly compute two key quantities:</p>
+<ul>
+<li><p>The “full conditional” distribution <span class="math inline">\(p(u \mid y, \theta)\)</span>, which is useful for getting posterior information about <span class="math inline">\(b\)</span> and <span class="math inline">\(\beta\)</span>, and</p></li>
+<li><p>The marginal posterior <span class="math inline">\(p(\theta \mid y)\)</span>.</p></li>
+</ul>
+<p>This means that we do not need to do MCMC on the joint space <span class="math inline">\((u, \theta)\)</span>! We can instead write a model to draw samples from <span class="math inline">\(p(\theta \mid y)\)</span>, which is much lower-dimensional and easier<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a> to sample from, and then compute the joint posterior by sampling from the full conditional.</p>
+<p>I talked a little about the mechanics of this in a <a href="https://dansblog.netlify.app/posts/2021-10-14-priors2/">previous blog post about conjugate priors</a>, but let’s do the derivations. Why? Because they’re not too hard and it’s useful to have them written out somewhere.</p>
+<section id="the-full-conditional" class="level3">
+<h3 class="anchored" data-anchor-id="the-full-conditional">The full conditional</h3>
+<p>First we need to compute <span class="math inline">\(p(u \mid y , \theta)\)</span>. The first thing that we note is that conditional distributions are always proportional to the joint distribution (we’re literally just pretending some things are constant), so we get <span class="math display">\[\begin{align*}
+p(u \mid y , \theta) &amp;\propto p(y \mid u, \theta) p(u \mid \theta) p(\theta) \\
+&amp;\propto \exp\left[-\frac{1}{2\sigma^2} (y - Au)^TW^{-1}(y-Au)\right]\exp\left[-\frac{1}{2}u^TQ(\theta)u\right].
+\end{align*}\]</span></p>
+<p>Now we just need to expand things out and work out what the mean and the precision matrix of <span class="math inline">\(p(u \mid y, \theta )\)</span> (which is Gaussian by conjugacy!) are.</p>
+<p>Computing posterior distributions by hand is a dying<a href="#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a> art. So my best and only advice to you: don’t be a hero. Just pattern match like the rest of us. To do this, we need to know what the density of a multivarite normal distribution looks like <em>deep</em> down in its soul.</p>
+<p>Behold: the ugly <code>div</code> box!<a href="#fn22" class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a></p>
+<div class="note">
+<p>If <span class="math inline">\(u \sim N(m, P^{-1})\)</span>, then <span class="math display">\[\begin{align*}
+p(u) &amp;\propto \exp\left[- \frac{1}{2}(u - m)^TP(u-m)\right] \\
+&amp;\propto \exp\left[- \frac{1}{2}u^TPu + m^TPu\right],
+\end{align*}\]</span> where I just dropped all of the terms that didn’t involve <span class="math inline">\(u\)</span>.</p>
+</div>
+<p>This means the plan is to</p>
+<ol type="1">
+<li>Expand out the quadratics in the exponential term so we get something that looks like <span class="math inline">\(\exp\left[-\frac{1}{2}u^TPu + z^Tu\right]\)</span></li>
+<li>The matrix <span class="math inline">\(P\)</span> will be the precision matrix of <span class="math inline">\(u \mid y, \theta\)</span>.</li>
+<li>The mean of <span class="math inline">\(\mu \mid y, \theta\)</span> is <span class="math inline">\(P^{-1}z\)</span>.</li>
+</ol>
+<p>So let’s do it!</p>
+<p><span class="math display">\[\begin{align*}
+p(u \mid y , \theta) &amp;\propto \exp\left[-\frac{1}{2\sigma^2} u^TA^TW^{-1}Au + \frac{1}{\sigma^2}(A^TW^{-1}y)^Tu\right]\exp\left[-\frac{1}{2}u^TQ(\theta)u\right] \\
+&amp;\propto \exp\left[-\frac{1}{2}u^T\left(Q + \frac{1}{\sigma^2}A^TW^{-1}A\right)u +  \frac{1}{\sigma^2}(A^TW^{-1}y)^Tu\right].
+\end{align*}\]</span></p>
+<p>This means that <span class="math inline">\(p(u \mid y ,\theta)\)</span> is multivariate normal with</p>
+<ul>
+<li><p>precision matrix <span class="math inline">\(Q_{u\mid y,\theta}(\theta) = \left(Q(\theta) + \frac{1}{\sigma^2}A^TW^{-1}A\right)\)</span> and</p></li>
+<li><p>mean<a href="#fn23" class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a> <span class="math inline">\(\mu_{u\mid y,\theta}(\theta) = \frac{1}{\sigma^2} Q_{u\mid y,\theta}(\theta)^{-1} A^TW^{-1}y\)</span>.</p></li>
+</ul>
+<p>This means if I build an MCMC scheme to give me <span class="math inline">\(B\)</span> samples <span class="math inline">\(\theta_b \sim p(\theta \mid y)\)</span>, <span class="math inline">\(b = 1, \ldots, B\)</span>, then I can turn them into <span class="math inline">\(B\)</span> samples <span class="math inline">\((\theta_b, u_b)\)</span> from <span class="math inline">\(p(\theta, u \mid y)\)</span> by doing the following.</p>
+<div class="note">
+<p>For <span class="math inline">\(b = 1, \ldots, B\)</span></p>
+<ul>
+<li><p>Simulate <span class="math inline">\(u_b \sim N\left(\mu_{u\mid y,\theta}(\theta_b), Q_{u\mid y,\theta}(\theta_b)^{-1}\right)\)</span></p></li>
+<li><p>Store the pair <span class="math inline">\((\theta_b, u_b)\)</span></p></li>
+</ul>
+</div>
+<p>Easy<a href="#fn24" class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a> as!</p>
+</section>
+<section id="writing-down-ptheta-mid-y" class="level3">
+<h3 class="anchored" data-anchor-id="writing-down-ptheta-mid-y">Writing down <span class="math inline">\(p(\theta \mid y)\)</span></h3>
+<p>So now we just<a href="#fn25" class="footnote-ref" id="fnref25" role="doc-noteref"><sup>25</sup></a> have to get the marginal posterior for the non-Gaussian parameters <span class="math inline">\(\theta\)</span>. We only need it up to a constant of proportionality, so we can express the joint probability <span class="math inline">\(p(y, u, \theta)\)</span> in two equivalent ways to get <span class="math display">\[\begin{align*}
+p(y, u , \theta) &amp;= p(y, u, \theta) \\
+p(u \mid \theta, y) p(\theta \mid y) p(y) &amp;= p(y \mid u, \theta) p(u \mid \theta)p(\theta). \\
+\end{align*}\]</span></p>
+<p>Rearranging, we get <span class="math display">\[\begin{align*}
+p(\theta \mid y) &amp;= \frac{p(y \mid u, \theta) p(u \mid \theta)p(\theta)}{p(u \mid \theta, y)p(y)} \\
+&amp;\propto \frac{p(y \mid u, \theta) p(u \mid \theta)p(\theta)}{p(u \mid \theta, y)}.
+\end{align*}\]</span></p>
+<p>This is a very nice relationship between the functional forms of the various densities we happen to know and the density we are trying to compute. This means that if you have access to the full conditional distribution<a href="#fn26" class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a> for <span class="math inline">\(u\)</span> you can marginalise <span class="math inline">\(u\)</span> out. No weird integrals required.</p>
+<p>But there’s one oddity: there is a <span class="math inline">\(u\)</span> on the right hand side, but no <span class="math inline">\(u\)</span> on the left hand side. What we have actually found is a whole continuum of functions that are proportional to <span class="math inline">\(p(\theta \mid y)\)</span>. It truly does not matter which one we choose.</p>
+<p>But some choices make the algebra slightly nicer. (And remember, I’m gonna have to implement this later, so I should probably keep and eye on that.)</p>
+<p>A good<a href="#fn27" class="footnote-ref" id="fnref27" role="doc-noteref"><sup>27</sup></a> generic choice is <span class="math inline">\(u = \mu_{u\mid y, \theta}(\theta)\)</span>.</p>
+<p>The algebra here can be a bit tricky<a href="#fn28" class="footnote-ref" id="fnref28" role="doc-noteref"><sup>28</sup></a>, so let’s write out each function evaluated at <span class="math inline">\(u = \mu_{u\mid y, \theta}(\theta)\)</span>.</p>
+<p>The bit from the likelihood is <span class="math display">\[\begin{align*}
+p(y \mid u = \mu_{u\mid y, \theta}(\theta), \theta) &amp;\propto \sigma^{-n} \exp\left[-\frac{1}{2\sigma^2}(y - A\mu_{u\mid y, \theta}(\theta))^TW^{-1}(y-  A\mu_{u\mid y, \theta}(\theta))\right]\\
+&amp;\propto \sigma^{-n}\exp\left[\frac{-1}{2\sigma^2} \mu_{u\mid y, \theta}(\theta)^TA^TW^{-1}A\mu_{u\mid y, \theta}(\theta) + \frac{1}{\sigma^2} y^T W^{-1}A \mu_{u\mid y, \theta}(\theta)\right],
+\end{align*}\]</span> where <span class="math inline">\(n\)</span> is the length of <span class="math inline">\(y\)</span>.</p>
+<p>The bit from the prior on <span class="math inline">\(u\)</span> is <span class="math display">\[\begin{align*}
+p(\mu_{u\mid y, \theta}(\theta) \mid \theta )
+\propto |Q(\theta)|^{1/2}\exp\left[-\frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TQ(\theta)\mu_{u\mid y, \theta}(\theta)\right].
+\end{align*}\]</span></p>
+<p>Finally, we get that the denominator is <span class="math display">\[
+p(\mu_{u\mid y, \theta}(\theta) \mid y, \theta) \propto |Q_{u\mid y, \theta}(\theta)|^{1/2}
+\]</span> as the exponential term<a href="#fn29" class="footnote-ref" id="fnref29" role="doc-noteref"><sup>29</sup></a> cancels!</p>
+<p>Ok. Let’s finish this. (Incidentally, if you’re wondering why Bayesians love MCMC, this is why.)</p>
+<p><span class="math display">\[\begin{align*}
+p(\theta \mid y) &amp;\propto p(\theta) \frac{|Q(\theta)|}{|Q_{u\mid y, \theta}(\theta)|} \exp\left[-\frac{1}{2} \mu_{u\mid y, \theta}(\theta)^T(Q(\theta) + \frac{1}{\sigma^2}A^TW^{-1}A)\mu_{u\mid y, \theta}(\theta) + \frac{1}{\sigma^2} y^T W^{-1}A \mu_{u\mid y, \theta}(\theta)\right] \\
+&amp;=  p(\theta) \frac{|Q(\theta)|}{|Q_{u\mid y, \theta}(\theta)|} \exp\left[-\frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TQ_{u\mid y, \theta}(\theta)\mu_{u\mid y, \theta}(\theta) + \frac{1}{\sigma^2} y^T W^{-1}A \mu_{u\mid y, \theta}(\theta)\right].
+\end{align*}\]</span></p>
+<p>We can now use the fact that <span class="math inline">\(Q_{u\mid y, \theta}(\theta)\mu_{u\mid y, \theta}(\theta) = A^TW^{-1}y\)</span> to get</p>
+<p><span class="math display">\[\begin{align*}
+p(\theta \mid y) &amp;\propto p(\theta) \frac{|Q(\theta)|}{|Q_{u\mid y, \theta}(\theta)|} \exp\left[-\frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TA^TW^{-1}y + \frac{1}{\sigma^2} y^T W^{-1}A \mu_{u\mid y, \theta}(\theta)\right] \\
+&amp;=\frac{|Q(\theta)|}{|Q_{u\mid y, \theta}(\theta)|} \exp\left[\frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TA^TW^{-1}y \right] .
+\end{align*}\]</span></p>
+<p>For those who just love a log-density, this is <span class="math display">\[
+\log(p(\theta \mid y)) = \frac{1}{2} \mu_{u\mid y, \theta}(\theta)^TA^TW^{-1}y +\frac{1}{2} \log(|Q(\theta)|) - \frac{1}{2}\log(|Q_{u\mid y, \theta}(\theta)|).
+\]</span> A fairly simple expression<a href="#fn30" class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a> for all of that work.</p>
+</section>
+</section>
+<section id="so-why-isnt-this-just-a-gaussian-process" class="level2">
+<h2 class="anchored" data-anchor-id="so-why-isnt-this-just-a-gaussian-process">So why isn’t this just a Gaussian process?</h2>
+<p>These days, people<a href="#fn31" class="footnote-ref" id="fnref31" role="doc-noteref"><sup>31</sup></a> are more than passingly familiar<a href="#fn32" class="footnote-ref" id="fnref32" role="doc-noteref"><sup>32</sup></a> with Gaussian processes. And so they’re quite possibly wondering why this isn’t all just an extremely inconvenient way to do the exact same computations you do with a GP.</p>
+<p>Let me tell you. It is <em>all</em> about <span class="math inline">\(Q(\theta)\)</span> and <span class="math inline">\(A\)</span>.</p>
+<p>The prior precision matrix <span class="math inline">\(Q(\theta)\)</span> is typically block diagonal. This special structure makes it pretty easy to compute the <span class="math inline">\(|Q(\theta)|\)</span> term<a href="#fn33" class="footnote-ref" id="fnref33" role="doc-noteref"><sup>33</sup></a>. But, of course, there’s more going on here.</p>
+<p>In linear mixed effects models, these blocks on the diagonal matrix are typically fairly small (their size is controlled by the number of levels in the variable you’re stratifying by). Moreover, the matrices on the diagonal of <span class="math inline">\(Q(\theta)\)</span> are the inverses of either diagonal or block diagonal matrices that themselves have quite small blocks<a href="#fn34" class="footnote-ref" id="fnref34" role="doc-noteref"><sup>34</sup></a>.</p>
+<p>In models that have more structured random effects<a href="#fn35" class="footnote-ref" id="fnref35" role="doc-noteref"><sup>35</sup></a>, the diagonal blocks of <span class="math inline">\(Q(\theta)\)</span> can get quite large<a href="#fn36" class="footnote-ref" id="fnref36" role="doc-noteref"><sup>36</sup></a>. Moreover, the matrices on these blocks are usually not block diagonal.</p>
+<p>Thankfully, these prior precision matrices do have something going for them: most of their entries are zero. We refer to these types of matrices as <em>sparse matrices</em>. There are some marvelous algorithms for factorising sparse matrices that are usually a lot more efficient<a href="#fn37" class="footnote-ref" id="fnref37" role="doc-noteref"><sup>37</sup></a> than algorithms for dense matrices.</p>
+<p>Moreover, the formulation here decouples the dimension of the latent Gaussian component from the number of observations. The data only enters the posterior through the reduction <span class="math inline">\(A^Ty\)</span>, so if the number of observations is much larger than the number of latent variables<a href="#fn38" class="footnote-ref" id="fnref38" role="doc-noteref"><sup>38</sup></a> and <span class="math inline">\(A\)</span> is sparse<a href="#fn39" class="footnote-ref" id="fnref39" role="doc-noteref"><sup>39</sup></a>, the operation scales <em>linearly</em> in the number of observations (and obviously superlinearly<a href="#fn40" class="footnote-ref" id="fnref40" role="doc-noteref"><sup>40</sup></a> in the row-dimension of <span class="math inline">\(A\)</span>).</p>
+<p>So the prior precision<a href="#fn41" class="footnote-ref" id="fnref41" role="doc-noteref"><sup>41</sup></a> is a sparse matrix. What about the precision matrix of <span class="math inline">\([u \mid y, \theta]\)</span>?</p>
+<p>It is also sparse! Recall that <span class="math inline">\(A = [Z \vdots X]\)</span>. This means that <span class="math display">\[
+\frac{1}{\sigma^2}A^TW^{-1}A = \frac{1}{\sigma^2}\begin{pmatrix} Z^T W^{-1}Z &amp; Z^T W^{-1}X \\ X^T W^{-1} Z &amp; X^TW^{-1}X \end{pmatrix}.
+\]</span> <span class="math inline">\(Z\)</span> is a matrix that links the stacked vector of random effects <span class="math inline">\(b\)</span> to each observation. Typically, the likelihood <span class="math inline">\(p(y_i \mid \theta)\)</span> will only depend on a small number of entries of <span class="math inline">\(b\)</span>, which suggests that most elements in each row of <span class="math inline">\(Z\)</span> will be zero. This, in turn, implies that <span class="math inline">\(Z\)</span> is sparse and so is<a href="#fn42" class="footnote-ref" id="fnref42" role="doc-noteref"><sup>42</sup></a> <span class="math inline">\(Z^TW^{-1}Z\)</span>.</p>
+<p>On the other hand, the other three blocks are usually<a href="#fn43" class="footnote-ref" id="fnref43" role="doc-noteref"><sup>43</sup></a> fully dense. Thankfully, though, the usual situation is that <span class="math inline">\(b\)</span> has <em>far</em> more elements that <span class="math inline">\(\beta\)</span>, which means that <span class="math inline">\(A^TW^{-1}A\)</span> is still sparse and we can still use our special algorithms<a href="#fn44" class="footnote-ref" id="fnref44" role="doc-noteref"><sup>44</sup></a></p>
+<p>All of this suggests that, under usual operating conditions, <span class="math inline">\(Q_{u\mid y, \theta}\)</span> is <em>also</em> a sparse matrix.</p>
+<p>And that’s <em>great</em> because that means that we can compute the log-posterior using only 3 main operations:</p>
+<ol type="1">
+<li><p>Computing <span class="math inline">\(\log(|Q(\theta)|)\)</span>. This matrix is block diagonal so you can just multiply together the determinants<a href="#fn45" class="footnote-ref" id="fnref45" role="doc-noteref"><sup>45</sup></a> of the diagonal blocks, which are relatively cheap to compute.</p></li>
+<li><p>Computing <span class="math inline">\(\mu_{u \mid y, \theta}(\theta)\)</span>. This requires solving the sparse linear system <span class="math inline">\(Q_{u \mid y, \theta} \mu_{u \mid y, \theta} = \frac{1}{\sigma^2}A^TW^{-1}y\)</span>. This is going to rely on some fancy pants sparse matrix algorithm.</p></li>
+<li><p>Computing <span class="math inline">\(\log(|Q_{u \mid y, \theta}(\theta)|)\)</span>. This is, thankfully, a by-product of the things we need to compute to solve the linear system in the previous task.</p></li>
+</ol>
+</section>
+<section id="what-i-what-i-what-i-gotta-do-what-i-gotta-do-to-get-this-model-in-pymc" class="level2">
+<h2 class="anchored" data-anchor-id="what-i-what-i-what-i-gotta-do-what-i-gotta-do-to-get-this-model-in-pymc">What I? What I? What I gotta do? <a href="https://www.youtube.com/watch?v=fqTSaMR75ns">What I gotta do to get this model in PyMC?</a></h2>
+<p>So this is where shit gets real.</p>
+<p>Essentially, I want to implement a new distribution in PyMC that will take approprite inputs and output the log-density and its gradient. There are two ways to do this:</p>
+<ul>
+<li>Panic</li>
+<li>Pray</li>
+</ul>
+<p>For the first option, you write a C++<a href="#fn46" class="footnote-ref" id="fnref46" role="doc-noteref"><sup>46</sup></a> backend and register it as an Aesara node. This is how, for example, differential equation solvers migrated into PyMC.</p>
+<p>For the second option, which is going to be our goal, we light our Sinead O’Connor votive candle and program up the model using JAX. JAX is a glorious feat of engineering that makes compilable and autodiff-able Python code. In a lot of cases, it seamlessly lets you shift from CPUs to GPUs and is all around quite cool.</p>
+<p>It also has approximately zero useful sparse matrix support. (It will let you do <em>very</em> basic things<a href="#fn47" class="footnote-ref" id="fnref47" role="doc-noteref"><sup>47</sup></a> but nothing as complicated as we are going to need.)</p>
+<p>So why am I taking this route? Well firstly I’m curious to see how well it works. So I am going to write JAX code to do all of my sparse matrix operations and see how efficiently it autodiffs it.</p>
+<p>Now I’m going to pre-register my expectations. I expect it to be a little bit shit. Or, at least, I expect to be able to make it do better.</p>
+<p>The problem is that computing a gradient requires a single reverse-mode<a href="#fn48" class="footnote-ref" id="fnref48" role="doc-noteref"><sup>48</sup></a> autodiff sweep. This does not seem like a problem until you look at how this sort of thing needs to be implemented and you realise that every gradient call is going to need to generate <em>and store</em> the entire damn autodiff tree for the log-density evaluation. And that autodiff tree is going to be <em>large</em>. So I am expecting the memory scaling on this to be truly shite.</p>
+<p>Thankfully there are two ways to fix this. One of them is to implement a custom <em>Jacobian-vector product</em><a href="#fn49" class="footnote-ref" id="fnref49" role="doc-noteref"><sup>49</sup></a> and register it with JAX so it knows <em>most</em> of how to do the derivative. The other way is to implement this shit in C++ and register it as a JAX primitive. And to be honest I’m very tempted. But that is not where I am starting.</p>
+<p>The other problem is going to be exposing this to users. The internal interface is going to be an absolute shit to use. So we are gonna have to get our Def Leppard on and sprinkle some syntactical sugar all over it.</p>
+<p>I’m honestly less concerned about this challenge. It’s important but I am not expecting to produce anything good enough to put into PyMC (or any other package). But I do think it’s a good idea to keep this sort of question in mind: it can help you make cleaner, more useful code.</p>
+<section id="what-comes-next" class="level3">
+<h3 class="anchored" data-anchor-id="what-comes-next">What comes next?</h3>
+<p>Well you will not get a solution today. This blog post is more than long enough.</p>
+<p>My plan is to do three things.</p>
+<ol type="1">
+<li><p>Implement the relevant sparse matrix solver in a JAX-able form. (This is mostly gonna be me trying to remember how to do something I haven’t done in a very long time.)</p></li>
+<li><p>Bind<a href="#fn50" class="footnote-ref" id="fnref50" role="doc-noteref"><sup>50</sup></a> the (probably) inefficient version into PyMC to see how that process works.</p></li>
+<li><p>Try the custom <code>jvp</code> and <code>vjp</code> interfaces in JAX to see if they speed things up relative to just autodiffing through my for loops.</p></li>
+<li><p>(Maybe) Look into whether hand-rolling some C++ is worth the effort.</p></li>
+</ol>
+<p>Will I get all of this done? I mean, I’m skeptical. But hey. If I do it’ll be nice.</p>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>aka linear multilevel models<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Popular in epidemiology<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>INLA = Laplace approximations + sparse linear algebra to do fast, fairly scalable, and accurate Bayesian inference on a variety of Bayesian models. It’s particularly good at things like spatial models.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>In its guts, Stan is a fully templated C++ autodiff library, so I would need to add specific sparse matrix support. And then there’s be some truly gross stuff with the Stan language and its existing types. And so on and so on and honestly it just broke my damn brain. So I started a few times but never finished.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>I just don’t ever use it. I semi-regularly read and debug other people’s code, but I don’t typically write very much myself. I use R because that’s what my job needs me to use. So a shadow aim here is to just put some time into my Python. By the end of this I’ll be like Britney doing I’m a Slave 4 U.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Or maybe more, but let’s not be too ambitious.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>I’m pretty sure they will.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>My sparse matrix data structures are <em>rusty</em> as fuck.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>and the intercept if it’s needed<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>Really this costs me nothing and can be useful with multiple observations.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>Default options include the identity matrix or some multiple of the identity matrix.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>REML heads don’t dismay. You can do all kinds of weird shit by choosing some of these matrices in certain ways. I’m not gonna stop you. I love and support you. Good vibes only.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>The priors on <span class="math inline">\(\beta\)</span> and <span class="math inline">\(b\)</span> are independent Gaussian so it has to be.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>homosexual<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>Inverse correlation matrix<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>excluding the fixed ones, like <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span> and <span class="math inline">\(R\)</span>. <a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>Such a dirty word. For all of the models we care about, this is block diagonal. So this assumption is our restriction to a specific class of models.<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p>I would suggest a lot of syntactic sugar if you were ever going to expose this stuff to users.<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>See the Bates <em>et al.</em> paper. Their formulation is fabulous but doesn’t extend nicely to the situations I care about! Basically they optimise for the situation where <span class="math inline">\(\Sigma_b\)</span> can be singular, which is an issue when you’re doing optimisation. But I’m not doing optimisation and I care about the case where the precision matrix is defined as a singular matrix (and therefore <span class="math inline">\(\Sigma_b\)</span> does not exist. This seems like a truly wild idea, but it occurs quite naturally in many important models like smoothing splines and ICAR models (which are extremely popular in spatial epidemiology).<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20"><p>It’s easier in two ways. Firstly, MCMC likes lower-dimensional targets. They are typically easier to sample from! Secondly, the posterior geometry of <span class="math inline">\(p(\theta \mid y)\)</span> is usually pretty simple, while the joint posterior <span class="math inline">\(p(\theta, u \mid y)\)</span> has an annoying tendency to have a funnel in it, which forces us to do all kinds of annoying reparameterisation tricks to stop the sampler from shitting the bed.<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21"><p>Computers!<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn22"><p>CSS is my passion.<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn23"><p>It’s possible to rearrange things to lose that <span class="math inline">\(\frac{1}{\sigma^2}\)</span>, which I admit looks a bit weird. It cancels out down the line.<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24"><p>I have, historically, not had the greatest grip on whether or not things are easy.<a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn25"><p>See previous footnote.<a href="#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn26"><p>Or a good approximation to it. Laplace approximations work very well for this to extend everything we’re doing here from a linear mixed-ish model to a generalised linear mixed-ish model.<a href="#fnref26" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn27"><p>This is actually a bit dangerous on the face of it because it depends on <span class="math inline">\(\theta\)</span>. You can convince yourself it’s ok. Choosing <span class="math inline">\(u=0\)</span> is less stress inducing, but I wanted to bring out the parallel to using a Laplace approximation to <span class="math inline">\(p(u \mid \theta, y)\)</span>, in which case we really want to evaluate the ratio at the point where the approximation is the best (aka the conditional mean).<a href="#fnref27" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn28"><p>A common mistake is to forget the parameter dependent proportionality constants from the normal distribution. You didn’t need them before because you were conditioning on <span class="math inline">\(\theta\)</span> so they were all constant. But now <span class="math inline">\(\theta\)</span> is unknown and if we forget them an angel will cry.<a href="#fnref28" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn29"><p>Honest footnote: This started as <span class="math inline">\(p(\mu_{u\mid y, \theta}(\theta) \mid y, \theta) \propto 1\)</span> because I don’t read my own warnings.<a href="#fnref29" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn30"><p>The brave or foolish amongst you might want to convince yourselves that this collapses to <em>exactly</em> the marginal likelihood we would’ve gotten from Rasmussen and Williams had we made a sequence of different life choices. In particular if <span class="math inline">\(A = I\)</span> and <span class="math inline">\(Q(\theta) = \Sigma(\theta)^{-1}\)</span>.<a href="#fnref30" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn31"><p>Or, at least, people who have made it this far into the post.<a href="#fnref31" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn32"><p>You like GPs bro? <a href="https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/">Give me a sequence of increasingly abstract definitions.</a> I’m waiting.<a href="#fnref32" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn33"><p>Multiply the determinants of the matrices along the diagonal.<a href="#fnref33" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn34"><p>Look at the Bates et al paper. Specifically section 2.2. <code>lme4</code> is a really clever thing.<a href="#fnref34" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn35"><p>examples: smoothing splines, AR(p) models, areal spatial models, <a href="https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/">some Gaussian processes if you’re careful</a><a href="#fnref35" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn36"><p><span class="math inline">\(10^4\)</span>–<span class="math inline">\(10^6\)</span> is not unheard of<a href="#fnref36" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn37"><p>A dense matrix factorisation of an <span class="math inline">\(n\times n\)</span> matrix costs <span class="math inline">\(\mathcal{O}(n^3)\)</span>. The same factorisation of a sparse matrix can cost as little as <span class="math inline">\(\mathcal{O}(n)\)</span> if you’re very lucky. More typically it clocks in a <span class="math inline">\(\mathcal{O}(n^{1.5})\)</span>–<span class="math inline">\(\mathcal{O}(n^{2})\)</span>, which is still a substantial saving!<a href="#fnref37" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn38"><p>This happens for a lot of designs, or when a basis spline or a Markovian Gaussian process is being used<a href="#fnref38" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn39"><p>This happens a lot, but not always. For instance subset-of-regressors/predictive process-type models have a dense <span class="math inline">\(A\)</span>. In this case, if <span class="math inline">\(A\)</span> has <span class="math inline">\(m\)</span> rows an <span class="math inline">\(n\)</span> columns, this is an <span class="math inline">\(\mathcal{O}(mn)\)</span>, which is more expensive than a sparse <span class="math inline">\(A\)</span> unless <span class="math inline">\(A\)</span> has roughly <span class="math inline">\(m\)</span> non-zeros per row..<a href="#fnref39" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn40"><p>but usually not cubically. See above footnote.<a href="#fnref40" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn41"><p>It’s important that we are talking about <em>precision</em> matrices here and not covariance matrices as the inverse of a sparse matrix is typically dense. For instance, an AR(1) prior with autocorrelation parameter <span class="math inline">\(\rho\)</span> has a prior has a sparse precision matrix that looks something like <span class="math display">\[
+Q = \frac{1}{\tau^2}\begin{pmatrix}
+1 &amp; -\rho &amp;&amp;&amp;&amp;&amp; \\
+-\rho&amp;1 + \rho^2&amp; -\rho&amp;&amp;&amp;&amp; \\
+&amp;-\rho&amp; 1 + \rho^2 &amp;- \rho&amp;&amp;&amp; \\
+&amp;&amp;-\rho&amp; 1 + \rho^2&amp;-\rho&amp;&amp; \\
+&amp;&amp;&amp;-\rho&amp;1+\rho^2 &amp;-\rho &amp; \\
+&amp;&amp;&amp;&amp;-\rho&amp;1 + \rho^2&amp; - \rho \\
+&amp;&amp;&amp;&amp;&amp;-\rho&amp;1
+\end{pmatrix}.
+\]</span> On the other hand, the <em>covariance matrix</em> is fully dense <span class="math display">\[
+Q^{-1} = \tau^2\begin{pmatrix}
+\rho&amp;\rho^2&amp;\rho^3&amp;\rho^4&amp;\rho^5&amp;\rho^6&amp;\rho^7 \\
+\rho^2&amp;\rho&amp;\rho^2&amp;\rho^3&amp;\rho^4&amp;\rho^5&amp;\rho^6 \\
+\rho^3&amp;\rho^2&amp;\rho&amp;\rho^2&amp;\rho^3&amp;\rho^4&amp;\rho^5 \\
+\rho^4&amp;\rho^3&amp;\rho^2&amp;\rho&amp;\rho^2&amp;\rho^3&amp;\rho^4 \\
+\rho^5&amp;\rho^4&amp;\rho^3&amp;\rho^2&amp;\rho&amp;\rho^2&amp;\rho^3 \\
+\rho^6&amp;\rho^5&amp;\rho^4&amp;\rho^3&amp;\rho^2&amp;\rho&amp;\rho^2 \\
+\rho^7&amp;\rho^6&amp;\rho^5&amp;\rho^4&amp;\rho^3&amp;\rho^2&amp;\rho \\
+\end{pmatrix}.
+\]</span><br>
+This is a generic property: the inverse of a sparse matrix is usually dense (it’s dense as long as the graph associated with the sparse matrix has a single connected component there’s a matrix with the same pattern of non-zeros that has a fully dense inverse) and the entries <a href="https://eudml.org/doc/130625">satisfy geometric decay bounds</a>.<a href="#fnref41" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn42"><p>Remember: <span class="math inline">\(W\)</span> is diagonal and known.<a href="#fnref42" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn43"><p>Not if you’re doing some wild dummy coding shit or modelling text, but typically.<a href="#fnref43" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn44"><p>You’d think that dense rows and columns would be a problem but they’re not. A little graph theory and a little numerical linear algebra says that as long as they are the last variables in the model, the algorithms will still be efficient. That said, if you want to <em>dig in</em>, it is possible to use supernodal (eg CHOLMOD) and multifrontal (eg MUMPS) methods to group the operations in such a way that it’s possible to use level-3 BLAS operations. CHOLMOD even spins this into a GPU acceleration scheme, which is fucking wild if you think about it: sparse linear algebra rarely has the arithmetic intensity or data locality required to make GPUs worthwhile (you spend all of your time communicating, which is great in a marriage, terrible in a GPU). But some clever load balancing, tree-based magic, and multithreading <a href="https://www.sciencedirect.com/science/article/pii/S1877750317312164">apparently makes it possible</a>. Like truly, I am blown away by this. We are not going to do <em>any</em> of this because absolutely fucking not. And anyway. It’s kinda rare to have a huge number of covariates in the sorts of models that use these complex random effects. (Or if you do, you better light your Sinead O’Connor votive candle because honestly you have a lot of problems and you’re gonna need healing.)<a href="#fnref44" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn45"><p>If you’ve been reading the footnotes, you’ll recall that sometimes one of these precision matrices on the diagonal will be singular. Sometimes that’s because you fucked up your programming. But other times it’s because you’re using something like an ICAR (intrinsic conditional autoregressive) prior on one of your components. The precision matrix for this model is <span class="math inline">\(Q_\text{ICAR} = \tau_\text{ICAR} = \tau \text{Adj}(\mathcal{G})\)</span>, where <span class="math inline">\(\operatorname{Adj}(\mathcal{G})\)</span> is the adjacency matrix of some fixed graph <span class="math inline">\(\mathcal{G}\)</span> (typically describing something like which postcodes are next to each other). <a href="https://www.routledge.com/Gaussian-Markov-Random-Fields-Theory-and-Applications/Rue-Held/p/book/9781584884323">Some theory</a> suggests that if <span class="math inline">\(\mathcal{G}\)</span> has <span class="math inline">\(d\)</span> connected components, the zero determinant should be replaced with <span class="math inline">\(\tau^{(m - d)/2}\)</span>, where <span class="math inline">\(m\)</span> is the number of vertices in <span class="math inline">\(\mathcal{G}\)</span>.<a href="#fnref45" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn46"><p>I guess there’s nothing really stopping you from writing in pure Python except a creeping sense of inadequacy.<a href="#fnref46" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn47"><p>eg build a sparse matrix<a href="#fnref47" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn48"><p>Honey, we do not have time. Understanding autodiff is not massively important in the grand scheme of this blogpost (or, you know, probably in real life unless you do some fairly specific things). <a href="https://arxiv.org/abs/1811.05031">I’ll let Charles explain it.</a><a href="#fnref48" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn49"><p>Or, a custom vector-Jacobian product, which is not a symmetrical choice.<a href="#fnref49" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn50"><p>I bind you Nancy!<a href="#fnref50" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2022,
+  author = {Dan Simpson},
+  editor = {},
+  title = {Sparse {Matrices} 1: {The} Linear Algebra of Linear Mixed
+    Effects Models and Their Generalisations},
+  date = {2022-03-22},
+  url = {https://dansblog.netlify.app/2022-03-22-a-linear-mixed-effects-model},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Dan Simpson. 2022. <span>“Sparse Matrices 1: The Linear Algebra of
+Linear Mixed Effects Models and Their Generalisations.”</span> March 22,
+2022. <a href="https://dansblog.netlify.app/2022-03-22-a-linear-mixed-effects-model">https://dansblog.netlify.app/2022-03-22-a-linear-mixed-effects-model</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

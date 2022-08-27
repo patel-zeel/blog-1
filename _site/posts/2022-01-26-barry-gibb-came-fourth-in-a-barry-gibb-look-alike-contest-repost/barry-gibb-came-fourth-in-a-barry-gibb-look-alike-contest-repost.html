@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.15">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dan Simpson">
+<meta name="dcterms.date" content="2022-01-26">
+<meta name="description" content="A repost from Andrew’s blog about comparing computational methods for performing a task. (Lightly edited.) Original posted 20 October, 2017.">
+
+<title>Un garçon pas comme les autres (Bayes) - Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Un garçon pas comme les autres (Bayes) - Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)">
+<meta property="og:description" content="A repost from Andrew’s blog about comparing computational methods for performing a task. (Lightly edited.) Original posted 20 October, 2017.">
+<meta property="og:image" content="https://dansblog.netlify.app/posts/2022-01-26-barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost/yetta.JPG">
+<meta property="og:site-name" content="Un garçon pas comme les autres (Bayes)">
+<meta name="twitter:title" content="Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)">
+<meta name="twitter:description" content="A repost from Andrew’s blog about comparing computational methods for performing a task. (Lightly edited.) Original posted 20 October, 2017.">
+<meta name="twitter:image" content="https://dansblog.netlify.app/posts/2022-01-26-barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost/yetta.JPG">
+<meta name="twitter:creator" content="@dan_p_simpson">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Un garçon pas comme les autres (Bayes)</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About this blog</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/dan_p_simpson"><i class="bi bi-twitter" role="img" aria-label="twitter">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/dpsimpson"><i class="bi bi-github" role="img" aria-label="github">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://dansblog.netlify.app"><i class="bi bi-person-circle" role="img" aria-label="website">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)</h1>
+                  <div>
+        <div class="description">
+          <p>A repost from Andrew’s blog about comparing computational methods for performing a task. (Lightly edited.) Original posted 20 October, 2017.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Computation</div>
+                <div class="quarto-category">Assessing algorithms</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Dan Simpson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 26, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#i-go-through-all-this-before-you-wake-up-so-i-can-feel-happier-to-be-safe-again-with-you" id="toc-i-go-through-all-this-before-you-wake-up-so-i-can-feel-happier-to-be-safe-again-with-you" class="nav-link active" data-scroll-target="#i-go-through-all-this-before-you-wake-up-so-i-can-feel-happier-to-be-safe-again-with-you">I go through all this before you wake up so I can feel happier to be safe again with you</a></li>
+  <li><a href="#inte-ner-för-ett-stup.-inte-ner-från-en-bro.-utan-från-vattentornets-topp." id="toc-inte-ner-för-ett-stup.-inte-ner-från-en-bro.-utan-från-vattentornets-topp." class="nav-link" data-scroll-target="#inte-ner-för-ett-stup.-inte-ner-från-en-bro.-utan-från-vattentornets-topp.">Inte ner för ett stup. Inte ner från en bro. Utan från vattentornets topp.</a></li>
+  <li><a href="#well-did-you-hear-the-one-about-mr-ed-he-said-im-this-way-because-of-the-things-ive-seen" id="toc-well-did-you-hear-the-one-about-mr-ed-he-said-im-this-way-because-of-the-things-ive-seen" class="nav-link" data-scroll-target="#well-did-you-hear-the-one-about-mr-ed-he-said-im-this-way-because-of-the-things-ive-seen">Well did you hear the one about Mr Ed? He said I’m this way because of the things I’ve seen</a></li>
+  <li><a href="#but-why-am-i-talking-about-this" id="toc-but-why-am-i-talking-about-this" class="nav-link" data-scroll-target="#but-why-am-i-talking-about-this">But why am I talking about this?</a></li>
+  <li><a href="#not-the-lovin-kind" id="toc-not-the-lovin-kind" class="nav-link" data-scroll-target="#not-the-lovin-kind">Not the lovin’ kind</a></li>
+  <li><a href="#its-gotta-be-big.-i-said-it-better-be-big" id="toc-its-gotta-be-big.-i-said-it-better-be-big" class="nav-link" data-scroll-target="#its-gotta-be-big.-i-said-it-better-be-big">It’s gotta be big. I said it better be big</a></li>
+  <li><a href="#god-knows-i-know-ive-thrown-away-those-graces" id="toc-god-knows-i-know-ive-thrown-away-those-graces" class="nav-link" data-scroll-target="#god-knows-i-know-ive-thrown-away-those-graces">God knows I know I’ve thrown away those graces</a></li>
+  <li><a href="#dont-take-me-back-to-the-range" id="toc-dont-take-me-back-to-the-range" class="nav-link" data-scroll-target="#dont-take-me-back-to-the-range">Don’t take me back to the range</a></li>
+  <li><a href="#theres-the-part-youve-braced-yourself-against-and-then-theres-the-other-part" id="toc-theres-the-part-youve-braced-yourself-against-and-then-theres-the-other-part" class="nav-link" data-scroll-target="#theres-the-part-youve-braced-yourself-against-and-then-theres-the-other-part">There’s the part you’ve braced yourself against, and then there’s the other part</a>
+  <ul class="collapse">
+  <li><a href="#option-1-we-want-to-fill-in-our-sparse-observation-by-predicting-at-more-and-more-points" id="toc-option-1-we-want-to-fill-in-our-sparse-observation-by-predicting-at-more-and-more-points" class="nav-link" data-scroll-target="#option-1-we-want-to-fill-in-our-sparse-observation-by-predicting-at-more-and-more-points">Option 1: We want to fill in our sparse observation by predicting at more and more points</a></li>
+  <li><a href="#option-2-we-want-to-predict-at-one-point-where-the-field-will-be-monitored-multiple-times" id="toc-option-2-we-want-to-predict-at-one-point-where-the-field-will-be-monitored-multiple-times" class="nav-link" data-scroll-target="#option-2-we-want-to-predict-at-one-point-where-the-field-will-be-monitored-multiple-times">Option 2: We want to predict at one point, where the field will be monitored multiple times</a></li>
+  <li><a href="#option-3-mixed-asymptotics-you-do-both-at-once" id="toc-option-3-mixed-asymptotics-you-do-both-at-once" class="nav-link" data-scroll-target="#option-3-mixed-asymptotics-you-do-both-at-once">Option 3: Mixed asymptotics! You do both at once</a></li>
+  </ul></li>
+  <li><a href="#i-see-the-sun-go-down.-i-see-the-sun-come-up.-i-see-a-light-beyond-the-frame." id="toc-i-see-the-sun-go-down.-i-see-the-sun-come-up.-i-see-a-light-beyond-the-frame." class="nav-link" data-scroll-target="#i-see-the-sun-go-down.-i-see-the-sun-come-up.-i-see-a-light-beyond-the-frame.">I see the sun go down. I see the sun come up. I see a light beyond the frame.</a></li>
+  <li><a href="#where-did-you-get-that-painter-in-your-pocket" id="toc-where-did-you-get-that-painter-in-your-pocket" class="nav-link" data-scroll-target="#where-did-you-get-that-painter-in-your-pocket">Where did you get that painter in your pocket?</a></li>
+  <li><a href="#what-is-this-six-stringed-instrument-but-an-adolescent-loom" id="toc-what-is-this-six-stringed-instrument-but-an-adolescent-loom" class="nav-link" data-scroll-target="#what-is-this-six-stringed-instrument-but-an-adolescent-loom">What is this six-stringed instrument but an adolescent loom?</a></li>
+  <li><a href="#dont-dream-its-over" id="toc-dont-dream-its-over" class="nav-link" data-scroll-target="#dont-dream-its-over">Don’t dream it’s over</a></li>
+  </ul>
+</nav>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<blockquote class="blockquote">
+<p><em>Every day a little death, in the parlour, in the bed. On the lips and in the eyes. In the curtains in the silver, in the buttons, in the bread, in the murmurs, in the pauses, in the gestures, in the sighs.</em> <a href="https://www.youtube.com/watch?v=Snru5gtCyWA">Sondheim</a></p>
+</blockquote>
+<p>The most horrible sound in the world is that of a reviewer asking you to compare your computational method to another, existing method. Like bombing countries in the name of peace, the purity of intent drowns out the voices of our better angels as they whisper: at what cost.</p>
+<p>Before the unnecessary drama of that last sentence<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> sends you running back to the still-open browser tab documenting the world’s slow slide into a deeper, danker, more complete darkness that we’ve seen before, I should say that I understand that for most people this isn’t a problem. Most people don’t do research in computational statistics. Most people are happy<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+<p>So why does someone asking for a comparison of two methods for allegedly computing the same thing fill me with the sort of dread usually reserved for climbing down the ladder into my basement to discover, by the the light of a single, swinging, naked light bulb, that the evil clown I keep chained in the corner has escaped? Because it’s almost impossible to do well.</p>
+<section id="i-go-through-all-this-before-you-wake-up-so-i-can-feel-happier-to-be-safe-again-with-you" class="level1">
+<h1>I go through all this before you wake up so I can feel happier to be safe again with you</h1>
+<p>Many many years ago, when I still had all my hair and thought it was impressive when people proved things, I did a PhD in numerical analysis. These all tend to have the same structure:</p>
+<ol type="1">
+<li><p>survey your chosen area with a simulation study comparing all the existing methods,</p></li>
+<li><p>propose a new method that should be marginally better than the existing ones,</p></li>
+<li><p>analyse the new method, show that it’s at least not worse than the existing ones (or worse in an interesting way),</p></li>
+<li><p>construct a simulation study that shows the superiority of your method on a problem that hopefully doesn’t look too artificial,</p></li>
+<li><p>write a long discussion blaming the inconsistencies between the maths and the simulations on “pre-asymptotic artefacts”.</p></li>
+</ol>
+<p>Which is to say, I’ve done my share of simulation studies comparing algorithms.</p>
+<p>So what changed? When did I start to get <a href="https://www.youtube.com/watch?v=ykdtNuKlHiA">the fear</a> every time someone mentioned comparing algorithms?</p>
+<p>Well, I left numerical analysis and moved to statistics and I learnt the one true thing that all people who come to statistics must learn: statistics is hard.</p>
+<p>When I used to compare deterministic algorithms it was easy. I would know the correct answer and so I could compare algorithms by comparing the error in their approximate solutions (perhaps taking into account things like how long it took to compute the answer).</p>
+<p>But in statistics, the truth is random. Or the truth is a high-dimensional joint distribution that you cannot possibly know. So how can you really compare your algorithms, except possibly by comparing your answer to some sort of “gold standard” method that may or may not work.</p>
+</section>
+<section id="inte-ner-för-ett-stup.-inte-ner-från-en-bro.-utan-från-vattentornets-topp." class="level1">
+<h1>Inte ner för ett stup. Inte ner från en bro. Utan från vattentornets topp<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</h1>
+<p>The first two statistical things I ever really worked on (in an office overlooking a fjord) were computationally tractable ways of approximating posterior distributions for specific types of models. The first of these was <a href="https://en.wikipedia.org/wiki/Irish_National_Liberation_Army">INLA</a><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. For those of you who haven’t heard of it, INLA (and it’s popular R implementation <a href="https://www.r-inla.org">R-INLA</a>) is a method for doing approximate posterior computation for a lot of the sorts of models you can fit in <code>rstanarm</code> and <code>brms</code>. So random effect models, multilevel models, models with splines, and spatial effects.</p>
+<p>At the time, Stan didn’t exist (later, it barely existed), so I would describe INLA as being Bayesian inference for people who lacked the ideological purity to wait 14 hours for a poorly mixing BUGS chain to run, instead choosing to spend 14 seconds to get a better “approximate” answer. These days, Stan exists in earnest and that 14 hours is 20 minutes for small-ish models with only a couple of thousand observations, and the answer that comes out of Stan is probably as good as INLA.</p>
+<p>Working on INLA I learnt a new fear: the fear that someone else was going to publish a simulation study comparing INLA with something else without checking with us first.</p>
+<p>Now obviously, we wanted people to run their comparisons past us so we could ruthlessly quash any dissent and hopefully exile the poor soul who thought to critique our perfect method to the academic equivalent of a Siberian work camp.</p>
+<p>Or, more likely, because comparing statistical models is really hard, and we could usually make the comparison much better by asking some questions about how it was being done.</p>
+<p>Sometimes, learning from well-constructed simulation studies how INLA was failing lead to improvements in the method.</p>
+<p>But nothing could be learned if, for instance, the simulation study was reporting runs from code that wasn’t doing what the authors thought it was<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. And I don’t want to suggest that bad or unfair comparisons comes from malice (for the most part, we’re all quite conscientious and fairly nice), but rather that they happen because comparing statistical algorithms is hard.</p>
+<p>And comparing algorithms fairly where you don’t understand them equally well is almost impossible.</p>
+</section>
+<section id="well-did-you-hear-the-one-about-mr-ed-he-said-im-this-way-because-of-the-things-ive-seen" class="level1">
+<h1>Well did you hear the one about Mr Ed? He said I’m this way because of the things I’ve seen</h1>
+<p>Why am I bringing this up? It’s because of the second statistical thing that I worked on while I was living in sunny Trondheim (in between looking at the fjord and holding onto the sides of buildings for dear life because for 8 months of the year Trondheim is a very pretty mess of icy hills).</p>
+<p>During that time, I worked with <a href="https://www.maths.ed.ac.uk/~flindgre/">Finn Lindgren</a> and <a href="https://www.kaust.edu.sa/en/study/faculty/haavard-rue">Håvard “INLA” Rue</a> on computationally efficient approximations to Gaussian random fields (which is what we’re supposed to call Gaussian Processes when the parameter space is more complex than just “time” [<em>shakes fist at passing cloud</em>]). Finn (with Håvard and Johan Lindström) had proposed a new method, cannily named the <a href="https://rss.onlinelibrary.wiley.com/doi/10.1111/j.1467-9868.2011.00777.x">Stochastic Partial Differential Equation</a> (SPDE) method, for exploiting the continuous-space Markov property in higher dimensions. Which all sounds very maths-y, but it isn’t.</p>
+<p>The guts of the method says “all of our problems with working computationally with Gaussian random fields comes from the fact that the set of all possible functions is too big for a computer to deal with, so we should do something about that”. &nbsp;The “something” is replace the continuous function with a piecewise linear one defined over a fairly fine triangulation on the domain of interest.</p>
+</section>
+<section id="but-why-am-i-talking-about-this" class="level1">
+<h1>But why am I talking about this?</h1>
+<p>(Sorry. One day I’ll write a short post.)</p>
+<p>A <a href="https://arxiv.org/pdf/1710.05013.pdf">very exciting paper popped up on arXiv on Monday</a><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> comparing a fairly exhaustive collection of recent methods for making spatial Gaussian random fields more computationally efficient.</p>
+<p>Why am I not cringing in fear? Because if you look at the author list, they have included an author from each of the projects they have compared! This means that the comparison will probably be as good as it can be. In particular, it won’t suffer from the usual problem of the authors understanding some methods they’re comparing better than others.</p>
+<p>#The world is held together by the wind that blows through Gena Rowland’s hair</p>
+<p>So how did they go? Well, actually, they did quite well. I like that</p>
+<ul>
+<li><p>They describe each problem quite well</p></li>
+<li><p>The simulation study and the real data analysis uses a collection of different evaluations metrics</p></li>
+<li><p>Some of these are proper scoring rules, which is the correct framework for evaluating probabilistic predictions</p></li>
+<li><p>They acknowledge that the wall clock timings are likely to be more a function of how hard a team worked to optimise performance on this one particular model than a true representation of how these methods would work in practice.</p></li>
+</ul>
+</section>
+<section id="not-the-lovin-kind" class="level1">
+<h1>Not the lovin’ kind</h1>
+<p>But I’m an academic statistician. And our key feature, as a people, is that we loudly and publicly dislike each other’s work. Even the stuff we agree with. &nbsp;Why? Because people with our skills who also have impulse control tend to work for more money in the private sector.</p>
+<p>So with that in mind, let’s have some fun.</p>
+<p>(Although seriously, this is the best comparison of this type I’ve ever seen. So, really, I’m just wanting it to be even bester.)</p>
+<p>So what’s wrong with it?</p>
+</section>
+<section id="its-gotta-be-big.-i-said-it-better-be-big" class="level1">
+<h1>It’s gotta be big. I said it better be big</h1>
+<p>The most obvious problem with the comparison is that the problem that these methods are being compared on is not particularly large or complex. You can see that from the timings. Almost none of these implementations are sweating, which is a sign that we are not anywhere near the sort of problem that would really allow us to differentiate between methods.</p>
+<p>So how small is small? The problem had 105,569 observations and required prediction at at most&nbsp; 4,431 other locations. To be challenging, this data needed to be another order of magnitude bigger.</p>
+</section>
+<section id="god-knows-i-know-ive-thrown-away-those-graces" class="level1">
+<h1>God knows I know I’ve thrown away those graces</h1>
+<p>(Can you tell what I’m listening to?)</p>
+<p>The second problem with the comparison is that the problem is tooooooo easy. As the data is modelled with a Gaussian observation noise and a multivariate Gaussian latent random effect, it is a straightforward piece of algebra to eliminate all of the latent Gaussian variables from the model. This leads to a model with only a small number of parameters, which should make inference much easier.</p>
+<p>How do you do that? Well, if the data is <span class="math inline">\(y\)</span>, the Gaussian random field is <span class="math inline">\(x\)</span> and and all the hyperparmeters <span class="math inline">\(\theta\)</span>. In this case, we can use conditional probability to write that <span class="math display">\[
+p(\theta \mid y) \propto \frac{p(y,x,\theta)}{p(x \mid y, \theta)},
+\]</span> which holds for every value of <span class="math inline">\(x\)</span> and particularly <span class="math inline">\(x=0\)</span>. Hence if you have a closed form full conditional (which is the case when you have Gaussian observations), you can write the marginal posterior out exactly without having to do any integration.</p>
+<p>A much more challenging problem would have had Poisson or binomial data, where the full conditional doesn’t have a known form. In this case you cannot do this marginalisation analytically, so you put much more stress on your inference algorithm.</p>
+<p>I guess there’s an argument to be made that some methods are really difficult to extend to non-Gaussian observations. But there’s also an argument to be made that I don’t care. Shit or get off the pot, as American would say.</p>
+</section>
+<section id="dont-take-me-back-to-the-range" class="level1">
+<h1>Don’t take me back to the range</h1>
+<p>The prediction quality is measured in terms of mean squared error and mean absolute error (which are fine), the continuous rank probability score (CRPS) and and the Interval Score (INT), both of which are proper scoring rules. <a href="https://sites.stat.washington.edu/raftery/Research/PDF/Gneiting2007jasa.pdf">Proper scoring rules</a> (and follow the link or google for more if you’ve never heard of them) are the correct way to compare probabilistic predictions, regardless of the statistical framework that’s used to make the predictions. So this is an excellent start!</p>
+<p>But one of these measures does stand out: the prediction interval coverage (CVG) which is defined in the paper as “the percent of intervals containing the true predicted value”. I’m going to parse that as “the percent of prediction intervals containing the true value”. The paper suggests (through use of bold in the tables) that the correct value for CVG is 0.95. That is, the paper suggests the true value should lie within the 95% interval 95% of the time.</p>
+<p><em>This is not true.</em></p>
+<p>Or, at least, this is considerably more complex than the result suggests.</p>
+<p>Or, at least, this is only true if you compute intervals that are specifically built to do this, which is mostly very hard to do. And you definitely don’t do it by providing a standard error (which is an option in this competition).</p>
+<p>#Boys on my left side. Boys on my right side. Boys in the middle. And you’re not here.</p>
+<p>So what’s wrong with CVG?</p>
+<p>Why? Well first of all it’s a multiple testing problem. You are not testing the same interval multiple times, you are checking multiple intervals one time each. So it can only be meaningful if the prediction intervals were constructed jointly to solve this specific multiple testing problem.</p>
+<p>Secondly, it’s extremely difficult to know what is considered random here. Coverage statements are statements about repeated tests, so how you repeat them<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> will affect whether or not a particular statement is true. It will also affect how you account for the multiple testing when building your prediction intervals. (Really, if anyone did opt to just return standard errors, nothing good is going to happen for them in this criterion!)</p>
+<p>Thirdly, it’s already covered by the interval score. If your interval is <span class="math inline">\([l,u]\)</span> with nominal level <span class="math inline">\(\alpha\)</span>, the interval score is for an observation <span class="math inline">\(y\)</span> is <span class="math display">\[
+\text{INT}_\alpha(l, u, y) = u - l + \frac{2}{\alpha}(l-y) \mathbf{1}\{y &lt; l\} + \frac{2}{\alpha}(y-u)\mathbf{1}\{y&gt;u\}.
+\]</span> This score (where smaller is better) rewards you for having a narrow prediction interval, but penalises you every time the data does not lie in the interval. The score is minimised when <span class="math inline">\(\Pr(y \in [l,u]) = \alpha\)</span>. So this really is a good measure of how well the interval estimate is calibrated that also checks more aspects of the interval than CVG (which lacks the first term) does.</p>
+</section>
+<section id="theres-the-part-youve-braced-yourself-against-and-then-theres-the-other-part" class="level1">
+<h1>There’s the part you’ve braced yourself against, and then there’s the other part</h1>
+<p>Any conversation about how to evaluate the quality of an interval estimate really only makes sense in the situation where everyone has constructed their intervals the same way. The authors’ code is <a href="https://github.com/finnlindgren/heatoncomparison/">here</a>, but even without seeing it we know there are essentially four options:</p>
+<ol type="1">
+<li><p>Compute pointwise prediction means <span class="math inline">\(\hat{\mu}_i\)</span> and standard errors <span class="math inline">\(\hat{\sigma}_i\)</span> and build the pointwise intervals <span class="math inline">\(\hat{\mu}_i \pm 1.96\hat{\sigma}\)</span>.</p></li>
+<li><p>Compute the pointwise Bayesian prediction intervals, which are formed from the appropriate quantiles (or the HPD region if you are Tony O’Hagan) of <span class="math inline">\(\int \int p(\hat{y} \mid x,\theta) p(x,\theta \mid y)\,dx d\theta\)</span>.</p></li>
+<li><p>An interval of the form <span class="math inline">\(\hat{\mu}_i \pm c\hat{\sigma}\)</span>, where <span class="math inline">\(c\)</span> is chosen to ensure coverage.</p></li>
+<li><p>Some sort of clever thing based on functional data analysis.</p></li>
+</ol>
+<p>But how well these different options work will depend on how they’re being assessed (or what they’re being used for).</p>
+<section id="option-1-we-want-to-fill-in-our-sparse-observation-by-predicting-at-more-and-more-points" class="level2">
+<h2 class="anchored" data-anchor-id="option-1-we-want-to-fill-in-our-sparse-observation-by-predicting-at-more-and-more-points">Option 1: We want to fill in our sparse observation by predicting at more and more points</h2>
+<p>(This is known as “in-fill asymptotics”). This type of question occurs when, for instance, we want to fill in the holes in satellite data (which are usually due to clouds).</p>
+<p>This is the case that most closely resembles the design of the simulation study in this paper. In this case you refine your estimated coverage by computing more prediction intervals and checking if the true value lies within the interval.</p>
+<p>Most of the easy to find results about coverage in these is from the 1D literature (specifically around smoothing splines and non-parametric regression). In these cases, it’s known that the first option is bad, the second option will <a href="https://projecteuclid.org/journals/annals-of-statistics/volume-21/issue-2/An-Analysis-of-Bayesian-Inference-for-Nonparametric-Regression/10.1214/aos/1176349157.full">lead to conservative regions</a> (the coverage will be too high), the third option involves <a href="https://link.springer.com/book/10.1007/978-0-387-48116-6">some sophisticated understanding of how Gaussian random fields work</a>, and the fourth is not something I know anything about.</p>
+</section>
+<section id="option-2-we-want-to-predict-at-one-point-where-the-field-will-be-monitored-multiple-times" class="level2">
+<h2 class="anchored" data-anchor-id="option-2-we-want-to-predict-at-one-point-where-the-field-will-be-monitored-multiple-times">Option 2: We want to predict at one point, where the field will be monitored multiple times</h2>
+<p>This second option comes up when we’re looking at a long-term monitoring network. This type data is common in environmental science, where a long term network of sensors is set up to monitor, for example, air pollution. The new observations are not independent of the previous ones (there’s usually some sort of temporal structure), but independence can often be assumed if the observations are distant enough in time.</p>
+<p>In this case as you are repeating observations at a single site, Option 1 will be the right way to construct your interval, option 2 will probably still be a bit broad but might be ok, and options 3 and 4 will probably be too narrow if the underlying process is smooth.</p>
+</section>
+<section id="option-3-mixed-asymptotics-you-do-both-at-once" class="level2">
+<h2 class="anchored" data-anchor-id="option-3-mixed-asymptotics-you-do-both-at-once">Option 3: Mixed asymptotics! You do both at once</h2>
+<p>Simulation studies are the last refuge of the damned.</p>
+</section>
+</section>
+<section id="i-see-the-sun-go-down.-i-see-the-sun-come-up.-i-see-a-light-beyond-the-frame." class="level1">
+<h1>I see the sun go down. I see the sun come up. I see a light beyond the frame.</h1>
+<p>So what are my suggestions for making this comparison better (other than making it bigger, harder, and dumping the weird CVG criterion)?</p>
+<ol type="1">
+<li><p>randomise</p></li>
+<li><p>randomise</p></li>
+<li><p>randomise</p></li>
+</ol>
+<p>What do I mean by that? Well in the simulation study, the paper only considered one possible set of data simulated from the correct model. All of the results in their Table 2, which contains the scores, and timings on the simulated data, depends on this particular realisation. And hence Table 2 is a realisation of a random variable that will have a mean and standard deviation.</p>
+<p>This should <em>not</em> be taken as an endorsement of the frequentist view that the observed data is random and estimators should be evaluated by their average performance over different realisation of the data. <em>This is an acknowledgement of the fact that in this case the data is actually a realisation of a random variable.</em> Reporting the variation in Table 2 would give an idea of the variation in the performance of the method. And would lead to a more nuanced and realistic comparison of the methods. It is not difficult to imagine that for some of these criteria there is no clear winner when averaged over data sets.</p>
+</section>
+<section id="where-did-you-get-that-painter-in-your-pocket" class="level1">
+<h1>Where did you get that painter in your pocket?</h1>
+<p>I have very mixed feelings about the timings column in the results table. On one hand, an “order of magnitude” estimate of how long this will actually take to fit is probably a useful thing for a person considering using a method. On the other hand, there is just no way for these results not to be misleading. And the paper acknowledges this.</p>
+<p>Similarly, the competition does not specify things like priors for the Bayesian solutions. This makes it difficult to really compare things like interval estimates, which can strongly depend on the specified priors. You could certainly improve your chances of winning on the CVG computation for the simulation study by choosing your priors carefully!</p>
+</section>
+<section id="what-is-this-six-stringed-instrument-but-an-adolescent-loom" class="level1">
+<h1>What is this six-stringed instrument but an adolescent loom?</h1>
+<p>I haven’t really talked about the real data performance yet. Part of this is because <a href="https://statmodeling.stat.columbia.edu/2019/10/15/a-heart-full-of-hatred-8-schools-edition/">I don’t think real data is particularly useful for evaluating algorithms</a>. More likely, you’re evaluating your chosen data set as much as, or even more than, you are evaluating your algorithm.</p>
+<p>Why? Because real data doesn’t follow the model, so even if a particular method gives a terrible approximation to the inference you’d get from the “correct” model, it might do very very well on the particular data set. I’m not sure how you can draw any sort of meaningful conclusion from this type of situation.</p>
+<p>I mean, I should be happy I guess because the method I work on “won” three of the scores, and did fairly well in the other two. But there’s no way to say that wasn’t just luck.</p>
+<p>What does luck look like in this context? It could be that the SPDE approximation is a better model for the data than the “correct” Gaussian random field model. It could just be Finn appealing to the old Norse gods. It’s really hard to tell.</p>
+<p>If any real data is to be used to make general claims about how well algorithms work, I think it’s necessary to use <em>a lot</em> of different data sets rather than just one.</p>
+<p>Similarly, a range of different simulation study scenarios would give a broader picture of when different approximations behave better.</p>
+</section>
+<section id="dont-dream-its-over" class="level1">
+<h1>Don’t dream it’s over</h1>
+<p><a href="https://www.youtube.com/watch?v=OtvdZ47h8y4">One more kiss before we part</a>: This field is still alive and kicking. One of the really exciting new ideas in the field (that’s probably too new to be in the comparison) is that you can speed up the computation of the unnormalised log-posterior through <a href="https://arxiv.org/abs/1709.04419">hierarchical decompositions of the covariance matrix</a> (there is also code). This is a really neat method for solving the problem and a really exciting new idea in the field.</p>
+<p>There are a bunch of other things that are probably worth looking at in this article, but I’ve run out of energy for the moment. Probably the most interesting thing for me is that a lot of the methods that did well (SPDEs, Predictive Processes, Fixed Rank Kriging, Multi-resolution Approximation, Lattice Krig, Nearest-Neighbour Predictive Processes) are cut from very similar cloth. It would be interesting to look deeper at the similarities and differences in an attempt to explain these results.</p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>2021: Oh my giddy aunt what even was that?!<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>2021: The around that time is notable to me, but not interesting to others. So I’m sorry extent to which these blog posts captured the variations in my mental state about that. But also they give a small glimpse at just how bleak my sense of humour can be.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>No I don’t speak Swedish, but <a href="https://www.youtube.com/watch?v=oS2ExAcW-Z8">one of my favourite songwriters/lyricists</a> does. And sometimes I’m just that unbearable. Also the next part of this story takes place in Norway, which is near Sweden but produces worse music (<a href="https://www.youtube.com/watch?v=Y_lEXa7VWcA">Susanne Sunfør</a> and <a href="https://www.youtube.com/watch?v=ZCFlT_FYnEE">M2M</a> being notable exceptions)<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>I once gave a truly mortifying talk called INLA: Past, Present, and Future at a conference in Dublin.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Or, as happened one time, they compared computation for a different model with an algorithm that failed its convergence checks and assumed that all of the hyperparameters were fixed. All of that is bad but the last part is like saying <code>lm</code> is faster than <code>lme4::lmer</code> for fitting mixed effects models because we only checked when the almost always unknown variance parameters were assumed known.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>In 2017. A long time ago.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Repeat the same test or make a new test for different data<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2022,
+  author = {Dan Simpson},
+  editor = {},
+  title = {Barry {Gibb} Came Fourth in a {Barry} {Gibb} Look Alike
+    Contest {(Repost)}},
+  date = {2022-01-26},
+  url = {https://dansblog.netlify.app/2022-01-26-barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Dan Simpson. 2022. <span>“Barry Gibb Came Fourth in a Barry Gibb Look
+Alike Contest (Repost).”</span> January 26, 2022. <a href="https://dansblog.netlify.app/2022-01-26-barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost">https://dansblog.netlify.app/2022-01-26-barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

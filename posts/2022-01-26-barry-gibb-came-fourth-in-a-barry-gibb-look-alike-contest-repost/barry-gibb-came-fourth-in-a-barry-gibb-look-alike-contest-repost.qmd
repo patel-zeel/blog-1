@@ -1,0 +1,224 @@
+---
+title: "Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)"
+description: |
+   A repost from Andrew's blog about comparing computational methods for performing a task. (Lightly edited.) Original posted 20 October, 2017.
+date: 2022-01-26
+image: yetta.JPG
+categories: [Computation, Assessing algorithms]
+twitter-card:
+  title:  "Barry Gibb came fourth in a Barry Gibb look alike contest (Repost)"
+  creator: "@dan_p_simpson"
+citation: 
+  url: https://dansblog.netlify.app/2022-01-26-barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost 
+---
+
+> _Every day a little death, in the parlour, in the bed. On the lips and in the eyes. In the curtains in the silver, in the buttons, in the bread, in the murmurs, in the pauses, in the gestures, in the sighs._ [Sondheim](https://www.youtube.com/watch?v=Snru5gtCyWA)
+
+The most horrible sound in the world is that of a reviewer asking you to compare your computational method to another, existing method. Like bombing countries in the name of peace, the purity of intent drowns out the voices of our better angels as they whisper: at what cost.
+
+Before the unnecessary drama of that last sentence^[2021: Oh my giddy aunt what even was that?!] sends you running back to the still-open browser tab documenting the world's slow slide into a deeper, danker, more complete darkness that we've seen before, I should say that I understand that for most people this isn't a problem. Most people don't do research in computational statistics. Most people are happy^[2021: The around that time is notable to me, but not interesting to others. So I'm sorry extent to which these blog posts captured the variations in my mental state about that. But also
+they give a small glimpse at just how bleak my sense of humour can be.].
+
+So why does someone asking for a comparison of two methods for allegedly computing the same thing fill me with the sort of dread usually reserved for climbing down the ladder into my basement to discover, by the the light of a single, swinging, naked light bulb, that the evil clown I keep chained in the corner has escaped? Because it's almost impossible to do well.
+
+# I go through all this before you wake up so I can feel happier to be safe again with you
+
+Many many years ago, when I still had all my hair and thought it was impressive when people proved things, I did a PhD in numerical analysis. These all tend to have the same structure:
+
+1. survey your chosen area with a simulation study comparing all the existing methods,
+
+2. propose a new method that should be marginally better than the existing ones,
+
+3. analyse the new method, show that it's at least not worse than the existing ones (or worse in an interesting way),
+
+4. construct a simulation study that shows the superiority of your method on a problem that hopefully doesn't look too artificial,
+
+5. write a long discussion blaming the inconsistencies between the maths and the simulations on "pre-asymptotic artefacts".
+
+Which is to say, I've done my share of simulation studies comparing algorithms.
+
+So what changed? When did I start to get [the fear](https://www.youtube.com/watch?v=ykdtNuKlHiA) every time someone mentioned comparing algorithms?
+
+Well, I left numerical analysis and moved to statistics and I learnt the one true thing that all people who come to statistics must learn: statistics is hard.
+
+When I used to compare deterministic algorithms it was easy. I would know the correct answer and so I could compare algorithms by comparing the error in their approximate solutions (perhaps taking into account things like how long it took to compute the answer).
+
+But in statistics, the truth is random. Or the truth is a high-dimensional joint distribution that you cannot possibly know. So how can you really compare your algorithms, except possibly by comparing your answer to some sort of "gold standard" method that may or may not work.
+
+# Inte ner för ett stup. Inte ner från en bro. Utan från vattentornets topp^[No I don't speak Swedish, but [one of my favourite songwriters/lyricists](https://www.youtube.com/watch?v=oS2ExAcW-Z8) does. And sometimes I'm just that unbearable. Also the next part of this story takes place in Norway, which is near Sweden but produces worse music ([Susanne Sunfør](https://www.youtube.com/watch?v=Y_lEXa7VWcA) and [M2M](https://www.youtube.com/watch?v=ZCFlT_FYnEE) being notable exceptions)].
+
+The first two statistical things I ever really worked on (in an office overlooking a fjord) were computationally tractable ways of approximating posterior distributions for specific types of models. The first of these was [INLA](https://en.wikipedia.org/wiki/Irish_National_Liberation_Army)^[I once gave a truly mortifying talk called INLA: Past, Present, and Future at a conference in Dublin.]. For those of you who haven't heard of it, INLA (and it's popular R implementation [R-INLA](https://www.r-inla.org)) is a method for doing approximate posterior computation for a lot of the sorts of models you can fit in `rstanarm` and `brms`. So random effect models, multilevel models, models with splines, and spatial effects.
+
+At the time, Stan didn't exist (later, it barely existed), so I would describe INLA as being Bayesian inference for people who lacked the ideological purity to wait 14 hours for a poorly mixing BUGS chain to run, instead choosing to spend 14 seconds to get a better "approximate" answer. These days, Stan exists in earnest and that 14 hours is 20 minutes for small-ish models with only a couple of thousand observations, and the answer that comes out of Stan is probably as good as INLA.
+
+Working on INLA I learnt a new fear: the fear that someone else was going to publish a simulation study comparing INLA with something else without checking with us first.
+
+Now obviously, we wanted people to run their comparisons past us so we could ruthlessly quash any dissent and hopefully exile the poor soul who thought to critique our perfect method to the academic equivalent of a Siberian work camp.
+
+Or, more likely, because comparing statistical models is really hard, and we could usually make the comparison much better by asking some questions about how it was being done.
+
+Sometimes, learning from well-constructed simulation studies how INLA was failing lead to improvements in the method.
+
+But nothing could be learned if, for instance, the simulation study was reporting runs from code that wasn't doing what the authors thought it was^[Or, as happened one time, they compared computation for a different model with an algorithm that failed its convergence checks and assumed that all of the hyperparameters were fixed. All of that is bad but the last part is like saying `lm` is faster than `lme4::lmer` for fitting mixed effects models because we only checked when the almost always unknown variance parameters were assumed known.]. And I don't want to suggest that bad or unfair comparisons comes from malice (for the most part, we're all quite conscientious and fairly nice), but rather that they happen because comparing statistical algorithms is hard.
+
+And comparing algorithms fairly where you don't understand them equally well is almost impossible.
+
+# Well did you hear the one about Mr Ed? He said I'm this way because of the things I've seen
+
+Why am I bringing this up? It's because of the second statistical thing that I worked on while I was living in sunny Trondheim (in between looking at the fjord and holding onto the sides of buildings for dear life because for 8 months of the year Trondheim is a very pretty mess of icy hills).
+
+During that time, I worked with [Finn Lindgren](https://www.maths.ed.ac.uk/~flindgre/) and [Håvard "INLA" Rue](https://www.kaust.edu.sa/en/study/faculty/haavard-rue) on computationally efficient approximations to Gaussian random fields (which is what we're supposed to call Gaussian Processes when the parameter space is more complex than just "time" [*shakes fist at passing cloud*]). Finn (with Håvard and Johan Lindström) had proposed a new method, cannily named the [Stochastic Partial Differential Equation](https://rss.onlinelibrary.wiley.com/doi/10.1111/j.1467-9868.2011.00777.x) (SPDE) method, for exploiting the continuous-space Markov property in higher dimensions. Which all sounds very maths-y, but it isn't.
+
+The guts of the method says "all of our problems with working computationally with Gaussian random fields comes from the fact that the set of all possible functions is too big for a computer to deal with, so we should do something about that".  The "something" is replace the continuous function with a piecewise linear one defined over a fairly fine triangulation on the domain of interest.
+
+# But why am I talking about this?
+(Sorry. One day I'll write a short post.)
+
+A [very exciting paper popped up on arXiv on Monday](https://arxiv.org/pdf/1710.05013.pdf)^[In 2017. A long time ago.] comparing a fairly exhaustive collection of recent methods for making spatial Gaussian random fields more computationally efficient.
+
+Why am I not cringing in fear? Because if you look at the author list, they have included an author from each of the projects they have compared! This means that the comparison will probably be as good as it can be. In particular, it won't suffer from the usual problem of the authors understanding some methods they're comparing better than others.
+
+#The world is held together by the wind that blows through Gena Rowland's hair
+
+So how did they go?  Well, actually, they did quite well.  I like that
+
+- They describe each problem quite well
+
+- The simulation study and the real data analysis uses a collection of different evaluations metrics
+
+- Some of these are proper scoring rules, which is the correct framework for evaluating probabilistic predictions
+
+- They acknowledge that the wall clock timings are likely to be more a function of how hard a team worked to optimise performance on this one particular model than a true representation of how these methods would work in practice.
+
+# Not the lovin' kind
+
+But I'm an academic statistician. And our key feature, as a people, is that we loudly and publicly dislike each other's work. Even the stuff we agree with.  Why? Because people with our skills who also have impulse control tend to work for more money in the private sector.
+
+So with that in mind, let's have some fun.
+
+(Although seriously, this is the best comparison of this type I've ever seen. So, really, I'm just wanting it to be even bester.)
+
+So what's wrong with it?
+
+# It's gotta be big. I said it better be big
+
+The most obvious problem with the comparison is that the problem that these methods are being compared on is not particularly large or complex.  You can see that from the timings. Almost none of these implementations are sweating, which is a sign that we are not anywhere near the sort of problem that would really allow us to differentiate between methods.
+
+So how small is small? The problem had 105,569 observations and required prediction at at most  4,431 other locations. To be challenging, this data needed to be another order of magnitude bigger.
+
+# God knows I know I've thrown away those graces
+
+(Can you tell what I'm listening to?)
+
+The second problem with the comparison is that the problem is tooooooo easy. As the data is modelled with a Gaussian observation noise and a multivariate Gaussian latent random effect, it is a straightforward piece of algebra to eliminate all of the latent Gaussian variables from the model. This leads to a model with only a small number of parameters, which should make inference much easier.
+
+How do you do that? Well, if the data is  $y$, the Gaussian random field is  $x$ and and all the hyperparmeters  $\theta$. In this case, we can use conditional probability to write that
+$$
+p(\theta \mid y) \propto \frac{p(y,x,\theta)}{p(x \mid y, \theta)},
+$$
+which holds for every value of  $x$ and particularly  $x=0$. Hence if you have a closed form full conditional (which is the case when you have Gaussian observations), you can write the marginal posterior out exactly without having to do any integration.
+
+A much more challenging problem would have had Poisson or binomial data, where the full conditional doesn't have a known form. In this case you cannot do this marginalisation analytically, so you put much more stress on your inference algorithm.
+
+I guess there's an argument to be made that some methods are really difficult to extend to non-Gaussian observations. But there's also an argument to be made that I don't care. Shit or get off the pot, as American would say.
+
+# Don't take me back to the range
+
+The prediction quality is measured in terms of mean squared error and mean absolute error (which are fine), the continuous rank probability score (CRPS) and and the Interval Score (INT), both of which are proper scoring rules. [Proper scoring rules](https://sites.stat.washington.edu/raftery/Research/PDF/Gneiting2007jasa.pdf) (and follow the link or google for more if you've never heard of them) are the correct way to compare probabilistic predictions, regardless of the statistical framework that's used to make the predictions. So this is an excellent start!
+
+But one of these measures does stand out: the prediction interval coverage (CVG) which is defined in the paper as "the percent of intervals containing the true predicted value". I'm going to parse that as "the percent of prediction intervals containing the true value". The paper suggests (through use of bold in the tables) that the correct value for CVG is 0.95. That is, the paper suggests the true value should lie within the 95% interval 95% of the time.
+
+_This is not true._
+
+Or, at least, this is considerably more complex than the result suggests.
+
+Or, at least, this is only true if you compute intervals that are specifically built to do this, which is mostly very hard to do. And you definitely don't do it by providing a standard error (which is an option in this competition).
+
+
+#Boys on my left side. Boys on my right side. Boys in the middle. And you're not here.
+
+So what's wrong with CVG?
+
+Why? Well first of all it's a multiple testing problem. You are not testing the same interval multiple times, you are checking multiple intervals one time each. So it can only be meaningful if the prediction intervals were constructed jointly to solve this specific multiple testing problem.
+
+Secondly, it's extremely difficult to know what is considered random here. Coverage statements are statements about repeated tests, so how you repeat them^[Repeat the same test or make a new test for different data] will affect whether or not a particular statement is true. It will also affect how you account for the multiple testing when building your prediction intervals. (Really, if anyone did opt to just return standard errors, nothing good is going to happen for them in this criterion!)
+
+Thirdly, it's already covered by the interval score. If your interval is  $[l,u]$ with nominal level  $\alpha$, the interval score is for an observation $y$ is 
+$$
+\text{INT}_\alpha(l, u, y) = u - l + \frac{2}{\alpha}(l-y) \mathbf{1}\{y < l\} + \frac{2}{\alpha}(y-u)\mathbf{1}\{y>u\}.
+$$
+This score (where smaller is better) rewards you for having a narrow prediction interval, but penalises you every time the data does not lie in the interval. The score is minimised when  $\Pr(y \in [l,u]) = \alpha$. So this really is a good measure of how well the interval estimate is calibrated that also checks more aspects of the interval than CVG (which lacks the first term) does.
+
+# There's the part you've braced yourself against, and then there's the other part
+
+Any conversation about how to evaluate the quality of an interval estimate really only makes sense in the situation where everyone has constructed their intervals the same way. The authors' code is [here](https://github.com/finnlindgren/heatoncomparison/), but even without seeing it we know there are essentially four options:
+
+1. Compute pointwise prediction means  $\hat{\mu}_i$ and standard errors  $\hat{\sigma}_i$ and build the pointwise intervals  $\hat{\mu}_i \pm 1.96\hat{\sigma}$.
+
+2. Compute the pointwise Bayesian prediction intervals, which are formed from the appropriate quantiles (or the HPD region if you are Tony O'Hagan) of  $\int \int p(\hat{y} \mid x,\theta) p(x,\theta \mid y)\,dx d\theta$.
+
+3. An interval of the form  $\hat{\mu}_i \pm c\hat{\sigma}$, where $c$ is chosen to ensure coverage.
+
+4. Some sort of clever thing based on functional data analysis.
+
+But how well these different options work will depend on how they're being assessed (or what they're being used for).
+
+
+
+## Option 1: We want to fill in our sparse observation by predicting at more and more points
+
+(This is known as "in-fill asymptotics"). This type of question occurs when, for instance, we want to fill in the holes in satellite data (which are usually due to clouds).
+
+This is the case that most closely resembles the design of the simulation study in this paper. In this case you refine your estimated coverage by computing more prediction intervals and checking if the true value lies within the interval.
+
+Most of the easy to find results about coverage in these is from the 1D literature (specifically around smoothing splines and non-parametric regression). In these cases, it's known that the first option is bad, the second option will [lead to conservative regions](https://projecteuclid.org/journals/annals-of-statistics/volume-21/issue-2/An-Analysis-of-Bayesian-Inference-for-Nonparametric-Regression/10.1214/aos/1176349157.full) (the coverage will be too high), the third option involves [some sophisticated understanding of how Gaussian random fields work](https://link.springer.com/book/10.1007/978-0-387-48116-6), and the fourth is not something I know anything about.
+
+## Option 2: We want to predict at one point, where the field will be monitored multiple times
+
+This second option comes up when we're looking at a long-term monitoring network. This type data is common in environmental science, where a long term network of sensors is set up to monitor, for example, air pollution. The new observations are not independent of the previous ones (there's usually some sort of temporal structure), but independence can often be assumed if the observations are distant enough in time.
+
+In this case as you are repeating observations at a single site, Option 1 will be the right way to construct your interval, option 2 will probably still be a bit broad but might be ok, and options 3 and 4 will probably be too narrow if the underlying process is smooth.
+
+## Option 3: Mixed asymptotics! You do both at once
+
+Simulation studies are the last refuge of the damned.
+
+# I see the sun go down. I see the sun come up. I see a light beyond the frame.
+
+So what are my suggestions for making this comparison better (other than making it bigger, harder, and dumping the weird CVG criterion)?
+
+1. randomise
+
+2. randomise
+
+3. randomise
+
+What do I mean by that? Well in the simulation study, the paper only considered one possible set of data simulated from the correct model. All of the results in their Table 2, which contains the scores, and timings on the simulated data, depends on this particular realisation. And hence Table 2 is a realisation of a random variable that will have a mean and standard deviation.
+
+This should _not_ be taken as an endorsement of the frequentist view that the observed data is random and estimators should be evaluated by their average performance over different realisation of the data. _This is an acknowledgement of the fact that in this case the data is actually a realisation of a random variable._ Reporting the variation in Table 2 would give an idea of the variation in the performance of the method. And would lead to a more nuanced and realistic comparison of the methods. It is not difficult to imagine that for some of these criteria there is no clear winner when averaged over data sets.
+
+# Where did you get that painter in your pocket?
+
+I have very mixed feelings about the timings column in the results table. On one hand, an "order of magnitude" estimate of how long this will actually take to fit is probably a useful thing for a person considering using a method.  On the other hand, there is just no way for these results not to be misleading. And the paper acknowledges this.
+
+Similarly, the competition does not specify things like priors for the Bayesian solutions. This makes it difficult to really compare things like interval estimates, which can strongly depend on the specified priors. You could certainly improve your chances of winning on the CVG computation for the simulation study by choosing your priors carefully!
+
+# What is this six-stringed instrument but an adolescent loom?
+
+I haven't really talked about the real data performance yet. Part of this is because [I don't think real data is particularly useful for evaluating algorithms](https://statmodeling.stat.columbia.edu/2019/10/15/a-heart-full-of-hatred-8-schools-edition/). More likely, you're evaluating your chosen data set as much as, or even more than, you are evaluating your algorithm.
+
+Why? Because real data doesn't follow the model, so even if a particular method gives a terrible approximation to the inference you'd get from the "correct" model, it might do very very well on the particular data set. I'm not sure how you can draw any sort of meaningful conclusion from this type of situation.
+
+I mean, I should be happy I guess because the method I work on "won" three of the scores, and did fairly well in the other two. But there's no way to say that wasn't just luck.
+
+What does luck look like in this context? It could be that the SPDE approximation is a better model for the data than the "correct" Gaussian random field model. It could just be Finn appealing to the old Norse gods. It's really hard to tell.
+
+If any real data is to be used to make general claims about how well algorithms work, I think it's necessary to use _a lot_ of different data sets rather than just one.
+
+Similarly, a range of different simulation study scenarios would give a broader picture of when different approximations behave better.
+
+# Don't dream it's over
+
+[One more kiss before we part](https://www.youtube.com/watch?v=OtvdZ47h8y4): This field is still alive and kicking. One of the really exciting new ideas in the field (that's probably too new to be in the comparison) is that you can speed up the computation of the unnormalised log-posterior through [hierarchical decompositions of the covariance matrix](https://arxiv.org/abs/1709.04419) (there is also code). This is a really neat method for solving the problem and a really exciting new idea in the field.
+
+There are a bunch of other things that are probably worth looking at in this article, but I've run out of energy for the moment. Probably the most interesting thing for me is that a lot of the methods that did well (SPDEs, Predictive Processes, Fixed Rank Kriging, Multi-resolution Approximation, Lattice Krig, Nearest-Neighbour Predictive Processes)  are cut from very similar cloth. It would be interesting to look deeper at the similarities and differences in an attempt to explain these results.

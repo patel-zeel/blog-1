@@ -5,6 +5,7 @@ website:
   title: "Un garçon pas comme les autres (Bayes)"
   repo-url: https://github.com/dpsimpson/blog
   site-url: https://dansblog.netlify.app
+  description: "A statistics blog, I guess."
   open-graph: true
   twitter-card:
     creator: "@dan_p_simpson"

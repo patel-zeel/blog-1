@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.15">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dan Simpson">
+<meta name="dcterms.date" content="2021-10-15">
+<meta name="description" content="Priors? Defined. Questions? Outlined. Purpose? Declared.">
+
+<title>Un garçon pas comme les autres (Bayes) - Priors: Night work (Track 1)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Un garçon pas comme les autres (Bayes) - Priors: Night work (Track 1)">
+<meta property="og:description" content="Priors? Defined. Questions? Outlined. Purpose? Declared.">
+<meta property="og:image" content="https://dansblog.netlify.app/posts/2021-10-14-priors1/perm.JPG">
+<meta property="og:site-name" content="Un garçon pas comme les autres (Bayes)">
+<meta name="twitter:title" content="Priors: Night work (Track 1)">
+<meta name="twitter:description" content="Priors? Defined. Questions? Outlined. Purpose? Declared.">
+<meta name="twitter:image" content="https://dansblog.netlify.app/posts/2021-10-14-priors1/perm.JPG">
+<meta name="twitter:creator" content="@dan_p_simpson">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Un garçon pas comme les autres (Bayes)</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About this blog</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/dan_p_simpson"><i class="bi bi-twitter" role="img" aria-label="twitter">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/dpsimpson"><i class="bi bi-github" role="img" aria-label="github">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://dansblog.netlify.app"><i class="bi bi-person-circle" role="img" aria-label="website">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Priors: Night work (Track 1)</h1>
+                  <div>
+        <div class="description">
+          <p>Priors? Defined. Questions? Outlined. Purpose? Declared.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Prior distributions</div>
+                <div class="quarto-category">Fundamentals</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Dan Simpson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 15, 2021</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#no-love-deep-web" id="toc-no-love-deep-web" class="nav-link active" data-scroll-target="#no-love-deep-web">No love, deep web</a></li>
+  <li><a href="#captain-fantastic-and-the-brown-dirt-cowboy" id="toc-captain-fantastic-and-the-brown-dirt-cowboy" class="nav-link" data-scroll-target="#captain-fantastic-and-the-brown-dirt-cowboy">Captain fantastic and the brown dirt cowboy</a></li>
+  <li><a href="#mapping-out-a-sky-what-you-feel-like-planning-a-sky" id="toc-mapping-out-a-sky-what-you-feel-like-planning-a-sky" class="nav-link" data-scroll-target="#mapping-out-a-sky-what-you-feel-like-planning-a-sky">Mapping out a sky / What you feel like, planning a sky</a></li>
+  <li><a href="#so-what" id="toc-so-what" class="nav-link" data-scroll-target="#so-what">So what?</a></li>
+  </ul>
+</nav>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>I have feelings. Too many feelings. And ninety six point seven three percent of them are about prior distributions<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. So I am going to write a few blog posts about prior distributions.</p>
+<p>To be very honest, this is mostly a writing exercise<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> to get me out of a slump.</p>
+<p>So let’s do this.</p>
+<section id="no-love-deep-web" class="level2">
+<h2 class="anchored" data-anchor-id="no-love-deep-web">No love, deep web</h2>
+<p>As far as I am concerned it’s really fucking stupid to try to write about priors on their own. They are meaningless outside of their context. But, you know, this is a blog. So I get to be stupid.</p>
+<p>So what is a prior distribution? It is whatever you want it to be. It is a probability distribution<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> that … I don’t know. Exists<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
+<p>Ok. This is not going well. Let’s try again.</p>
+<p>A prior distribution is, most of the time, a probability distribution on the parameters of a statistical model. For all practical purposes, we tend to work with its density, so if the parameter <span class="math inline">\(\theta\)</span>, which could be a scalar but, in any interesting case, isn’t, has prior <span class="math inline">\(p(\theta)\)</span>.</p>
+</section>
+<section id="captain-fantastic-and-the-brown-dirt-cowboy" class="level2">
+<h2 class="anchored" data-anchor-id="captain-fantastic-and-the-brown-dirt-cowboy">Captain fantastic and the brown dirt cowboy</h2>
+<p>But what does it all meeeeeeeean?</p>
+<p>We have a prior distribution specified, gloriously, by it’s density. And unlike destiny, density is meaningless. It only makes sense when we integrate it up to get a probability <span class="math display">\[
+\Pr(A) = \int_A p(\theta)\,d\theta.
+\]</span></p>
+<p>So what does the prior probabilty <span class="math inline">\(\Pr(A)\)</span> of a set <span class="math inline">\(A\)</span> actually mean in real life? The answer may shock you: it means something between nothing and everything.</p>
+<p><strong>Scenario 1:</strong> Let’s imagine that we were trying to estimate the probability that someone in some relative homogeneous subgroup of customers completed a purchase on our website. It’s a binary process, so the parameter of interest can probably just be the probability that a sale is made. While we don’t know what the probability of a sale is for the subgroup of interest, we know a lot sales on our website in general (in particular, we know that about 3% of visits result in sales). So if I also believe that it would be wildly unlikely for 20% of visits to result in a sale, I could posit a prior like a <span class="math inline">\(\text{Beta}(0.4,5)\)</span> prior that captures (a version of) these two pieces of information.</p>
+<div class="cell" data-code_folding="true">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>  <span class="do">## Step 1: </span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>  </span>
+<span id="cb1-3"><a href="#cb1-3"></a>fn <span class="ot">&lt;-</span> \(x) (<span class="fu">qbeta</span>(<span class="fl">0.5</span>,x[<span class="dv">1</span>], x[<span class="dv">2</span>]) <span class="sc">-</span> <span class="fl">0.02</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> </span>
+<span id="cb1-4"><a href="#cb1-4"></a>  (<span class="fu">qbeta</span>(<span class="fl">0.9</span>, x[<span class="dv">1</span>], x[<span class="dv">2</span>]) <span class="sc">-</span> <span class="fl">0.2</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a>best <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>,<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>), fn)</span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="do">## Step 3: Profit.</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="do">## (AKA round and check)</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="fu">qbeta</span>(<span class="fl">0.9</span>, <span class="fl">0.4</span>, <span class="dv">5</span>)</span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="fu">qbeta</span>(<span class="fl">0.5</span>, <span class="fl">0.4</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Scenario 2:</strong> Let’s imagine I want to do variable selection. I don’t know why. I was just told I want to do variable selection. So I fire up the <a href="https://statmodeling.stat.columbia.edu/2017/11/02/king-must-die/">Bayesian Lasso</a><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> and then threshold in some way. In this case, the prior encode a hoped-for property of my posterior. (To paraphrase Lana, hope is a dangerous thing for a woman like you to have because the Bayeisan Lasso does not work to the point that the original paper doesn’t even suggest using it for variable selection<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> it just, idk, liked the name. Statistics is wild.)</p>
+<p><strong>Scenario 3:</strong> I’m doing a regression with just one variable (because why not) and I think that the relationship between the response <span class="math inline">\(y\)</span> and the covariate <span class="math inline">\(x\)</span> is non-linear. That is, I think there is some unknown to me function <span class="math inline">\(f(x)\)</span> such that <span class="math inline">\(\mathbb{E}(y_i) = f(x_i)\)</span>. So I ask a friend and they tell me to use a Gaussian Process prior for <span class="math inline">\(f(\cdot)\)</span> with an exponential covariance function.</p>
+<p>While I can write down the density for the joint prior of <span class="math inline">\((f(x_1), f(x_2,), \ldots, f(x_n))\)</span>, I do not know<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> what this prior means in any substantive sense. But I can tell you, you’re gonna need that maths degree to even try.</p>
+<p>And should you look deeper, you will find more and more scenarios where priors are doing different things for different reasons<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>. For each of these priors in each of these scenarios, we will be able to compute the posterior (or a reasonable computational approximation to it) and then work with that posterior to answer our questions.</p>
+<p>Different people<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> will use priors different ways even for very similar problems<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>. This remains true even though they are nominally working under the same inferential framework.</p>
+<p><em>Bayesians are chaotic.</em></p>
+</section>
+<section id="mapping-out-a-sky-what-you-feel-like-planning-a-sky" class="level2">
+<h2 class="anchored" data-anchor-id="mapping-out-a-sky-what-you-feel-like-planning-a-sky">Mapping out a sky / What you feel like, planning a sky</h2>
+<p><a href="https://www.youtube.com/watch?v=ducG55pfCMQ">Sondheim’s ode to pointillism</a> feels relevant here. The reality of the prior distribution—and the whole reason the concept is so slippery and chaotic—is that you are, dot by dot, constructing the world of your inference. This act of construction is fundamental to understanding how Bayesian methods work, how to justify your choices, and how to use a <a href="https://arxiv.org/abs/2011.01808">Bayesian workflow</a> to solve complex problems.</p>
+<p>To torture the metaphor, our prior distribution is just our paint, unmixed, slowly congealing, possibly made of <a href="https://en.wikipedia.org/wiki/Mummy_brown">ground up mummys</a>. It is nothing without a painter and a brush.</p>
+<p>The painter is the likelihood or, more generally, the generative link between the parameter values and the actual data, <span class="math inline">\(p(y \mid \theta)\)</span>. The brush is the computational engine you use to actually produce the posterior painting<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>.</p>
+<p>This then speaks to the core challenge with writing about priors: it depends on how you use them. It is a fallacy, or perhaps a foolishness, or perhaps a heresy<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>. Hell, when trying to understand a single inference <a href="https://www.mdpi.com/1099-4300/19/10/555">The Prior Can Only Be Understood In The Context Of The Likelihood</a><a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a>. In the context of an entire <em>workflow</em>, <a href="https://link.springer.com/article/10.1007/s42113-019-00051-0">The Experiment is just as Important as the Likelihood in Understanding the Prior</a>.</p>
+<p>For instance, using independent Cauchy priors for the coefficients in a linear regression model will result in a perfectly ok posterior. Whereas the same priors used in a logistic regression, <a href="https://projecteuclid.org/journals/bayesian-analysis/volume-13/issue-2/On-the-Use-of-Cauchy-Prior-Distributions-for-Bayesian-Logistic/10.1214/17-BA1051.full">you may end up with posteriors with such heavy tails that they don’t have a mean</a>! (Do we care? Well, yes. If we want reasonable uncertainty intervals we probably want 2 or so moments otherwise those large deviations are gonna getcha!)</p>
+</section>
+<section id="so-what" class="level2">
+<h2 class="anchored" data-anchor-id="so-what">So what?</h2>
+<p>All of this is fascinating. And it is a lot less chaotic than it initially sounds.</p>
+<p>The reality is that while two Bayesians may use different priors and, hence, produce different posteriors for the same data set.This can be extreme. For example, if I am trying to estimate the mean of data generated by <span class="math inline">\(y_i \sim N(\mu, 1)\)</span>, then I can choose a prior<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> (that depends on the data) so that the posterior mean <span class="math inline">\(\mathbb{E}(\mu \mid y) =1\)</span>. Or, to put it differently, I can get any answer I want if I choose an prior carefully (and in a data-dependent manner).</p>
+<p>But this isn’t necessarily a problem. This is because the posteriors produced by two <em>sensible</em> priors for the same problem will produce fairly similar results<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a>. The prior I used to cheat in the previous example would not be considered sensible by anyone looking at it<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a>.</p>
+<p>But what is a sensible prior? Can you tell if a prior is sensible or not in its particular context? Well honey, how long have you got. The thing about starting a (potential) series of blog posts is that I don’t really know how far I’m going to get, but I would really like to talk a lot about that over the next little while.</p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>The rest are about the night I saw Patti LuPone trying to get through the big final scene in War Paint as part of her costume loudly disintegrated.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>I’m told it’s useful to warm up sometimes because this pandemic has me ice cold.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Sometimes.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Except, and I cannot stress this enough, when it doesn’t.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Please do not do this!<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Except for once in the abstract in a sentence that is in no way shape or formed backed up in the text. <a href="https://people.eecs.berkeley.edu/~jordan/courses/260-spring09/other-readings/park-casella.pdf">Park and Casella (2008)</a><a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>I do know. I know a very large amount about Gaussian processes. But lord in heaven I have seen the greatest minds of my generation subtly fuck up the interpretation of GP priors. Because it’s increadibly hard. Maybe I’ll blog about it one day. Because this is in markdown so I can haz equations.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Some reasons are excellent. Some, like the poor Bayesian Lasso, are simply misguided.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>or the same person in different contexts<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>Are any two statistical problems ever <em>the same</em>?<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>Yes. I have a lot of feelings about this too, but meh. A good artist can make great art with minimal equipment (see When Doves Cry), but most people are not the genius Prince was so just use good tools and stress less!<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>I have written extensively about priors in the context of the Arianist heresy because of course I fucking have. <a href="https://statmodeling.stat.columbia.edu/2018/08/21/against-arianism/">Part 1</a>, <a href="https://statmodeling.stat.columbia.edu/2018/09/12/against-arianism-2-arianism-grande/">Part 2</a>, <a href="https://statmodeling.stat.columbia.edu/2019/05/24/against-arianism-3-consider-the-cognitive-models-of-the-field/">Part 3</a>. Apologies for mathematics eaten by a recent formatting change!<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>Editors forced the word often into the published title and, like, who’s going to fight?<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p><span class="math inline">\(N(2-\bar{y},n^{-1})\)</span><a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>What does this even mean? Depends on your context really. But a working definition is that the big picture features of the posterior are similar enough that if you were to use it to make a decision, that decision doesn’t change very much.<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>But omg subtle high dimensional stuff and I guess I’ll talk about that later maybe too?<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2021,
+  author = {Dan Simpson},
+  editor = {},
+  title = {Priors: {Night} Work {(Track} 1)},
+  date = {2021-10-15},
+  url = {https://dansblog.netlify.app/priors1},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2021" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Dan Simpson. 2021. <span>“Priors: Night Work (Track 1).”</span> October
+15, 2021. <a href="https://dansblog.netlify.app/priors1">https://dansblog.netlify.app/priors1</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

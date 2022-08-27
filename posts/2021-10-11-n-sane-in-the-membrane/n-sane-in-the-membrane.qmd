@@ -1,12 +1,12 @@
 ---
 title: "$(n-1)$-sane in the membrane"
-subtitle: |
+description: |
  Windmills? Tilted. Topic? Boring. (n-1)? No.
 date: 10-14-2021
 categories: [Teaching, Fundamentals, Opinionated]
+image: police.JPG
 twitter-card:
-  title: "twitter title"
-  description: "twitter description"
+  title:  "(n-1)-sane in the membrane"
   creator: "@dan_p_simpson"
 citation: 
   url: https://dansblog.netlify.app/n-sane-in-the-membrane

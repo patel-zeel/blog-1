@@ -8,6 +8,7 @@
 
 <meta name="author" content="Dan Simpson">
 <meta name="dcterms.date" content="2022-05-30">
+<meta name="description" content="Open up the kennels, Kenneth. Mamma’s coming home tonight.">
 
 <title>Un garçon pas comme les autres (Bayes) - Sparse matrices 6: To catch a derivative, first you’ve got to think like a derivative</title>
 <style>
@@ -129,9 +130,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="Un garçon pas comme les autres (Bayes) - Sparse matrices 6: To catch a derivative, first you’ve got to think like a derivative">
 <meta property="og:description" content="Open up the kennels, Kenneth. Mamma’s coming home tonight.">
+<meta property="og:image" content="https://dansblog.netlify.app/posts/2022-05-20-to-catch-a-derivative-first-youve-got-to-think-like-a-derivative/sob.JPG">
 <meta property="og:site-name" content="Un garçon pas comme les autres (Bayes)">
 <meta name="twitter:title" content="twitter title">
 <meta name="twitter:description" content="Open up the kennels, Kenneth. Mamma’s coming home tonight.">
+<meta name="twitter:image" content="https://dansblog.netlify.app/posts/2022-05-20-to-catch-a-derivative-first-youve-got-to-think-like-a-derivative/sob.JPG">
 <meta name="twitter:creator" content="@dan_p_simpson">
 <meta name="twitter:card" content="summary_large_image">
 </head>
@@ -181,8 +184,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">Sparse matrices 6: To catch a derivative, first you’ve got to think like a derivative</h1>
-            <p class="subtitle lead"></p><p>Open up the kennels, Kenneth. Mamma’s coming home tonight.</p><p></p>
-                                <div class="quarto-categories">
+                  <div>
+        <div class="description">
+          <p>Open up the kennels, Kenneth. Mamma’s coming home tonight.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
                 <div class="quarto-category">JAX</div>
                 <div class="quarto-category">Sparse matrices</div>
                 <div class="quarto-category">Autodiff</div>
@@ -522,12 +529,12 @@ J^T_b(A,b)w = A^{-T}w,
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Transpose = False:
-  Error A varying:  8.47e-08
+  Error A varying:  8.90e-08
   Error b varying:  0.00e+00
-  Error A and b varying:  4.20e-07
+  Error A and b varying:  4.08e-07
 
 Transpose = True:
-  Error A varying:  8.15e-08
+  Error A varying:  1.01e-07
   Error b varying:  0.00e+00
 </code></pre>
 </div>
