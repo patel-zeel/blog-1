@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.15">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dan Simpson">
+<meta name="dcterms.date" content="2022-09-03">
+<meta name="description" content="Let us not lie. Specifying priors are hard. This post steps through a technique for setting priors that I think gives a good basis for realistically complex problems.">
+
+<title>Un garçon pas comme les autres (Bayes) - Priors part 4: Specifying priors that appropriately penalise complexity</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Un garçon pas comme les autres (Bayes) - Priors part 4: Specifying priors that appropriately penalise complexity">
+<meta property="og:description" content="Let us not lie. Specifying priors are hard. This post steps through a technique for setting priors that I think gives a good basis for realistically complex problems.">
+<meta property="og:image" content="https://dansblog.netlify.app/posts/2022-08-29-priors4/tina.jpg">
+<meta property="og:site-name" content="Un garçon pas comme les autres (Bayes)">
+<meta name="twitter:title" content="Priors part 4: Specifying priors that appropriately penalise complexity">
+<meta name="twitter:description" content="Let us not lie. Specifying priors are hard. This post steps through a technique for setting priors that I think gives a good basis for realistically complex problems.">
+<meta name="twitter:image" content="https://dansblog.netlify.app/posts/2022-08-29-priors4/tina.jpg">
+<meta name="twitter:creator" content="@dan_p_simpson">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Un garçon pas comme les autres (Bayes)</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About this blog</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/dan_p_simpson"><i class="bi bi-twitter" role="img" aria-label="twitter">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/dpsimpson"><i class="bi bi-github" role="img" aria-label="github">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://dansblog.netlify.app"><i class="bi bi-person-circle" role="img" aria-label="website">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Priors part 4: Specifying priors that appropriately penalise complexity</h1>
+                  <div>
+        <div class="description">
+          <p>Let us not lie. Specifying priors are hard. This post steps through a technique for setting priors that I think gives a good basis for realistically complex problems.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Prior distributions</div>
+                <div class="quarto-category">fundamentals</div>
+                <div class="quarto-category">PC priors</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Dan Simpson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">September 3, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#bro-do-you-even-know-what-a-parameter-is" id="toc-bro-do-you-even-know-what-a-parameter-is" class="nav-link active" data-scroll-target="#bro-do-you-even-know-what-a-parameter-is">Bro do you even know what a parameter is?</a></li>
+  <li><a href="#a-hello-boys-into-a-party-date-on-flexibility" id="toc-a-hello-boys-into-a-party-date-on-flexibility" class="nav-link" data-scroll-target="#a-hello-boys-into-a-party-date-on-flexibility">A hello boys into a party date: on flexibility</a></li>
+  <li><a href="#sure-youre-flexible-but-lets-not-over-do-the-dutch-wink" id="toc-sure-youre-flexible-but-lets-not-over-do-the-dutch-wink" class="nav-link" data-scroll-target="#sure-youre-flexible-but-lets-not-over-do-the-dutch-wink">Sure you’re flexible, but let’s not over-do the Dutch wink</a></li>
+  <li><a href="#the-speed-of-a-battered-sav-proximity-to-the-base-model" id="toc-the-speed-of-a-battered-sav-proximity-to-the-base-model" class="nav-link" data-scroll-target="#the-speed-of-a-battered-sav-proximity-to-the-base-model">The speed of a battered sav: proximity to the base model</a></li>
+  <li><a href="#spinning-off-the-flute-into-a-flat-bag-turning-a-distance-into-a-prior" id="toc-spinning-off-the-flute-into-a-flat-bag-turning-a-distance-into-a-prior" class="nav-link" data-scroll-target="#spinning-off-the-flute-into-a-flat-bag-turning-a-distance-into-a-prior">Spinning off the flute into a flat bag: Turning a distance into a prior</a></li>
+  <li><a href="#closing-the-door-how-to-choose-lambda" id="toc-closing-the-door-how-to-choose-lambda" class="nav-link" data-scroll-target="#closing-the-door-how-to-choose-lambda">Closing the door: How to choose <span class="math inline">\(\lambda\)</span></a></li>
+  <li><a href="#the-dream-pc-priors-in-practice" id="toc-the-dream-pc-priors-in-practice" class="nav-link" data-scroll-target="#the-dream-pc-priors-in-practice">The Dream: PC priors in practice</a></li>
+  </ul>
+</nav>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>At some point in the distant past, I wrote three posts about prior distributions. The <a href="https://dansblog.netlify.app/posts/2021-10-14-priors1/priors1.html">first</a> was very basic, because why not. The <a href="https://dansblog.netlify.app/posts/2021-10-14-priors2/priors2.html">second</a> one talked about conjugate priors. The <a href="https://dansblog.netlify.app/posts/2021-10-15-priors3/priors3.html">third</a> one talked about so-called objective priors.</p>
+<p>I am suddenly<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> of a mood to write some more on this<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> topic.</p>
+<p>The thing is, so far I’ve only really talked about methods for setting prior distributions that I don’t particularly care for. Fuck that. Let’s talk about things I like. There is enough negative energy<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> in the world.</p>
+<p>So let’s talk about priors. But the good stuff. The aim is to give my answer to the question “how should you set a prior distribution?”.</p>
+<section id="bro-do-you-even-know-what-a-parameter-is" class="level2">
+<h2 class="anchored" data-anchor-id="bro-do-you-even-know-what-a-parameter-is">Bro do you even know what a parameter is?</h2>
+<p>You don’t. No one does. They’re not real.</p>
+<p>Parameters are polite fictions that we use to get through the day. They’re out weapons of mass destruction. They’re the magazines we only bought for the articles. They are our girlfriends who live in Canada<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
+<p>One way we can see this is to ask ourselves a simple<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>: <span class="math display">\[
+y_i \sim \text{Negative-Binomial}(\mu, \alpha), \qquad i = 1,\ldots, n\text{?}
+\]</span></p>
+<p>The answer<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> <a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> would be two.</p>
+<p>But let me ask a different question. How many parameters are there in this model<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> <span class="math display">\[\begin{align*}
+y_i\mid u_i &amp;\sim \text{Poisson}(\mu u_i) \\
+u_i &amp;\sim \text{Gamma}(\alpha^{-1}, \alpha^{-1}),\qquad i=1,\ldots, n\text{?}
+\end{align*}\]</span></p>
+<p>One answer to this question would be <span class="math inline">\(n+2\)</span>. In this interpretation of the question everything in the model that isn’t directly observed is a parameter.</p>
+<p>But there is another view.</p>
+<p>Mathematically, these two models are equivalent. That is, if you marginalise<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> out the <span class="math inline">\(u_i\)</span> you get <span class="math display">\[\begin{align*}
+\Pr(y=k) &amp;=\frac{\mu^k\alpha^{-1/\alpha}}{\Gamma(\alpha^{-1})\Gamma(k+1)} \int_0^\infty u^k e^{-\mu u} u^{1/\alpha-1}e^{-u/\alpha}\,du \\
+&amp;= \frac{\mu^k\alpha^{-1/\alpha}}{\Gamma(\alpha^{-1})\Gamma(k+1)}\int_0^\infty u^{k + 1/\alpha-1}e^{-(\mu + \alpha^{-1})u}\,du \\
+&amp;= \frac{\mu^k\alpha^{-1/\alpha}}{\Gamma(\alpha^{-1})\Gamma(k+1)}\int_0^\infty \left(\frac{t}{\mu+\alpha^{-1}}\right)^{k + 1/\alpha-1}e^{-t}\frac{1}{\mu + \alpha^{-1}}\,dt \\
+&amp;=\frac{\Gamma(k + \alpha^{-1})}{\Gamma(\alpha^{-1})\Gamma(k+1)} \left(\frac{\mu}{\mu + \alpha^{-1}}\right)^k \left(\frac{\alpha^{-1}}{\mu + \alpha^{-1}}\right)^{1/\alpha} .
+\end{align*}\]</span> This is <em>exactly</em> the negative binomial distribution with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\mu(1 + \alpha \mu)\)</span>.</p>
+<p>So maybe there are two parameters.</p>
+<p>Does it make a difference? Sometimes. For instance, if you were following ordinary practice in Bayesian machine learning, you would (approximately) marginalise out <span class="math inline">\((\mu, \lambda)\)</span> in the first model, but in the second model you’d probably treat them as tuning hyper-parameters<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a> in the second and optimise<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> over them.</p>
+<p>Moreover, in the second model we can ask <em>what other priors could we put on the</em> <span class="math inline">\(u_i\)</span><em>?</em>. There is no equivalent question for the first model. This could be useful, for instance, if we believe that the overdispersion may differ among population groups. It is considerably easier to extend the random effects formulation into a multilevel model.</p>
+<p>Ok. So it doesn’t really matter too much. It really depends on what you’re going to do with the model when you’re breaking your model into <em>things that we need to set priors for</em> and <em>things where the priors are a structural part of the model</em>.</p>
+</section>
+<section id="a-hello-boys-into-a-party-date-on-flexibility" class="level2">
+<h2 class="anchored" data-anchor-id="a-hello-boys-into-a-party-date-on-flexibility">A hello boys into a party date: on flexibility</h2>
+<p>There are a lot of ways to set prior distributions. I’ve covered some in previous posts and there are certainly more. But today I’m going to focus on one constructive method that I’m particular fond of: <a href="https://projecteuclid.org/journals/statistical-science/volume-32/issue-1/Penalising-Model-Component-Complexity--A-Principled-Practical-Approach-to/10.1214/16-STS576.full">penalised complexity priors</a>.</p>
+<p>These priors fall out from a certain way of seeing parameters. The idea is that some parameters in a model function as <em>flexibility parameters</em>. These naturally have a base value, which corresponds to the simplest model that they index. I’ll refer to the distribution you get when the parameter takes its base value as the <em>base model</em>.</p>
+<div id="exm-neg-binom" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1 (Overdispersion of a negative binomial) </strong></span>The negative binomial distribution has two parameters: a mean <span class="math inline">\(\mu\)</span> and an overdispersion parameter <span class="math inline">\(\alpha\)</span> so the variance is <span class="math inline">\(\mu(1 + \alpha \mu)\)</span>. The mean parameter is <em>not</em> a flexibility parameter. Conceptually, changing the mean<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> does not make a distribution more or less complex, it simply shuttles it around.</p>
+<p>On the other hand, the overdispersion parameter <span class="math inline">\(\alpha\)</span> <em>is</em> a flexibility parameter. It’s special value is <span class="math inline">\(\alpha =0\)</span>, which corresponds to a Poisson distribution, which is the base model for the negative binomial distribution.</p>
+</div>
+<div id="exm-student-t" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2 (Student-t degrees of freedom) </strong></span>The three parameter student-t distribution has density (parameterised by its standard deviation assuming <span class="math inline">\(\nu &gt; 2\)</span>!) <span class="math display">\[
+p(y \mid \mu, \sigma, \nu) = \frac{\Gamma\left(\frac{\nu + 1}{2}\right)}{\sigma\nu \sqrt{\frac{\pi}{\nu-2}} \Gamma\left(\frac{\nu}{2}\right)}\left(1 + \frac{\frac{\nu-2}{\nu}\left(\frac{y - \mu}{\sigma}\right)^2}{\nu}\right)^{-\frac{\nu+1}{2}}, \qquad \nu &gt; 2.
+\]</span> This has mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^2\)</span>. The slightly strange parameterisation and the restriction to <span class="math inline">\(\nu&gt;0\)</span> is useful because it lets us specify a prior on the <em>variance</em> itself and not some parameter that is the variance divided by some function<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a> of <span class="math inline">\(\nu\)</span>.</p>
+<p>The natural base model here is <span class="math inline">\(N(\mu, \sigma^2)\)</span>, which corresponds to <span class="math inline">\(\nu = \infty\)</span>.</p>
+</div>
+<div id="exm-gaussian" class="theorem example">
+<p><span class="theorem-title"><strong>Example 3 (Variance of a Gaussian random effect) </strong></span>A Gaussian distribution has two parameters: a mean <span class="math inline">\(\mu\)</span> and a standard deviation <span class="math inline">\(\tau\)</span>. Once again, <span class="math inline">\(\mu\)</span> is not a flexibility parameter, but in some circumstances <span class="math inline">\(\tau\)</span> can be.</p>
+<p>To see this, imagine that we have a simple random intercept model <span class="math display">\[\begin{align*}
+y_{ij} \mid u_j &amp;\sim N(u_j, \sigma^2),\qquad i=1,\ldots,n, j =1,\ldots,J \\
+u_j &amp;\sim N(\mu, \tau).
+\end{align*}\]</span> In this case, we don’t really view <span class="math inline">\(\sigma\)</span> as a flexibility parameter, but <span class="math inline">\(\tau\)</span> is. Why the distinction? Well let’s think about what happens at special value <span class="math inline">\(0\)</span>.</p>
+<p>When <span class="math inline">\(\sigma = 0\)</span> we are saying that there is no variability in the data if we know the corresponding <span class="math inline">\(u_i\)</span>. This is, frankly, quite weird and it’s not necessarily a base model we would believe<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> in.</p>
+<p>On the other hand, if <span class="math inline">\(\tau =0\)</span>, then we are say that all of the groups have the same mean. This is a useful and interesting base model that could absolutely happen in most data. So we say that while <span class="math inline">\(\sigma\)</span> isn’t necessarily a flexibility parameter in the model, <span class="math inline">\(\tau\)</span> definitely is.</p>
+<p>In this case the base model is the degenerate distribution<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a> where the mean of each group is equal to <span class="math inline">\(\mu\)</span>.</p>
+</div>
+<p>The second example shows that the idea of a flexibility parameter is deeply contextual. Once again, we run into the idea that Statistical Arianism<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> is bad. <em>Parameters and their prior distributions can only be fully understood if you know their context within the entire model.</em></p>
+</section>
+<section id="sure-youre-flexible-but-lets-not-over-do-the-dutch-wink" class="level2">
+<h2 class="anchored" data-anchor-id="sure-youre-flexible-but-lets-not-over-do-the-dutch-wink">Sure you’re flexible, but let’s not over-do the Dutch wink</h2>
+<p>Now that we have the concept of a flexibility parameter, let’s think about how we should use it. In particular, we should ask exactly what we want our prior to do. In <a href="https://projecteuclid.org/journals/statistical-science/volume-32/issue-1/Penalising-Model-Component-Complexity--A-Principled-Practical-Approach-to/10.1214/16-STS576.full">the paper</a> we listed 8 things that we want the prior to do:</p>
+<ol type="1">
+<li>The prior should contain information<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a> <a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a> <a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a></li>
+<li>The prior should be aware of model structure</li>
+<li>If we move our model to a new application, it should be clear how we can change the information contained in our prior. We can do this by <em>explicitly</em> including specific information in the prior.</li>
+<li>The prior should limit<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a> the flexibility of an overparameterised model</li>
+<li>Restrictions of the prior to identifiable sub-manifolds<a href="#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a> of the parameter space should be sensible.</li>
+<li>The prior should be specified to control what a parameter <em>does</em> in the context<a href="#fn22" class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a> of the model (rather than its numerical value)</li>
+<li>The prior should be computationally<a href="#fn23" class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a> feasible</li>
+<li>The prior should perform well<a href="#fn24" class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a>.</li>
+</ol>
+<p>These desiderata are <em>aspirational</em> and I in no way claim that we successfully satisfied them. But we tried. And we came up with a pretty useful proposal.</p>
+<p>The idea is simple: if our model has a flexibility parameter we should put a prior on it that <em>penalises the complexity</em> of the model. That is, we want most of the prior mass to be near<a href="#fn25" class="footnote-ref" id="fnref25" role="doc-noteref"><sup>25</sup></a> the base value.</p>
+<p>In practice, we try to do this by penalising the complexity of each <em>component</em> of a model. For instance, consider the following model for a flexible regression: <span class="math display">\[\begin{align*}
+y_i \mid f, u_i &amp;\sim N(u_i +f(z_i), \sigma^2) \\
+f &amp;\sim \text{Smoothing-spline}(\lambda)\\
+u_i &amp;\sim N( \mu + x_i^T\beta , \tau^2).
+\end{align*}\]</span> The exact definition<a href="#fn26" class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a> of a smoothing spline that we are using is not wildly important, but it is specified<a href="#fn27" class="footnote-ref" id="fnref27" role="doc-noteref"><sup>27</sup></a> by a smoothing parameter <span class="math inline">\(\lambda\)</span>, and when <span class="math inline">\(\lambda=\infty\)</span> we get our base model (a function that is equal to zero everywhere). This model has two components (<span class="math inline">\(f\)</span> and <span class="math inline">\(u\)</span>) and they each have one smoothing parameter (<span class="math inline">\(\lambda\)</span>, with base model at <span class="math inline">\(\lambda = \infty\)</span>, and <span class="math inline">\(\tau\)</span>, with base model at <span class="math inline">\(\tau = 0\)</span>).</p>
+<p>The nice thing about splitting a model up into components and building priors for each component is that we can build generic priors for each component that can be potentially be tuned to make them appropriate for the global model. Is this a perfect way to realise our second aim? No.&nbsp;But it’s an ok place to start<a href="#fn28" class="footnote-ref" id="fnref28" role="doc-noteref"><sup>28</sup></a>.</p>
+</section>
+<section id="the-speed-of-a-battered-sav-proximity-to-the-base-model" class="level2">
+<h2 class="anchored" data-anchor-id="the-speed-of-a-battered-sav-proximity-to-the-base-model">The speed of a battered sav: proximity to the base model</h2>
+<p>Ok. So you’re Brad Pitt. Wait. No.</p>
+<p>Ok. So we need to build a prior that penalises complexity by putting most of its prior mass near the base model. In order to do this we need to first specify what we mean by <em>near</em>.</p>
+<p>There are <em>a lot</em> of things that we could mean. The easiest choice would be to just use the natural distance from the base model in the parameter space. But this isn’t necessarily a good idea. Firstly, it falls flat when the base model is at infinity. But more importantly, it violates our 6th aim by ignoring the context of the parameter and just setting a prior on its numerical value.</p>
+<p>So instead we are going to parameterise distance by asking ourselves a simple question: for a component with flexibility parameter <span class="math inline">\(\xi\)</span>, how much more complex would our model component be if we used the value <span class="math inline">\(\xi\)</span> instead of the base value <span class="math inline">\(\xi_\text{base}\)</span>?</p>
+<p>We can measure this complexity using the Kullback-Leibler divergence (or KL divergence if you’re nasty) <span class="math display">\[
+\operatorname{KL}(f || g) = \int_\Theta f(t) \log\left(\frac{f(t)}{g(t)}\right)\,dt.
+\]</span> This is a quantity from information theory that directly measures how much information would be lost<a href="#fn29" class="footnote-ref" id="fnref29" role="doc-noteref"><sup>29</sup></a> if we replaced the more complex model <span class="math inline">\(f\)</span> with the simpler model <span class="math inline">\(g\)</span>. The more information that would be lost, the more complex <span class="math inline">\(f\)</span> is relative to <span class="math inline">\(g\)</span>.</p>
+<p>While the Kullback-Leibler divergence looks a bit intimidating the first time you see it, it’s got a lot of nice properties:</p>
+<ul>
+<li><p>It’s always non-negative.</p></li>
+<li><p>It doesn’t depend on how you parameterise the distribution. If you do a smooth, invertible change of variables to both distribution the KL divergence remains unchanged.</p></li>
+<li><p>It’s related to the information matrix and the Fisher distance. In particular, let <span class="math inline">\(f(\theta \mid \xi)\)</span> be a family of distributions parameterised by <span class="math inline">\(\xi\)</span>. Then, near <span class="math inline">\(\xi_0\)</span>, <span class="math display">\[
+\operatorname{KL}(f(\cdot \mid \xi_0 +\delta)  || f(\cdot \mid \xi_0)) = \frac{\delta^2}{2} I(\xi_0) + o(\delta^2),
+\]</span> where <span class="math inline">\(I(\xi) = \mathbb{E}(\log p(f(y \mid \xi))^2)\)</span> is the Fisher information. The quantity on the right hand side is the square of a distance from the base model.</p></li>
+<li><p>It can be related to the total variation distance<a href="#fn30" class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a> <span class="math display">\[
+\|f - g\|_\text{TV} \leq \sqrt{\frac{1}{2} \operatorname{KL}(f || g)}.
+\]</span></p></li>
+</ul>
+<p>But it also has some less charming properties:</p>
+<ul>
+<li>The KL divergence is <em>not</em> a distance!</li>
+<li>The KL divergence is <em>not</em> symmetric, that is <span class="math inline">\(\operatorname{KL}(f || g) \neq \operatorname{KL}(g || f)\)</span></li>
+</ul>
+<p>The first of these properties is irrelevant to us. The second interesting. I’d argue that it is an advantage. We can think in an analogy: if your base model is a point at the bottom of a valley, there is a big practical difference between how much effort it takes to get from the base model to another model that is on top of a hill compared to the amount of effort it takes to go in the other direction. This type of asymmetry is relevant to us: it’s easier for data to tell a simple model that it should be more complex than it is to tell a complex model to be simpler. We want our prior information to somewhat even this out, so we put less prior mass on models that are more complex and more on models that are more complex.</p>
+<p>There is one more little annoyance: if you look at the two distance measures that the KL divergence is related to, you’ll notice that in both cases, the KL divergence is related to the <em>square</em> of the distance and not the distance itself.</p>
+<p>If we use the KL divergence itself as a distance proxy, it will increase too sharply<a href="#fn31" class="footnote-ref" id="fnref31" role="doc-noteref"><sup>31</sup></a> and we may end up over-penalising. To that end, we use the following “distance” measure <span class="math display">\[
+d(\xi) = \sqrt{2 \operatorname{KL}(f(\cdot \mid \xi) || f(\cdot \mid \xi_0))}.
+\]</span> If you’re wondering about that 2, it doesn’t really matter but it makes a couple of things ever so slightly cleaner down the road.</p>
+<p>Ok. Let’s compute some of these distances!</p>
+<div id="exm-neg-binom2" class="theorem example">
+<p><span class="theorem-title"><strong>Example 4 (Overdispersion of a negative binomial (continued)) </strong></span>The negative binomial distribution is discrete so <span class="math display">\[\begin{multline}
+\frac{1}{2}d^2(\alpha) = \sum_{k=1}^\infty \frac{\Gamma(k + \alpha^{-1})}{\Gamma(\alpha^{-1})\Gamma(k+1)}  \left(\frac{\mu}{\mu + \alpha^{-1}}\right)^k \left(\frac{\alpha^{-1}}{\mu + \alpha^{-1}}\right)^{1/\alpha} \\
+\times \left[\log \Gamma(k  +\alpha^{-1}) - \log \Gamma(\alpha^{-1})  - k \log(\mu + \alpha^{-1}) + \alpha^{-1}\log \alpha^{-1} - \alpha^{-1}\log(\mu + \alpha^{-1})  + \mu \right].
+\end{multline}\]</span> This has two problems: I can’t work out what it is and it might<a href="#fn32" class="footnote-ref" id="fnref32" role="doc-noteref"><sup>32</sup></a> end up depending on <span class="math inline">\(\mu\)</span>.</p>
+<p>Thankfully we can use our alternative representation of the negative binomial to note that <span class="math inline">\(u_i \sim \text{Gamma}(\alpha^{-1}, \alpha^{-1})\)</span> and so we could just as well consider <span class="math inline">\(u_i\)</span> the model component that we want to penalise the complexity of. In this case we need the KL divergence<a href="#fn33" class="footnote-ref" id="fnref33" role="doc-noteref"><sup>33</sup></a> <a href="https://en.wikipedia.org/wiki/Gamma_distribution#Kullback–Leibler_divergence">between Gamma distributions</a> <span class="math display">\[\begin{multline}
+\operatorname{KL}(\text{Gamma}(a^{-1},a^{-1}) || \text{Gamma}(b^{-1},b^{-1})) = (a^{-1}-b^{-1}) \psi(a^{-1}) - \log\Gamma(a^{-1}) + \log\Gamma(b^{-1}) \\
++ b^{-1}(\log a^{-1} - \log b^{-1}) + b^{-1}-a^{-1},
+\end{multline}\]</span> where <span class="math inline">\(\psi(a)\)</span> is the <a href="https://en.wikipedia.org/wiki/Digamma_function">digamma function</a>.</p>
+<p>As <span class="math inline">\(b\rightarrow 0\)</span>, the KL divergence becomes<a href="#fn34" class="footnote-ref" id="fnref34" role="doc-noteref"><sup>34</sup></a> <span class="math display">\[\begin{align*}
+&amp;b^{-1}  (\log(a^{-1}) - \psi(a^{-1})) + \log\Gamma(b^{-1}) - b^{-1}\log b^{-1} + b^{-1}  + o(b^{-1})\\
+=&amp; b^{-1} (\log(a^{-1}) - \psi(a^{-1})) + b^{-1} \log b^{-1} - b^{-1} - b^{-1}\log b^{-1} + b^{-1} \\
+= &amp;b^{-1}  (\log(a^{-1}) - \psi(a^{-1})) + o(b^{-1}).
+\end{align*}\]</span></p>
+<p>Now, you will notice that as <span class="math inline">\(b\rightarrow 0\)</span> the KL divergence heads off to infinity. This happens a lot when the base model is much simpler than the flexible model. Thankfully, we will see later that we can ignore the factor of <span class="math inline">\(b^{-1}\)</span> and get a PC prior that’s valid against the base model <span class="math inline">\(\text{Gamma}(b^{-1}, b^{-1})\)</span> for <em>all</em> sufficiently small <span class="math inline">\(b&gt;0\)</span>. This is not legally the same thing as having one for <span class="math inline">\(b=0\)</span>, but it is morally the same.</p>
+<p>With this, we get <span class="math display">\[
+d(\alpha) = \sqrt{2\log(\alpha^{-1}) - 2\psi(\alpha^{-1}) }.
+\]</span></p>
+<p>If the digamma function is a bit too hardcore for you, the <a href="https://functions.wolfram.com/GammaBetaErf/PolyGamma/06/02/">approximation</a> <span class="math display">\[
+\psi(\alpha^{-1}) = \log(\alpha^{-1}) - \frac{\alpha}{2} + \mathcal{O}(\alpha^2)
+\]</span> gives the approximate distance <span class="math display">\[
+d(\alpha) \approx \sqrt{\alpha}.
+\]</span> That is, the distance we are using is approximately the <em>standard deviation</em> of <span class="math inline">\(u_i\)</span>.</p>
+<p>Let’s see if this approximation<a href="#fn35" class="footnote-ref" id="fnref35" role="doc-noteref"><sup>35</sup></a> is any good.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">tibble</span>(<span class="at">alpha =</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="dv">20</span>, <span class="at">length.out =</span> <span class="dv">1000</span>),</span>
+<span id="cb1-3"><a href="#cb1-3"></a>       <span class="at">exact =</span> <span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span><span class="sc">/</span>alpha) <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">digamma</span>(<span class="dv">1</span><span class="sc">/</span>alpha)),</span>
+<span id="cb1-4"><a href="#cb1-4"></a>       <span class="at">approx =</span> <span class="fu">sqrt</span>(alpha)</span>
+<span id="cb1-5"><a href="#cb1-5"></a>       ) <span class="sc">|&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> alpha, <span class="at">y =</span> exact)) <span class="sc">+</span> </span>
+<span id="cb1-7"><a href="#cb1-7"></a>  <span class="fu">geom_line</span>(<span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> approx), <span class="at">colour =</span> <span class="st">"blue"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="priors4_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>It’s ok but it’s not perfect.</p>
+</div>
+<div id="exm-student-t-2" class="theorem example">
+<p><span class="theorem-title"><strong>Example 5 (Student-t degrees of freedom (Continued)) </strong></span>In our original paper, we computed the distance for the degrees of freedom numerically. However, <a href="https://arxiv.org/pdf/1811.08042.pdf">Yongqiang Tang</a> derived an analytic expression for it. <span class="math display">\[
+d(\nu) = \sqrt{1 + \log \left(\frac{2}{\nu-2}\right) + 2 \log\left(\frac{\Gamma((\nu+1)/2)}{\Gamma(\nu/2)}\right) - (\nu + 1)(\psi((\nu+1)/2) - \psi(\nu/2))}.
+\]</span></p>
+<p>If we note that <span class="math display">\[
+\log(\Gamma(z)) = \left(z- \frac{1}{2}\right)\log z - z + \frac{1}{2}\log(2\pi)  + \frac{1}{12z} + \mathcal{O}(z^{-1}),
+\]</span> we can use this (and the above asymptotic expansion of the digamma function) to get We can use the same asymptotic approximations as above to get <span class="math display">\[\begin{align*}
+d(\nu)^2 \approx&amp; {} 1 + \log \left(\frac{2}{\nu-2}\right) \\
+&amp;\quad {} + 2\left(\frac{\nu}{2}\log \frac{\nu+1}{2} - \frac{\nu+1}{2} + \frac{1}{2}\log(2\pi)  + \frac{1}{6(\nu+1)}\right) \\
+&amp;\quad -2\left(\frac{\nu-1}{2}\log \frac{\nu}{2} - \frac{\nu}{2} + \frac{1}{2}\log(2\pi)  + \frac{1}{6\nu}\right) \\
+&amp;\quad {} - (\nu + 1)(\log((\nu+1)/2) - \frac{1}{\nu+1}- \log(\nu/2) + \frac{1}{\nu}) \\
+=&amp; \log \left(\frac{\nu^2}{(\nu+1)(\nu-2)}\right)   - \frac{\nu +2}{3\nu(\nu+1)}.
+\end{align*}\]</span></p>
+<p>Let’s check this approximation numerically.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">tibble</span>(<span class="at">nu =</span> <span class="fu">seq</span>(<span class="fl">2.1</span>, <span class="dv">300</span>, <span class="at">length.out =</span> <span class="dv">1000</span>),</span>
+<span id="cb2-2"><a href="#cb2-2"></a>       <span class="at">exact =</span> <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">log</span>(<span class="dv">2</span><span class="sc">/</span>(nu<span class="dv">-2</span>)) <span class="sc">+</span> </span>
+<span id="cb2-3"><a href="#cb2-3"></a>                      <span class="dv">2</span><span class="sc">*</span><span class="fu">lgamma</span>((nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">lgamma</span>(nu<span class="sc">/</span><span class="dv">2</span>) <span class="sc">-</span> </span>
+<span id="cb2-4"><a href="#cb2-4"></a>                      (nu <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">*</span> (<span class="fu">digamma</span>((nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span><span class="dv">2</span>)<span class="sc">-</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>                                   <span class="fu">digamma</span>(nu<span class="sc">/</span><span class="dv">2</span>))),</span>
+<span id="cb2-6"><a href="#cb2-6"></a>       <span class="at">approx =</span> <span class="fu">sqrt</span>(<span class="fu">log</span>(nu<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>((nu<span class="dv">-2</span>)<span class="sc">*</span>(nu<span class="sc">+</span><span class="dv">1</span>))) <span class="sc">-</span> (nu<span class="sc">+</span><span class="dv">2</span>)<span class="sc">/</span>(<span class="dv">3</span><span class="sc">*</span>nu<span class="sc">*</span>(nu<span class="sc">+</span><span class="dv">1</span>)))</span>
+<span id="cb2-7"><a href="#cb2-7"></a>       ) <span class="sc">|&gt;</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> nu, <span class="at">y =</span> exact)) <span class="sc">+</span> </span>
+<span id="cb2-9"><a href="#cb2-9"></a>  <span class="fu">geom_line</span>(<span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> approx), <span class="at">colour =</span> <span class="st">"blue"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="priors4_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Once again, this is not a terrible approximation, but it’s also not an excellent one.</p>
+</div>
+<div id="exm-gaussian-2" class="theorem example">
+<p><span class="theorem-title"><strong>Example 6 (Variance of a Gaussian random effect (Continued)) </strong></span>The distance calculation for the standard deviation of a Gaussian random effect has a very similar structure to the negative binomial case. We note, via wikipedia, that <span class="math display">\[\begin{align*}
+\operatorname{KL}(N(\mu, \tau^2) || N(\mu, \epsilon^2)) &amp;= \log \frac{\tau}{\epsilon} + \frac{\tau^2}{\epsilon^2} - \frac{1}{2}  \\
+&amp;= \frac{\tau^2}{\epsilon^2}\left(1 + \frac{\epsilon^2}{\tau^2}\log \frac{\tau}{\epsilon}- \frac{\epsilon^2}{2\tau^2}\right).
+\end{align*}\]</span></p>
+<p>This implies that <span class="math display">\[
+d(\tau) = \epsilon^{-1}\tau + o(\epsilon^{-1}).
+\]</span> We shall see later that the scaling on the <span class="math inline">\(\tau\)</span> doesn’t matter so for all intents and purposed <span class="math display">\[
+d(\tau) = \tau.
+\]</span></p>
+</div>
+</section>
+<section id="spinning-off-the-flute-into-a-flat-bag-turning-a-distance-into-a-prior" class="level2">
+<h2 class="anchored" data-anchor-id="spinning-off-the-flute-into-a-flat-bag-turning-a-distance-into-a-prior">Spinning off the flute into a flat bag: Turning a distance into a prior</h2>
+<p>So now that we have a distance measure, we need to turn it into a prior. There are lots of ways we can do this. Essentially any prior we put on the distance <span class="math inline">\(d(\xi)\)</span> can be transformed into a prior on the flexibility parameter <span class="math inline">\(\xi\)</span>. We do this through the change of variables formula <span class="math display">\[
+p_\xi(\xi) = p_d(d(\xi))\left|\frac{d}{d\xi} d(\xi)\right|,
+\]</span> where <span class="math inline">\(p_d(\cdot)\)</span> is the prior density for the distance parameterisation</p>
+<p>But which prior should we use on the distance? A good default choice is a prior that penalises at a constant rate. That is, we want <span class="math display">\[
+\frac{p_d(d + \delta)}{p_d(d)} = r^{\delta}
+\]</span> for some <span class="math inline">\(0&lt;r&lt;1\)</span>. This condition says that the rate at which the density decreases does not change as we move through the parameter space. This is extremely useful because any other (monotone) distribution is going to have a point at which the bulk changes to the tail. As we are putting our prior on <span class="math inline">\(d\)</span>, we won’t necessarily be able to reason about this point.</p>
+<p>Constant-rate penalisation implies that the prior on the distance scale is an exponential distribution and, hence, we get our generic PC prior for a flexibility parameter <span class="math inline">\(\xi\)</span> <span class="math display">\[
+p(\xi) = \lambda e^{-\lambda d(\xi)}\left|\frac{d}{d\xi} d(\xi)\right|.
+\]</span></p>
+<div id="exm-neg-bin-3" class="theorem example">
+<p><span class="theorem-title"><strong>Example 7 (Overdispersion of a negative binomial (continued)) </strong></span>The exact PC prior for the overdispersion parameter in the negative binomial distribution is <span class="math display">\[
+p(\alpha) = \frac{\lambda}{\alpha^{2}}\frac{\left|\psi'\left(\alpha^{-1}\right)-\alpha\right|}{ \sqrt{2 \log (\alpha^{-1}) - 2 \psi(\alpha^{-1})}} \exp \left[ -\lambda \sqrt{2 \log (\alpha^{-1}) - 2 \psi(\alpha^{-1})}\right],
+\]</span> where <span class="math inline">\(\psi'(\cdot)\)</span> is the derivative of the digamma function.</p>
+<p>On the other hand, if we use the approximate distance we get <span class="math display">\[
+p_\text{approx}(\alpha) = \frac{\lambda}{2\sqrt{\alpha}} e^{-\lambda \sqrt{\alpha}}.
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>lambda <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>dat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">alpha =</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="dv">20</span>, <span class="at">length.out =</span> <span class="dv">1000</span>),</span>
+<span id="cb3-3"><a href="#cb3-3"></a>       <span class="at">exact =</span> lambda <span class="sc">/</span> alpha<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">abs</span>(<span class="fu">trigamma</span>(<span class="dv">1</span><span class="sc">/</span>alpha) <span class="sc">-</span> alpha)<span class="sc">/</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a>         <span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span><span class="sc">/</span>alpha) <span class="sc">-</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>                <span class="dv">2</span><span class="sc">*</span><span class="fu">digamma</span>(<span class="dv">1</span><span class="sc">/</span>alpha))<span class="sc">*</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>         <span class="fu">exp</span>(<span class="sc">-</span>lambda<span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span><span class="sc">/</span>alpha) <span class="sc">-</span> </span>
+<span id="cb3-7"><a href="#cb3-7"></a>                            <span class="dv">2</span><span class="sc">*</span><span class="fu">digamma</span>(<span class="dv">1</span><span class="sc">/</span>alpha))),</span>
+<span id="cb3-8"><a href="#cb3-8"></a>       <span class="at">approx =</span> lambda<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span><span class="fu">sqrt</span>(alpha))<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>lambda<span class="sc">*</span><span class="fu">sqrt</span>(alpha))</span>
+<span id="cb3-9"><a href="#cb3-9"></a>       ) </span>
+<span id="cb3-10"><a href="#cb3-10"></a>dat <span class="sc">|&gt;</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> alpha, <span class="at">y =</span> exact)) <span class="sc">+</span> </span>
+<span id="cb3-12"><a href="#cb3-12"></a>  <span class="fu">geom_line</span>(<span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> approx), <span class="at">colour =</span> <span class="st">"blue"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="priors4_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>dat <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> alpha, <span class="at">y =</span> exact <span class="sc">-</span> approx)) <span class="sc">+</span> </span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="fu">geom_line</span>(<span class="at">colour =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="priors4_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>That’s a pretty good agreement!</p>
+</div>
+<div id="exm-student-t-3" class="theorem example">
+<p><span class="theorem-title"><strong>Example 8 (Student-t degrees of freedom (Continued)) </strong></span>An interesting feature of the PC prior (and any prior where the density on the distance scale takes its maximum at the base model) is that the implied prior on <span class="math inline">\(\nu\)</span> has no finite moments. In fact, if your prior on <span class="math inline">\(\nu\)</span> has finite moments, the density on the distance scale is zero at zero!</p>
+<p>The exact PC prior for the degrees of freedom in a Student-t distribution is <span class="math display">\[
+p(\nu) = \lambda \frac{\frac{1}{\nu-2} + \frac{\nu+1}{2}\left[\psi'\left(\frac{\nu+1}{2}\right)-\psi'\left(\frac{\nu}{2}\right)\right]}{4d(\nu)}e^{-\lambda d(\nu)},
+\]</span> where <span class="math inline">\(d(\nu)\)</span> is given above.</p>
+<p>The approximate PC prior is <span class="math display">\[
+p_\text{approx}(\nu) = \lambda\frac{\nu(\nu+2)(2\nu+9) + 4}{3\nu^2(\nu+1)^2(\nu-2)} \left(\frac{\nu^2}{(\nu+1)(\nu-2)}\right)^\lambda e^{   - \lambda\frac{\nu +2}{3\nu(\nu+1)}}.
+\]</span> Let’s look at the difference.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>dist_ex <span class="ot">&lt;-</span> \(nu) <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">log</span>(<span class="dv">2</span><span class="sc">/</span>(nu<span class="dv">-2</span>)) <span class="sc">+</span> </span>
+<span id="cb5-2"><a href="#cb5-2"></a>                      <span class="dv">2</span><span class="sc">*</span><span class="fu">lgamma</span>((nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">lgamma</span>(nu<span class="sc">/</span><span class="dv">2</span>) <span class="sc">-</span> </span>
+<span id="cb5-3"><a href="#cb5-3"></a>                      (nu <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">*</span> (<span class="fu">digamma</span>((nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span><span class="dv">2</span>)<span class="sc">-</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>                                   <span class="fu">digamma</span>(nu<span class="sc">/</span><span class="dv">2</span>)))</span>
+<span id="cb5-5"><a href="#cb5-5"></a>dist_ap <span class="ot">&lt;-</span> \(nu) <span class="fu">sqrt</span>(<span class="fu">log</span>(nu<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>((nu<span class="dv">-2</span>)<span class="sc">*</span>(nu<span class="sc">+</span><span class="dv">1</span>))) <span class="sc">-</span> (nu<span class="sc">+</span><span class="dv">2</span>)<span class="sc">/</span>(<span class="dv">3</span><span class="sc">*</span>nu<span class="sc">*</span>(nu<span class="sc">+</span><span class="dv">1</span>)))</span>
+<span id="cb5-6"><a href="#cb5-6"></a></span>
+<span id="cb5-7"><a href="#cb5-7"></a>lambda <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a>dat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">nu =</span> <span class="fu">seq</span>(<span class="fl">2.1</span>, <span class="dv">30</span>, <span class="at">length.out =</span> <span class="dv">1000</span>),</span>
+<span id="cb5-9"><a href="#cb5-9"></a>       <span class="at">exact =</span> lambda <span class="sc">*</span> (<span class="dv">1</span><span class="sc">/</span>(nu<span class="dv">-2</span>) <span class="sc">+</span> (nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span><span class="dv">2</span> <span class="sc">*</span> (<span class="fu">trigamma</span>((nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span><span class="dv">2</span>) <span class="sc">-</span> <span class="fu">trigamma</span>(nu<span class="sc">/</span><span class="dv">2</span>)))<span class="sc">/</span>(<span class="dv">4</span><span class="sc">*</span><span class="fu">dist_ex</span>(nu)) <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>lambda<span class="sc">*</span><span class="fu">dist_ex</span>(nu)),</span>
+<span id="cb5-10"><a href="#cb5-10"></a>       <span class="at">approx =</span> lambda <span class="sc">*</span> (nu<span class="sc">*</span>(nu<span class="sc">+</span><span class="dv">2</span>)<span class="sc">*</span>(<span class="dv">2</span><span class="sc">*</span>nu <span class="sc">+</span> <span class="dv">9</span>) <span class="sc">+</span> <span class="dv">4</span>)<span class="sc">/</span>(<span class="dv">3</span><span class="sc">*</span>nu<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span>(nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span>(nu<span class="dv">-2</span>)) <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>lambda<span class="sc">*</span><span class="fu">dist_ap</span>(nu))</span>
+<span id="cb5-11"><a href="#cb5-11"></a>       ) </span>
+<span id="cb5-12"><a href="#cb5-12"></a>dat <span class="sc">|&gt;</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> nu, <span class="at">y =</span> exact)) <span class="sc">+</span> </span>
+<span id="cb5-14"><a href="#cb5-14"></a>  <span class="fu">geom_line</span>(<span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> approx), <span class="at">colour =</span> <span class="st">"blue"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb5-16"><a href="#cb5-16"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="priors4_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>dat <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> nu, <span class="at">y =</span> exact <span class="sc">-</span> approx)) <span class="sc">+</span> </span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">geom_line</span>(<span class="at">colour =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="priors4_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The approximate prior isn’t so good for <span class="math inline">\(\nu\)</span> near 2. In the original paper, the distance was tabulated for <span class="math inline">\(\nu &lt; 9\)</span> and a different high-precision asymptotic expansion was given for <span class="math inline">\(\nu&gt;9\)</span>.</p>
+<p>In the <a href="https://projecteuclid.org/journals/statistical-science/volume-32/issue-1/Penalising-Model-Component-Complexity--A-Principled-Practical-Approach-to/10.1214/16-STS576.full">original paper</a>, we also plotted some common priors for the degrees of freedom on the distance scale to show just how informative flat-ish priors on <span class="math inline">\(\nu\)</span> can be! Note that the wider the uniform prior on <span class="math inline">\(\nu\)</span> is the more informative it is on the distance scale.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="student_t.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">(Left) Exponential priors on <span class="math inline">\(\nu\)</span> shown on the distance scale, from right to left the mean of the prior increases (5, 10, 20). (Right) <span class="math inline">\(\text{Uniform}[2, M]\)</span> priors on <span class="math inline">\(\nu\)</span> shown on the distance scale. From left to right <span class="math inline">\(M\)</span> increases (20, 50, 100).</figcaption><p></p>
+</figure>
+</div>
+</div>
+<div id="exm-gaussian-3" class="theorem example">
+<p><span class="theorem-title"><strong>Example 9 (Variance of a Gaussian random effect (Continued)) </strong></span>This is the easy one because the distance is equal to the standard deviation! The PC prior for the standard deviation of a Gaussian distribution is an exponential prior <span class="math display">\[
+p(\sigma) = \lambda e^{-\lambda \sigma}.
+\]</span> More generally, if <span class="math inline">\(u \sim N(0, \sigma^2 R)\)</span> is a multivariate normal distribution, than the PC prior for <span class="math inline">\(\sigma\)</span> is still <span class="math display">\[
+p(\sigma) = \lambda e^{-\lambda \sigma}.
+\]</span> The corresponding prior on <span class="math inline">\(\sigma^2\)</span> is <span class="math display">\[
+p(\sigma^2) = \frac{\lambda}{2\sqrt{\sigma^2}}e^{-\lambda\sqrt{\sigma^2}}.
+\]</span> Sometimes, for instance if you’re converting a model from BUGS or you’re looking at the smoothing parameter of a smoothing spline, you might specify your normal distribution in terms of the precision, which is the inverse of the variance. If <span class="math inline">\(u \sim N(0, \gamma^{-1}Q^{-1})\)</span>, then the corresponding PC prior (using the change of variables <span class="math inline">\(\gamma = \sigma^{-2}\)</span>) is <span class="math display">\[
+p(\gamma) = \frac{\lambda}{2}\gamma^{-3/2} e^{-\lambda \gamma^{-1/2}}.
+\]</span></p>
+<p>This case was explored extensively in the context of structured additive regression models (think GAMs but moreso) by <a href="https://projecteuclid.org/journals/bayesian-analysis/volume-11/issue-4/Scale-Dependent-Priors-for-Variance-Parameters-in-Structured-Additive-Distributional/10.1214/15-BA983.full">Klein and Kneib</a>, who found that the choice of exponential prior on the distance scale gave more consistent performance than either a half-normal or a half-Cauchy distribution.</p>
+</div>
+</section>
+<section id="closing-the-door-how-to-choose-lambda" class="level2">
+<h2 class="anchored" data-anchor-id="closing-the-door-how-to-choose-lambda">Closing the door: How to choose <span class="math inline">\(\lambda\)</span></h2>
+<p>The big unanswered question is how do we choose <span class="math inline">\(\lambda\)</span>. The scaling of a prior distribution is <em>vital</em> to its success, so this is an important question.</p>
+<p>And I will just say this: work it out your damn self.</p>
+<p>The thing about prior distributions that shamelessly include information is that, at some point, you need to include<a href="#fn36" class="footnote-ref" id="fnref36" role="doc-noteref"><sup>36</sup></a> some information. And there is no way for anyone other than the data analyst to know what the information to include is.</p>
+<p>But I can outline a general procedure.</p>
+<p>Imagine that for your flexibility parameter <span class="math inline">\(\xi\)</span> you have some interpretable transformation of it <span class="math inline">\(Q(\xi)\)</span>. For instance if <span class="math inline">\(\xi = \sigma^2\)</span>, then a good choice for <span class="math inline">\(Q(\cdot)\)</span> would be <span class="math inline">\(Q(\sigma^2)=\sigma\)</span>. This is because standard deviations are on the same scale as the observations<a href="#fn37" class="footnote-ref" id="fnref37" role="doc-noteref"><sup>37</sup></a>, and we have intuition about that happens one standard deviation from the mean.</p>
+<p>We then use problem-specific information can help us set a natural scale for <span class="math inline">\(Q(\xi)\)</span>. We do this by choosing <span class="math inline">\(\lambda\)</span> so that <span class="math display">\[
+\Pr(Q(\xi) &gt; U) = \alpha
+\]</span> for some <span class="math inline">\(U\)</span>, which we would consider large<a href="#fn38" class="footnote-ref" id="fnref38" role="doc-noteref"><sup>38</sup></a> for our problem, and <span class="math inline">\(0&lt;\alpha&lt;1\)</span>.</p>
+<p>From the properties of the exponential distribution, we can see that we can satisfy this if we choose <span class="math display">\[
+\lambda = - \frac{\log(\alpha)}{d^{-1}(Q^{-1}(U))}.
+\]</span> This can be found numerically if it needs to be.</p>
+<p>The simplest case is the standard deviation of the normal distribution, because in this case <span class="math inline">\(Q(\sigma) = \sigma\)</span> and <span class="math inline">\(d^{-1}(Q^{-1}(U)) = U\)</span>. In general, if <span class="math inline">\(u \sim N(0, \sigma R)\)</span> and <span class="math inline">\(R\)</span> is not a correlation matrix, you should take into account the diagonal of <span class="math inline">\(R\)</span> when choosing <span class="math inline">\(Q\)</span>. For instance, choosing <span class="math inline">\(Q\)</span> to be the geometric mean<a href="#fn39" class="footnote-ref" id="fnref39" role="doc-noteref"><sup>39</sup></a> of the marginal variances of the <span class="math inline">\(u_i\)</span> is a good idea!</p>
+<p>When a model has more than one component, or a component has more than one flexibility parameter, it can be the case that <span class="math inline">\(Q(\cdot)\)</span> depends on multiple parameters. For instance, if I hadn’t reparameterised the Student-t distribution to have variance independent of <span class="math inline">\(\nu\)</span>, a PC prior on <span class="math inline">\(\sigma\)</span> would have a quantity of interest that depends on <span class="math inline">\(\nu\)</span>. We will also see this if I ever get around to writing about priors for Gaussian processes.</p>
+</section>
+<section id="the-dream-pc-priors-in-practice" class="level2">
+<h2 class="anchored" data-anchor-id="the-dream-pc-priors-in-practice">The Dream: PC priors in practice</h2>
+<p>Thus we can put together a PC prior as the unique prior that follows the following four principles:</p>
+<ol type="1">
+<li><p>Occam’s razor: We have a base model that represents simplicity and we prefer our base model.</p></li>
+<li><p>Measuring complexity: We define the prior using the square root of the KL divergence between the base model and the more flexible model. The square root ensures that the divergence is on a similar scale to a distance, but we maintain the asymmetry of the divergence as as a feature (not a bug).</p></li>
+<li><p>Constant penalisation: We use an exponential prior on the distance scale to ensure that our prior mass decreases evenly as we move father away from the base model.</p></li>
+<li><p>User-defined scaling: We need the user to specify a quantity of interest <span class="math inline">\(Q(\xi)\)</span> and a scale <span class="math inline">\(U\)</span>. We choose the scaling of the prior so that <span class="math inline">\(\Pr(Q(\xi) &gt; U) = \alpha\)</span>. This ensures that when we move to a new context, we are able to modify the prior by using the relevant information about <span class="math inline">\(Q(\xi)\)</span>.</p></li>
+</ol>
+<p>These four principles define a PC prior. I think the value of laying them out explicitly is that users and critics can clearly and cleanly identify if these principles are relevant to their problem and, if they are, they can implement them. Furthermore, if you need to modify the principles (say by choosing a different distance measure), there is a clear way to do that.</p>
+<p>I’ve come to the end of my energy for this blog post, so I’m going to try to wrap it up. I will write more on the topic later, but for now there are a couple of things I want to say.</p>
+<p>These priors can seem quite complex, but I assure you that are a) useful, b) used, and c) not too terrible in practice. Why? Well fundamentally because you usually don’t have to derive them yourselves. Moreover, a lot of that complexity is the price we pay for dealing with densities. We think that this is worth it and the lesson that the parameterisation that you are given may not be the correct parameterisation to use when specifying your prior is an important one!</p>
+<p>The <a href="https://projecteuclid.org/journals/statistical-science/volume-32/issue-1/Penalising-Model-Component-Complexity--A-Principled-Practical-Approach-to/10.1214/16-STS576.full">original paper</a> contains a bunch of other examples. The paper was discussed and we wrote a <a href="https://projecteuclid.org/journals/statistical-science/volume-32/issue-1/You-Just-Keep-on-Pushing-My-Love-over-the-Borderline/10.1214/17-STS576REJ.full">rejoinder</a><a href="#fn40" class="footnote-ref" id="fnref40" role="doc-noteref"><sup>40</sup></a>, which contains an out-of-date list of other PC priors people have derived. If you are interested in some other people’s views of this idea, a good place to start is <a href="https://projecteuclid.org/journals/statistical-science/volume-32/issue-1">the discussion of the original paper</a>.</p>
+<p>There are also PC priors for <a href="https://arxiv.org/abs/1503.00256">Gaussian Processes</a>, <a href="https://arxiv.org/abs/1601.01180">disease mapping models</a>, <a href="https://arxiv.org/abs/1608.08941">AR(p) processes</a>, <a href="https://arxiv.org/abs/1902.00242">variance parameters in multilevel models</a>, and many more applications.</p>
+<p>PC priors are all over the <a href="https://r-inla.org">INLA</a> software package and its documentation contains a bunch more examples.</p>
+<p>Try them out. They’ll make you happy.</p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>I’ve not turned on my computer for six weeks and tbh I finished 3 games and I’m caught up on TV and the weather is shite.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>“But what about sparse matrices?!” exactly 3 people ask. I’ll get back to them. But this is what I’m feeling today.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>I am told my Mercury is in Libra and truly I am not living that with those posts. Maybe Mercury was in Gatorade when I wrote them. So if we can’t be balanced at least let’s like things.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Our weapon of ass destruction that lives in Canada?<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Negative binomial parameterised by mean and overdispersion so that its mean is <span class="math inline">\(\mu\)</span> and the variance is <span class="math inline">\(\mu(1+\alpha \mu)\)</span> because we are not flipping fucking coins here<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Hello and welcome to Statistics for Stupid Children. My name is Daniel and I will be your host today.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>If we didn’t have stupid children we’d never get dumb adults and then who would fuck me? You? You don’t have that sort of time. You’ve got a mortgage to service and interest rates are going up. You’ve got your Warhammer collection and it is simply not going to paint itself. You’ve been meaning to learn how to cook Thai food. You simply do not have the time. (I’m on SSRIs so it’s never clear what will come first: the inevitable decay and death of you and your children and your children’s children; the interest, eventual disinterest, and inevitable death of the family archivist from the far future who digs up your name from the digital graveyard; the death of the final person who will ever think of you, thereby removing you from the mortal realm entirely; the death of the universe; or me. Fucking me is a real time commitment.)<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Gamma is parameterised by shape and rate, so <span class="math inline">\(u_i\)</span> has mean 1 and variance <span class="math inline">\(\alpha\)</span>.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>integrate<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>Sometimes, people still refer to these as <em>hyperparameters</em> and put priors on them, which would clarify things, but like everything in statistics there’s no real agreed upon usage. Because why would anyone want that?<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>somehow<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>location parameter<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>This is critical: we <em>do not know</em> <span class="math inline">\(\nu\)</span> so the only way we can put a sensible prior on the scaling parameter is if we disentangle the role of these two parameters!<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>In fact, if my model estimated the data-level variance to be nearly zero I would assume I’ve fucked something up elsewhere and my model is either over-fitting or I have a redundancy in my model (like if <span class="math inline">\(J = n\)</span>).<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>There are some mathematical peculiarities that we will run into later when the base model is singular. But they’re not too bad.<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>The Arianist heresy is that God, Jesus, and the Holy Spirit are three separate beings rather than consubstantial. It’s the reason for that bit of the Nicene. The statistical version most commonly occurs when you consider you model for your data conditional on the parameters (you likelihood) and your model for the parameters (your prior) as separate objects. This can lead to really dumb priors and bad inferences.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>Complaining that a prior is adding information is like someone complaining to you that his boyfriend has stopped fucking him and you subsequently discovering that this is because his boyfriend died a few weeks ago. Like I’m sorry Jonathan, I know even the sight of a traffic cone sets your bussy a-quiverin’, but there really are bigger concerns and I’m gonna need you to focus.<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p>In this story, the bigger concerns are things like misspecification, incorrect assumptions, data problems etc etc, the traffic cone is an unbiased estimator, Jonathan is our stand in for a generic data analyst, and Jonathan’s bussy is said data scientist’s bussy.<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>Yes, I know that there are problems with giving my generic data analyst a male name. Did I carefully think through the gender and power dynamics in my bussy simile? I think the answer to that is obvious.<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20"><p>We use priors for the same reason that other people use penalties: we don’t want to go into a weird corner of our model space <em>unless</em> our data explicitly drags us there<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21"><p>This is a bit technical. When a model is over-parameterised, it’s not always possible to recover all of the parameters. So we ideally want to make sure that if there are bunch of asymptotically equivalent parameters, our prior operates sensibly on that set. An example of this will come in a future post where I’ll talk about priors for the parameters of a Gaussian process.<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn22"><p>That Arianism thing creeping in again!<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn23"><p>There are examples of theoretically motivated priors where it’s wildly expensive to compute their densities. We will see one in a later post about GPs.<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24"><p>Sure, Jan.&nbsp;Of course we want that. But we believed that it was important to include this in a list of desiderata because we <em>never</em> want to say “our prior has motivation X and therefore it is good”. It is not enough to be pure, you actually have to work.<a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn25"><p>What do I mean by near? Read on McDuff.<a href="#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn26"><p>Think of it as a P-spline if you must. The the important thing is that the weights of the basis functions are jointly normal with mean zero and precision matrix <span class="math inline">\(\lambda Q\)</span>.<a href="#fnref26" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn27"><p>Given the knots, which are fixed<a href="#fnref27" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn28"><p>I might talk about <a href="https://arxiv.org/abs/2105.09712">more advanced solutions</a> at some point.<a href="#fnref28" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn29"><p>Strictly how many bits would we need <a href="#fnref29" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn30"><p>The largest absolute difference between the probability that an event <span class="math inline">\(A\)</span> happens under <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span>.<a href="#fnref30" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn31"><p>When performing the battered sav, it’s important to not speed up too quickly lest you over-batter.<a href="#fnref31" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn32"><p>It also might not. I don’t care to work it out.<a href="#fnref32" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn33"><p>The “easy” way to get this is to use the fact that the Gamma is in the exponential family and use the general formula for KL divergences in exponential families. The easier way is to look it up on Wikipedia<a href="#fnref33" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn34"><p>Using <a href="https://functions.wolfram.com/GammaBetaErf/LogGamma/06/03/">asymptotic expansions</a> for the log of a Gamma function at infinity<a href="#fnref34" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn35"><p>I’ll be dead before I declare that something is an approximation without bloody checking how good it is.<a href="#fnref35" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn36"><p>We have already included information that <span class="math inline">\(\xi\)</span> is a flexibility parameter with base model <span class="math inline">\(\xi_\text{base}\)</span>, but that is model-specific information. Now we move on to <em>problem</em> specific information.<a href="#fnref36" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn37"><p>the have the same units<a href="#fnref37" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn38"><p>Same thing happens if we want a particular quantity not to be too small, just swap the signs<a href="#fnref38" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn39"><p>Always average on the natural scale. For non-negative parameters geometric means make a lot more sense than arithmetic means!<a href="#fnref39" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn40"><p>Homosexually titled <em>You just keep on pushing my love over the borderline: a rejoinder</em>. I’m still not sure how I got away with that.<a href="#fnref40" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2022,
+  author = {Dan Simpson},
+  editor = {},
+  title = {Priors Part 4: {Specifying} Priors That Appropriately
+    Penalise Complexity},
+  date = {2022-09-03},
+  url = {https://dansblog.netlify.app/2022-08-29-priors4},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Dan Simpson. 2022. <span>“Priors Part 4: Specifying Priors That
+Appropriately Penalise Complexity.”</span> September 3, 2022. <a href="https://dansblog.netlify.app/2022-08-29-priors4">https://dansblog.netlify.app/2022-08-29-priors4</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -22,6 +22,9 @@ website:
       - icon: person-circle
         aria-label: website
         href: https://dansblog.netlify.app
+      - icon: rss
+        href: index.xml
+
 
 format:
   html:
