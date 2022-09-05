@@ -1,7 +1,7 @@
 ---
 title: "A first look at multilevel regression; or Everybody's got something to hide except me and my macaques"
 description: |
-  A small introduction to multilevel models. Why? Because I said so, that's why.
+  A small introduction to multilevel models. Why? Because I said so, that's why. And you will simply not believe what happens to residual plots.
 date: 2022-09-06
 image: mark.png
 categories: [Multilevel models, Visual diagnostics, Prior distributions, fundamentals]
