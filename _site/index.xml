@@ -917,12 +917,12 @@ The primal implementation
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Transpose = False:
-  Error A varying:  8.90e-08
+  Error A varying:  1.08e-07
   Error b varying:  0.00e+00
-  Error A and b varying:  4.08e-07
+  Error A and b varying:  4.19e-07
 
 Transpose = True:
-  Error A varying:  1.01e-07
+  Error A varying:  1.15e-07
   Error b varying:  0.00e+00
 </code></pre>
 </div>
@@ -3661,7 +3661,7 @@ Dan Simpson, and Dan Simpson. 2021. <span>“The King Must Die
 
 <section id="so.-gaussian-processes-eh." class="level2">
 <h2 class="anchored" data-anchor-id="so.-gaussian-processes-eh.">So. Gaussian processes, eh.</h2>
-<p><a href="https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/">Now that we know what they are</a>, I guess we should do something with a Gaussian process. But we immediately hit a problem. You see, Gaussian processes are charming things, sweet and caring. But they have a dark side. Used naively<sup>1</sup>, they’re computationally expensive when you’ve got a lot of data.</p>
+<p><a href="https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness.html">Now that we know what they are</a>, I guess we should do something with a Gaussian process. But we immediately hit a problem. You see, Gaussian processes are charming things, sweet and caring. But they have a dark side. Used naively<sup>1</sup>, they’re computationally expensive when you’ve got a lot of data.</p>
 <p><strong>Stab of dramatic music</strong></p>
 <p>Yeah. So. What’s the problem here? Well, the first problem is people seem to really like having a lot of data. Fuck knows why. Most of it is rubbish<sup>2</sup>. But they do.</p>
 <p>This is a problem for our poor little Gaussian processes because of how the data tends to come.</p>

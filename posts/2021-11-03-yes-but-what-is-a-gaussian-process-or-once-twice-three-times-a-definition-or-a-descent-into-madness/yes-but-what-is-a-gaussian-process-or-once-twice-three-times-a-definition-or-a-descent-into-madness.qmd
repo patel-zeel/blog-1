@@ -9,6 +9,7 @@ categories: [Gaussian processes, Fundamentals, Theory, Deep dive]
 twitter-card:
   title:  "Yes but what is a Gaussian process? or, Once, twice, three times a definition; or A descent into madness"
   creator: "@dan_p_simpson"
+  image: beaches.jpg
 citation: 
   url: https://dansblog.netlify.app/yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness
 ---

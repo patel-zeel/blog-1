@@ -9,6 +9,7 @@ categories: [Gaussian processes, Fundamentals, Theory]
 twitter-card:
   title:  "Getting into the subspace; or what happens when you approximate a Gaussian process"
   creator: "@dan_p_simpson"
+  image: pika.JPG
 citation: 
   url: https://dansblog.netlify.app/getting-into-the-subspace
 ---
@@ -16,7 +17,7 @@ citation:
 
 ## So. Gaussian processes, eh.
 
-[Now that we know what they are](https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/), I guess we should do something with a Gaussian process. But
+[Now that we know what they are](https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness.html), I guess we should do something with a Gaussian process. But
 we immediately hit a problem. You see, Gaussian processes are charming things,
 sweet and caring. But they have a dark side. Used naively^[Naively: a condescending
 way to say "the way you were told to use them"], they're computationally
