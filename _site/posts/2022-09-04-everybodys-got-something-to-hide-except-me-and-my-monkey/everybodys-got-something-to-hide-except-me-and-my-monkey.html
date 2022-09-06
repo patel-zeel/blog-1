@@ -321,7 +321,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-14"><a href="#cb1-14"></a>            <span class="at">active_bins =</span> <span class="fu">sum</span>(Activity <span class="sc">&gt;</span> <span class="dv">0</span>), </span>
 <span id="cb1-15"><a href="#cb1-15"></a>            <span class="at">age =</span> <span class="fu">min</span>(age)) <span class="sc">|&gt;</span></span>
 <span id="cb1-16"><a href="#cb1-16"></a>  <span class="fu">rename</span>(<span class="at">monkey =</span> subj_id, <span class="at">day =</span> Day) <span class="sc">|&gt;</span></span>
-<span id="cb1-17"><a href="#cb1-17"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-17"><a href="#cb1-17"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb1-18"><a href="#cb1-18"></a></span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="fu">glimpse</span>(activity_20minms80)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 485
+Columns: 5
+$ monkey      &lt;dbl&gt; 0, 0, 88, 88, 636, 636, 760, 760, 1257, 1257, 1607, 1607, …
+$ day         &lt;dbl&gt; 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2…
+$ total       &lt;dbl&gt; 9881, 6356, 15833, 4988, 572, 308, 1097, 2916, 4884, 2366,…
+$ active_bins &lt;int&gt; 42, 34, 43, 19, 10, 4, 12, 23, 50, 33, 9, 11, 13, 7, 30, 3…
+$ age         &lt;dbl&gt; 29, 29, 29, 29, 28, 28, 30, 30, 27, 27, 27, 27, 27, 27, 26…</code></pre>
+</div>
 </div>
 </section>
 <section id="ok-mary-how-are-we-going-to-analyze-this-data" class="level2">
@@ -336,10 +347,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="there-are-just-too-many-monkeys-or-why-cant-we-just-analyse-this-with-regression">There are just too many monkeys; or Why can’t we just analyse this with regression?</h3>
 <p>The temptation with this sort of data is to fit a linear regression to it as a first model. In this case, we are using grouping, group-level, and individual-level covariates in the same way. Let’s suck it and see.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">library</span>(broom)</span>
-<span id="cb2-2"><a href="#cb2-2"></a>fit_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(active_bins <span class="sc">~</span> age<span class="sc">*</span><span class="fu">factor</span>(day) <span class="sc">+</span> <span class="fu">factor</span>(monkey), <span class="at">data =</span> activity_2mins)</span>
-<span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="fu">tidy</span>(fit_lm) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>fit_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(active_bins <span class="sc">~</span> age<span class="sc">*</span><span class="fu">factor</span>(day) <span class="sc">+</span> <span class="fu">factor</span>(monkey), <span class="at">data =</span> activity_2mins)</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="fu">tidy</span>(fit_lm) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div data-pagedtable="false">
@@ -360,8 +371,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This type of modelling assumption is called <em>complete pooling</em> as it pools the information between groups by treating them all as the same.</p>
 <p>Let’s see what happens in this case!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>fit_lm_pool <span class="ot">&lt;-</span> <span class="fu">lm</span>(active_bins <span class="sc">~</span> age<span class="sc">*</span><span class="fu">factor</span>(day), <span class="at">data =</span> activity_2mins)</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">summary</span>(fit_lm_pool)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>fit_lm_pool <span class="ot">&lt;-</span> <span class="fu">lm</span>(active_bins <span class="sc">~</span> age<span class="sc">*</span><span class="fu">factor</span>(day), <span class="at">data =</span> activity_2mins)</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">summary</span>(fit_lm_pool)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -389,19 +400,19 @@ F-statistic: 2.219 on 3 and 481 DF,  p-value: 0.0851</code></pre>
 <p>The brave and the bold might even try to interpret the coefficients and say something like <em>there doesn’t seem to be a strong effect of age</em>. But there’s real danger in trying to interpret regression coefficients in the presence of a potential confounder (in this case, the monkey ID). And it’s particularly bad form to do this without ever looking at any sort of regression diagnostics. Linear regression is not a magic eight ball.</p>
 <p>Let’s look at the diagnostic plots.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">library</span>(broom)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">augment</span>(fit_lm_pool) <span class="sc">|&gt;</span> </span>
-<span id="cb5-3"><a href="#cb5-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> .fitted, <span class="at">y =</span> active_bins <span class="sc">-</span> .fitted)) <span class="sc">+</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">augment</span>(fit_lm_pool) <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> .fitted, <span class="at">y =</span> active_bins <span class="sc">-</span> .fitted)) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">augment</span>(fit_lm_pool) <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> .std.resid)) <span class="sc">+</span> </span>
-<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
-<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">augment</span>(fit_lm_pool) <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> .std.resid)) <span class="sc">+</span> </span>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
+<span id="cb7-4"><a href="#cb7-4"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
 </div>
@@ -444,7 +455,7 @@ y_{ij}  \mid \mu_j,\beta, \sigma &amp;\sim N(\mu_j + \beta_\text{day}\, \text{da
 <p>This is an example of a <em>multilevel</em><a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> <em>model</em>. The name comes from the data having multiple levels (in this case two: the observation level and the group level). Both levels have an appropriate model for their mean.</p>
 <p>This mathematical representation does a good job in separating out the two different levels. However, there are a lot of other ways of writing multilevel models. An important example is the extended formula notation created<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a> by R’s <code>lme4</code> package. In their notation, we would write this model as</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>formula <span class="ot">&lt;-</span> active_bins_scaled <span class="sc">~</span> age_centred<span class="sc">*</span>day <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> monkey)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>formula <span class="ot">&lt;-</span> active_bins_scaled <span class="sc">~</span> age_centred<span class="sc">*</span>day <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> monkey)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The first bit of this formula is the same as the formula used in linear regression. The interesting bit is is the <code>(1 | monkey)</code>. This is the way to tell R that the intercept (aka <code>1</code> in formula notation) is going to be grouped by <code>monkey</code> and we are going to put an exchangeable normal prior on it. For more complex models there are more complex variations on this theme, but for the moment we won’t go any further.</p>
 </section>
@@ -459,15 +470,27 @@ y_{ij}  \mid \mu_j,\beta, \sigma &amp;\sim N(\mu_j + \beta_\text{day}\, \text{da
 <p>On the other hand, we have no sensible baseline for activity, so deviation from the average seems like a sensible scaling. I also don’t know, <em>a priori</em>, how variable activity is going to be, so I might want to scale<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a> it by its standard deviation. In this case, I’m not going to do that because we have a sensible fixed<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a> upper limit (8), which I can scale by.</p>
 <p>One important thing here is that if we scale the data by data-dependent quantities (like the minimum, the mean, or the standard deviation) we <em>must</em> keep track of this information. This is because <em>any</em> future data we try to predict with this model will need to be transformed <em>the same way using the same</em><a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> <em>numbers</em>! This particularly has implication when you are doing things like test/training set validation or cross validation: in the first case, the test set needs to be scaled in the same way the training set was; while in the second case each cross validation training set needs to be scaled independently and that scaling needs to be used on the corresponding left-out data<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>age_centre <span class="ot">&lt;-</span> <span class="fu">mean</span>(activity_2mins<span class="sc">$</span>age)</span>
-<span id="cb8-2"><a href="#cb8-2"></a>age_scale <span class="ot">&lt;-</span> <span class="fu">diff</span>(<span class="fu">range</span>(activity_2mins<span class="sc">$</span>age))<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a>active_bins_centre <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a></span>
-<span id="cb8-5"><a href="#cb8-5"></a>activity_2mins_scaled <span class="ot">&lt;-</span> activity_2mins <span class="sc">|&gt;</span></span>
-<span id="cb8-6"><a href="#cb8-6"></a>  <span class="fu">mutate</span>(<span class="at">monkey =</span> <span class="fu">factor</span>(monkey),</span>
-<span id="cb8-7"><a href="#cb8-7"></a>         <span class="at">day =</span> <span class="fu">factor</span>(day),</span>
-<span id="cb8-8"><a href="#cb8-8"></a>         <span class="at">age_centred =</span> (age <span class="sc">-</span> age_centre)<span class="sc">/</span>age_scale,</span>
-<span id="cb8-9"><a href="#cb8-9"></a>         <span class="at">active_bins_scaled =</span> (active_bins <span class="sc">-</span> active_bins_centre)<span class="sc">/</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>age_centre <span class="ot">&lt;-</span> <span class="fu">mean</span>(activity_2mins<span class="sc">$</span>age)</span>
+<span id="cb9-2"><a href="#cb9-2"></a>age_scale <span class="ot">&lt;-</span> <span class="fu">diff</span>(<span class="fu">range</span>(activity_2mins<span class="sc">$</span>age))<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>active_bins_centre <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a></span>
+<span id="cb9-5"><a href="#cb9-5"></a>activity_2mins_scaled <span class="ot">&lt;-</span> activity_2mins <span class="sc">|&gt;</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a>  <span class="fu">mutate</span>(<span class="at">monkey =</span> <span class="fu">factor</span>(monkey),</span>
+<span id="cb9-7"><a href="#cb9-7"></a>         <span class="at">day =</span> <span class="fu">factor</span>(day),</span>
+<span id="cb9-8"><a href="#cb9-8"></a>         <span class="at">age_centred =</span> (age <span class="sc">-</span> age_centre)<span class="sc">/</span>age_scale,</span>
+<span id="cb9-9"><a href="#cb9-9"></a>         <span class="at">active_bins_scaled =</span> (active_bins <span class="sc">-</span> active_bins_centre)<span class="sc">/</span><span class="dv">4</span>)</span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="fu">glimpse</span>(activity_2mins_scaled)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 485
+Columns: 7
+$ monkey             &lt;fct&gt; 0, 0, 88, 88, 636, 636, 760, 760, 1257, 1257, 1607,…
+$ day                &lt;fct&gt; 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, …
+$ total              &lt;dbl&gt; 495, 1003, 2642, 524, 199, 282, 363, 445, 96, 495, …
+$ active_bins        &lt;int&gt; 6, 6, 8, 6, 2, 3, 3, 4, 3, 8, 6, 5, 3, 3, 6, 5, 8, …
+$ age                &lt;dbl&gt; 29, 29, 29, 29, 28, 28, 30, 30, 27, 27, 27, 27, 27,…
+$ age_centred        &lt;dbl&gt; 1.1054718, 1.1054718, 1.1054718, 1.1054718, 1.02854…
+$ active_bins_scaled &lt;dbl&gt; 0.50, 0.50, 1.00, 0.50, -0.50, -0.25, -0.25, 0.00, …</code></pre>
+</div>
 </div>
 <p>With our scaling completed, we can now start thinking about prior distributions. The trick with priors is to make them wide enough to cover all plausible values of a parameter without making them so wide that they put a whole bunch of weight on essentially silly values.</p>
 <p>We know, for instance, that our unscaled activity will go between 0 and 8. That means that it’s unlikely for the mean of the scaled process to be much bigger than 3 or 4. These considerations, along with the fact that we have centred the data so the mean should be closer to zero, suggest that a <span class="math inline">\(N(0,1)\)</span> prior should be appropriate for <span class="math inline">\(\mu\)</span>.</p>
@@ -478,9 +501,9 @@ y_{ij}  \mid \mu_j,\beta, \sigma &amp;\sim N(\mu_j + \beta_\text{day}\, \text{da
 <p>To specify the model, we use the <code>lme4</code>-style formula notation discussed above.</p>
 <p>To set the priors, we will use <code>brms</code>. Now, if you are Paul you might be able to remember how to set priors in <code>brms</code> without having to look it up, but I am sadly not Paul<a href="#fn24" class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a>, so every time I need to set priors in <code>brms</code> I write the formula and use the convenient <code>get_prior</code> function</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">library</span>(cmdstanr)</span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="fu">library</span>(brms)</span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="fu">get_prior</span>(formula, activity_2mins_scaled)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">library</span>(cmdstanr)</span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="fu">library</span>(brms)</span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="fu">get_prior</span>(formula, activity_2mins_scaled)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div data-pagedtable="false">
@@ -493,12 +516,21 @@ y_{ij}  \mid \mu_j,\beta, \sigma &amp;\sim N(\mu_j + \beta_\text{day}\, \text{da
 <p>From this, we can see that the default prior on <span class="math inline">\(\beta\)</span> is an improper flat prior, the default prior on the intercept is a Student-t with 3 degrees of freedom centred at zero with standard deviation 2.5. The same prior (restricted to positive numbers) is put on all of the standard deviation parameters. These default prior distributions are, to be honest, probably fine in this context<a href="#fn25" class="footnote-ref" id="fnref25" role="doc-noteref"><sup>25</sup></a>, but it is good practice to always set your prior.</p>
 <p>We do this as follows. (Note that <code>brms</code> uses Stan, which parameterises the normal distribution by its mean and <em>standard deviation</em>!)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>priors <span class="ot">&lt;-</span> <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.2</span>), <span class="at">coef =</span> <span class="st">"age_centred"</span>) <span class="sc">+</span> </span>
-<span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="fl">0.2</span>), <span class="at">coef =</span> <span class="st">"age_centred:day2"</span>) <span class="sc">+</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">coef =</span> <span class="st">"day2"</span>) <span class="sc">+</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"sigma"</span>) <span class="sc">+</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a>  <span class="fu">prior</span>(<span class="fu">exponential</span>(<span class="dv">1</span>), <span class="at">class =</span> sd) <span class="sc">+</span> <span class="co"># tau</span></span>
-<span id="cb10-6"><a href="#cb10-6"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"Intercept"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>priors <span class="ot">&lt;-</span> <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.2</span>), <span class="at">coef =</span> <span class="st">"age_centred"</span>) <span class="sc">+</span> </span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="fl">0.2</span>), <span class="at">coef =</span> <span class="st">"age_centred:day2"</span>) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">coef =</span> <span class="st">"day2"</span>) <span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"sigma"</span>) <span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5"></a>  <span class="fu">prior</span>(<span class="fu">exponential</span>(<span class="dv">1</span>), <span class="at">class =</span> sd) <span class="sc">+</span> <span class="co"># tau</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"Intercept"</span>)</span>
+<span id="cb12-7"><a href="#cb12-7"></a>priors</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["prior"],"name":[1],"type":["chr"],"align":["left"]},{"label":["class"],"name":[2],"type":["chr"],"align":["left"]},{"label":["coef"],"name":[3],"type":["chr"],"align":["left"]},{"label":["group"],"name":[4],"type":["chr"],"align":["left"]},{"label":["resp"],"name":[5],"type":["chr"],"align":["left"]},{"label":["dpar"],"name":[6],"type":["chr"],"align":["left"]},{"label":["nlpar"],"name":[7],"type":["chr"],"align":["left"]},{"label":["lb"],"name":[8],"type":["chr"],"align":["left"]},{"label":["ub"],"name":[9],"type":["chr"],"align":["left"]},{"label":["source"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"normal(0, 0.2)","2":"b","3":"age_centred","4":"","5":"","6":"","7":"","8":"NA","9":"NA","10":"user"},{"1":"normal(0, 0.2)","2":"b","3":"age_centred:day2","4":"","5":"","6":"","7":"","8":"NA","9":"NA","10":"user"},{"1":"normal(0, 1)","2":"b","3":"day2","4":"","5":"","6":"","7":"","8":"NA","9":"NA","10":"user"},{"1":"normal(0, 1)","2":"sigma","3":"","4":"","5":"","6":"","7":"","8":"NA","9":"NA","10":"user"},{"1":"exponential(1)","2":"sd","3":"","4":"","5":"","6":"","7":"","8":"NA","9":"NA","10":"user"},{"1":"normal(0, 1)","2":"Intercept","3":"","4":"","5":"","6":"","7":"","8":"NA","9":"NA","10":"user"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
 </div>
 </section>
 <section id="pre-experiment-prophylaxis" class="level2">
@@ -506,40 +538,40 @@ y_{ij}  \mid \mu_j,\beta, \sigma &amp;\sim N(\mu_j + \beta_\text{day}\, \text{da
 <p>So we have specified some priors using the power of <em>our thoughts</em>. But we should probably check to see if they are broadly sensible. A great thing about Bayesian modelling is that we are explicitly specifying our <em>a priori</em> (or pre-data) assumptions about the data generating process. That means that we can do a fast validation of our priors by simulating from them and checking that they’re not too wild.</p>
 <p>There are lots of ways to do this, but the easiest<a href="#fn26" class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a> way to do this is to use the <code>sample_prior = "only"</code> option in the <code>brm()</code> function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>prior_draws <span class="ot">&lt;-</span> <span class="fu">brm</span>(formula, </span>
-<span id="cb11-2"><a href="#cb11-2"></a>           <span class="at">data =</span> activity_2mins_scaled,</span>
-<span id="cb11-3"><a href="#cb11-3"></a>           <span class="at">prior =</span> priors,</span>
-<span id="cb11-4"><a href="#cb11-4"></a>           <span class="at">sample_prior =</span> <span class="st">"only"</span>,</span>
-<span id="cb11-5"><a href="#cb11-5"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
-<span id="cb11-6"><a href="#cb11-6"></a>           <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb11-7"><a href="#cb11-7"></a>           <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>prior_draws <span class="ot">&lt;-</span> <span class="fu">brm</span>(formula, </span>
+<span id="cb13-2"><a href="#cb13-2"></a>           <span class="at">data =</span> activity_2mins_scaled,</span>
+<span id="cb13-3"><a href="#cb13-3"></a>           <span class="at">prior =</span> priors,</span>
+<span id="cb13-4"><a href="#cb13-4"></a>           <span class="at">sample_prior =</span> <span class="st">"only"</span>,</span>
+<span id="cb13-5"><a href="#cb13-5"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb13-6"><a href="#cb13-6"></a>           <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb13-7"><a href="#cb13-7"></a>           <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Start sampling</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 0.5 seconds.
-Chain 2 finished in 0.5 seconds.
-Chain 3 finished in 0.5 seconds.
-Chain 4 finished in 0.5 seconds.
+Chain 1 finished in 0.7 seconds.
+Chain 2 finished in 0.7 seconds.
+Chain 3 finished in 0.7 seconds.
+Chain 4 finished in 0.7 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.5 seconds.
-Total execution time: 0.6 seconds.</code></pre>
+Mean chain execution time: 0.7 seconds.
+Total execution time: 0.9 seconds.</code></pre>
 </div>
 </div>
 <p>Now that we have samples from the prior distribution, we can assemble them to work out what our prior tells us we would, pre-data, predict for the number of active bins for a single monkey (in this a single monkey<a href="#fn27" class="footnote-ref" id="fnref27" role="doc-noteref"><sup>27</sup></a> that is 10 years older than the baseline).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>pred_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">age_centred =</span> <span class="dv">10</span>, <span class="at">day =</span> <span class="dv">1</span>, <span class="at">monkey =</span> <span class="st">"88"</span>) </span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="fu">tibble</span>(<span class="at">pred =</span> brms<span class="sc">::</span><span class="fu">posterior_predict</span>(prior_draws, </span>
-<span id="cb14-3"><a href="#cb14-3"></a>                                      <span class="at">newdata =</span> pred_data )) <span class="sc">|&gt;</span></span>
-<span id="cb14-4"><a href="#cb14-4"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(pred)) <span class="sc">+</span></span>
-<span id="cb14-5"><a href="#cb14-5"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">fill =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span></span>
-<span id="cb14-6"><a href="#cb14-6"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
-<span id="cb14-7"><a href="#cb14-7"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb14-8"><a href="#cb14-8"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">20</span>,<span class="dv">20</span>)) <span class="sc">+</span> </span>
-<span id="cb14-9"><a href="#cb14-9"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>pred_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">age_centred =</span> <span class="dv">10</span>, <span class="at">day =</span> <span class="dv">1</span>, <span class="at">monkey =</span> <span class="st">"88"</span>) </span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">tibble</span>(<span class="at">pred =</span> brms<span class="sc">::</span><span class="fu">posterior_predict</span>(prior_draws, </span>
+<span id="cb16-3"><a href="#cb16-3"></a>                                      <span class="at">newdata =</span> pred_data )) <span class="sc">|&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(pred)) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">fill =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
+<span id="cb16-7"><a href="#cb16-7"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">20</span>,<span class="dv">20</span>)) <span class="sc">+</span> </span>
+<span id="cb16-9"><a href="#cb16-9"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -547,33 +579,33 @@ Total execution time: 0.6 seconds.</code></pre>
 <p>The vertical lines are (approximately) the minimum and maximum of the data. This<a href="#fn28" class="footnote-ref" id="fnref28" role="doc-noteref"><sup>28</sup></a> suggests that the implied priors are definitely wider than our observed data, but they are not several orders of magnitude too wide. This is a good situation to be in: it gives enough room in the priors that we might be wrong with our specification while also not allowing for truly wild values of the parameters (and implied predictive distribution). One could even go so far as to say that the prior is weakly informative.</p>
 <p>Let’s compare this to the default priors on the standard deviation parameters. (The default priors on the regression parameters are improper so we can’t simulate from them. So I replaced the improper prior with a much narrower <span class="math inline">\(N(0,10^2)\)</span> prior. If you make the prior on the <span class="math inline">\(\beta\)</span> wider the prior predictive distribution also gets wider.)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>priors_default <span class="ot">&lt;-</span> <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">10</span>), <span class="at">class =</span> <span class="st">"b"</span>)</span>
-<span id="cb15-2"><a href="#cb15-2"></a>prior_draws_default <span class="ot">&lt;-</span> <span class="fu">brm</span>(formula, </span>
-<span id="cb15-3"><a href="#cb15-3"></a>           <span class="at">data =</span> activity_2mins_scaled,</span>
-<span id="cb15-4"><a href="#cb15-4"></a>           <span class="at">prior =</span> priors_default,</span>
-<span id="cb15-5"><a href="#cb15-5"></a>           <span class="at">sample_prior =</span> <span class="st">"only"</span>,</span>
-<span id="cb15-6"><a href="#cb15-6"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
-<span id="cb15-7"><a href="#cb15-7"></a>           <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb15-8"><a href="#cb15-8"></a>           <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>priors_default <span class="ot">&lt;-</span> <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">10</span>), <span class="at">class =</span> <span class="st">"b"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2"></a>prior_draws_default <span class="ot">&lt;-</span> <span class="fu">brm</span>(formula, </span>
+<span id="cb17-3"><a href="#cb17-3"></a>           <span class="at">data =</span> activity_2mins_scaled,</span>
+<span id="cb17-4"><a href="#cb17-4"></a>           <span class="at">prior =</span> priors_default,</span>
+<span id="cb17-5"><a href="#cb17-5"></a>           <span class="at">sample_prior =</span> <span class="st">"only"</span>,</span>
+<span id="cb17-6"><a href="#cb17-6"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb17-7"><a href="#cb17-7"></a>           <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb17-8"><a href="#cb17-8"></a>           <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 0.4 seconds.
-Chain 2 finished in 0.4 seconds.
-Chain 3 finished in 0.4 seconds.
-Chain 4 finished in 0.4 seconds.
+Chain 1 finished in 0.6 seconds.
+Chain 2 finished in 0.6 seconds.
+Chain 3 finished in 0.6 seconds.
+Chain 4 finished in 0.6 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.4 seconds.
-Total execution time: 0.5 seconds.</code></pre>
+Mean chain execution time: 0.6 seconds.
+Total execution time: 0.8 seconds.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">tibble</span>(<span class="at">pred =</span> brms<span class="sc">::</span><span class="fu">posterior_predict</span>(prior_draws_default, </span>
-<span id="cb17-2"><a href="#cb17-2"></a>                                      <span class="at">newdata =</span> pred_data )) <span class="sc">|&gt;</span></span>
-<span id="cb17-3"><a href="#cb17-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(pred)) <span class="sc">+</span></span>
-<span id="cb17-4"><a href="#cb17-4"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">fill =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span></span>
-<span id="cb17-5"><a href="#cb17-5"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
-<span id="cb17-6"><a href="#cb17-6"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb17-7"><a href="#cb17-7"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">tibble</span>(<span class="at">pred =</span> brms<span class="sc">::</span><span class="fu">posterior_predict</span>(prior_draws_default, </span>
+<span id="cb19-2"><a href="#cb19-2"></a>                                      <span class="at">newdata =</span> pred_data )) <span class="sc">|&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(pred)) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">fill =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
+<span id="cb19-6"><a href="#cb19-6"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -584,28 +616,28 @@ Total execution time: 0.5 seconds.</code></pre>
 <h2 class="anchored" data-anchor-id="fitting-the-data-or-do-my-monkeys-get-less-interesting-as-they-age">Fitting the data; or do my monkeys get less interesting as they age</h2>
 <p>With all of that in hand, we can now fit the data. Hooray. This is done with the same command (minus the <code>sample_prior</code> bit).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>posterior_draws <span class="ot">&lt;-</span> <span class="fu">brm</span>(formula, </span>
-<span id="cb18-2"><a href="#cb18-2"></a>           <span class="at">data =</span> activity_2mins_scaled,</span>
-<span id="cb18-3"><a href="#cb18-3"></a>           <span class="at">prior =</span> priors,</span>
-<span id="cb18-4"><a href="#cb18-4"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
-<span id="cb18-5"><a href="#cb18-5"></a>           <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb18-6"><a href="#cb18-6"></a>           <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>posterior_draws <span class="ot">&lt;-</span> <span class="fu">brm</span>(formula, </span>
+<span id="cb20-2"><a href="#cb20-2"></a>           <span class="at">data =</span> activity_2mins_scaled,</span>
+<span id="cb20-3"><a href="#cb20-3"></a>           <span class="at">prior =</span> priors,</span>
+<span id="cb20-4"><a href="#cb20-4"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb20-5"><a href="#cb20-5"></a>           <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb20-6"><a href="#cb20-6"></a>           <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Start sampling</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 1.2 seconds.
-Chain 2 finished in 1.2 seconds.
-Chain 3 finished in 1.2 seconds.
-Chain 4 finished in 1.2 seconds.
+Chain 1 finished in 1.7 seconds.
+Chain 3 finished in 1.8 seconds.
+Chain 2 finished in 1.8 seconds.
+Chain 4 finished in 1.8 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 1.2 seconds.
-Total execution time: 1.3 seconds.</code></pre>
+Mean chain execution time: 1.8 seconds.
+Total execution time: 2.0 seconds.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>posterior_draws</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>posterior_draws</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Family: gaussian 
   Links: mu = identity; sigma = identity 
@@ -617,18 +649,18 @@ Formula: active_bins_scaled ~ age_centred * day + (1 | monkey)
 Group-Level Effects: 
 ~monkey (Number of levels: 243) 
               Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-sd(Intercept)     0.31      0.03     0.24     0.37 1.00     1351     2196
+sd(Intercept)     0.31      0.03     0.25     0.37 1.00     1070     1766
 
 Population-Level Effects: 
                  Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-Intercept           -0.04      0.03    -0.11     0.02 1.00     4039     2964
-age_centred          0.01      0.07    -0.12     0.14 1.00     3902     3049
-day2                 0.10      0.04     0.03     0.18 1.00     8897     2663
-age_centred:day2     0.07      0.07    -0.07     0.22 1.00     6157     2947
+Intercept           -0.04      0.03    -0.11     0.02 1.00     4222     3171
+age_centred          0.02      0.07    -0.11     0.14 1.00     3671     3150
+day2                 0.10      0.04     0.03     0.18 1.00     8022     2911
+age_centred:day2     0.07      0.07    -0.08     0.22 1.00     6170     2584
 
 Family Specific Parameters: 
       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-sigma     0.43      0.02     0.39     0.47 1.00     1997     2630
+sigma     0.43      0.02     0.39     0.47 1.00     1613     2430
 
 Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -638,9 +670,9 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <p>There doesn’t seem to be much of an effect of age in this data.</p>
 <p>If you’re curious, this matches well<a href="#fn29" class="footnote-ref" id="fnref29" role="doc-noteref"><sup>29</sup></a> with the output of <code>lme4</code>, which is a nice sense check for simple models. Generally speaking, if they’re the same then they’re both fine. If they are different<a href="#fn30" class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a>, then you’ve got to look deeper.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">library</span>(lme4)</span>
-<span id="cb23-2"><a href="#cb23-2"></a>fit_lme4 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(formula, activity_2mins_scaled)</span>
-<span id="cb23-3"><a href="#cb23-3"></a>fit_lme4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb25-2"><a href="#cb25-2"></a>fit_lme4 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(formula, activity_2mins_scaled)</span>
+<span id="cb25-3"><a href="#cb25-3"></a>fit_lme4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML ['lmerMod']
 Formula: active_bins_scaled ~ age_centred * day + (1 | monkey)
@@ -661,39 +693,39 @@ Fixed Effects:
 \]</span> where <span class="math inline">\(\theta\)</span> is a vector of all of the parameters in the model. The notation <span class="math inline">\(y_{-ij}\)</span> is the data <em>without</em> the <span class="math inline">\(ij\)</span>th observation. This average is sometimes called the <em>expected log predictive density</em> or elpd.</p>
 <p>To compare it with the two linear regression models, I need to fit them in <code>brms</code>. I will use a <span class="math inline">\(N(0,1)\)</span> prior for the monkey intercepts and the same priors as the previous model for the other parameters.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>priors_lm <span class="ot">&lt;-</span>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"b"</span>) <span class="sc">+</span></span>
-<span id="cb25-2"><a href="#cb25-2"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.2</span>), <span class="at">coef =</span> <span class="st">"age_centred"</span>) <span class="sc">+</span> </span>
-<span id="cb25-3"><a href="#cb25-3"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="fl">0.2</span>), <span class="at">coef =</span> <span class="st">"age_centred:day2"</span>) <span class="sc">+</span></span>
-<span id="cb25-4"><a href="#cb25-4"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">coef =</span> <span class="st">"day2"</span>) <span class="sc">+</span></span>
-<span id="cb25-5"><a href="#cb25-5"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"Intercept"</span>) <span class="sc">+</span></span>
-<span id="cb25-6"><a href="#cb25-6"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"sigma"</span>)</span>
-<span id="cb25-7"><a href="#cb25-7"></a></span>
-<span id="cb25-8"><a href="#cb25-8"></a>posterior_nopool <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
-<span id="cb25-9"><a href="#cb25-9"></a>  active_bins_scaled <span class="sc">~</span> age_centred <span class="sc">*</span> day <span class="sc">+</span> monkey, </span>
-<span id="cb25-10"><a href="#cb25-10"></a>  <span class="at">data =</span> activity_2mins_scaled,</span>
-<span id="cb25-11"><a href="#cb25-11"></a>  <span class="at">prior =</span> priors_lm,</span>
-<span id="cb25-12"><a href="#cb25-12"></a>  <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
-<span id="cb25-13"><a href="#cb25-13"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb25-14"><a href="#cb25-14"></a>  <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>priors_lm <span class="ot">&lt;-</span>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"b"</span>) <span class="sc">+</span></span>
+<span id="cb27-2"><a href="#cb27-2"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.2</span>), <span class="at">coef =</span> <span class="st">"age_centred"</span>) <span class="sc">+</span> </span>
+<span id="cb27-3"><a href="#cb27-3"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="fl">0.2</span>), <span class="at">coef =</span> <span class="st">"age_centred:day2"</span>) <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">coef =</span> <span class="st">"day2"</span>) <span class="sc">+</span></span>
+<span id="cb27-5"><a href="#cb27-5"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"Intercept"</span>) <span class="sc">+</span></span>
+<span id="cb27-6"><a href="#cb27-6"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"sigma"</span>)</span>
+<span id="cb27-7"><a href="#cb27-7"></a></span>
+<span id="cb27-8"><a href="#cb27-8"></a>posterior_nopool <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb27-9"><a href="#cb27-9"></a>  active_bins_scaled <span class="sc">~</span> age_centred <span class="sc">*</span> day <span class="sc">+</span> monkey, </span>
+<span id="cb27-10"><a href="#cb27-10"></a>  <span class="at">data =</span> activity_2mins_scaled,</span>
+<span id="cb27-11"><a href="#cb27-11"></a>  <span class="at">prior =</span> priors_lm,</span>
+<span id="cb27-12"><a href="#cb27-12"></a>  <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb27-13"><a href="#cb27-13"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb27-14"><a href="#cb27-14"></a>  <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 2.5 seconds.
-Chain 3 finished in 2.5 seconds.
-Chain 2 finished in 2.5 seconds.
-Chain 4 finished in 2.5 seconds.
+Chain 1 finished in 4.5 seconds.
+Chain 3 finished in 4.5 seconds.
+Chain 2 finished in 4.5 seconds.
+Chain 4 finished in 4.5 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 2.5 seconds.
-Total execution time: 2.7 seconds.</code></pre>
+Mean chain execution time: 4.5 seconds.
+Total execution time: 4.7 seconds.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>posterior_pool <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
-<span id="cb27-2"><a href="#cb27-2"></a>  active_bins_scaled <span class="sc">~</span> age_centred <span class="sc">*</span> day, </span>
-<span id="cb27-3"><a href="#cb27-3"></a>  <span class="at">data =</span> activity_2mins_scaled,</span>
-<span id="cb27-4"><a href="#cb27-4"></a>  <span class="at">prior =</span> priors_lm,</span>
-<span id="cb27-5"><a href="#cb27-5"></a>  <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
-<span id="cb27-6"><a href="#cb27-6"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb27-7"><a href="#cb27-7"></a>  <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>posterior_pool <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb29-2"><a href="#cb29-2"></a>  active_bins_scaled <span class="sc">~</span> age_centred <span class="sc">*</span> day, </span>
+<span id="cb29-3"><a href="#cb29-3"></a>  <span class="at">data =</span> activity_2mins_scaled,</span>
+<span id="cb29-4"><a href="#cb29-4"></a>  <span class="at">prior =</span> priors_lm,</span>
+<span id="cb29-5"><a href="#cb29-5"></a>  <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb29-6"><a href="#cb29-6"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb29-7"><a href="#cb29-7"></a>  <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
@@ -709,25 +741,25 @@ Total execution time: 0.3 seconds.</code></pre>
 </div>
 <p>We an now use the <code>loo_compare</code> function to compare the models. By default, the best model is listed first and the other models are listed below it with the difference in elpd values given. To do this, we need to tell <code>brms</code> to compute the <code>loo</code> criterion using the <code>add_criterion</code> function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>posterior_draws <span class="ot">&lt;-</span> <span class="fu">add_criterion</span>(posterior_draws, <span class="st">"loo"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>posterior_draws <span class="ot">&lt;-</span> <span class="fu">add_criterion</span>(posterior_draws, <span class="st">"loo"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Found 6 observations with a pareto_k &gt; 0.7 in model 'posterior_draws'.
+<pre><code>Warning: Found 2 observations with a pareto_k &gt; 0.7 in model 'posterior_draws'.
 It is recommended to set 'moment_match = TRUE' in order to perform moment
 matching for problematic observations.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>posterior_nopool <span class="ot">&lt;-</span> <span class="fu">add_criterion</span>(posterior_nopool, <span class="st">"loo"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a>posterior_nopool <span class="ot">&lt;-</span> <span class="fu">add_criterion</span>(posterior_nopool, <span class="st">"loo"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Found 61 observations with a pareto_k &gt; 0.7 in model
+<pre><code>Warning: Found 63 observations with a pareto_k &gt; 0.7 in model
 'posterior_nopool'. It is recommended to set 'moment_match = TRUE' in order to
 perform moment matching for problematic observations.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a>posterior_pool <span class="ot">&lt;-</span> <span class="fu">add_criterion</span>(posterior_pool, <span class="st">"loo"</span>)</span>
-<span id="cb33-2"><a href="#cb33-2"></a><span class="fu">loo_compare</span>(posterior_draws, posterior_nopool, posterior_pool)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>posterior_pool <span class="ot">&lt;-</span> <span class="fu">add_criterion</span>(posterior_pool, <span class="st">"loo"</span>)</span>
+<span id="cb35-2"><a href="#cb35-2"></a><span class="fu">loo_compare</span>(posterior_draws, posterior_nopool, posterior_pool)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 elpd_diff se_diff
 posterior_draws    0.0       0.0  
-posterior_pool   -29.2       7.4  
-posterior_nopool -54.2       9.0  </code></pre>
+posterior_pool   -29.0       7.4  
+posterior_nopool -53.3       9.0  </code></pre>
 </div>
 </div>
 <p>There are some warnings there suggesting that we could recompute these using a slower method, but for the purposes of today I’m not going to do that and I shall declare that the multilevel model performs <em>far better</em> than the other two models.</p>
@@ -737,20 +769,20 @@ posterior_nopool -54.2       9.0  </code></pre>
 <p>Of course, we would be fools to just assume that because we fit a model and compared it to some other models, the model is a good representation of the data. To do that, we need to look at some posterior checks.</p>
 <p>The easiest thing to look at is the predictions themselves.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>fitted <span class="ot">&lt;-</span> activity_2mins_scaled <span class="sc">|&gt;</span></span>
-<span id="cb35-2"><a href="#cb35-2"></a>  <span class="fu">cbind</span>(<span class="fu">t</span>(<span class="fu">posterior_predict</span>(posterior_draws,<span class="at">ndraws =</span> <span class="dv">200</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb35-3"><a href="#cb35-3"></a>  <span class="fu">pivot_longer</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">207</span>, <span class="at">names_to =</span> <span class="st">"draw"</span>, <span class="at">values_to =</span> <span class="st">"fitted"</span>)</span>
-<span id="cb35-4"><a href="#cb35-4"></a></span>
-<span id="cb35-5"><a href="#cb35-5"></a>day_labs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Day 1"</span>, <span class="st">"Day 2"</span>)</span>
-<span id="cb35-6"><a href="#cb35-6"></a><span class="fu">names</span>(day_labs) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>)</span>
-<span id="cb35-7"><a href="#cb35-7"></a></span>
-<span id="cb35-8"><a href="#cb35-8"></a>violin_plot <span class="ot">&lt;-</span> fitted <span class="sc">|&gt;</span> </span>
-<span id="cb35-9"><a href="#cb35-9"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>( <span class="at">x=</span>age, <span class="at">y =</span> <span class="dv">4</span><span class="sc">*</span>fitted <span class="sc">+</span> active_bins_centre, <span class="at">group =</span> age)) <span class="sc">+</span> </span>
-<span id="cb35-10"><a href="#cb35-10"></a>  <span class="fu">geom_violin</span>(<span class="at">colour =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span></span>
-<span id="cb35-11"><a href="#cb35-11"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> active_bins), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb35-12"><a href="#cb35-12"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day, <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">day =</span> day_labs)) <span class="sc">+</span></span>
-<span id="cb35-13"><a href="#cb35-13"></a>  <span class="fu">theme_bw</span>() </span>
-<span id="cb35-14"><a href="#cb35-14"></a>violin_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a>fitted <span class="ot">&lt;-</span> activity_2mins_scaled <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a href="#cb37-2"></a>  <span class="fu">cbind</span>(<span class="fu">t</span>(<span class="fu">posterior_predict</span>(posterior_draws,<span class="at">ndraws =</span> <span class="dv">200</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb37-3"><a href="#cb37-3"></a>  <span class="fu">pivot_longer</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">207</span>, <span class="at">names_to =</span> <span class="st">"draw"</span>, <span class="at">values_to =</span> <span class="st">"fitted"</span>)</span>
+<span id="cb37-4"><a href="#cb37-4"></a></span>
+<span id="cb37-5"><a href="#cb37-5"></a>day_labs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Day 1"</span>, <span class="st">"Day 2"</span>)</span>
+<span id="cb37-6"><a href="#cb37-6"></a><span class="fu">names</span>(day_labs) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>)</span>
+<span id="cb37-7"><a href="#cb37-7"></a></span>
+<span id="cb37-8"><a href="#cb37-8"></a>violin_plot <span class="ot">&lt;-</span> fitted <span class="sc">|&gt;</span> </span>
+<span id="cb37-9"><a href="#cb37-9"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>( <span class="at">x=</span>age, <span class="at">y =</span> <span class="dv">4</span><span class="sc">*</span>fitted <span class="sc">+</span> active_bins_centre, <span class="at">group =</span> age)) <span class="sc">+</span> </span>
+<span id="cb37-10"><a href="#cb37-10"></a>  <span class="fu">geom_violin</span>(<span class="at">colour =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span></span>
+<span id="cb37-11"><a href="#cb37-11"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> active_bins), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb37-12"><a href="#cb37-12"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day, <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">day =</span> day_labs)) <span class="sc">+</span></span>
+<span id="cb37-13"><a href="#cb37-13"></a>  <span class="fu">theme_bw</span>() </span>
+<span id="cb37-14"><a href="#cb37-14"></a>violin_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -758,14 +790,14 @@ posterior_nopool -54.2       9.0  </code></pre>
 <p>That appears to be a reasonably good fit, although it’s possible that the prediction intervals are a bit wide. We can also look at the plot of the posterior residuals vs the fitted values. Here the fitted values are the mean of the posterior predictive distribution.</p>
 <p>Next, let’s check for evidence of non-linearity in <code>age</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>plot_data <span class="ot">&lt;-</span> activity_2mins_scaled <span class="sc">|&gt;</span></span>
-<span id="cb36-2"><a href="#cb36-2"></a>  <span class="fu">mutate</span>(<span class="at">fitted_mean =</span> <span class="fu">colMeans</span>(<span class="fu">posterior_epred</span>(posterior_draws,<span class="at">ndraws =</span> <span class="dv">200</span>)))</span>
-<span id="cb36-3"><a href="#cb36-3"></a></span>
-<span id="cb36-4"><a href="#cb36-4"></a>age_plot <span class="ot">&lt;-</span> plot_data <span class="sc">|&gt;</span> </span>
-<span id="cb36-5"><a href="#cb36-5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span></span>
-<span id="cb36-6"><a href="#cb36-6"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb36-7"><a href="#cb36-7"></a>  <span class="fu">theme_bw</span>()</span>
-<span id="cb36-8"><a href="#cb36-8"></a>age_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>plot_data <span class="ot">&lt;-</span> activity_2mins_scaled <span class="sc">|&gt;</span></span>
+<span id="cb38-2"><a href="#cb38-2"></a>  <span class="fu">mutate</span>(<span class="at">fitted_mean =</span> <span class="fu">colMeans</span>(<span class="fu">posterior_epred</span>(posterior_draws,<span class="at">ndraws =</span> <span class="dv">200</span>)))</span>
+<span id="cb38-3"><a href="#cb38-3"></a></span>
+<span id="cb38-4"><a href="#cb38-4"></a>age_plot <span class="ot">&lt;-</span> plot_data <span class="sc">|&gt;</span> </span>
+<span id="cb38-5"><a href="#cb38-5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span></span>
+<span id="cb38-6"><a href="#cb38-6"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb38-7"><a href="#cb38-7"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb38-8"><a href="#cb38-8"></a>age_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -776,11 +808,11 @@ r_{ij} = y_{ij} - \mu_j
 \]</span> have a Gaussian distribution. We can check this with a qq-plot. Here we are using the posterior mean to define our residuals.</p>
 <p>We can look at the qq-plot to see how we’re doing with normality.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a>distribution_plot <span class="ot">&lt;-</span> plot_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> (active_bins_scaled <span class="sc">-</span> fitted_mean)<span class="sc">/</span><span class="fu">sd</span>(active_bins_scaled <span class="sc">-</span> fitted_mean))) <span class="sc">+</span> </span>
-<span id="cb37-2"><a href="#cb37-2"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
-<span id="cb37-3"><a href="#cb37-3"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
-<span id="cb37-4"><a href="#cb37-4"></a>  <span class="fu">theme_classic</span>()</span>
-<span id="cb37-5"><a href="#cb37-5"></a>distribution_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a>distribution_plot <span class="ot">&lt;-</span> plot_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> (active_bins_scaled <span class="sc">-</span> fitted_mean)<span class="sc">/</span><span class="fu">sd</span>(active_bins_scaled <span class="sc">-</span> fitted_mean))) <span class="sc">+</span> </span>
+<span id="cb39-2"><a href="#cb39-2"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb39-3"><a href="#cb39-3"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
+<span id="cb39-4"><a href="#cb39-4"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb39-5"><a href="#cb39-5"></a>distribution_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -788,44 +820,44 @@ r_{ij} = y_{ij} - \mu_j
 <p>That’s not too bad. A bit of a deviation from normality in the tails but nothing that would make me weep. It could well be an artifact of how I defined and normalised the residuals.</p>
 <p>We can also look at the so-called k-hat plot, which can be useful for finding high-leverage observations in general models.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>loo_posterior <span class="ot">&lt;-</span> <span class="fu">LOO</span>(posterior_draws) <span class="co">#warnings suppressed</span></span>
-<span id="cb38-2"><a href="#cb38-2"></a>loo_posterior</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a>loo_posterior <span class="ot">&lt;-</span> <span class="fu">LOO</span>(posterior_draws) <span class="co">#warnings suppressed</span></span>
+<span id="cb40-2"><a href="#cb40-2"></a>loo_posterior</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Computed from 4000 by 485 log-likelihood matrix
 
          Estimate   SE
-elpd_loo   -349.5 12.3
-p_loo       117.0  5.1
-looic       699.0 24.6
+elpd_loo   -349.8 12.4
+p_loo       117.8  5.2
+looic       699.7 24.7
 ------
 Monte Carlo SE of elpd_loo is NA.
 
 Pareto k diagnostic values:
                          Count Pct.    Min. n_eff
-(-Inf, 0.5]   (good)     417   86.0%   748       
- (0.5, 0.7]   (ok)        62   12.8%   341       
-   (0.7, 1]   (bad)        6    1.2%   275       
-   (1, Inf)   (very bad)   0    0.0%   &lt;NA&gt;      
+(-Inf, 0.5]   (good)     418   86.2%   902       
+ (0.5, 0.7]   (ok)        65   13.4%   443       
+   (0.7, 1]   (bad)        1    0.2%   272       
+   (1, Inf)   (very bad)   1    0.2%   59        
 See help('pareto-k-diagnostic') for details.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="fu">plot</span>(loo_posterior)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a><span class="fu">plot</span>(loo_posterior)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>This suggests that observations 10, 233, 234, 367, 394, 479 are potentially high leverage and we should check them more carefully. I won’t be doing that today.</p>
+<p>This suggests that observations 393, 394 are potentially high leverage and we should check them more carefully. I won’t be doing that today.</p>
 <p>Finally, let’s look at the residuals vs the fitted values. This is a commonly used diagnostic plot in linear regression and it can be very useful for visually detecting non-linear patterns and heteroskedasticity in the residuals. So let’s make the plot<a href="#fn32" class="footnote-ref" id="fnref32" role="doc-noteref"><sup>32</sup></a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>problem_plot <span class="ot">&lt;-</span> plot_data <span class="sc">|&gt;</span> </span>
-<span id="cb41-2"><a href="#cb41-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> fitted_mean, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span> </span>
-<span id="cb41-3"><a href="#cb41-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb41-4"><a href="#cb41-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">colour =</span> <span class="st">"blue"</span>)<span class="sc">+</span></span>
-<span id="cb41-5"><a href="#cb41-5"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day) <span class="sc">+</span></span>
-<span id="cb41-6"><a href="#cb41-6"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb41-7"><a href="#cb41-7"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb41-8"><a href="#cb41-8"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>))</span>
-<span id="cb41-9"><a href="#cb41-9"></a>problem_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a>problem_plot <span class="ot">&lt;-</span> plot_data <span class="sc">|&gt;</span> </span>
+<span id="cb43-2"><a href="#cb43-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> fitted_mean, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span> </span>
+<span id="cb43-3"><a href="#cb43-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb43-4"><a href="#cb43-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">colour =</span> <span class="st">"blue"</span>)<span class="sc">+</span></span>
+<span id="cb43-5"><a href="#cb43-5"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day) <span class="sc">+</span></span>
+<span id="cb43-6"><a href="#cb43-6"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb43-7"><a href="#cb43-7"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb43-8"><a href="#cb43-8"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb43-9"><a href="#cb43-9"></a>problem_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -847,32 +879,32 @@ See help('pareto-k-diagnostic') for details.</code></pre>
 <p>That said, there are a bunch of other options. Specifically, we have a whole bag of samples from our posterior distribution and it would be possible to use that to select values of<a href="#fn36" class="footnote-ref" id="fnref36" role="doc-noteref"><sup>36</sup></a> <span class="math inline">\((\mu, \beta, \tau, \sigma)\)</span> for our simulation.</p>
 <p>So let’s make some fake data and fit the model to it!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>monkey_effect <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">monkey =</span> <span class="fu">unique</span>(activity_2mins_scaled<span class="sc">$</span>monkey), </span>
-<span id="cb42-2"><a href="#cb42-2"></a>                        <span class="at">monkey_effect =</span> <span class="fu">rnorm</span>(<span class="dv">243</span>,<span class="dv">0</span>,<span class="fl">0.31</span>))</span>
-<span id="cb42-3"><a href="#cb42-3"></a>data_fake <span class="ot">&lt;-</span> activity_2mins_scaled <span class="sc">|&gt;</span></span>
-<span id="cb42-4"><a href="#cb42-4"></a>  <span class="fu">left_join</span>(monkey_effect, <span class="at">by =</span> <span class="st">"monkey"</span>)  <span class="sc">|&gt;</span></span>
-<span id="cb42-5"><a href="#cb42-5"></a>  <span class="fu">mutate</span>(<span class="at">active_bins_scaled =</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(age_centred),</span>
-<span id="cb42-6"><a href="#cb42-6"></a>            <span class="at">mean =</span> <span class="sc">-</span><span class="fl">0.04</span> <span class="sc">+</span><span class="fl">0.01</span> <span class="sc">*</span> age_centred <span class="sc">+</span> </span>
-<span id="cb42-7"><a href="#cb42-7"></a>              monkey_effect <span class="sc">+</span> <span class="fu">if_else</span>(day <span class="sc">==</span> <span class="st">"2"</span>, <span class="fl">0.1</span> <span class="sc">+</span> <span class="fl">0.085</span> <span class="sc">*</span>age_centred, <span class="fl">0.0</span>), </span>
-<span id="cb42-8"><a href="#cb42-8"></a>            <span class="at">sd =</span> <span class="fl">0.43</span>))</span>
-<span id="cb42-9"><a href="#cb42-9"></a>                                              </span>
-<span id="cb42-10"><a href="#cb42-10"></a>posterior_draws_fake <span class="ot">&lt;-</span> <span class="fu">brm</span>(formula, </span>
-<span id="cb42-11"><a href="#cb42-11"></a>           <span class="at">data =</span> data_fake,</span>
-<span id="cb42-12"><a href="#cb42-12"></a>           <span class="at">prior =</span> priors,</span>
-<span id="cb42-13"><a href="#cb42-13"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
-<span id="cb42-14"><a href="#cb42-14"></a>           <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb42-15"><a href="#cb42-15"></a>           <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a>monkey_effect <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">monkey =</span> <span class="fu">unique</span>(activity_2mins_scaled<span class="sc">$</span>monkey), </span>
+<span id="cb44-2"><a href="#cb44-2"></a>                        <span class="at">monkey_effect =</span> <span class="fu">rnorm</span>(<span class="dv">243</span>,<span class="dv">0</span>,<span class="fl">0.31</span>))</span>
+<span id="cb44-3"><a href="#cb44-3"></a>data_fake <span class="ot">&lt;-</span> activity_2mins_scaled <span class="sc">|&gt;</span></span>
+<span id="cb44-4"><a href="#cb44-4"></a>  <span class="fu">left_join</span>(monkey_effect, <span class="at">by =</span> <span class="st">"monkey"</span>)  <span class="sc">|&gt;</span></span>
+<span id="cb44-5"><a href="#cb44-5"></a>  <span class="fu">mutate</span>(<span class="at">active_bins_scaled =</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(age_centred),</span>
+<span id="cb44-6"><a href="#cb44-6"></a>            <span class="at">mean =</span> <span class="sc">-</span><span class="fl">0.04</span> <span class="sc">+</span><span class="fl">0.01</span> <span class="sc">*</span> age_centred <span class="sc">+</span> </span>
+<span id="cb44-7"><a href="#cb44-7"></a>              monkey_effect <span class="sc">+</span> <span class="fu">if_else</span>(day <span class="sc">==</span> <span class="st">"2"</span>, <span class="fl">0.1</span> <span class="sc">+</span> <span class="fl">0.085</span> <span class="sc">*</span>age_centred, <span class="fl">0.0</span>), </span>
+<span id="cb44-8"><a href="#cb44-8"></a>            <span class="at">sd =</span> <span class="fl">0.43</span>))</span>
+<span id="cb44-9"><a href="#cb44-9"></a>                                              </span>
+<span id="cb44-10"><a href="#cb44-10"></a>posterior_draws_fake <span class="ot">&lt;-</span> <span class="fu">brm</span>(formula, </span>
+<span id="cb44-11"><a href="#cb44-11"></a>           <span class="at">data =</span> data_fake,</span>
+<span id="cb44-12"><a href="#cb44-12"></a>           <span class="at">prior =</span> priors,</span>
+<span id="cb44-13"><a href="#cb44-13"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb44-14"><a href="#cb44-14"></a>           <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb44-15"><a href="#cb44-15"></a>           <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 1.2 seconds.
-Chain 2 finished in 1.2 seconds.
-Chain 3 finished in 1.3 seconds.
-Chain 4 finished in 1.2 seconds.
+Chain 1 finished in 1.6 seconds.
+Chain 2 finished in 1.6 seconds.
+Chain 3 finished in 1.6 seconds.
+Chain 4 finished in 1.6 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 1.2 seconds.
-Total execution time: 1.4 seconds.</code></pre>
+Mean chain execution time: 1.6 seconds.
+Total execution time: 1.8 seconds.</code></pre>
 </div>
 </div>
 </section>
@@ -880,22 +912,22 @@ Total execution time: 1.4 seconds.</code></pre>
 <h3 class="anchored" data-anchor-id="the-good-plots">The good plots</h3>
 <p>First up, let’s look at the violin plot.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a><span class="fu">library</span>(cowplot)</span>
-<span id="cb44-2"><a href="#cb44-2"></a>fitted_fake <span class="ot">&lt;-</span> data_fake <span class="sc">|&gt;</span></span>
-<span id="cb44-3"><a href="#cb44-3"></a>  <span class="fu">cbind</span>(<span class="fu">t</span>(<span class="fu">posterior_predict</span>(posterior_draws_fake,<span class="at">ndraws =</span> <span class="dv">200</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb44-4"><a href="#cb44-4"></a>  <span class="fu">pivot_longer</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">207</span>, <span class="at">names_to =</span> <span class="st">"draw"</span>, <span class="at">values_to =</span> <span class="st">"fitted"</span>)</span>
-<span id="cb44-5"><a href="#cb44-5"></a></span>
-<span id="cb44-6"><a href="#cb44-6"></a>day_labs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Day 1"</span>, <span class="st">"Day 2"</span>)</span>
-<span id="cb44-7"><a href="#cb44-7"></a><span class="fu">names</span>(day_labs) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>)</span>
-<span id="cb44-8"><a href="#cb44-8"></a></span>
-<span id="cb44-9"><a href="#cb44-9"></a>violin_fake <span class="ot">&lt;-</span> fitted_fake <span class="sc">|&gt;</span> </span>
-<span id="cb44-10"><a href="#cb44-10"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>( <span class="at">x=</span>age, <span class="at">y =</span> <span class="dv">4</span><span class="sc">*</span>fitted <span class="sc">+</span> active_bins_centre, <span class="at">group =</span> age)) <span class="sc">+</span> </span>
-<span id="cb44-11"><a href="#cb44-11"></a>  <span class="fu">geom_violin</span>(<span class="at">colour =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span></span>
-<span id="cb44-12"><a href="#cb44-12"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> active_bins), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb44-13"><a href="#cb44-13"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day, <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">day =</span> day_labs)) <span class="sc">+</span></span>
-<span id="cb44-14"><a href="#cb44-14"></a>  <span class="fu">theme_bw</span>() </span>
-<span id="cb44-15"><a href="#cb44-15"></a>  </span>
-<span id="cb44-16"><a href="#cb44-16"></a><span class="fu">plot_grid</span>(violin_plot, violin_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a><span class="fu">library</span>(cowplot)</span>
+<span id="cb46-2"><a href="#cb46-2"></a>fitted_fake <span class="ot">&lt;-</span> data_fake <span class="sc">|&gt;</span></span>
+<span id="cb46-3"><a href="#cb46-3"></a>  <span class="fu">cbind</span>(<span class="fu">t</span>(<span class="fu">posterior_predict</span>(posterior_draws_fake,<span class="at">ndraws =</span> <span class="dv">200</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb46-4"><a href="#cb46-4"></a>  <span class="fu">pivot_longer</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">207</span>, <span class="at">names_to =</span> <span class="st">"draw"</span>, <span class="at">values_to =</span> <span class="st">"fitted"</span>)</span>
+<span id="cb46-5"><a href="#cb46-5"></a></span>
+<span id="cb46-6"><a href="#cb46-6"></a>day_labs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Day 1"</span>, <span class="st">"Day 2"</span>)</span>
+<span id="cb46-7"><a href="#cb46-7"></a><span class="fu">names</span>(day_labs) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>)</span>
+<span id="cb46-8"><a href="#cb46-8"></a></span>
+<span id="cb46-9"><a href="#cb46-9"></a>violin_fake <span class="ot">&lt;-</span> fitted_fake <span class="sc">|&gt;</span> </span>
+<span id="cb46-10"><a href="#cb46-10"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>( <span class="at">x=</span>age, <span class="at">y =</span> <span class="dv">4</span><span class="sc">*</span>fitted <span class="sc">+</span> active_bins_centre, <span class="at">group =</span> age)) <span class="sc">+</span> </span>
+<span id="cb46-11"><a href="#cb46-11"></a>  <span class="fu">geom_violin</span>(<span class="at">colour =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span></span>
+<span id="cb46-12"><a href="#cb46-12"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> active_bins), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb46-13"><a href="#cb46-13"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day, <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">day =</span> day_labs)) <span class="sc">+</span></span>
+<span id="cb46-14"><a href="#cb46-14"></a>  <span class="fu">theme_bw</span>() </span>
+<span id="cb46-15"><a href="#cb46-15"></a>  </span>
+<span id="cb46-16"><a href="#cb46-16"></a><span class="fu">plot_grid</span>(violin_plot, violin_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -903,14 +935,14 @@ Total execution time: 1.4 seconds.</code></pre>
 <p>That’s very similar to our data plot.</p>
 <p>Next up, we will look at the residuals ordered by age</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a>plot_data_fake <span class="ot">&lt;-</span> data_fake <span class="sc">|&gt;</span></span>
-<span id="cb45-2"><a href="#cb45-2"></a>  <span class="fu">mutate</span>(<span class="at">fitted_mean =</span> <span class="fu">colMeans</span>(<span class="fu">posterior_epred</span>(posterior_draws_fake,<span class="at">ndraws =</span> <span class="dv">200</span>)))</span>
-<span id="cb45-3"><a href="#cb45-3"></a></span>
-<span id="cb45-4"><a href="#cb45-4"></a>age_fake <span class="ot">&lt;-</span> plot_data_fake <span class="sc">|&gt;</span> </span>
-<span id="cb45-5"><a href="#cb45-5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span></span>
-<span id="cb45-6"><a href="#cb45-6"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb45-7"><a href="#cb45-7"></a>  <span class="fu">theme_bw</span>()</span>
-<span id="cb45-8"><a href="#cb45-8"></a><span class="fu">plot_grid</span>(age_plot, age_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>plot_data_fake <span class="ot">&lt;-</span> data_fake <span class="sc">|&gt;</span></span>
+<span id="cb47-2"><a href="#cb47-2"></a>  <span class="fu">mutate</span>(<span class="at">fitted_mean =</span> <span class="fu">colMeans</span>(<span class="fu">posterior_epred</span>(posterior_draws_fake,<span class="at">ndraws =</span> <span class="dv">200</span>)))</span>
+<span id="cb47-3"><a href="#cb47-3"></a></span>
+<span id="cb47-4"><a href="#cb47-4"></a>age_fake <span class="ot">&lt;-</span> plot_data_fake <span class="sc">|&gt;</span> </span>
+<span id="cb47-5"><a href="#cb47-5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span></span>
+<span id="cb47-6"><a href="#cb47-6"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb47-7"><a href="#cb47-7"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb47-8"><a href="#cb47-8"></a><span class="fu">plot_grid</span>(age_plot, age_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -918,13 +950,13 @@ Total execution time: 1.4 seconds.</code></pre>
 <p>Fabulous!</p>
 <p>Now let’s check the distributional assumption on the residuals!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a>distribution_fake <span class="ot">&lt;-</span> plot_data_fake <span class="sc">|&gt;</span></span>
-<span id="cb46-2"><a href="#cb46-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> (active_bins_scaled <span class="sc">-</span> fitted_mean)<span class="sc">/</span><span class="fu">sd</span>(active_bins_scaled <span class="sc">-</span> fitted_mean))) <span class="sc">+</span> </span>
-<span id="cb46-3"><a href="#cb46-3"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
-<span id="cb46-4"><a href="#cb46-4"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
-<span id="cb46-5"><a href="#cb46-5"></a>  <span class="fu">theme_classic</span>()</span>
-<span id="cb46-6"><a href="#cb46-6"></a></span>
-<span id="cb46-7"><a href="#cb46-7"></a><span class="fu">plot_grid</span>(distribution_plot, distribution_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1"></a>distribution_fake <span class="ot">&lt;-</span> plot_data_fake <span class="sc">|&gt;</span></span>
+<span id="cb48-2"><a href="#cb48-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> (active_bins_scaled <span class="sc">-</span> fitted_mean)<span class="sc">/</span><span class="fu">sd</span>(active_bins_scaled <span class="sc">-</span> fitted_mean))) <span class="sc">+</span> </span>
+<span id="cb48-3"><a href="#cb48-3"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb48-4"><a href="#cb48-4"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
+<span id="cb48-5"><a href="#cb48-5"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb48-6"><a href="#cb48-6"></a></span>
+<span id="cb48-7"><a href="#cb48-7"></a><span class="fu">plot_grid</span>(distribution_plot, distribution_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -932,33 +964,33 @@ Total execution time: 1.4 seconds.</code></pre>
 <p>Excellent!</p>
 <p>Finally, we can look at the k-hat plot. Because I’m lazy, I’m not going to put them side by side. You can scroll.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>loo_fake <span class="ot">&lt;-</span> <span class="fu">LOO</span>(posterior_draws_fake)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1"></a>loo_fake <span class="ot">&lt;-</span> <span class="fu">LOO</span>(posterior_draws_fake)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Found 4 observations with a pareto_k &gt; 0.7 in model
 'posterior_draws_fake'. It is recommended to set 'moment_match = TRUE' in order
 to perform moment matching for problematic observations.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1"></a>loo_fake</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1"></a>loo_fake</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Computed from 4000 by 485 log-likelihood matrix
 
          Estimate   SE
-elpd_loo   -362.3 14.3
-p_loo       115.1  5.8
-looic       724.6 28.5
+elpd_loo   -372.1 14.9
+p_loo       115.4  6.1
+looic       744.2 29.7
 ------
 Monte Carlo SE of elpd_loo is NA.
 
 Pareto k diagnostic values:
                          Count Pct.    Min. n_eff
-(-Inf, 0.5]   (good)     422   87.0%   571       
- (0.5, 0.7]   (ok)        59   12.2%   205       
-   (0.7, 1]   (bad)        4    0.8%   169       
+(-Inf, 0.5]   (good)     422   87.0%   579       
+ (0.5, 0.7]   (ok)        59   12.2%   220       
+   (0.7, 1]   (bad)        4    0.8%   118       
    (1, Inf)   (very bad)   0    0.0%   &lt;NA&gt;      
 See help('pareto-k-diagnostic') for details.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1"></a><span class="fu">plot</span>(loo_fake)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1"></a><span class="fu">plot</span>(loo_fake)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -970,15 +1002,15 @@ See help('pareto-k-diagnostic') for details.</code></pre>
 <h3 class="anchored" data-anchor-id="the-haunted-residual-vs-fitted-plot">The haunted residual vs fitted plot</h3>
 <p>Now let’s look at our residual vs fitted plot.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a>problem_fake <span class="ot">&lt;-</span> plot_data_fake <span class="sc">|&gt;</span> </span>
-<span id="cb52-2"><a href="#cb52-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> fitted_mean, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span> </span>
-<span id="cb52-3"><a href="#cb52-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb52-4"><a href="#cb52-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">colour =</span> <span class="st">"blue"</span>)<span class="sc">+</span></span>
-<span id="cb52-5"><a href="#cb52-5"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day) <span class="sc">+</span></span>
-<span id="cb52-6"><a href="#cb52-6"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb52-7"><a href="#cb52-7"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb52-8"><a href="#cb52-8"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>))</span>
-<span id="cb52-9"><a href="#cb52-9"></a><span class="fu">plot_grid</span>(problem_plot, problem_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a>problem_fake <span class="ot">&lt;-</span> plot_data_fake <span class="sc">|&gt;</span> </span>
+<span id="cb54-2"><a href="#cb54-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> fitted_mean, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span> </span>
+<span id="cb54-3"><a href="#cb54-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb54-4"><a href="#cb54-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">colour =</span> <span class="st">"blue"</span>)<span class="sc">+</span></span>
+<span id="cb54-5"><a href="#cb54-5"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day) <span class="sc">+</span></span>
+<span id="cb54-6"><a href="#cb54-6"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb54-7"><a href="#cb54-7"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb54-8"><a href="#cb54-8"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb54-9"><a href="#cb54-9"></a><span class="fu">plot_grid</span>(problem_plot, problem_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
 </div>

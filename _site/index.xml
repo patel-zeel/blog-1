@@ -76,7 +76,18 @@
 <span id="cb1-14">            <span class="at" style="color: #657422;">active_bins =</span> <span class="fu" style="color: #4758AB;">sum</span>(Activity <span class="sc" style="color: #5E5E5E;">&gt;</span> <span class="dv" style="color: #AD0000;">0</span>), </span>
 <span id="cb1-15">            <span class="at" style="color: #657422;">age =</span> <span class="fu" style="color: #4758AB;">min</span>(age)) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
 <span id="cb1-16">  <span class="fu" style="color: #4758AB;">rename</span>(<span class="at" style="color: #657422;">monkey =</span> subj_id, <span class="at" style="color: #657422;">day =</span> Day) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
-<span id="cb1-17">  <span class="fu" style="color: #4758AB;">ungroup</span>()</span></code></pre></div>
+<span id="cb1-17">  <span class="fu" style="color: #4758AB;">ungroup</span>()</span>
+<span id="cb1-18"></span>
+<span id="cb1-19"><span class="fu" style="color: #4758AB;">glimpse</span>(activity_20minms80)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 485
+Columns: 5
+$ monkey      &lt;dbl&gt; 0, 0, 88, 88, 636, 636, 760, 760, 1257, 1257, 1607, 1607, …
+$ day         &lt;dbl&gt; 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2…
+$ total       &lt;dbl&gt; 9881, 6356, 15833, 4988, 572, 308, 1097, 2916, 4884, 2366,…
+$ active_bins &lt;int&gt; 42, 34, 43, 19, 10, 4, 12, 23, 50, 33, 9, 11, 13, 7, 30, 3…
+$ age         &lt;dbl&gt; 29, 29, 29, 29, 28, 28, 30, 30, 27, 27, 27, 27, 27, 27, 26…</code></pre>
+</div>
 </div>
 </section>
 <section id="ok-mary-how-are-we-going-to-analyze-this-data" class="level2">
@@ -91,10 +102,10 @@
 <h3 class="anchored" data-anchor-id="there-are-just-too-many-monkeys-or-why-cant-we-just-analyse-this-with-regression">There are just too many monkeys; or Why can’t we just analyse this with regression?</h3>
 <p>The temptation with this sort of data is to fit a linear regression to it as a first model. In this case, we are using grouping, group-level, and individual-level covariates in the same way. Let’s suck it and see.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;">library</span>(broom)</span>
-<span id="cb2-2">fit_lm <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">lm</span>(active_bins <span class="sc" style="color: #5E5E5E;">~</span> age<span class="sc" style="color: #5E5E5E;">*</span><span class="fu" style="color: #4758AB;">factor</span>(day) <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">factor</span>(monkey), <span class="at" style="color: #657422;">data =</span> activity_2mins)</span>
-<span id="cb2-3"></span>
-<span id="cb2-4"><span class="fu" style="color: #4758AB;">tidy</span>(fit_lm) </span></code></pre></div>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;">library</span>(broom)</span>
+<span id="cb3-2">fit_lm <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">lm</span>(active_bins <span class="sc" style="color: #5E5E5E;">~</span> age<span class="sc" style="color: #5E5E5E;">*</span><span class="fu" style="color: #4758AB;">factor</span>(day) <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">factor</span>(monkey), <span class="at" style="color: #657422;">data =</span> activity_2mins)</span>
+<span id="cb3-3"></span>
+<span id="cb3-4"><span class="fu" style="color: #4758AB;">tidy</span>(fit_lm) </span></code></pre></div>
 <div class="cell-output-display">
 
 <div data-pagedtable="false">
@@ -115,8 +126,8 @@
 <p>This type of modelling assumption is called <em>complete pooling</em> as it pools the information between groups by treating them all as the same.</p>
 <p>Let’s see what happens in this case!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1">fit_lm_pool <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">lm</span>(active_bins <span class="sc" style="color: #5E5E5E;">~</span> age<span class="sc" style="color: #5E5E5E;">*</span><span class="fu" style="color: #4758AB;">factor</span>(day), <span class="at" style="color: #657422;">data =</span> activity_2mins)</span>
-<span id="cb3-2"><span class="fu" style="color: #4758AB;">summary</span>(fit_lm_pool)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1">fit_lm_pool <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">lm</span>(active_bins <span class="sc" style="color: #5E5E5E;">~</span> age<span class="sc" style="color: #5E5E5E;">*</span><span class="fu" style="color: #4758AB;">factor</span>(day), <span class="at" style="color: #657422;">data =</span> activity_2mins)</span>
+<span id="cb4-2"><span class="fu" style="color: #4758AB;">summary</span>(fit_lm_pool)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -144,19 +155,19 @@ F-statistic: 2.219 on 3 and 481 DF,  p-value: 0.0851</code></pre>
 <p>The brave and the bold might even try to interpret the coefficients and say something like <em>there doesn’t seem to be a strong effect of age</em>. But there’s real danger in trying to interpret regression coefficients in the presence of a potential confounder (in this case, the monkey ID). And it’s particularly bad form to do this without ever looking at any sort of regression diagnostics. Linear regression is not a magic eight ball.</p>
 <p>Let’s look at the diagnostic plots.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;">library</span>(broom)</span>
-<span id="cb5-2"><span class="fu" style="color: #4758AB;">augment</span>(fit_lm_pool) <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
-<span id="cb5-3">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> .fitted, <span class="at" style="color: #657422;">y =</span> active_bins <span class="sc" style="color: #5E5E5E;">-</span> .fitted)) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb5-4">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb5-5">  <span class="fu" style="color: #4758AB;">geom_smooth</span>(<span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"lm"</span>, <span class="at" style="color: #657422;">se =</span> <span class="cn" style="color: #8f5902;">FALSE</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb5-6">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;">library</span>(broom)</span>
+<span id="cb6-2"><span class="fu" style="color: #4758AB;">augment</span>(fit_lm_pool) <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
+<span id="cb6-3">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> .fitted, <span class="at" style="color: #657422;">y =</span> active_bins <span class="sc" style="color: #5E5E5E;">-</span> .fitted)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-4">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-5">  <span class="fu" style="color: #4758AB;">geom_smooth</span>(<span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"lm"</span>, <span class="at" style="color: #657422;">se =</span> <span class="cn" style="color: #8f5902;">FALSE</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-6">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;">augment</span>(fit_lm_pool) <span class="sc" style="color: #5E5E5E;">|&gt;</span> <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">sample =</span> .std.resid)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb6-2">  <span class="fu" style="color: #4758AB;">stat_qq</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb6-3">  <span class="fu" style="color: #4758AB;">geom_abline</span>(<span class="at" style="color: #657422;">slope =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">intercept =</span> <span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb6-4">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;">augment</span>(fit_lm_pool) <span class="sc" style="color: #5E5E5E;">|&gt;</span> <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">sample =</span> .std.resid)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb7-2">  <span class="fu" style="color: #4758AB;">stat_qq</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb7-3">  <span class="fu" style="color: #4758AB;">geom_abline</span>(<span class="at" style="color: #657422;">slope =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">intercept =</span> <span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb7-4">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
 </div>
@@ -181,7 +192,7 @@ F-statistic: 2.219 on 3 and 481 DF,  p-value: 0.0851</code></pre>
 <p>This is an example of a <em>multilevel</em><sup>12</sup> <em>model</em>. The name comes from the data having multiple levels (in this case two: the observation level and the group level). Both levels have an appropriate model for their mean.</p>
 <p>This mathematical representation does a good job in separating out the two different levels. However, there are a lot of other ways of writing multilevel models. An important example is the extended formula notation created<sup>13</sup> by R’s <code>lme4</code> package. In their notation, we would write this model as</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1">formula <span class="ot" style="color: #003B4F;">&lt;-</span> active_bins_scaled <span class="sc" style="color: #5E5E5E;">~</span> age_centred<span class="sc" style="color: #5E5E5E;">*</span>day <span class="sc" style="color: #5E5E5E;">+</span> (<span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">|</span> monkey)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1">formula <span class="ot" style="color: #003B4F;">&lt;-</span> active_bins_scaled <span class="sc" style="color: #5E5E5E;">~</span> age_centred<span class="sc" style="color: #5E5E5E;">*</span>day <span class="sc" style="color: #5E5E5E;">+</span> (<span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">|</span> monkey)</span></code></pre></div>
 </div>
 <p>The first bit of this formula is the same as the formula used in linear regression. The interesting bit is is the <code>(1 | monkey)</code>. This is the way to tell R that the intercept (aka <code>1</code> in formula notation) is going to be grouped by <code>monkey</code> and we are going to put an exchangeable normal prior on it. For more complex models there are more complex variations on this theme, but for the moment we won’t go any further.</p>
 </section>
@@ -196,15 +207,27 @@ F-statistic: 2.219 on 3 and 481 DF,  p-value: 0.0851</code></pre>
 <p>On the other hand, we have no sensible baseline for activity, so deviation from the average seems like a sensible scaling. I also don’t know, <em>a priori</em>, how variable activity is going to be, so I might want to scale<sup>17</sup> it by its standard deviation. In this case, I’m not going to do that because we have a sensible fixed<sup>18</sup> upper limit (8), which I can scale by.</p>
 <p>One important thing here is that if we scale the data by data-dependent quantities (like the minimum, the mean, or the standard deviation) we <em>must</em> keep track of this information. This is because <em>any</em> future data we try to predict with this model will need to be transformed <em>the same way using the same</em><sup>19</sup> <em>numbers</em>! This particularly has implication when you are doing things like test/training set validation or cross validation: in the first case, the test set needs to be scaled in the same way the training set was; while in the second case each cross validation training set needs to be scaled independently and that scaling needs to be used on the corresponding left-out data<sup>20</sup>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1">age_centre <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">mean</span>(activity_2mins<span class="sc" style="color: #5E5E5E;">$</span>age)</span>
-<span id="cb8-2">age_scale <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">diff</span>(<span class="fu" style="color: #4758AB;">range</span>(activity_2mins<span class="sc" style="color: #5E5E5E;">$</span>age))<span class="sc" style="color: #5E5E5E;">/</span><span class="dv" style="color: #AD0000;">2</span></span>
-<span id="cb8-3">active_bins_centre <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">4</span></span>
-<span id="cb8-4"></span>
-<span id="cb8-5">activity_2mins_scaled <span class="ot" style="color: #003B4F;">&lt;-</span> activity_2mins <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
-<span id="cb8-6">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">monkey =</span> <span class="fu" style="color: #4758AB;">factor</span>(monkey),</span>
-<span id="cb8-7">         <span class="at" style="color: #657422;">day =</span> <span class="fu" style="color: #4758AB;">factor</span>(day),</span>
-<span id="cb8-8">         <span class="at" style="color: #657422;">age_centred =</span> (age <span class="sc" style="color: #5E5E5E;">-</span> age_centre)<span class="sc" style="color: #5E5E5E;">/</span>age_scale,</span>
-<span id="cb8-9">         <span class="at" style="color: #657422;">active_bins_scaled =</span> (active_bins <span class="sc" style="color: #5E5E5E;">-</span> active_bins_centre)<span class="sc" style="color: #5E5E5E;">/</span><span class="dv" style="color: #AD0000;">4</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1">age_centre <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">mean</span>(activity_2mins<span class="sc" style="color: #5E5E5E;">$</span>age)</span>
+<span id="cb9-2">age_scale <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">diff</span>(<span class="fu" style="color: #4758AB;">range</span>(activity_2mins<span class="sc" style="color: #5E5E5E;">$</span>age))<span class="sc" style="color: #5E5E5E;">/</span><span class="dv" style="color: #AD0000;">2</span></span>
+<span id="cb9-3">active_bins_centre <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">4</span></span>
+<span id="cb9-4"></span>
+<span id="cb9-5">activity_2mins_scaled <span class="ot" style="color: #003B4F;">&lt;-</span> activity_2mins <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb9-6">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">monkey =</span> <span class="fu" style="color: #4758AB;">factor</span>(monkey),</span>
+<span id="cb9-7">         <span class="at" style="color: #657422;">day =</span> <span class="fu" style="color: #4758AB;">factor</span>(day),</span>
+<span id="cb9-8">         <span class="at" style="color: #657422;">age_centred =</span> (age <span class="sc" style="color: #5E5E5E;">-</span> age_centre)<span class="sc" style="color: #5E5E5E;">/</span>age_scale,</span>
+<span id="cb9-9">         <span class="at" style="color: #657422;">active_bins_scaled =</span> (active_bins <span class="sc" style="color: #5E5E5E;">-</span> active_bins_centre)<span class="sc" style="color: #5E5E5E;">/</span><span class="dv" style="color: #AD0000;">4</span>)</span>
+<span id="cb9-10"><span class="fu" style="color: #4758AB;">glimpse</span>(activity_2mins_scaled)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 485
+Columns: 7
+$ monkey             &lt;fct&gt; 0, 0, 88, 88, 636, 636, 760, 760, 1257, 1257, 1607,…
+$ day                &lt;fct&gt; 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, …
+$ total              &lt;dbl&gt; 495, 1003, 2642, 524, 199, 282, 363, 445, 96, 495, …
+$ active_bins        &lt;int&gt; 6, 6, 8, 6, 2, 3, 3, 4, 3, 8, 6, 5, 3, 3, 6, 5, 8, …
+$ age                &lt;dbl&gt; 29, 29, 29, 29, 28, 28, 30, 30, 27, 27, 27, 27, 27,…
+$ age_centred        &lt;dbl&gt; 1.1054718, 1.1054718, 1.1054718, 1.1054718, 1.02854…
+$ active_bins_scaled &lt;dbl&gt; 0.50, 0.50, 1.00, 0.50, -0.50, -0.25, -0.25, 0.00, …</code></pre>
+</div>
 </div>
 <p>With our scaling completed, we can now start thinking about prior distributions. The trick with priors is to make them wide enough to cover all plausible values of a parameter without making them so wide that they put a whole bunch of weight on essentially silly values.</p>
 <p>We know, for instance, that our unscaled activity will go between 0 and 8. That means that it’s unlikely for the mean of the scaled process to be much bigger than 3 or 4. These considerations, along with the fact that we have centred the data so the mean should be closer to zero, suggest that a <img src="https://latex.codecogs.com/png.latex?N(0,1)"> prior should be appropriate for <img src="https://latex.codecogs.com/png.latex?%5Cmu">.</p>
@@ -215,9 +238,9 @@ F-statistic: 2.219 on 3 and 481 DF,  p-value: 0.0851</code></pre>
 <p>To specify the model, we use the <code>lme4</code>-style formula notation discussed above.</p>
 <p>To set the priors, we will use <code>brms</code>. Now, if you are Paul you might be able to remember how to set priors in <code>brms</code> without having to look it up, but I am sadly not Paul<sup>24</sup>, so every time I need to set priors in <code>brms</code> I write the formula and use the convenient <code>get_prior</code> function</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;">library</span>(cmdstanr)</span>
-<span id="cb9-2"><span class="fu" style="color: #4758AB;">library</span>(brms)</span>
-<span id="cb9-3"><span class="fu" style="color: #4758AB;">get_prior</span>(formula, activity_2mins_scaled)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;">library</span>(cmdstanr)</span>
+<span id="cb11-2"><span class="fu" style="color: #4758AB;">library</span>(brms)</span>
+<span id="cb11-3"><span class="fu" style="color: #4758AB;">get_prior</span>(formula, activity_2mins_scaled)</span></code></pre></div>
 <div class="cell-output-display">
 
 <div data-pagedtable="false">
@@ -230,12 +253,21 @@ F-statistic: 2.219 on 3 and 481 DF,  p-value: 0.0851</code></pre>
 <p>From this, we can see that the default prior on <img src="https://latex.codecogs.com/png.latex?%5Cbeta"> is an improper flat prior, the default prior on the intercept is a Student-t with 3 degrees of freedom centred at zero with standard deviation 2.5. The same prior (restricted to positive numbers) is put on all of the standard deviation parameters. These default prior distributions are, to be honest, probably fine in this context<sup>25</sup>, but it is good practice to always set your prior.</p>
 <p>We do this as follows. (Note that <code>brms</code> uses Stan, which parameterises the normal distribution by its mean and <em>standard deviation</em>!)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1">priors <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="fl" style="color: #AD0000;">0.2</span>), <span class="at" style="color: #657422;">coef =</span> <span class="st" style="color: #20794D;">"age_centred"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb10-2">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="fl" style="color: #AD0000;">0.2</span>), <span class="at" style="color: #657422;">coef =</span> <span class="st" style="color: #20794D;">"age_centred:day2"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb10-3">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">coef =</span> <span class="st" style="color: #20794D;">"day2"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb10-4">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">class =</span> <span class="st" style="color: #20794D;">"sigma"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb10-5">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">exponential</span>(<span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">class =</span> sd) <span class="sc" style="color: #5E5E5E;">+</span> <span class="co" style="color: #5E5E5E;"># tau</span></span>
-<span id="cb10-6">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">class =</span> <span class="st" style="color: #20794D;">"Intercept"</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1">priors <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="fl" style="color: #AD0000;">0.2</span>), <span class="at" style="color: #657422;">coef =</span> <span class="st" style="color: #20794D;">"age_centred"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb12-2">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="fl" style="color: #AD0000;">0.2</span>), <span class="at" style="color: #657422;">coef =</span> <span class="st" style="color: #20794D;">"age_centred:day2"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb12-3">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">coef =</span> <span class="st" style="color: #20794D;">"day2"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb12-4">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">class =</span> <span class="st" style="color: #20794D;">"sigma"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb12-5">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">exponential</span>(<span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">class =</span> sd) <span class="sc" style="color: #5E5E5E;">+</span> <span class="co" style="color: #5E5E5E;"># tau</span></span>
+<span id="cb12-6">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">class =</span> <span class="st" style="color: #20794D;">"Intercept"</span>)</span>
+<span id="cb12-7">priors</span></code></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["prior"],"name":[1],"type":["chr"],"align":["left"]},{"label":["class"],"name":[2],"type":["chr"],"align":["left"]},{"label":["coef"],"name":[3],"type":["chr"],"align":["left"]},{"label":["group"],"name":[4],"type":["chr"],"align":["left"]},{"label":["resp"],"name":[5],"type":["chr"],"align":["left"]},{"label":["dpar"],"name":[6],"type":["chr"],"align":["left"]},{"label":["nlpar"],"name":[7],"type":["chr"],"align":["left"]},{"label":["lb"],"name":[8],"type":["chr"],"align":["left"]},{"label":["ub"],"name":[9],"type":["chr"],"align":["left"]},{"label":["source"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"normal(0, 0.2)","2":"b","3":"age_centred","4":"","5":"","6":"","7":"","8":"NA","9":"NA","10":"user"},{"1":"normal(0, 0.2)","2":"b","3":"age_centred:day2","4":"","5":"","6":"","7":"","8":"NA","9":"NA","10":"user"},{"1":"normal(0, 1)","2":"b","3":"day2","4":"","5":"","6":"","7":"","8":"NA","9":"NA","10":"user"},{"1":"normal(0, 1)","2":"sigma","3":"","4":"","5":"","6":"","7":"","8":"NA","9":"NA","10":"user"},{"1":"exponential(1)","2":"sd","3":"","4":"","5":"","6":"","7":"","8":"NA","9":"NA","10":"user"},{"1":"normal(0, 1)","2":"Intercept","3":"","4":"","5":"","6":"","7":"","8":"NA","9":"NA","10":"user"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
 </div>
 </section>
 <section id="pre-experiment-prophylaxis" class="level2">
@@ -243,40 +275,40 @@ F-statistic: 2.219 on 3 and 481 DF,  p-value: 0.0851</code></pre>
 <p>So we have specified some priors using the power of <em>our thoughts</em>. But we should probably check to see if they are broadly sensible. A great thing about Bayesian modelling is that we are explicitly specifying our <em>a priori</em> (or pre-data) assumptions about the data generating process. That means that we can do a fast validation of our priors by simulating from them and checking that they’re not too wild.</p>
 <p>There are lots of ways to do this, but the easiest<sup>26</sup> way to do this is to use the <code>sample_prior = "only"</code> option in the <code>brm()</code> function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1">prior_draws <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">brm</span>(formula, </span>
-<span id="cb11-2">           <span class="at" style="color: #657422;">data =</span> activity_2mins_scaled,</span>
-<span id="cb11-3">           <span class="at" style="color: #657422;">prior =</span> priors,</span>
-<span id="cb11-4">           <span class="at" style="color: #657422;">sample_prior =</span> <span class="st" style="color: #20794D;">"only"</span>,</span>
-<span id="cb11-5">           <span class="at" style="color: #657422;">backend =</span> <span class="st" style="color: #20794D;">"cmdstanr"</span>,</span>
-<span id="cb11-6">           <span class="at" style="color: #657422;">cores =</span> <span class="dv" style="color: #AD0000;">4</span>,</span>
-<span id="cb11-7">           <span class="at" style="color: #657422;">refresh =</span> <span class="dv" style="color: #AD0000;">0</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1">prior_draws <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">brm</span>(formula, </span>
+<span id="cb13-2">           <span class="at" style="color: #657422;">data =</span> activity_2mins_scaled,</span>
+<span id="cb13-3">           <span class="at" style="color: #657422;">prior =</span> priors,</span>
+<span id="cb13-4">           <span class="at" style="color: #657422;">sample_prior =</span> <span class="st" style="color: #20794D;">"only"</span>,</span>
+<span id="cb13-5">           <span class="at" style="color: #657422;">backend =</span> <span class="st" style="color: #20794D;">"cmdstanr"</span>,</span>
+<span id="cb13-6">           <span class="at" style="color: #657422;">cores =</span> <span class="dv" style="color: #AD0000;">4</span>,</span>
+<span id="cb13-7">           <span class="at" style="color: #657422;">refresh =</span> <span class="dv" style="color: #AD0000;">0</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Start sampling</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 0.5 seconds.
-Chain 2 finished in 0.5 seconds.
-Chain 3 finished in 0.5 seconds.
-Chain 4 finished in 0.5 seconds.
+Chain 1 finished in 0.7 seconds.
+Chain 2 finished in 0.7 seconds.
+Chain 3 finished in 0.7 seconds.
+Chain 4 finished in 0.7 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.5 seconds.
-Total execution time: 0.6 seconds.</code></pre>
+Mean chain execution time: 0.7 seconds.
+Total execution time: 0.9 seconds.</code></pre>
 </div>
 </div>
 <p>Now that we have samples from the prior distribution, we can assemble them to work out what our prior tells us we would, pre-data, predict for the number of active bins for a single monkey (in this a single monkey<sup>27</sup> that is 10 years older than the baseline).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1">pred_data <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(<span class="at" style="color: #657422;">age_centred =</span> <span class="dv" style="color: #AD0000;">10</span>, <span class="at" style="color: #657422;">day =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">monkey =</span> <span class="st" style="color: #20794D;">"88"</span>) </span>
-<span id="cb14-2"><span class="fu" style="color: #4758AB;">tibble</span>(<span class="at" style="color: #657422;">pred =</span> brms<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">posterior_predict</span>(prior_draws, </span>
-<span id="cb14-3">                                      <span class="at" style="color: #657422;">newdata =</span> pred_data )) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
-<span id="cb14-4">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(pred)) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb14-5">  <span class="fu" style="color: #4758AB;">geom_histogram</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">y =</span> <span class="fu" style="color: #4758AB;">after_stat</span>(density)), <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"lightgrey"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb14-6">  <span class="fu" style="color: #4758AB;">geom_vline</span>(<span class="at" style="color: #657422;">xintercept =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb14-7">  <span class="fu" style="color: #4758AB;">geom_vline</span>(<span class="at" style="color: #657422;">xintercept =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb14-8">  <span class="fu" style="color: #4758AB;">xlim</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">20</span>,<span class="dv" style="color: #AD0000;">20</span>)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb14-9">  <span class="fu" style="color: #4758AB;">theme_bw</span>()</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1">pred_data <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(<span class="at" style="color: #657422;">age_centred =</span> <span class="dv" style="color: #AD0000;">10</span>, <span class="at" style="color: #657422;">day =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">monkey =</span> <span class="st" style="color: #20794D;">"88"</span>) </span>
+<span id="cb16-2"><span class="fu" style="color: #4758AB;">tibble</span>(<span class="at" style="color: #657422;">pred =</span> brms<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">posterior_predict</span>(prior_draws, </span>
+<span id="cb16-3">                                      <span class="at" style="color: #657422;">newdata =</span> pred_data )) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb16-4">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(pred)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-5">  <span class="fu" style="color: #4758AB;">geom_histogram</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">y =</span> <span class="fu" style="color: #4758AB;">after_stat</span>(density)), <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"lightgrey"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-6">  <span class="fu" style="color: #4758AB;">geom_vline</span>(<span class="at" style="color: #657422;">xintercept =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb16-7">  <span class="fu" style="color: #4758AB;">geom_vline</span>(<span class="at" style="color: #657422;">xintercept =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-8">  <span class="fu" style="color: #4758AB;">xlim</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">20</span>,<span class="dv" style="color: #AD0000;">20</span>)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb16-9">  <span class="fu" style="color: #4758AB;">theme_bw</span>()</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -284,33 +316,33 @@ Total execution time: 0.6 seconds.</code></pre>
 <p>The vertical lines are (approximately) the minimum and maximum of the data. This<sup>28</sup> suggests that the implied priors are definitely wider than our observed data, but they are not several orders of magnitude too wide. This is a good situation to be in: it gives enough room in the priors that we might be wrong with our specification while also not allowing for truly wild values of the parameters (and implied predictive distribution). One could even go so far as to say that the prior is weakly informative.</p>
 <p>Let’s compare this to the default priors on the standard deviation parameters. (The default priors on the regression parameters are improper so we can’t simulate from them. So I replaced the improper prior with a much narrower <img src="https://latex.codecogs.com/png.latex?N(0,10%5E2)"> prior. If you make the prior on the <img src="https://latex.codecogs.com/png.latex?%5Cbeta"> wider the prior predictive distribution also gets wider.)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1">priors_default <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">10</span>), <span class="at" style="color: #657422;">class =</span> <span class="st" style="color: #20794D;">"b"</span>)</span>
-<span id="cb15-2">prior_draws_default <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">brm</span>(formula, </span>
-<span id="cb15-3">           <span class="at" style="color: #657422;">data =</span> activity_2mins_scaled,</span>
-<span id="cb15-4">           <span class="at" style="color: #657422;">prior =</span> priors_default,</span>
-<span id="cb15-5">           <span class="at" style="color: #657422;">sample_prior =</span> <span class="st" style="color: #20794D;">"only"</span>,</span>
-<span id="cb15-6">           <span class="at" style="color: #657422;">backend =</span> <span class="st" style="color: #20794D;">"cmdstanr"</span>,</span>
-<span id="cb15-7">           <span class="at" style="color: #657422;">cores =</span> <span class="dv" style="color: #AD0000;">4</span>,</span>
-<span id="cb15-8">           <span class="at" style="color: #657422;">refresh =</span> <span class="dv" style="color: #AD0000;">0</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1">priors_default <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">10</span>), <span class="at" style="color: #657422;">class =</span> <span class="st" style="color: #20794D;">"b"</span>)</span>
+<span id="cb17-2">prior_draws_default <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">brm</span>(formula, </span>
+<span id="cb17-3">           <span class="at" style="color: #657422;">data =</span> activity_2mins_scaled,</span>
+<span id="cb17-4">           <span class="at" style="color: #657422;">prior =</span> priors_default,</span>
+<span id="cb17-5">           <span class="at" style="color: #657422;">sample_prior =</span> <span class="st" style="color: #20794D;">"only"</span>,</span>
+<span id="cb17-6">           <span class="at" style="color: #657422;">backend =</span> <span class="st" style="color: #20794D;">"cmdstanr"</span>,</span>
+<span id="cb17-7">           <span class="at" style="color: #657422;">cores =</span> <span class="dv" style="color: #AD0000;">4</span>,</span>
+<span id="cb17-8">           <span class="at" style="color: #657422;">refresh =</span> <span class="dv" style="color: #AD0000;">0</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 0.4 seconds.
-Chain 2 finished in 0.4 seconds.
-Chain 3 finished in 0.4 seconds.
-Chain 4 finished in 0.4 seconds.
+Chain 1 finished in 0.6 seconds.
+Chain 2 finished in 0.6 seconds.
+Chain 3 finished in 0.6 seconds.
+Chain 4 finished in 0.6 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.4 seconds.
-Total execution time: 0.5 seconds.</code></pre>
+Mean chain execution time: 0.6 seconds.
+Total execution time: 0.8 seconds.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;">tibble</span>(<span class="at" style="color: #657422;">pred =</span> brms<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">posterior_predict</span>(prior_draws_default, </span>
-<span id="cb17-2">                                      <span class="at" style="color: #657422;">newdata =</span> pred_data )) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
-<span id="cb17-3">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(pred)) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb17-4">  <span class="fu" style="color: #4758AB;">geom_histogram</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">y =</span> <span class="fu" style="color: #4758AB;">after_stat</span>(density)), <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"lightgrey"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb17-5">  <span class="fu" style="color: #4758AB;">geom_vline</span>(<span class="at" style="color: #657422;">xintercept =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb17-6">  <span class="fu" style="color: #4758AB;">geom_vline</span>(<span class="at" style="color: #657422;">xintercept =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb17-7">  <span class="fu" style="color: #4758AB;">theme_bw</span>()</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><span class="fu" style="color: #4758AB;">tibble</span>(<span class="at" style="color: #657422;">pred =</span> brms<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">posterior_predict</span>(prior_draws_default, </span>
+<span id="cb19-2">                                      <span class="at" style="color: #657422;">newdata =</span> pred_data )) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb19-3">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(pred)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb19-4">  <span class="fu" style="color: #4758AB;">geom_histogram</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">y =</span> <span class="fu" style="color: #4758AB;">after_stat</span>(density)), <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"lightgrey"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb19-5">  <span class="fu" style="color: #4758AB;">geom_vline</span>(<span class="at" style="color: #657422;">xintercept =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb19-6">  <span class="fu" style="color: #4758AB;">geom_vline</span>(<span class="at" style="color: #657422;">xintercept =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb19-7">  <span class="fu" style="color: #4758AB;">theme_bw</span>()</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -321,28 +353,28 @@ Total execution time: 0.5 seconds.</code></pre>
 <h2 class="anchored" data-anchor-id="fitting-the-data-or-do-my-monkeys-get-less-interesting-as-they-age">Fitting the data; or do my monkeys get less interesting as they age</h2>
 <p>With all of that in hand, we can now fit the data. Hooray. This is done with the same command (minus the <code>sample_prior</code> bit).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1">posterior_draws <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">brm</span>(formula, </span>
-<span id="cb18-2">           <span class="at" style="color: #657422;">data =</span> activity_2mins_scaled,</span>
-<span id="cb18-3">           <span class="at" style="color: #657422;">prior =</span> priors,</span>
-<span id="cb18-4">           <span class="at" style="color: #657422;">backend =</span> <span class="st" style="color: #20794D;">"cmdstanr"</span>,</span>
-<span id="cb18-5">           <span class="at" style="color: #657422;">cores =</span> <span class="dv" style="color: #AD0000;">4</span>,</span>
-<span id="cb18-6">           <span class="at" style="color: #657422;">refresh =</span> <span class="dv" style="color: #AD0000;">0</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1">posterior_draws <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">brm</span>(formula, </span>
+<span id="cb20-2">           <span class="at" style="color: #657422;">data =</span> activity_2mins_scaled,</span>
+<span id="cb20-3">           <span class="at" style="color: #657422;">prior =</span> priors,</span>
+<span id="cb20-4">           <span class="at" style="color: #657422;">backend =</span> <span class="st" style="color: #20794D;">"cmdstanr"</span>,</span>
+<span id="cb20-5">           <span class="at" style="color: #657422;">cores =</span> <span class="dv" style="color: #AD0000;">4</span>,</span>
+<span id="cb20-6">           <span class="at" style="color: #657422;">refresh =</span> <span class="dv" style="color: #AD0000;">0</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Start sampling</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 1.2 seconds.
-Chain 2 finished in 1.2 seconds.
-Chain 3 finished in 1.2 seconds.
-Chain 4 finished in 1.2 seconds.
+Chain 1 finished in 1.7 seconds.
+Chain 3 finished in 1.8 seconds.
+Chain 2 finished in 1.8 seconds.
+Chain 4 finished in 1.8 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 1.2 seconds.
-Total execution time: 1.3 seconds.</code></pre>
+Mean chain execution time: 1.8 seconds.
+Total execution time: 2.0 seconds.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1">posterior_draws</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1">posterior_draws</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Family: gaussian 
   Links: mu = identity; sigma = identity 
@@ -354,18 +386,18 @@ Formula: active_bins_scaled ~ age_centred * day + (1 | monkey)
 Group-Level Effects: 
 ~monkey (Number of levels: 243) 
               Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-sd(Intercept)     0.31      0.03     0.24     0.37 1.00     1351     2196
+sd(Intercept)     0.31      0.03     0.25     0.37 1.00     1070     1766
 
 Population-Level Effects: 
                  Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-Intercept           -0.04      0.03    -0.11     0.02 1.00     4039     2964
-age_centred          0.01      0.07    -0.12     0.14 1.00     3902     3049
-day2                 0.10      0.04     0.03     0.18 1.00     8897     2663
-age_centred:day2     0.07      0.07    -0.07     0.22 1.00     6157     2947
+Intercept           -0.04      0.03    -0.11     0.02 1.00     4222     3171
+age_centred          0.02      0.07    -0.11     0.14 1.00     3671     3150
+day2                 0.10      0.04     0.03     0.18 1.00     8022     2911
+age_centred:day2     0.07      0.07    -0.08     0.22 1.00     6170     2584
 
 Family Specific Parameters: 
       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-sigma     0.43      0.02     0.39     0.47 1.00     1997     2630
+sigma     0.43      0.02     0.39     0.47 1.00     1613     2430
 
 Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -375,9 +407,9 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <p>There doesn’t seem to be much of an effect of age in this data.</p>
 <p>If you’re curious, this matches well<sup>29</sup> with the output of <code>lme4</code>, which is a nice sense check for simple models. Generally speaking, if they’re the same then they’re both fine. If they are different<sup>30</sup>, then you’ve got to look deeper.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="fu" style="color: #4758AB;">library</span>(lme4)</span>
-<span id="cb23-2">fit_lme4 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">lmer</span>(formula, activity_2mins_scaled)</span>
-<span id="cb23-3">fit_lme4</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><span class="fu" style="color: #4758AB;">library</span>(lme4)</span>
+<span id="cb25-2">fit_lme4 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">lmer</span>(formula, activity_2mins_scaled)</span>
+<span id="cb25-3">fit_lme4</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML ['lmerMod']
 Formula: active_bins_scaled ~ age_centred * day + (1 | monkey)
@@ -396,39 +428,39 @@ Fixed Effects:
 <p>We can also compare the fit using leave-one-out cross validation. This is similar to AIC, but more directly interpretable. It is the average of <img src="https://latex.codecogs.com/png.latex?%0A%5Clog%20p_%5Ctext%7Bposterior%20predictive%7D(y_%7Bij%7D%20%5Cmid%20y_%7B-ij%7D)%20=%20%5Clog%20%5Cleft(%5Cint_%5Ctheta%20p(y_%7Bij%7D%20%5Cmid%20%5Ctheta)p(%5Ctheta%20%5Cmid%20y_%7B-ij%7D)%5C,%20d%5Ctheta%5Cright),%0A"> where <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> is a vector of all of the parameters in the model. The notation <img src="https://latex.codecogs.com/png.latex?y_%7B-ij%7D"> is the data <em>without</em> the <img src="https://latex.codecogs.com/png.latex?ij">th observation. This average is sometimes called the <em>expected log predictive density</em> or elpd.</p>
 <p>To compare it with the two linear regression models, I need to fit them in <code>brms</code>. I will use a <img src="https://latex.codecogs.com/png.latex?N(0,1)"> prior for the monkey intercepts and the same priors as the previous model for the other parameters.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1">priors_lm <span class="ot" style="color: #003B4F;">&lt;-</span>  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">class =</span> <span class="st" style="color: #20794D;">"b"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb25-2">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="fl" style="color: #AD0000;">0.2</span>), <span class="at" style="color: #657422;">coef =</span> <span class="st" style="color: #20794D;">"age_centred"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb25-3">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="fl" style="color: #AD0000;">0.2</span>), <span class="at" style="color: #657422;">coef =</span> <span class="st" style="color: #20794D;">"age_centred:day2"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb25-4">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">coef =</span> <span class="st" style="color: #20794D;">"day2"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb25-5">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">class =</span> <span class="st" style="color: #20794D;">"Intercept"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb25-6">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">class =</span> <span class="st" style="color: #20794D;">"sigma"</span>)</span>
-<span id="cb25-7"></span>
-<span id="cb25-8">posterior_nopool <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">brm</span>(</span>
-<span id="cb25-9">  active_bins_scaled <span class="sc" style="color: #5E5E5E;">~</span> age_centred <span class="sc" style="color: #5E5E5E;">*</span> day <span class="sc" style="color: #5E5E5E;">+</span> monkey, </span>
-<span id="cb25-10">  <span class="at" style="color: #657422;">data =</span> activity_2mins_scaled,</span>
-<span id="cb25-11">  <span class="at" style="color: #657422;">prior =</span> priors_lm,</span>
-<span id="cb25-12">  <span class="at" style="color: #657422;">backend =</span> <span class="st" style="color: #20794D;">"cmdstanr"</span>,</span>
-<span id="cb25-13">  <span class="at" style="color: #657422;">cores =</span> <span class="dv" style="color: #AD0000;">4</span>,</span>
-<span id="cb25-14">  <span class="at" style="color: #657422;">refresh =</span> <span class="dv" style="color: #AD0000;">0</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1">priors_lm <span class="ot" style="color: #003B4F;">&lt;-</span>  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">class =</span> <span class="st" style="color: #20794D;">"b"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb27-2">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="fl" style="color: #AD0000;">0.2</span>), <span class="at" style="color: #657422;">coef =</span> <span class="st" style="color: #20794D;">"age_centred"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb27-3">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="fl" style="color: #AD0000;">0.2</span>), <span class="at" style="color: #657422;">coef =</span> <span class="st" style="color: #20794D;">"age_centred:day2"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb27-4">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">coef =</span> <span class="st" style="color: #20794D;">"day2"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb27-5">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">class =</span> <span class="st" style="color: #20794D;">"Intercept"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb27-6">  <span class="fu" style="color: #4758AB;">prior</span>(<span class="fu" style="color: #4758AB;">normal</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">class =</span> <span class="st" style="color: #20794D;">"sigma"</span>)</span>
+<span id="cb27-7"></span>
+<span id="cb27-8">posterior_nopool <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">brm</span>(</span>
+<span id="cb27-9">  active_bins_scaled <span class="sc" style="color: #5E5E5E;">~</span> age_centred <span class="sc" style="color: #5E5E5E;">*</span> day <span class="sc" style="color: #5E5E5E;">+</span> monkey, </span>
+<span id="cb27-10">  <span class="at" style="color: #657422;">data =</span> activity_2mins_scaled,</span>
+<span id="cb27-11">  <span class="at" style="color: #657422;">prior =</span> priors_lm,</span>
+<span id="cb27-12">  <span class="at" style="color: #657422;">backend =</span> <span class="st" style="color: #20794D;">"cmdstanr"</span>,</span>
+<span id="cb27-13">  <span class="at" style="color: #657422;">cores =</span> <span class="dv" style="color: #AD0000;">4</span>,</span>
+<span id="cb27-14">  <span class="at" style="color: #657422;">refresh =</span> <span class="dv" style="color: #AD0000;">0</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 2.5 seconds.
-Chain 3 finished in 2.5 seconds.
-Chain 2 finished in 2.5 seconds.
-Chain 4 finished in 2.5 seconds.
+Chain 1 finished in 4.5 seconds.
+Chain 3 finished in 4.5 seconds.
+Chain 2 finished in 4.5 seconds.
+Chain 4 finished in 4.5 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 2.5 seconds.
-Total execution time: 2.7 seconds.</code></pre>
+Mean chain execution time: 4.5 seconds.
+Total execution time: 4.7 seconds.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1">posterior_pool <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">brm</span>(</span>
-<span id="cb27-2">  active_bins_scaled <span class="sc" style="color: #5E5E5E;">~</span> age_centred <span class="sc" style="color: #5E5E5E;">*</span> day, </span>
-<span id="cb27-3">  <span class="at" style="color: #657422;">data =</span> activity_2mins_scaled,</span>
-<span id="cb27-4">  <span class="at" style="color: #657422;">prior =</span> priors_lm,</span>
-<span id="cb27-5">  <span class="at" style="color: #657422;">backend =</span> <span class="st" style="color: #20794D;">"cmdstanr"</span>,</span>
-<span id="cb27-6">  <span class="at" style="color: #657422;">cores =</span> <span class="dv" style="color: #AD0000;">4</span>,</span>
-<span id="cb27-7">  <span class="at" style="color: #657422;">refresh =</span> <span class="dv" style="color: #AD0000;">0</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1">posterior_pool <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">brm</span>(</span>
+<span id="cb29-2">  active_bins_scaled <span class="sc" style="color: #5E5E5E;">~</span> age_centred <span class="sc" style="color: #5E5E5E;">*</span> day, </span>
+<span id="cb29-3">  <span class="at" style="color: #657422;">data =</span> activity_2mins_scaled,</span>
+<span id="cb29-4">  <span class="at" style="color: #657422;">prior =</span> priors_lm,</span>
+<span id="cb29-5">  <span class="at" style="color: #657422;">backend =</span> <span class="st" style="color: #20794D;">"cmdstanr"</span>,</span>
+<span id="cb29-6">  <span class="at" style="color: #657422;">cores =</span> <span class="dv" style="color: #AD0000;">4</span>,</span>
+<span id="cb29-7">  <span class="at" style="color: #657422;">refresh =</span> <span class="dv" style="color: #AD0000;">0</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
@@ -444,25 +476,25 @@ Total execution time: 0.3 seconds.</code></pre>
 </div>
 <p>We an now use the <code>loo_compare</code> function to compare the models. By default, the best model is listed first and the other models are listed below it with the difference in elpd values given. To do this, we need to tell <code>brms</code> to compute the <code>loo</code> criterion using the <code>add_criterion</code> function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1">posterior_draws <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">add_criterion</span>(posterior_draws, <span class="st" style="color: #20794D;">"loo"</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1">posterior_draws <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">add_criterion</span>(posterior_draws, <span class="st" style="color: #20794D;">"loo"</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Found 6 observations with a pareto_k &gt; 0.7 in model 'posterior_draws'.
+<pre><code>Warning: Found 2 observations with a pareto_k &gt; 0.7 in model 'posterior_draws'.
 It is recommended to set 'moment_match = TRUE' in order to perform moment
 matching for problematic observations.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1">posterior_nopool <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">add_criterion</span>(posterior_nopool, <span class="st" style="color: #20794D;">"loo"</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1">posterior_nopool <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">add_criterion</span>(posterior_nopool, <span class="st" style="color: #20794D;">"loo"</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Found 61 observations with a pareto_k &gt; 0.7 in model
+<pre><code>Warning: Found 63 observations with a pareto_k &gt; 0.7 in model
 'posterior_nopool'. It is recommended to set 'moment_match = TRUE' in order to
 perform moment matching for problematic observations.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1">posterior_pool <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">add_criterion</span>(posterior_pool, <span class="st" style="color: #20794D;">"loo"</span>)</span>
-<span id="cb33-2"><span class="fu" style="color: #4758AB;">loo_compare</span>(posterior_draws, posterior_nopool, posterior_pool)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb35" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1">posterior_pool <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">add_criterion</span>(posterior_pool, <span class="st" style="color: #20794D;">"loo"</span>)</span>
+<span id="cb35-2"><span class="fu" style="color: #4758AB;">loo_compare</span>(posterior_draws, posterior_nopool, posterior_pool)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 elpd_diff se_diff
 posterior_draws    0.0       0.0  
-posterior_pool   -29.2       7.4  
-posterior_nopool -54.2       9.0  </code></pre>
+posterior_pool   -29.0       7.4  
+posterior_nopool -53.3       9.0  </code></pre>
 </div>
 </div>
 <p>There are some warnings there suggesting that we could recompute these using a slower method, but for the purposes of today I’m not going to do that and I shall declare that the multilevel model performs <em>far better</em> than the other two models.</p>
@@ -472,20 +504,20 @@ posterior_nopool -54.2       9.0  </code></pre>
 <p>Of course, we would be fools to just assume that because we fit a model and compared it to some other models, the model is a good representation of the data. To do that, we need to look at some posterior checks.</p>
 <p>The easiest thing to look at is the predictions themselves.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1">fitted <span class="ot" style="color: #003B4F;">&lt;-</span> activity_2mins_scaled <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
-<span id="cb35-2">  <span class="fu" style="color: #4758AB;">cbind</span>(<span class="fu" style="color: #4758AB;">t</span>(<span class="fu" style="color: #4758AB;">posterior_predict</span>(posterior_draws,<span class="at" style="color: #657422;">ndraws =</span> <span class="dv" style="color: #AD0000;">200</span>))) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
-<span id="cb35-3">  <span class="fu" style="color: #4758AB;">pivot_longer</span>(<span class="dv" style="color: #AD0000;">8</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">207</span>, <span class="at" style="color: #657422;">names_to =</span> <span class="st" style="color: #20794D;">"draw"</span>, <span class="at" style="color: #657422;">values_to =</span> <span class="st" style="color: #20794D;">"fitted"</span>)</span>
-<span id="cb35-4"></span>
-<span id="cb35-5">day_labs <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Day 1"</span>, <span class="st" style="color: #20794D;">"Day 2"</span>)</span>
-<span id="cb35-6"><span class="fu" style="color: #4758AB;">names</span>(day_labs) <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"1"</span>, <span class="st" style="color: #20794D;">"2"</span>)</span>
-<span id="cb35-7"></span>
-<span id="cb35-8">violin_plot <span class="ot" style="color: #003B4F;">&lt;-</span> fitted <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
-<span id="cb35-9">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>( <span class="at" style="color: #657422;">x=</span>age, <span class="at" style="color: #657422;">y =</span> <span class="dv" style="color: #AD0000;">4</span><span class="sc" style="color: #5E5E5E;">*</span>fitted <span class="sc" style="color: #5E5E5E;">+</span> active_bins_centre, <span class="at" style="color: #657422;">group =</span> age)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb35-10">  <span class="fu" style="color: #4758AB;">geom_violin</span>(<span class="at" style="color: #657422;">colour =</span> <span class="st" style="color: #20794D;">"lightgrey"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb35-11">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">y =</span> active_bins), <span class="at" style="color: #657422;">colour =</span> <span class="st" style="color: #20794D;">"red"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb35-12">  <span class="fu" style="color: #4758AB;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;">~</span>day, <span class="at" style="color: #657422;">labeller =</span> <span class="fu" style="color: #4758AB;">labeller</span>(<span class="at" style="color: #657422;">day =</span> day_labs)) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb35-13">  <span class="fu" style="color: #4758AB;">theme_bw</span>() </span>
-<span id="cb35-14">violin_plot</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb37" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1">fitted <span class="ot" style="color: #003B4F;">&lt;-</span> activity_2mins_scaled <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb37-2">  <span class="fu" style="color: #4758AB;">cbind</span>(<span class="fu" style="color: #4758AB;">t</span>(<span class="fu" style="color: #4758AB;">posterior_predict</span>(posterior_draws,<span class="at" style="color: #657422;">ndraws =</span> <span class="dv" style="color: #AD0000;">200</span>))) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb37-3">  <span class="fu" style="color: #4758AB;">pivot_longer</span>(<span class="dv" style="color: #AD0000;">8</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">207</span>, <span class="at" style="color: #657422;">names_to =</span> <span class="st" style="color: #20794D;">"draw"</span>, <span class="at" style="color: #657422;">values_to =</span> <span class="st" style="color: #20794D;">"fitted"</span>)</span>
+<span id="cb37-4"></span>
+<span id="cb37-5">day_labs <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Day 1"</span>, <span class="st" style="color: #20794D;">"Day 2"</span>)</span>
+<span id="cb37-6"><span class="fu" style="color: #4758AB;">names</span>(day_labs) <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"1"</span>, <span class="st" style="color: #20794D;">"2"</span>)</span>
+<span id="cb37-7"></span>
+<span id="cb37-8">violin_plot <span class="ot" style="color: #003B4F;">&lt;-</span> fitted <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
+<span id="cb37-9">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>( <span class="at" style="color: #657422;">x=</span>age, <span class="at" style="color: #657422;">y =</span> <span class="dv" style="color: #AD0000;">4</span><span class="sc" style="color: #5E5E5E;">*</span>fitted <span class="sc" style="color: #5E5E5E;">+</span> active_bins_centre, <span class="at" style="color: #657422;">group =</span> age)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb37-10">  <span class="fu" style="color: #4758AB;">geom_violin</span>(<span class="at" style="color: #657422;">colour =</span> <span class="st" style="color: #20794D;">"lightgrey"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb37-11">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">y =</span> active_bins), <span class="at" style="color: #657422;">colour =</span> <span class="st" style="color: #20794D;">"red"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb37-12">  <span class="fu" style="color: #4758AB;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;">~</span>day, <span class="at" style="color: #657422;">labeller =</span> <span class="fu" style="color: #4758AB;">labeller</span>(<span class="at" style="color: #657422;">day =</span> day_labs)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb37-13">  <span class="fu" style="color: #4758AB;">theme_bw</span>() </span>
+<span id="cb37-14">violin_plot</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -493,14 +525,14 @@ posterior_nopool -54.2       9.0  </code></pre>
 <p>That appears to be a reasonably good fit, although it’s possible that the prediction intervals are a bit wide. We can also look at the plot of the posterior residuals vs the fitted values. Here the fitted values are the mean of the posterior predictive distribution.</p>
 <p>Next, let’s check for evidence of non-linearity in <code>age</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1">plot_data <span class="ot" style="color: #003B4F;">&lt;-</span> activity_2mins_scaled <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
-<span id="cb36-2">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">fitted_mean =</span> <span class="fu" style="color: #4758AB;">colMeans</span>(<span class="fu" style="color: #4758AB;">posterior_epred</span>(posterior_draws,<span class="at" style="color: #657422;">ndraws =</span> <span class="dv" style="color: #AD0000;">200</span>)))</span>
-<span id="cb36-3"></span>
-<span id="cb36-4">age_plot <span class="ot" style="color: #003B4F;">&lt;-</span> plot_data <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
-<span id="cb36-5">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> age, <span class="at" style="color: #657422;">y =</span> active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean)) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb36-6">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb36-7">  <span class="fu" style="color: #4758AB;">theme_bw</span>()</span>
-<span id="cb36-8">age_plot</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb38" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1">plot_data <span class="ot" style="color: #003B4F;">&lt;-</span> activity_2mins_scaled <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb38-2">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">fitted_mean =</span> <span class="fu" style="color: #4758AB;">colMeans</span>(<span class="fu" style="color: #4758AB;">posterior_epred</span>(posterior_draws,<span class="at" style="color: #657422;">ndraws =</span> <span class="dv" style="color: #AD0000;">200</span>)))</span>
+<span id="cb38-3"></span>
+<span id="cb38-4">age_plot <span class="ot" style="color: #003B4F;">&lt;-</span> plot_data <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
+<span id="cb38-5">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> age, <span class="at" style="color: #657422;">y =</span> active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb38-6">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb38-7">  <span class="fu" style="color: #4758AB;">theme_bw</span>()</span>
+<span id="cb38-8">age_plot</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -509,11 +541,11 @@ posterior_nopool -54.2       9.0  </code></pre>
 <p>We can also check the distributional assumption<sup>31</sup> that the residuals <img src="https://latex.codecogs.com/png.latex?%0Ar_%7Bij%7D%20=%20y_%7Bij%7D%20-%20%5Cmu_j%0A"> have a Gaussian distribution. We can check this with a qq-plot. Here we are using the posterior mean to define our residuals.</p>
 <p>We can look at the qq-plot to see how we’re doing with normality.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1">distribution_plot <span class="ot" style="color: #003B4F;">&lt;-</span> plot_data <span class="sc" style="color: #5E5E5E;">|&gt;</span> <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">sample =</span> (active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean)<span class="sc" style="color: #5E5E5E;">/</span><span class="fu" style="color: #4758AB;">sd</span>(active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean))) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb37-2">  <span class="fu" style="color: #4758AB;">stat_qq</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb37-3">  <span class="fu" style="color: #4758AB;">geom_abline</span>(<span class="at" style="color: #657422;">slope =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">intercept =</span> <span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb37-4">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span>
-<span id="cb37-5">distribution_plot</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb39" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1">distribution_plot <span class="ot" style="color: #003B4F;">&lt;-</span> plot_data <span class="sc" style="color: #5E5E5E;">|&gt;</span> <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">sample =</span> (active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean)<span class="sc" style="color: #5E5E5E;">/</span><span class="fu" style="color: #4758AB;">sd</span>(active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean))) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb39-2">  <span class="fu" style="color: #4758AB;">stat_qq</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb39-3">  <span class="fu" style="color: #4758AB;">geom_abline</span>(<span class="at" style="color: #657422;">slope =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">intercept =</span> <span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb39-4">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span>
+<span id="cb39-5">distribution_plot</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -521,44 +553,44 @@ posterior_nopool -54.2       9.0  </code></pre>
 <p>That’s not too bad. A bit of a deviation from normality in the tails but nothing that would make me weep. It could well be an artifact of how I defined and normalised the residuals.</p>
 <p>We can also look at the so-called k-hat plot, which can be useful for finding high-leverage observations in general models.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1">loo_posterior <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">LOO</span>(posterior_draws) <span class="co" style="color: #5E5E5E;">#warnings suppressed</span></span>
-<span id="cb38-2">loo_posterior</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1">loo_posterior <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">LOO</span>(posterior_draws) <span class="co" style="color: #5E5E5E;">#warnings suppressed</span></span>
+<span id="cb40-2">loo_posterior</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Computed from 4000 by 485 log-likelihood matrix
 
          Estimate   SE
-elpd_loo   -349.5 12.3
-p_loo       117.0  5.1
-looic       699.0 24.6
+elpd_loo   -349.8 12.4
+p_loo       117.8  5.2
+looic       699.7 24.7
 ------
 Monte Carlo SE of elpd_loo is NA.
 
 Pareto k diagnostic values:
                          Count Pct.    Min. n_eff
-(-Inf, 0.5]   (good)     417   86.0%   748       
- (0.5, 0.7]   (ok)        62   12.8%   341       
-   (0.7, 1]   (bad)        6    1.2%   275       
-   (1, Inf)   (very bad)   0    0.0%   &lt;NA&gt;      
+(-Inf, 0.5]   (good)     418   86.2%   902       
+ (0.5, 0.7]   (ok)        65   13.4%   443       
+   (0.7, 1]   (bad)        1    0.2%   272       
+   (1, Inf)   (very bad)   1    0.2%   59        
 See help('pareto-k-diagnostic') for details.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><span class="fu" style="color: #4758AB;">plot</span>(loo_posterior)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb42" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><span class="fu" style="color: #4758AB;">plot</span>(loo_posterior)</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>This suggests that observations 10, 233, 234, 367, 394, 479 are potentially high leverage and we should check them more carefully. I won’t be doing that today.</p>
+<p>This suggests that observations 393, 394 are potentially high leverage and we should check them more carefully. I won’t be doing that today.</p>
 <p>Finally, let’s look at the residuals vs the fitted values. This is a commonly used diagnostic plot in linear regression and it can be very useful for visually detecting non-linear patterns and heteroskedasticity in the residuals. So let’s make the plot<sup>32</sup>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1">problem_plot <span class="ot" style="color: #003B4F;">&lt;-</span> plot_data <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
-<span id="cb41-2">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> fitted_mean, <span class="at" style="color: #657422;">y =</span> active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb41-3">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb41-4">  <span class="fu" style="color: #4758AB;">geom_smooth</span>(<span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"lm"</span>, <span class="at" style="color: #657422;">se =</span> <span class="cn" style="color: #8f5902;">FALSE</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>, <span class="at" style="color: #657422;">colour =</span> <span class="st" style="color: #20794D;">"blue"</span>)<span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb41-5">  <span class="fu" style="color: #4758AB;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;">~</span>day) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb41-6">  <span class="fu" style="color: #4758AB;">theme_bw</span>() <span class="sc" style="color: #5E5E5E;">+</span>  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">legend.position=</span><span class="st" style="color: #20794D;">"none"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb41-7">  <span class="fu" style="color: #4758AB;">xlim</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>,<span class="dv" style="color: #AD0000;">1</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb41-8">  <span class="fu" style="color: #4758AB;">ylim</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>,<span class="dv" style="color: #AD0000;">1</span>))</span>
-<span id="cb41-9">problem_plot</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb43" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1">problem_plot <span class="ot" style="color: #003B4F;">&lt;-</span> plot_data <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
+<span id="cb43-2">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> fitted_mean, <span class="at" style="color: #657422;">y =</span> active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb43-3">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb43-4">  <span class="fu" style="color: #4758AB;">geom_smooth</span>(<span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"lm"</span>, <span class="at" style="color: #657422;">se =</span> <span class="cn" style="color: #8f5902;">FALSE</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>, <span class="at" style="color: #657422;">colour =</span> <span class="st" style="color: #20794D;">"blue"</span>)<span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb43-5">  <span class="fu" style="color: #4758AB;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;">~</span>day) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb43-6">  <span class="fu" style="color: #4758AB;">theme_bw</span>() <span class="sc" style="color: #5E5E5E;">+</span>  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">legend.position=</span><span class="st" style="color: #20794D;">"none"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb43-7">  <span class="fu" style="color: #4758AB;">xlim</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>,<span class="dv" style="color: #AD0000;">1</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb43-8">  <span class="fu" style="color: #4758AB;">ylim</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>,<span class="dv" style="color: #AD0000;">1</span>))</span>
+<span id="cb43-9">problem_plot</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -580,32 +612,32 @@ See help('pareto-k-diagnostic') for details.</code></pre>
 <p>That said, there are a bunch of other options. Specifically, we have a whole bag of samples from our posterior distribution and it would be possible to use that to select values of<sup>36</sup> <img src="https://latex.codecogs.com/png.latex?(%5Cmu,%20%5Cbeta,%20%5Ctau,%20%5Csigma)"> for our simulation.</p>
 <p>So let’s make some fake data and fit the model to it!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1">monkey_effect <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">tibble</span>(<span class="at" style="color: #657422;">monkey =</span> <span class="fu" style="color: #4758AB;">unique</span>(activity_2mins_scaled<span class="sc" style="color: #5E5E5E;">$</span>monkey), </span>
-<span id="cb42-2">                        <span class="at" style="color: #657422;">monkey_effect =</span> <span class="fu" style="color: #4758AB;">rnorm</span>(<span class="dv" style="color: #AD0000;">243</span>,<span class="dv" style="color: #AD0000;">0</span>,<span class="fl" style="color: #AD0000;">0.31</span>))</span>
-<span id="cb42-3">data_fake <span class="ot" style="color: #003B4F;">&lt;-</span> activity_2mins_scaled <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
-<span id="cb42-4">  <span class="fu" style="color: #4758AB;">left_join</span>(monkey_effect, <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"monkey"</span>)  <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
-<span id="cb42-5">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">active_bins_scaled =</span> <span class="fu" style="color: #4758AB;">rnorm</span>(<span class="fu" style="color: #4758AB;">length</span>(age_centred),</span>
-<span id="cb42-6">            <span class="at" style="color: #657422;">mean =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="fl" style="color: #AD0000;">0.04</span> <span class="sc" style="color: #5E5E5E;">+</span><span class="fl" style="color: #AD0000;">0.01</span> <span class="sc" style="color: #5E5E5E;">*</span> age_centred <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb42-7">              monkey_effect <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">if_else</span>(day <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"2"</span>, <span class="fl" style="color: #AD0000;">0.1</span> <span class="sc" style="color: #5E5E5E;">+</span> <span class="fl" style="color: #AD0000;">0.085</span> <span class="sc" style="color: #5E5E5E;">*</span>age_centred, <span class="fl" style="color: #AD0000;">0.0</span>), </span>
-<span id="cb42-8">            <span class="at" style="color: #657422;">sd =</span> <span class="fl" style="color: #AD0000;">0.43</span>))</span>
-<span id="cb42-9">                                              </span>
-<span id="cb42-10">posterior_draws_fake <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">brm</span>(formula, </span>
-<span id="cb42-11">           <span class="at" style="color: #657422;">data =</span> data_fake,</span>
-<span id="cb42-12">           <span class="at" style="color: #657422;">prior =</span> priors,</span>
-<span id="cb42-13">           <span class="at" style="color: #657422;">backend =</span> <span class="st" style="color: #20794D;">"cmdstanr"</span>,</span>
-<span id="cb42-14">           <span class="at" style="color: #657422;">cores =</span> <span class="dv" style="color: #AD0000;">4</span>,</span>
-<span id="cb42-15">           <span class="at" style="color: #657422;">refresh =</span> <span class="dv" style="color: #AD0000;">0</span>)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb44" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1">monkey_effect <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">tibble</span>(<span class="at" style="color: #657422;">monkey =</span> <span class="fu" style="color: #4758AB;">unique</span>(activity_2mins_scaled<span class="sc" style="color: #5E5E5E;">$</span>monkey), </span>
+<span id="cb44-2">                        <span class="at" style="color: #657422;">monkey_effect =</span> <span class="fu" style="color: #4758AB;">rnorm</span>(<span class="dv" style="color: #AD0000;">243</span>,<span class="dv" style="color: #AD0000;">0</span>,<span class="fl" style="color: #AD0000;">0.31</span>))</span>
+<span id="cb44-3">data_fake <span class="ot" style="color: #003B4F;">&lt;-</span> activity_2mins_scaled <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb44-4">  <span class="fu" style="color: #4758AB;">left_join</span>(monkey_effect, <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"monkey"</span>)  <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb44-5">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">active_bins_scaled =</span> <span class="fu" style="color: #4758AB;">rnorm</span>(<span class="fu" style="color: #4758AB;">length</span>(age_centred),</span>
+<span id="cb44-6">            <span class="at" style="color: #657422;">mean =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="fl" style="color: #AD0000;">0.04</span> <span class="sc" style="color: #5E5E5E;">+</span><span class="fl" style="color: #AD0000;">0.01</span> <span class="sc" style="color: #5E5E5E;">*</span> age_centred <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb44-7">              monkey_effect <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">if_else</span>(day <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"2"</span>, <span class="fl" style="color: #AD0000;">0.1</span> <span class="sc" style="color: #5E5E5E;">+</span> <span class="fl" style="color: #AD0000;">0.085</span> <span class="sc" style="color: #5E5E5E;">*</span>age_centred, <span class="fl" style="color: #AD0000;">0.0</span>), </span>
+<span id="cb44-8">            <span class="at" style="color: #657422;">sd =</span> <span class="fl" style="color: #AD0000;">0.43</span>))</span>
+<span id="cb44-9">                                              </span>
+<span id="cb44-10">posterior_draws_fake <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">brm</span>(formula, </span>
+<span id="cb44-11">           <span class="at" style="color: #657422;">data =</span> data_fake,</span>
+<span id="cb44-12">           <span class="at" style="color: #657422;">prior =</span> priors,</span>
+<span id="cb44-13">           <span class="at" style="color: #657422;">backend =</span> <span class="st" style="color: #20794D;">"cmdstanr"</span>,</span>
+<span id="cb44-14">           <span class="at" style="color: #657422;">cores =</span> <span class="dv" style="color: #AD0000;">4</span>,</span>
+<span id="cb44-15">           <span class="at" style="color: #657422;">refresh =</span> <span class="dv" style="color: #AD0000;">0</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 1.2 seconds.
-Chain 2 finished in 1.2 seconds.
-Chain 3 finished in 1.3 seconds.
-Chain 4 finished in 1.2 seconds.
+Chain 1 finished in 1.6 seconds.
+Chain 2 finished in 1.6 seconds.
+Chain 3 finished in 1.6 seconds.
+Chain 4 finished in 1.6 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 1.2 seconds.
-Total execution time: 1.4 seconds.</code></pre>
+Mean chain execution time: 1.6 seconds.
+Total execution time: 1.8 seconds.</code></pre>
 </div>
 </div>
 </section>
@@ -613,22 +645,22 @@ Total execution time: 1.4 seconds.</code></pre>
 <h3 class="anchored" data-anchor-id="the-good-plots">The good plots</h3>
 <p>First up, let’s look at the violin plot.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><span class="fu" style="color: #4758AB;">library</span>(cowplot)</span>
-<span id="cb44-2">fitted_fake <span class="ot" style="color: #003B4F;">&lt;-</span> data_fake <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
-<span id="cb44-3">  <span class="fu" style="color: #4758AB;">cbind</span>(<span class="fu" style="color: #4758AB;">t</span>(<span class="fu" style="color: #4758AB;">posterior_predict</span>(posterior_draws_fake,<span class="at" style="color: #657422;">ndraws =</span> <span class="dv" style="color: #AD0000;">200</span>))) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
-<span id="cb44-4">  <span class="fu" style="color: #4758AB;">pivot_longer</span>(<span class="dv" style="color: #AD0000;">8</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">207</span>, <span class="at" style="color: #657422;">names_to =</span> <span class="st" style="color: #20794D;">"draw"</span>, <span class="at" style="color: #657422;">values_to =</span> <span class="st" style="color: #20794D;">"fitted"</span>)</span>
-<span id="cb44-5"></span>
-<span id="cb44-6">day_labs <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Day 1"</span>, <span class="st" style="color: #20794D;">"Day 2"</span>)</span>
-<span id="cb44-7"><span class="fu" style="color: #4758AB;">names</span>(day_labs) <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"1"</span>, <span class="st" style="color: #20794D;">"2"</span>)</span>
-<span id="cb44-8"></span>
-<span id="cb44-9">violin_fake <span class="ot" style="color: #003B4F;">&lt;-</span> fitted_fake <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
-<span id="cb44-10">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>( <span class="at" style="color: #657422;">x=</span>age, <span class="at" style="color: #657422;">y =</span> <span class="dv" style="color: #AD0000;">4</span><span class="sc" style="color: #5E5E5E;">*</span>fitted <span class="sc" style="color: #5E5E5E;">+</span> active_bins_centre, <span class="at" style="color: #657422;">group =</span> age)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb44-11">  <span class="fu" style="color: #4758AB;">geom_violin</span>(<span class="at" style="color: #657422;">colour =</span> <span class="st" style="color: #20794D;">"lightgrey"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb44-12">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">y =</span> active_bins), <span class="at" style="color: #657422;">colour =</span> <span class="st" style="color: #20794D;">"red"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb44-13">  <span class="fu" style="color: #4758AB;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;">~</span>day, <span class="at" style="color: #657422;">labeller =</span> <span class="fu" style="color: #4758AB;">labeller</span>(<span class="at" style="color: #657422;">day =</span> day_labs)) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb44-14">  <span class="fu" style="color: #4758AB;">theme_bw</span>() </span>
-<span id="cb44-15">  </span>
-<span id="cb44-16"><span class="fu" style="color: #4758AB;">plot_grid</span>(violin_plot, violin_fake, <span class="at" style="color: #657422;">labels =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Real"</span>, <span class="st" style="color: #20794D;">"Fake"</span>))</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb46" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><span class="fu" style="color: #4758AB;">library</span>(cowplot)</span>
+<span id="cb46-2">fitted_fake <span class="ot" style="color: #003B4F;">&lt;-</span> data_fake <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb46-3">  <span class="fu" style="color: #4758AB;">cbind</span>(<span class="fu" style="color: #4758AB;">t</span>(<span class="fu" style="color: #4758AB;">posterior_predict</span>(posterior_draws_fake,<span class="at" style="color: #657422;">ndraws =</span> <span class="dv" style="color: #AD0000;">200</span>))) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb46-4">  <span class="fu" style="color: #4758AB;">pivot_longer</span>(<span class="dv" style="color: #AD0000;">8</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">207</span>, <span class="at" style="color: #657422;">names_to =</span> <span class="st" style="color: #20794D;">"draw"</span>, <span class="at" style="color: #657422;">values_to =</span> <span class="st" style="color: #20794D;">"fitted"</span>)</span>
+<span id="cb46-5"></span>
+<span id="cb46-6">day_labs <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Day 1"</span>, <span class="st" style="color: #20794D;">"Day 2"</span>)</span>
+<span id="cb46-7"><span class="fu" style="color: #4758AB;">names</span>(day_labs) <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"1"</span>, <span class="st" style="color: #20794D;">"2"</span>)</span>
+<span id="cb46-8"></span>
+<span id="cb46-9">violin_fake <span class="ot" style="color: #003B4F;">&lt;-</span> fitted_fake <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
+<span id="cb46-10">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>( <span class="at" style="color: #657422;">x=</span>age, <span class="at" style="color: #657422;">y =</span> <span class="dv" style="color: #AD0000;">4</span><span class="sc" style="color: #5E5E5E;">*</span>fitted <span class="sc" style="color: #5E5E5E;">+</span> active_bins_centre, <span class="at" style="color: #657422;">group =</span> age)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb46-11">  <span class="fu" style="color: #4758AB;">geom_violin</span>(<span class="at" style="color: #657422;">colour =</span> <span class="st" style="color: #20794D;">"lightgrey"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb46-12">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">y =</span> active_bins), <span class="at" style="color: #657422;">colour =</span> <span class="st" style="color: #20794D;">"red"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb46-13">  <span class="fu" style="color: #4758AB;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;">~</span>day, <span class="at" style="color: #657422;">labeller =</span> <span class="fu" style="color: #4758AB;">labeller</span>(<span class="at" style="color: #657422;">day =</span> day_labs)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb46-14">  <span class="fu" style="color: #4758AB;">theme_bw</span>() </span>
+<span id="cb46-15">  </span>
+<span id="cb46-16"><span class="fu" style="color: #4758AB;">plot_grid</span>(violin_plot, violin_fake, <span class="at" style="color: #657422;">labels =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Real"</span>, <span class="st" style="color: #20794D;">"Fake"</span>))</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -636,14 +668,14 @@ Total execution time: 1.4 seconds.</code></pre>
 <p>That’s very similar to our data plot.</p>
 <p>Next up, we will look at the residuals ordered by age</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1">plot_data_fake <span class="ot" style="color: #003B4F;">&lt;-</span> data_fake <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
-<span id="cb45-2">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">fitted_mean =</span> <span class="fu" style="color: #4758AB;">colMeans</span>(<span class="fu" style="color: #4758AB;">posterior_epred</span>(posterior_draws_fake,<span class="at" style="color: #657422;">ndraws =</span> <span class="dv" style="color: #AD0000;">200</span>)))</span>
-<span id="cb45-3"></span>
-<span id="cb45-4">age_fake <span class="ot" style="color: #003B4F;">&lt;-</span> plot_data_fake <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
-<span id="cb45-5">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> age, <span class="at" style="color: #657422;">y =</span> active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean)) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb45-6">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb45-7">  <span class="fu" style="color: #4758AB;">theme_bw</span>()</span>
-<span id="cb45-8"><span class="fu" style="color: #4758AB;">plot_grid</span>(age_plot, age_fake, <span class="at" style="color: #657422;">labels =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Real"</span>, <span class="st" style="color: #20794D;">"Fake"</span>))</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb47" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1">plot_data_fake <span class="ot" style="color: #003B4F;">&lt;-</span> data_fake <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb47-2">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">fitted_mean =</span> <span class="fu" style="color: #4758AB;">colMeans</span>(<span class="fu" style="color: #4758AB;">posterior_epred</span>(posterior_draws_fake,<span class="at" style="color: #657422;">ndraws =</span> <span class="dv" style="color: #AD0000;">200</span>)))</span>
+<span id="cb47-3"></span>
+<span id="cb47-4">age_fake <span class="ot" style="color: #003B4F;">&lt;-</span> plot_data_fake <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
+<span id="cb47-5">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> age, <span class="at" style="color: #657422;">y =</span> active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb47-6">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb47-7">  <span class="fu" style="color: #4758AB;">theme_bw</span>()</span>
+<span id="cb47-8"><span class="fu" style="color: #4758AB;">plot_grid</span>(age_plot, age_fake, <span class="at" style="color: #657422;">labels =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Real"</span>, <span class="st" style="color: #20794D;">"Fake"</span>))</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -651,13 +683,13 @@ Total execution time: 1.4 seconds.</code></pre>
 <p>Fabulous!</p>
 <p>Now let’s check the distributional assumption on the residuals!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1">distribution_fake <span class="ot" style="color: #003B4F;">&lt;-</span> plot_data_fake <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
-<span id="cb46-2">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">sample =</span> (active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean)<span class="sc" style="color: #5E5E5E;">/</span><span class="fu" style="color: #4758AB;">sd</span>(active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean))) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb46-3">  <span class="fu" style="color: #4758AB;">stat_qq</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb46-4">  <span class="fu" style="color: #4758AB;">geom_abline</span>(<span class="at" style="color: #657422;">slope =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">intercept =</span> <span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb46-5">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span>
-<span id="cb46-6"></span>
-<span id="cb46-7"><span class="fu" style="color: #4758AB;">plot_grid</span>(distribution_plot, distribution_fake, <span class="at" style="color: #657422;">labels =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Real"</span>, <span class="st" style="color: #20794D;">"Fake"</span>))</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb48" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1">distribution_fake <span class="ot" style="color: #003B4F;">&lt;-</span> plot_data_fake <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb48-2">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">sample =</span> (active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean)<span class="sc" style="color: #5E5E5E;">/</span><span class="fu" style="color: #4758AB;">sd</span>(active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean))) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb48-3">  <span class="fu" style="color: #4758AB;">stat_qq</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb48-4">  <span class="fu" style="color: #4758AB;">geom_abline</span>(<span class="at" style="color: #657422;">slope =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">intercept =</span> <span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb48-5">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span>
+<span id="cb48-6"></span>
+<span id="cb48-7"><span class="fu" style="color: #4758AB;">plot_grid</span>(distribution_plot, distribution_fake, <span class="at" style="color: #657422;">labels =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Real"</span>, <span class="st" style="color: #20794D;">"Fake"</span>))</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -665,33 +697,33 @@ Total execution time: 1.4 seconds.</code></pre>
 <p>Excellent!</p>
 <p>Finally, we can look at the k-hat plot. Because I’m lazy, I’m not going to put them side by side. You can scroll.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1">loo_fake <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">LOO</span>(posterior_draws_fake)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb49" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1">loo_fake <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">LOO</span>(posterior_draws_fake)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Found 4 observations with a pareto_k &gt; 0.7 in model
 'posterior_draws_fake'. It is recommended to set 'moment_match = TRUE' in order
 to perform moment matching for problematic observations.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb49" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1">loo_fake</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb51" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1">loo_fake</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Computed from 4000 by 485 log-likelihood matrix
 
          Estimate   SE
-elpd_loo   -362.3 14.3
-p_loo       115.1  5.8
-looic       724.6 28.5
+elpd_loo   -372.1 14.9
+p_loo       115.4  6.1
+looic       744.2 29.7
 ------
 Monte Carlo SE of elpd_loo is NA.
 
 Pareto k diagnostic values:
                          Count Pct.    Min. n_eff
-(-Inf, 0.5]   (good)     422   87.0%   571       
- (0.5, 0.7]   (ok)        59   12.2%   205       
-   (0.7, 1]   (bad)        4    0.8%   169       
+(-Inf, 0.5]   (good)     422   87.0%   579       
+ (0.5, 0.7]   (ok)        59   12.2%   220       
+   (0.7, 1]   (bad)        4    0.8%   118       
    (1, Inf)   (very bad)   0    0.0%   &lt;NA&gt;      
 See help('pareto-k-diagnostic') for details.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb51" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><span class="fu" style="color: #4758AB;">plot</span>(loo_fake)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb53" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><span class="fu" style="color: #4758AB;">plot</span>(loo_fake)</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -703,15 +735,15 @@ See help('pareto-k-diagnostic') for details.</code></pre>
 <h3 class="anchored" data-anchor-id="the-haunted-residual-vs-fitted-plot">The haunted residual vs fitted plot</h3>
 <p>Now let’s look at our residual vs fitted plot.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1">problem_fake <span class="ot" style="color: #003B4F;">&lt;-</span> plot_data_fake <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
-<span id="cb52-2">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> fitted_mean, <span class="at" style="color: #657422;">y =</span> active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
-<span id="cb52-3">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb52-4">  <span class="fu" style="color: #4758AB;">geom_smooth</span>(<span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"lm"</span>, <span class="at" style="color: #657422;">se =</span> <span class="cn" style="color: #8f5902;">FALSE</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>, <span class="at" style="color: #657422;">colour =</span> <span class="st" style="color: #20794D;">"blue"</span>)<span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb52-5">  <span class="fu" style="color: #4758AB;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;">~</span>day) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb52-6">  <span class="fu" style="color: #4758AB;">theme_bw</span>() <span class="sc" style="color: #5E5E5E;">+</span>  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">legend.position=</span><span class="st" style="color: #20794D;">"none"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb52-7">  <span class="fu" style="color: #4758AB;">xlim</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>,<span class="dv" style="color: #AD0000;">1</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb52-8">  <span class="fu" style="color: #4758AB;">ylim</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>,<span class="dv" style="color: #AD0000;">1</span>))</span>
-<span id="cb52-9"><span class="fu" style="color: #4758AB;">plot_grid</span>(problem_plot, problem_fake, <span class="at" style="color: #657422;">labels =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Real"</span>, <span class="st" style="color: #20794D;">"Fake"</span>))</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb54" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1">problem_fake <span class="ot" style="color: #003B4F;">&lt;-</span> plot_data_fake <span class="sc" style="color: #5E5E5E;">|&gt;</span> </span>
+<span id="cb54-2">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> fitted_mean, <span class="at" style="color: #657422;">y =</span> active_bins_scaled <span class="sc" style="color: #5E5E5E;">-</span> fitted_mean)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb54-3">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb54-4">  <span class="fu" style="color: #4758AB;">geom_smooth</span>(<span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"lm"</span>, <span class="at" style="color: #657422;">se =</span> <span class="cn" style="color: #8f5902;">FALSE</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>, <span class="at" style="color: #657422;">colour =</span> <span class="st" style="color: #20794D;">"blue"</span>)<span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb54-5">  <span class="fu" style="color: #4758AB;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;">~</span>day) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb54-6">  <span class="fu" style="color: #4758AB;">theme_bw</span>() <span class="sc" style="color: #5E5E5E;">+</span>  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">legend.position=</span><span class="st" style="color: #20794D;">"none"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb54-7">  <span class="fu" style="color: #4758AB;">xlim</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>,<span class="dv" style="color: #AD0000;">1</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb54-8">  <span class="fu" style="color: #4758AB;">ylim</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>,<span class="dv" style="color: #AD0000;">1</span>))</span>
+<span id="cb54-9"><span class="fu" style="color: #4758AB;">plot_grid</span>(problem_plot, problem_fake, <span class="at" style="color: #657422;">labels =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Real"</span>, <span class="st" style="color: #20794D;">"Fake"</span>))</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
 </div>
