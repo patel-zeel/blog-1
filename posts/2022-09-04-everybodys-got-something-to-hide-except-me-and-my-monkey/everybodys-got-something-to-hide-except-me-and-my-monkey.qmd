@@ -7,6 +7,8 @@ image: mark.png
 categories: [Multilevel models, Visual diagnostics, Prior distributions, fundamentals]
 twitter-card:
   title: "A first look at multilevel regression; or Everybody's got something to hide except me and my macaques"
+  description: |
+    A small introduction to multilevel models. Why? Because I said so, that's why. And you will simply not believe what happens to residual plots.
   creator: "@dan_p_simpson"
 citation: 
   url: https://dansblog.netlify.app/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey.html
@@ -14,7 +16,7 @@ format:
   html:
     df-print: paged
 
-draft: true
+draft: false
 ---
 
 
@@ -30,10 +32,10 @@ food inside).
 This is where Eliza---who knows a little something about monkeys---comes
 into frame: this did not gel with her experiences at all.
 
-So Eliza (and [Mark](http://labs.neuroscience.mssm.edu/project/baxter-lab/), who also knows a little something about monkeys) decided to 
+So Eliza (and [Mark](https://scholar.google.com.au/citations?hl=en&user=yg9U_okAAAAJ)^[Mark insisted that I like to his google scholar rather than his website. He's cute that way.] ^[Mark wants me to tell you that he's not vain he's just moving. Sure Jan.], who also knows a little something about monkeys) decided to 
 look into it.
 
-## What are the stakes (According to the papers, not according to me, who knows exactly nothing about this type of work)
+## What are the stake?s (According to the papers, not according to me, who knows exactly nothing^[I know that marmosets suffer from lesbian bed death, but I'm told that a marmoset is not a macaque, which in turn is not a macaw. Ecology is fascinating.] about this type of work)
 
 A big motivation for studying macaques and other non-human
 primates is that they're good models of humans. This means that if there was solid
@@ -53,7 +55,7 @@ opted for the third option, designing a _conceptual replication_.
 
 Direct replications tell you more about the specific experiment that was conducted,
 but not necessarily more about the phenomenon under investigation. In a study involving
-aged monkeys, it's difficult to imagine how a direct replication could take place.
+aged monkeys^[A real problem in the world is that there aren't enough monkeys for animal research at the best of times. Once you need aged monkeys, it's an even smaller population. Non-human primate research is _hard_.], it's difficult to imagine how a direct replication could take place.
 
 On the other hand, a conceptual replication has a lot more flexibility. It allows you
 to probe the question in a more targeted manner, appropriate for incremental science.
@@ -79,7 +81,7 @@ For each monkey, we have the following information:
 - Number of active intervals in the first two minutes (0-8)
 - Number of active intervals in the first twenty minutes (0-80)
 
-The data and their analysis are freely^[Did Mark make me do unspeakable, degrading, borderline immoral things to get the data? No. It's open source. Truly the first time I've been disappoined that something was open source.] available [here](https://datadryad.org/stash/dataset/doi:10.5061/dryad.1bj133v).
+The data and their analysis are freely^[Did Mark make me do unspeakable, degrading, borderline immoral things to get the data? No. It's open source. Truly the first time I've been disappointed that something was open source.] available [here](https://datadryad.org/stash/dataset/doi:10.5061/dryad.1bj133v).
 
 ```{r}
 #| echo: true
@@ -87,14 +89,14 @@ The data and their analysis are freely^[Did Mark make me do unspeakable, degradi
 library(tidyverse)
 acti_data <- read_csv("activity_data.csv") 
 activity_2mins <- acti_data |>
-  filter(obs<9) %>% group_by(subj_id, Day) |>
+  filter(obs<9) |> group_by(subj_id, Day) |>
   summarize(total=sum(Activity), 
             active_bins = sum(Activity > 0), 
             age = min(age)) |>
   rename(monkey = subj_id, day = Day) |>
   ungroup()
 
-activity_20minms80 <- acti_data %>% filter(obs<81) |>
+activity_20minms80 <- acti_data |> filter(obs<81) |>
   group_by(subj_id, Day) |>
   summarize(total=sum(Activity), 
             active_bins = sum(Activity > 0), 
@@ -103,7 +105,7 @@ activity_20minms80 <- acti_data %>% filter(obs<81) |>
   ungroup()
 ```
 
-## Ok Mary, how do we analyze this data?
+## Ok Mary, how are we going to analyze this data?
 
 Eliza and Mark's monkey data is an example of a fairly common type of experimental data, where the same subject is measured multiple times. It is useful to break the covariates down into three types: _grouping variables_,  _group-level covariates_, and _individual-level covariates_.
 
@@ -123,6 +125,9 @@ The temptation with this sort of data is to fit a linear regression to it as
 a first model. In this case, we are using grouping, group-level, and individual-level covariates in the same way. Let's suck it and see.
 
 ```{r}
+#| output: true
+#| echo: true
+#| eval: true
 library(broom)
 fit_lm <- lm(active_bins ~ age*factor(day) + factor(monkey), data = activity_2mins)
 
@@ -131,15 +136,17 @@ tidy(fit_lm)
 
 So the first thing you will notice is that that is _a lot_ of regression coefficients!
 There are 243 monkeys and 2 days, but only 485 observations. This isn't enough data
-to reliably estimate all of these parameters. So what are we to do?
+to reliably estimate all of these parameters. (Look at the standard errors for the monkey-related coefficients. They are huge!)
 
-The problem is the monkeys. If we use `monkey` as a factor variable, we only have (at most) two observations of each factor level. This is  simply not enough observations per to estimate the monkey-specific intercept!
+So what are we to do?
+
+The problem is the monkeys. If we use `monkey` as a factor variable, we only have (at most) two observations of each factor level. This is  simply not enough observations per to estimate a different intercept for each monkey!
 
 This type of model is often described as having _no pooling_, which indicates that there is no explicit dependence between the intercepts for each group (`monkey`). (There is some dependence between groups due to the group-level covariate `age`.)
 
-### If we ignore the monkeys, will they go away? or another attempt at regression 
+### If we ignore the monkeys, will they go away? or Another attempt at regression 
 
-Our first attempt at a regression model didn't work particularly well, but that doesn't mean we should give up. A second option is that we can assume that there is, fundamentally, no difference between monkeys. If all monkeys of the same age have similar amounts of interest in new puzzles, this would be a reasonable assumption. The best case scenario is that not accounting for differences between individual monkeys would still lead to approximately normal residuals, albeit with probably a larger residual variance. 
+Our first attempt at a regression model didn't work particularly well, but that doesn't mean we should give up^[If statisticians abandoned linear regression we would have nothing left. We would be desiccated husks propping up the bar at 3am talking about how we used to do loads of lines in the 80s.]. A second option is that we can assume that there is, fundamentally, no difference between monkeys. If all monkeys of the same age have similar amounts of interest in new puzzles, this would be a reasonable assumption. The best case scenario is that not accounting for differences between individual monkeys would still lead to approximately normal residuals, albeit with probably a larger residual variance. 
 
 This type of modelling assumption is called _complete pooling_ as it pools the information between groups by treating them all as the same. 
 
@@ -160,14 +167,15 @@ Let's look at the diagnostic plots.
 
 ```{r}
 #| message: false
+
 library(broom)
-augment(fit_lm_pool) %>% 
+augment(fit_lm_pool) |> 
   ggplot(aes(x = .fitted, y = active_bins - .fitted)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
   theme_classic()
 
-augment(fit_lm_pool) %>% ggplot(aes(sample = .std.resid)) + 
+augment(fit_lm_pool) |> ggplot(aes(sample = .std.resid)) + 
   stat_qq() +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") + 
   theme_classic()
@@ -175,23 +183,25 @@ augment(fit_lm_pool) %>% ggplot(aes(sample = .std.resid)) +
 
 There are certainly some patterns in those residuals (and some suggestion that the error need a heavier tail for this model to make sense).
 
-## What is between no pooling and complete pooling? 
+## What is between no pooling and complete pooling? Multilevel models, that's what
 
 We are in a Goldilocks situation: no pooling results in a model that has too many 
 independent parameters for the amount of data that we've got, while complete
 pooling has too few parameters to correctly account for the differences between the 
-monkeys. So what is our perfectly tempered porridge? 
+monkeys. So what is our perfectly tempered porridge^[Our perfect amount of pool? I don't know how metaphors work]? 
 
 The answer is to assume that each monkey has its own intercept, but that it's intercept
-can only be _so far_ from the overall intercept (which we would've gotten from complete
+can only be _so far_ from the overall intercept (that we would've gotten from complete
 pooling). There are a bunch of ways to realize this concept, but the classical method
 is to use a normal distribution. 
 
 In particular, if the $j$th monkey has observations $y_{ij}$, $i=1,2$, then we 
-can write our model as $$
-y_{ij}  \sim N(\mu_j + \beta_\text{age}\, \text{age}_j + \beta_\text{day}\, \text{day}_{ij}, \sigma^2).
+can write our model as 
 $$
-The effect of age ($\beta$) and the data standard deviation ($\sigma$) are just like they'd be in an ordinary linear regression model. Our modification comes in how we treat the $\mu_j$.
+y_{ij}  \sim N(\mu_j + \beta_\text{age}\, \text{age}_j + \beta_\text{day}\, \text{day}_{ij} + \beta_\text{age,day}\, \text{[age*day]}_{ij}, \sigma^2).
+$$
+
+The effects of age and day and the data standard deviation ($\sigma$) are just like they'd be in an ordinary linear regression model. Our modification comes in how we treat the $\mu_j$.
 
 In a classical linear regression model, we would fit the $\mu_j$s independently, 
 perhaps with some weakly informative prior distribution. But we've already discussed 
@@ -209,14 +219,15 @@ $$
 $$
 for some $\mu$ and $\tau$ that will need their own priors.
 
-Mathematically the difference the classical regression model that assumes independence of the $\mu_j$ and this model is that the former assumes that we can write the joint distribution of the $\mu_j$ as 
+We can explore this difference mathematically. The regression model, which assumes independence of the $\mu_j$, uses
 $$
 p(\mu_1, \ldots, \mu_J) = \prod_{j=1}^J N(\mu, \tau_\text{fixed}^2)
 $$
-while the exchangeable model assumes that 
+as the joint prior on $\mu_1,\ldots,\mu_J$. On the other hand, the exchangeable model, which forms the basis of multilevel models, assumes the joint prior 
 $$
-p(\mu_1, \ldots, \mu_J) = \int_0^\infty \left(\prod_{j=1}^J N(\mu, \tau^2)\right)p(\tau)\,d\tau.
+p(\mu_1, \ldots, \mu_J) = \int_0^\infty \left(\prod_{j=1}^J N(\mu, \tau^2)\right)p(\tau)\,d\tau,
 $$
+for some prior on $p(\tau)$ on $\tau$.
 
 This might not seem like much of a change, but it can be quite profound. In both cases, the prior is saying that each $\mu_j$ is, with high probability, at most $3\tau$ away from the overall mean $\mu$. The difference is that while the classical least squares formulation uses a fixed value of $\tau$ that needs to be specified by the modeller, while the exchangeable model lets $\tau$ adapt to the data.
 
@@ -224,34 +235,46 @@ This data adaptation is really nifty! It means that if the groups have similar m
 
 In our context, however, we need a tiny bit more. We have a _group-level covariate_ (specifically `age`) that we think is going to effect the group mean. So the model we want is 
 \begin{align*}
-y_{ij}  \mid \mu_j, \sigma &\sim N(\mu_j, \sigma^2) \\
-\mu_j\mid \tau, \mu,\beta &\sim N(\mu +  \beta_\text{age}\, \text{age}_j + \beta_\text{day}\, \text{day}_{ij}, \tau^2) \\
+y_{ij}  \mid \mu_j,\beta, \sigma &\sim N(\mu_j + \beta_\text{day}\, \text{day}_{ij} + \beta_\text{age,day}\, \text{[age*day]}_{ij} , \sigma^2) \\
+\mu_j\mid \tau, \mu,\beta &\sim N(\mu +  \beta_\text{age}\, \text{age}_j, \tau^2) \\
 \mu &\sim p(\mu)\\
 \beta &\sim p(\beta)\\
 \tau & \sim p(\tau) \\
 \sigma &\sim p(\sigma).
 \end{align*}
 
+
 In order to fully specify the model we need to set the four prior  distributions.
 
-## What are our prior distributions and how do we sense-check the assumptions
+This is an example of a _multilevel_^[Also known as a mixed effects or a linear mixed effects model.] _model_. The name comes from the data having multiple levels (in this case two: the observation level and the group level). Both levels have an appropriate model for their mean. 
 
-We need to set priors. The canny amongst you may have noticed that I did not set priors in the previous two examples. There are two reasons for this: firstly I didn't feel like it, and secondly none but the most terrible prior distributions would have meaningfully changed the conclusions. This is, it turns out, one of the great truths when it comes to prior distributions: they do not matter until they do.
+This mathematical representation does a good job in separating out the two different levels. However, there are a lot of other ways of writing multilevel models. An important example is the extended formula notation created^[There are _many_ other ways to represnt Gaussian multilevel models. My former colleague Emi Tanaka and Francis Hui wrote a [great paper](https://arxiv.org/abs/1911.08628) on this topic.] by R's `lme4` package. In their notation, we would write this model as 
+```{r}
+formula <- active_bins_scaled ~ age_centred*day + (1 | monkey)
+```
+
+The first bit of this formula is the same as the formula used in linear regression.
+The interesting bit is is the `(1 | monkey)`. This is the way to tell R that the intercept (aka `1` in formula notation) is going to be grouped by `monkey` and we are going to put an exchangeable normal prior on it. For more complex models there are more complex variations on this theme, but for the moment we won't go any further. 
+
+
+## Reasoning out some prior distributions
+
+We need to set priors. The canny amongst you may have noticed that I did not set priors in the previous two examples. There are two reasons for this: firstly I didn't feel like it, and secondly none but the most terrible prior distributions would have meaningfully changed the conclusions. This is, it turns out, one of the great truths when it comes to prior distributions: _they do not matter until they do_^[Some particularly bold and foolish people take this to mean that priors aren't important. They usually get their arse handed to them the moment they try to fit an even mildly complex model.].
 
 In particular, if you have a parameter that _directly_ sees the data (eg it's in the likelihood) and there is nothing weird going on^[A non-exhaustive set of weird things: categorical regressors with a rare category, tail parameters, mixture models], then the prior distribution will usually not do much as any prior will be quickly overwhelmed by the data. 
 
-The problem is that we have one parameter in our model ($\tau$) that does not directly see the data. Instead of directly telling us about an observation, it tells us about how different the _groups_ of observations are. There is usually less information in the data about this type of parameter and, consequently, the prior distribution will be more important.
+The problem is that we have one parameter in our model ($\tau$) that does not directly see the data. Instead of directly telling us about an observation, it tells us about how different the _groups_ of observations are. There is usually less information in the data about this type of parameter and, consequently, the prior distribution will be more important. This is especially true when you have more than one grouping variable, or when a variable only has a small number of groups.
 
 So let's pay some proper attention to the priors.
 
 To begin with, let's set priors on $\mu$, $\beta$, and $\sigma$ (aka the data-level parameters). This is a _considerably_ easier task if the data is scaled. Otherwise, you need to encode information about the usual scale^[There are situations where this is not true. For instance if you have a log or logit link function you can put reasonable bounds on your coefficients regardless of the scaling of your data. That said, the computational procedures _always_ appreciate a bit of scaling. If there's one thing that computers hate more that big numbers it's small numbers.] of the data into your priors. Sometimes this is a sensible and easy thing to do, but usually it's easier to simply scale the data. (A lot of software will simply scale your data for you, but it is _always_ better to do it yourself!)
 
-So let's scale our data. We have 2 variables: age and active_bins.
+So let's scale our data. We have three variables that need scaling: `age` (aka the covariate that isn't categorical) and `active_bins` (aka the response).
 For age, we are going to want to measure it as either _years from the youngest monkey_ or _years from the average monkey_. I think, in this situation, the first version could make a lot of sense, but we are going with the second. This allows us to interpret $\mu$ as the over-all mean. Otherwise, $\mu$ would tell us about the overall average activity of 4 year old monkeys and we will use $\beta(\text{age}_j - 4)$ to estimate how much the activity changes, on average keeping all other aspects constant, as the monkey ages.  
 
-On the other hand, we have no sensible baseline for activity, so deviation from the average seems like a sensible scaling. I also don't know, _a priori_, how variable activity is going to be, so I might want to scale^[Of course, we know that the there are only 8 fifteen second intervals in two minutes, so we could use this information to make a data-independent scaling. To be brutally francis with you, that's what you should probably do in this situation, but I'm trying to be pedagogical so let's scale it by the standard deviation.] it by its standard deviation. In this case, I'm not going to do that because we have a sensible fixed^[Fixed scaling is always easier than data-dependent scaling] upper limit (8), which I can scale by.
+On the other hand, we have no sensible baseline for activity, so deviation from the average seems like a sensible scaling. I also don't know, _a priori_, how variable activity is going to be, so I might want to scale^[Of course, we know that the there are only 8 fifteen second intervals in two minutes, so we could use this information to make a data-independent scaling. To be brutally francis with you, that's what you should probably do in this situation, but I'm trying to be pedagogical so let's at least think about scaling it by the standard deviation.] it by its standard deviation. In this case, I'm not going to do that because we have a sensible fixed^[Fixed scaling is always easier than data-dependent scaling] upper limit (8), which I can scale by.
 
-One important thing here is that if we scale the data by data-dependent quantities (like the minimum, the mean, or the standard deviation) we _must_ keep track of this information. This is because _any_ future data we try to predict with this model will need to be transformed _the same way_! This particularly has implication when you are doing things like test/training set validation or cross validation: in the first case, the test set needs to be scaled in the same way the training set was; while in the second case each cross validation training set needs to be scaled independently and that scaling needs to be used on the corresponding left-out data^[The `tidymodels` package in R is a great example of an ecosystem that does this properly. [Max and Julia's book](https://www.tmwr.org) is very excellent and well worth a read.].
+One important thing here is that if we scale the data by data-dependent quantities (like the minimum, the mean, or the standard deviation) we _must_ keep track of this information. This is because _any_ future data we try to predict with this model will need to be transformed _the same way using the same_^[A real trick for young players is scaling new data by the mean and standard deviation of the new data rather than the old data. That's a very subtle bug that can be _very_ hard to squash.] _numbers_! This particularly has implication when you are doing things like test/training set validation or cross validation: in the first case, the test set needs to be scaled in the same way the training set was; while in the second case each cross validation training set needs to be scaled independently and that scaling needs to be used on the corresponding left-out data^[The `tidymodels` package in R is a great example of an ecosystem that does this properly. [Max and Julia's book](https://www.tmwr.org) on using `tidymodels` is very excellent and well worth a read.].
 
 ```{r}
 age_centre <- mean(activity_2mins$age)
@@ -262,27 +285,23 @@ activity_2mins_scaled <- activity_2mins |>
   mutate(monkey = factor(monkey),
          day = factor(day),
          age_centred = (age - age_centre)/age_scale,
-         active_bins_scaled = (active_bins - active_bins_centre)/4,
-         active_bins_sqrt = sqrt(active_bins))
+         active_bins_scaled = (active_bins - active_bins_centre)/4)
 
 ```
 
 With our scaling completed, we can now start thinking about prior distributions. The trick with priors is to make them wide enough to cover all plausible values of a parameter without making them so wide that they put a whole bunch of weight on essentially silly values.  
 
-We know, for instance, that our unscaled activity will go between 0 and 8. That means that it's unlikely for the mean of the scaled process to be much bigger than 4, and it's unlikely for the rate of change with respect to `age` to be much bigger than to be much bigger than 1 (macaques live for 20-40 years). These considerations suggest that $N(0,1)$ priors should be appropriate for $\mu$. As we normalised our age data relative to the smallest age, we should think more carefully about the scaling of $\beta$. Macaques live for 20-30 years, so we need to think about, for instance, an ordinary aged macaque that would be 15 years older than the baseline. Thanks to our scaling, the largest change that we can have is 1, which strongly suggests that if $\beta$ was too much larger than $0.1$ we are going to be in unreasonable territory. So let's put a $N(0,0.1^2)$ prior on $\beta_\text{age}$. For $\beta_\text{day}$ we can use a $N(0,1)$ prior. Similarly, the scaling of `activity_bins` suggests that a $N(0,1)$ prior would be sufficient for the data-level standard deviation $\sigma$.
+We know, for instance, that our unscaled activity will go between 0 and 8. That means that it's unlikely for the mean of the scaled process to be much bigger than 3 or 4. These considerations, along with the fact that we have centred the data so the mean should be closer to zero, suggest that a $N(0,1)$ prior should be appropriate for $\mu$. 
+
+As we normalised our age data relative to the smallest age, we should think more carefully about the scaling of $\beta$. Macaques live for 20-30^[Of all of the things in this post, this has been the most aggressively fact checked one] years, so we need to think about, for instance, an ordinary aged macaque that would be 15 years older than the baseline. Thanks to our scaling, the largest change that we can have is around 1, which strongly suggests that if $\beta$ was too much larger than $1/8$ we are going to be in unreasonable territory. So let's put a $N(0,0.2^2)$ prior^[In prior width and on grindr, you should always expect that he's rounding up.] on $\beta_\text{age}$ and $\beta_\text{age,day}$. For $\beta_\text{day}$ we can use a $N(0,1)$ prior. 
+
+Similarly, the scaling of `activity_bins` suggests that a $N(0,1)$ prior would be sufficient for the data-level standard deviation $\sigma$.
 
 That just leaves us with our choice of prior for the standard deviation of the intercept^[In some places, we would call this a random effect.] $\mu_j$, $\tau$. Thankfully, we considered this case in detail [in the previous blog post](https://dansblog.netlify.app/posts/2022-08-29-priors4/priors4.html). There I argued that a sensible prior for $\tau$ would be an exponential prior. To be quite honest with you, a half-normal or a half-t also would be fine. But I'm going to stick to my guns. For the scaling, again, it would be a touch surprising (given the scaling of the data) if the group means were more than 3 apart, so choosing $\lambda=1$ in the exponential distribution should give a relatively weak prior without being so wide that we are putting prior mass on a bunch of values that we would never actually want to put prior mass on.
 
 We can then fit the model with `brms`. In this case, I'm using the `cmdstanr` back end, because it's fast and I like it.
 
-To specify the model, we use `lme4`-style notation
-```{r}
-formula <- active_bins_scaled ~ age_centred*day + (1 | monkey)
-formula2 <- active_bins_sqrt ~ age_centred*day + (1 | monkey)
-```
-
-The first bit of this formula is the same as the formula used in linear regression.
-The interesting bit is is the `(1 | monkey)`. This is the way to tell R that the intercept (aka `1` in formula notation) is going to be grouped by `monkey` and we are going to put an exchangeable normal prior on it. For more complex models there are more complex variations on this theme, but for the moment we won't go any further.
+To specify the model, we use the `lme4`-style formula notation discussed above.
 
 To set the priors, we will use `brms`. Now, if you are Paul you might be able to remember how to set priors in `brms` without having to look it up, but I am sadly not Paul^[He is very lovely. Many people would prefer that I was him.], so every time I need to set priors in `brms` I write the formula and use the convenient `get_prior` function
 
@@ -294,14 +313,16 @@ get_prior(formula, activity_2mins_scaled)
 ```
 From this, we can see that the default prior on $\beta$ is an improper flat prior, the default prior on the intercept is a Student-t with 3 degrees of freedom centred at zero with standard deviation 2.5. The same prior (restricted to positive numbers) is put on all of the standard deviation parameters. These default prior distributions are, to be honest, probably fine in this context^[It's possible the the prior on $\tau$ might be too wide. If we were doing a logistic regression, these priors would definitely be too wide. And if we had a lot of different random terms (eg if we had lots of different species or lots of different labs) then they would also probably be too wide. But they are better than not having priors.], but it is good practice to always set your prior.
 
+We do this as follows. (Note that `brms` uses Stan, which parameterises the normal distribution by its mean and _standard deviation_!)
+
 ```{r}
 
 priors <- prior(normal(0, 0.2), coef = "age_centred") + 
   prior(normal(0,0.2), coef = "age_centred:day2") +
-  prior(normal(0, 0.2), coef = "day2") +
-  prior(exponential(1), class = "sigma") +
-  prior(normal(0,1), class = sd)
-
+  prior(normal(0, 1), coef = "day2") +
+  prior(normal(0,1), class = "sigma") +
+  prior(exponential(1), class = sd) + # tau
+  prior(normal(0,1), class = "Intercept")
 ```
 
 ## Pre-experiment prophylaxis
@@ -393,9 +414,56 @@ library(lme4)
 fit_lme4 <- lmer(formula, activity_2mins_scaled)
 fit_lme4
 ```
-## Post experiment prophylaxis
 
-Of course, we would be fools to just assume that because we fit a model 
+
+We can also compare the fit using leave-one-out cross validation. This is similar to AIC, but more directly interpretable. It is the average of 
+$$
+\log p_\text{posterior predictive}(y_{ij} \mid y_{-ij}) = \log \left(\int_\theta p(y_{ij} \mid \theta)p(\theta \mid y_{-ij})\, d\theta\right),
+$$
+where $\theta$ is a vector of all of the parameters in the model. The notation $y_{-ij}$ is the data _without_ the $ij$th observation. This average is sometimes called the _expected log predictive density_ or elpd.
+
+To compare it with the two linear regression models, I need to fit them in `brms`. I will use a $N(0,1)$ prior for the monkey intercepts and the same priors as the previous model for the other parameters.
+
+```{r}
+#| warning: false
+priors_lm <-  prior(normal(0,1), class = "b") +
+  prior(normal(0, 0.2), coef = "age_centred") + 
+  prior(normal(0,0.2), coef = "age_centred:day2") +
+  prior(normal(0, 1), coef = "day2") +
+  prior(normal(0,1), class = "Intercept") +
+  prior(normal(0,1), class = "sigma")
+
+posterior_nopool <- brm(
+  active_bins_scaled ~ age_centred * day + monkey, 
+  data = activity_2mins_scaled,
+  prior = priors_lm,
+  backend = "cmdstanr",
+  cores = 4,
+  refresh = 0)
+
+posterior_pool <- brm(
+  active_bins_scaled ~ age_centred * day, 
+  data = activity_2mins_scaled,
+  prior = priors_lm,
+  backend = "cmdstanr",
+  cores = 4,
+  refresh = 0)
+```
+
+We an now use the `loo_compare` function to compare the models. By default, the best model is listed first and the other models are listed below it with the difference in elpd values given. To do this, we need to tell `brms` to compute the `loo` criterion using the `add_criterion` function.
+
+```{r}
+posterior_draws <- add_criterion(posterior_draws, "loo")
+posterior_nopool <- add_criterion(posterior_nopool, "loo")
+posterior_pool <- add_criterion(posterior_pool, "loo")
+loo_compare(posterior_draws, posterior_nopool, posterior_pool)
+```
+
+There are some warnings there suggesting that we could recompute these using a slower method, but for the purposes of today I'm not going to do that and I shall declare that the multilevel model performs _far better_ than the other two models.
+
+## Post-experiment prophylaxis
+
+Of course, we would be fools to just assume that because we fit a model and compared it to some other models, 
 the model is a good representation of the data. To do that, we need to look at some posterior checks.
 
 The easiest thing to look at is the predictions themselves. 
@@ -447,7 +515,7 @@ posterior mean to define our residuals.
 We can look at the qq-plot to see how we're doing with normality.
 
 ```{r}
-distribution_plot <- plot_data %>% ggplot(aes(sample = (active_bins_scaled - fitted_mean)/sd(active_bins_scaled - fitted_mean))) + 
+distribution_plot <- plot_data |> ggplot(aes(sample = (active_bins_scaled - fitted_mean)/sd(active_bins_scaled - fitted_mean))) + 
   stat_qq() +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") + 
   theme_classic()
@@ -459,7 +527,8 @@ We can also look at the so-called k-hat plot, which can be useful for finding
 high-leverage observations in general models. 
 
 ```{r}
-loo_posterior <- LOO(posterior_draws)
+#| warning: false
+loo_posterior <- LOO(posterior_draws) #warnings suppressed
 loo_posterior
 plot(loo_posterior)
 ```
@@ -472,6 +541,8 @@ Finally, let's look at the residuals vs the fitted values. This is a commonly us
 diagnostic plot in linear regression and it can be very useful for visually detecting
 non-linear patterns and heteroskedasticity in the residuals. So let's make the plot^[Once again, we are not studentizing the residuals. I'm sorry.].
 ```{r}
+#| message: false
+#| warning: false
 problem_plot <- plot_data |> 
   ggplot(aes(x = fitted_mean, y = active_bins_scaled - fitted_mean)) + 
   geom_point() +
@@ -598,7 +669,9 @@ loo_fake
 plot(loo_fake)
 ```
 
-And look: we get some extreme values. (Depending on the run we get more or less). This suggests that while it would be useful to look at the data points flagged by the k-hat statistic, it may just be sampling variation.
+And look: we get some extreme values. (Depending on the run we get more or less). This suggests that while it would be useful to look at the data points flagged by the k-hat statistic, it may just be sampling variation.;
+
+All of this suggests our model assumptions are not being grossly violated. All except for that residual vs fitted values plot...
 
 ### The haunted residual vs fitted plot
 
@@ -666,11 +739,11 @@ But for the purposes of today we can notice that there don't seem to be any extr
 
 So what have we done? Well we've gone through the process of fitting and scruitinising a simple Bayesian multilevel model. We've talked about some of the challenges associated with graphical diagnostics for structured data. And we've all^[I mean, some of us knew this. Personally, I only remembered after I saw it and swore a bit.] learnt something about the residual-vs-fitted plot for a multilevel model.
 
-And most importantly, we've all learnt the value of using fake data simulated from the posterior model to help us understand our diagnostics.
+Most importantly, we've all learnt the value of using fake data simulated from the posterior model to help us understand our diagnostics.
 
-There is more to the scientific story here. It turns out that while there is no effect over 2 minutes, there is a slight effect over 20 minutes. So the conceptual replication failed, but still found some interesting things.
+There is more to the scientific story here. It turns out that while there is no effect over 2 minutes, there is [a slight effect over 20 minutes](https://royalsocietypublishing.org/doi/10.1098/rsos.200316). So the conceptual replication failed, but still found some interesting things.
 
 Of course, I've ignored one big elephant in the room: That data was discrete. In the end, our distributional diagnostics didn't throw up any massive red flags, but nevertheless it could be an interesting exercise to see what happens if we use a more problem-adapted likelihood.
 
-Last, and certainly not least, I barely scratched the surface of the [Loy, Hoffman, and Cook](https://arxiv.org/pdf/1502.06988.pdf) paper. Anyone who is interested in fitting Gaussian multilevel models should definitely give it a read.
+Last, and certainly not least, I barely scratched the surface^[In particular, they have an interesting discussion on assessing the distributional assumption for $\mu_j$.] of the [Loy, Hoffman, and Cook](https://arxiv.org/pdf/1502.06988.pdf) paper. Anyone who is interested in fitting Gaussian multilevel models should definitely give it a read.
 

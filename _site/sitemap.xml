@@ -2,78 +2,82 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://dansblog.netlify.app/posts/2022-06-03-that-psis-proof/that-psis-proof.html</loc>
-    <lastmod>2022-09-05T13:33:05.651Z</lastmod>
+    <lastmod>2022-09-06T07:09:21.683Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2021-12-09-why-wont-you-cheat-with-me-repost/why-wont-you-cheat-with-me-repost.html</loc>
-    <lastmod>2022-09-05T13:33:06.568Z</lastmod>
+    <lastmod>2022-09-06T07:09:22.552Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2022-05-18-sparse4-some-primatives/sparse4-some-primatives.html</loc>
-    <lastmod>2022-09-05T13:33:08.026Z</lastmod>
+    <lastmod>2022-09-06T07:09:24.132Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2021-10-11-n-sane-in-the-membrane/n-sane-in-the-membrane.html</loc>
-    <lastmod>2022-09-05T13:33:08.835Z</lastmod>
+    <lastmod>2022-09-06T07:09:24.912Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dansblog.netlify.app/posts/2022-09-04-everybodys-got-something-to-hide-except-me-and-my-monkey/everybodys-got-something-to-hide-except-me-and-my-monkey.html</loc>
+    <lastmod>2022-09-06T07:11:52.975Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2021-10-14-priors2/priors2.html</loc>
-    <lastmod>2022-09-05T13:33:10.999Z</lastmod>
+    <lastmod>2022-09-06T07:11:53.559Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/getting-into-the-subspace.html</loc>
-    <lastmod>2022-09-05T13:33:12.542Z</lastmod>
+    <lastmod>2022-09-06T07:11:55.015Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2021-10-15-priors3/priors3.html</loc>
-    <lastmod>2022-09-05T13:33:13.105Z</lastmod>
+    <lastmod>2022-09-06T07:11:55.536Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2022-01-26-barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost/barry-gibb-came-fourth-in-a-barry-gibb-look-alike-contest-repost.html</loc>
-    <lastmod>2022-09-05T13:33:13.862Z</lastmod>
+    <lastmod>2022-09-06T07:11:56.262Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2022-08-29-priors4/priors4.html</loc>
-    <lastmod>2022-09-05T13:33:15.129Z</lastmod>
+    <lastmod>2022-09-06T07:11:57.455Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2022-05-16-design-is-my-passion-sparse-matrices-part-four/design-is-my-passion-sparse-matrices-part-four.html</loc>
-    <lastmod>2022-09-05T13:33:15.966Z</lastmod>
+    <lastmod>2022-09-06T07:11:58.307Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2022-05-14-jax-ing-a-sparse-cholesky-factorisation-part-3-in-an-ongoing-journey/jax-ing-a-sparse-cholesky-factorisation-part-3-in-an-ongoing-journey.html</loc>
-    <lastmod>2022-09-05T13:33:17.078Z</lastmod>
+    <lastmod>2022-09-06T07:11:59.379Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness.html</loc>
-    <lastmod>2022-09-05T13:33:18.377Z</lastmod>
+    <lastmod>2022-09-06T07:12:00.649Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2022-05-20-to-catch-a-derivative-first-youve-got-to-think-like-a-derivative/to-catch-a-derivative-first-youve-got-to-think-like-a-derivative.html</loc>
-    <lastmod>2022-09-05T13:33:20.027Z</lastmod>
+    <lastmod>2022-09-06T07:12:02.203Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2021-12-08-the-king-must-die-repost/the-king-must-die-repost.html</loc>
-    <lastmod>2022-09-05T13:33:20.770Z</lastmod>
+    <lastmod>2022-09-06T07:12:02.856Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2021-10-14-priors1/priors1.html</loc>
-    <lastmod>2022-09-05T13:33:21.552Z</lastmod>
+    <lastmod>2022-09-06T07:12:03.603Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2022-03-23-getting-jax-to-love-sparse-matrices/getting-jax-to-love-sparse-matrices.html</loc>
-    <lastmod>2022-09-05T13:33:22.732Z</lastmod>
+    <lastmod>2022-09-06T07:12:04.738Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/posts/2022-03-22-a-linear-mixed-effects-model/a-linear-mixed-effects-model.html</loc>
-    <lastmod>2022-09-05T13:33:23.751Z</lastmod>
+    <lastmod>2022-09-06T07:12:05.728Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/index.html</loc>
-    <lastmod>2022-09-05T13:33:24.435Z</lastmod>
+    <lastmod>2022-09-06T07:12:06.416Z</lastmod>
   </url>
   <url>
     <loc>https://dansblog.netlify.app/about.html</loc>
-    <lastmod>2022-09-05T13:33:24.715Z</lastmod>
+    <lastmod>2022-09-06T07:12:06.677Z</lastmod>
   </url>
 </urlset>

@@ -8,7 +8,7 @@
 
 <meta name="author" content="Dan Simpson">
 <meta name="dcterms.date" content="2022-09-06">
-<meta name="description" content="A small introduction to multilevel models. Why? Because I said so, that’s why.">
+<meta name="description" content="A small introduction to multilevel models. Why? Because I said so, that’s why. And you will simply not believe what happens to residual plots.">
 
 <title>Un garçon pas comme les autres (Bayes) - A first look at multilevel regression; or Everybody’s got something to hide except me and my macaques</title>
 <style>
@@ -198,7 +198,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <h1 class="title">A first look at multilevel regression; or Everybody’s got something to hide except me and my macaques</h1>
                   <div>
         <div class="description">
-          <p>A small introduction to multilevel models. Why? Because I said so, that’s why.</p>
+          <p>A small introduction to multilevel models. Why? Because I said so, that’s why. And you will simply not believe what happens to residual plots.</p>
         </div>
       </div>
                           <div class="quarto-categories">
@@ -237,19 +237,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#what-are-the-stakes-according-to-the-papers-not-according-to-me-who-knows-exactly-nothing-about-this-type-of-work" id="toc-what-are-the-stakes-according-to-the-papers-not-according-to-me-who-knows-exactly-nothing-about-this-type-of-work" class="nav-link active" data-scroll-target="#what-are-the-stakes-according-to-the-papers-not-according-to-me-who-knows-exactly-nothing-about-this-type-of-work">What are the stakes (According to the papers, not according to me, who knows exactly nothing about this type of work)</a></li>
+  <li><a href="#what-are-the-stakes-according-to-the-papers-not-according-to-me-who-knows-exactly-nothing-about-this-type-of-work" id="toc-what-are-the-stakes-according-to-the-papers-not-according-to-me-who-knows-exactly-nothing-about-this-type-of-work" class="nav-link active" data-scroll-target="#what-are-the-stakes-according-to-the-papers-not-according-to-me-who-knows-exactly-nothing-about-this-type-of-work">What are the stake?s (According to the papers, not according to me, who knows exactly nothing about this type of work)</a></li>
   <li><a href="#so-what-did-eliza-and-mark-do" id="toc-so-what-did-eliza-and-mark-do" class="nav-link" data-scroll-target="#so-what-did-eliza-and-mark-do">So what did Eliza and Mark do?</a></li>
   <li><a href="#what-does-the-data-look-like" id="toc-what-does-the-data-look-like" class="nav-link" data-scroll-target="#what-does-the-data-look-like">What does the data look like?</a></li>
-  <li><a href="#ok-mary-how-do-we-analyze-this-data" id="toc-ok-mary-how-do-we-analyze-this-data" class="nav-link" data-scroll-target="#ok-mary-how-do-we-analyze-this-data">Ok Mary, how do we analyze this data?</a>
+  <li><a href="#ok-mary-how-are-we-going-to-analyze-this-data" id="toc-ok-mary-how-are-we-going-to-analyze-this-data" class="nav-link" data-scroll-target="#ok-mary-how-are-we-going-to-analyze-this-data">Ok Mary, how are we going to analyze this data?</a>
   <ul class="collapse">
   <li><a href="#there-are-just-too-many-monkeys-or-why-cant-we-just-analyse-this-with-regression" id="toc-there-are-just-too-many-monkeys-or-why-cant-we-just-analyse-this-with-regression" class="nav-link" data-scroll-target="#there-are-just-too-many-monkeys-or-why-cant-we-just-analyse-this-with-regression">There are just too many monkeys; or Why can’t we just analyse this with regression?</a></li>
-  <li><a href="#if-we-ignore-the-monkeys-will-they-go-away-or-another-attempt-at-regression" id="toc-if-we-ignore-the-monkeys-will-they-go-away-or-another-attempt-at-regression" class="nav-link" data-scroll-target="#if-we-ignore-the-monkeys-will-they-go-away-or-another-attempt-at-regression">If we ignore the monkeys, will they go away? or another attempt at regression</a></li>
+  <li><a href="#if-we-ignore-the-monkeys-will-they-go-away-or-another-attempt-at-regression" id="toc-if-we-ignore-the-monkeys-will-they-go-away-or-another-attempt-at-regression" class="nav-link" data-scroll-target="#if-we-ignore-the-monkeys-will-they-go-away-or-another-attempt-at-regression">If we ignore the monkeys, will they go away? or Another attempt at regression</a></li>
   </ul></li>
-  <li><a href="#what-is-between-no-pooling-and-complete-pooling" id="toc-what-is-between-no-pooling-and-complete-pooling" class="nav-link" data-scroll-target="#what-is-between-no-pooling-and-complete-pooling">What is between no pooling and complete pooling?</a></li>
-  <li><a href="#what-are-our-prior-distributions-and-how-do-we-sense-check-the-assumptions" id="toc-what-are-our-prior-distributions-and-how-do-we-sense-check-the-assumptions" class="nav-link" data-scroll-target="#what-are-our-prior-distributions-and-how-do-we-sense-check-the-assumptions">What are our prior distributions and how do we sense-check the assumptions</a></li>
+  <li><a href="#what-is-between-no-pooling-and-complete-pooling-multilevel-models-thats-what" id="toc-what-is-between-no-pooling-and-complete-pooling-multilevel-models-thats-what" class="nav-link" data-scroll-target="#what-is-between-no-pooling-and-complete-pooling-multilevel-models-thats-what">What is between no pooling and complete pooling? Multilevel models, that’s what</a></li>
+  <li><a href="#reasoning-out-some-prior-distributions" id="toc-reasoning-out-some-prior-distributions" class="nav-link" data-scroll-target="#reasoning-out-some-prior-distributions">Reasoning out some prior distributions</a></li>
   <li><a href="#pre-experiment-prophylaxis" id="toc-pre-experiment-prophylaxis" class="nav-link" data-scroll-target="#pre-experiment-prophylaxis">Pre-experiment prophylaxis</a></li>
   <li><a href="#fitting-the-data-or-do-my-monkeys-get-less-interesting-as-they-age" id="toc-fitting-the-data-or-do-my-monkeys-get-less-interesting-as-they-age" class="nav-link" data-scroll-target="#fitting-the-data-or-do-my-monkeys-get-less-interesting-as-they-age">Fitting the data; or do my monkeys get less interesting as they age</a></li>
-  <li><a href="#post-experiment-prophylaxis" id="toc-post-experiment-prophylaxis" class="nav-link" data-scroll-target="#post-experiment-prophylaxis">Post experiment prophylaxis</a></li>
+  <li><a href="#post-experiment-prophylaxis" id="toc-post-experiment-prophylaxis" class="nav-link" data-scroll-target="#post-experiment-prophylaxis">Post-experiment prophylaxis</a></li>
   <li><a href="#understanding-diagnostic-plots-from-multilevel-models" id="toc-understanding-diagnostic-plots-from-multilevel-models" class="nav-link" data-scroll-target="#understanding-diagnostic-plots-from-multilevel-models">Understanding diagnostic plots from multilevel models</a>
   <ul class="collapse">
   <li><a href="#making-new-data" id="toc-making-new-data" class="nav-link" data-scroll-target="#making-new-data">Making new data</a></li>
@@ -279,21 +279,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </figure>
 </div>
 <p>This is where Eliza—who knows a little something about monkeys—comes into frame: this did not gel with her experiences at all.</p>
-<p>So Eliza (and <a href="http://labs.neuroscience.mssm.edu/project/baxter-lab/">Mark</a>, who also knows a little something about monkeys) decided to look into it.</p>
+<p>So Eliza (and <a href="https://scholar.google.com.au/citations?hl=en&amp;user=yg9U_okAAAAJ">Mark</a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, who also knows a little something about monkeys) decided to look into it.</p>
 <section id="what-are-the-stakes-according-to-the-papers-not-according-to-me-who-knows-exactly-nothing-about-this-type-of-work" class="level2">
-<h2 class="anchored" data-anchor-id="what-are-the-stakes-according-to-the-papers-not-according-to-me-who-knows-exactly-nothing-about-this-type-of-work">What are the stakes (According to the papers, not according to me, who knows exactly nothing about this type of work)</h2>
+<h2 class="anchored" data-anchor-id="what-are-the-stakes-according-to-the-papers-not-according-to-me-who-knows-exactly-nothing-about-this-type-of-work">What are the stake?s (According to the papers, not according to me, who knows exactly nothing<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> about this type of work)</h2>
 <p>A big motivation for studying macaques and other non-human primates is that they’re good models of humans. This means that if there was solid evidence of macaques becoming less interested in novel stimuli as they age (while maintaining interest in people), this could suggest an evolutionary reason from this (commonly observed) behaviour in humans.</p>
 <p>So if this result is true, it could help us understand the psychology of humans as they age (and in particular, the learned vs evolved trade off they are making).</p>
 </section>
 <section id="so-what-did-eliza-and-mark-do" class="level2">
 <h2 class="anchored" data-anchor-id="so-what-did-eliza-and-mark-do">So what did Eliza and Mark do?</h2>
 <p>There are a few things you can do when confronted with a result that contradicts your experience: you can complain about it on the Internet, you can mobilize a direct replication effort, or you can conduct your own experiments. Eliza and Mark opted for the third option, designing a <em>conceptual replication</em>.</p>
-<p>Direct replications tell you more about the specific experiment that was conducted, but not necessarily more about the phenomenon under investigation. In a study involving aged monkeys, it’s difficult to imagine how a direct replication could take place.</p>
+<p>Direct replications tell you more about the specific experiment that was conducted, but not necessarily more about the phenomenon under investigation. In a study involving aged monkeys<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, it’s difficult to imagine how a direct replication could take place.</p>
 <p>On the other hand, a conceptual replication has a lot more flexibility. It allows you to probe the question in a more targeted manner, appropriate for incremental science. In this case, Eliza and Mark opted to study only the claim that the monkeys lose interest in novel stimuli as they age (<a href="https://royalsocietypublishing.org/doi/full/10.1098/rsos.182237">paper here</a>). They did not look into the social claim. They also used a slightly different species of macaque (<em>M. mulatta</em> rather than <em>M. butterfly</em>). This is reasonable insofar as understanding macaques as a model for human behaviour.</p>
 </section>
 <section id="what-does-the-data-look-like" class="level2">
 <h2 class="anchored" data-anchor-id="what-does-the-data-look-like">What does the data look like?</h2>
-<p>The experiment used 243<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> monkeys aged between 4 and 30 and gave them a novel puzzle task (opening a fancy tube with food in it) for twenty minutes over two days. The puzzle was fitted with an activity tracker. Each monkey had two tries at the puzzle over two days. Monkeys had access to the puzzle for around<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> 20 minutes.</p>
+<p>The experiment used 243<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> monkeys aged between 4 and 30 and gave them a novel puzzle task (opening a fancy tube with food in it) for twenty minutes over two days. The puzzle was fitted with an activity tracker. Each monkey had two tries at the puzzle over two days. Monkeys had access to the puzzle for around<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> 20 minutes.</p>
 <p>In order to match the original study’s analysis, Eliza and Mark divided the first two minutes into 15 second intervals and counted the number of intervals where the monkey interacted with the puzzle. They also measured the same thing over 20 minutes in order to see if there was a difference between short-term curiosity and more sustained exploration.</p>
 <p>For each monkey, we have the following information:</p>
 <ul>
@@ -303,19 +303,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Number of active intervals in the first two minutes (0-8)</li>
 <li>Number of active intervals in the first twenty minutes (0-80)</li>
 </ul>
-<p>The data and their analysis are freely<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> available <a href="https://datadryad.org/stash/dataset/doi:10.5061/dryad.1bj133v">here</a>.</p>
+<p>The data and their analysis are freely<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> available <a href="https://datadryad.org/stash/dataset/doi:10.5061/dryad.1bj133v">here</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2"></a>acti_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"activity_data.csv"</span>) </span>
 <span id="cb1-3"><a href="#cb1-3"></a>activity_2mins <span class="ot">&lt;-</span> acti_data <span class="sc">|&gt;</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a>  <span class="fu">filter</span>(obs<span class="sc">&lt;</span><span class="dv">9</span>) <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(subj_id, Day) <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>  <span class="fu">filter</span>(obs<span class="sc">&lt;</span><span class="dv">9</span>) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(subj_id, Day) <span class="sc">|&gt;</span></span>
 <span id="cb1-5"><a href="#cb1-5"></a>  <span class="fu">summarize</span>(<span class="at">total=</span><span class="fu">sum</span>(Activity), </span>
 <span id="cb1-6"><a href="#cb1-6"></a>            <span class="at">active_bins =</span> <span class="fu">sum</span>(Activity <span class="sc">&gt;</span> <span class="dv">0</span>), </span>
 <span id="cb1-7"><a href="#cb1-7"></a>            <span class="at">age =</span> <span class="fu">min</span>(age)) <span class="sc">|&gt;</span></span>
 <span id="cb1-8"><a href="#cb1-8"></a>  <span class="fu">rename</span>(<span class="at">monkey =</span> subj_id, <span class="at">day =</span> Day) <span class="sc">|&gt;</span></span>
 <span id="cb1-9"><a href="#cb1-9"></a>  <span class="fu">ungroup</span>()</span>
 <span id="cb1-10"><a href="#cb1-10"></a></span>
-<span id="cb1-11"><a href="#cb1-11"></a>activity_20minms80 <span class="ot">&lt;-</span> acti_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(obs<span class="sc">&lt;</span><span class="dv">81</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a>activity_20minms80 <span class="ot">&lt;-</span> acti_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(obs<span class="sc">&lt;</span><span class="dv">81</span>) <span class="sc">|&gt;</span></span>
 <span id="cb1-12"><a href="#cb1-12"></a>  <span class="fu">group_by</span>(subj_id, Day) <span class="sc">|&gt;</span></span>
 <span id="cb1-13"><a href="#cb1-13"></a>  <span class="fu">summarize</span>(<span class="at">total=</span><span class="fu">sum</span>(Activity), </span>
 <span id="cb1-14"><a href="#cb1-14"></a>            <span class="at">active_bins =</span> <span class="fu">sum</span>(Activity <span class="sc">&gt;</span> <span class="dv">0</span>), </span>
@@ -324,8 +324,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-17"><a href="#cb1-17"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="ok-mary-how-do-we-analyze-this-data" class="level2">
-<h2 class="anchored" data-anchor-id="ok-mary-how-do-we-analyze-this-data">Ok Mary, how do we analyze this data?</h2>
+<section id="ok-mary-how-are-we-going-to-analyze-this-data" class="level2">
+<h2 class="anchored" data-anchor-id="ok-mary-how-are-we-going-to-analyze-this-data">Ok Mary, how are we going to analyze this data?</h2>
 <p>Eliza and Mark’s monkey data is an example of a fairly common type of experimental data, where the same subject is measured multiple times. It is useful to break the covariates down into three types: <em>grouping variables</em>, <em>group-level covariates</em>, and <em>individual-level covariates</em>.</p>
 <p><em>Grouping variables</em> indicate what <em>group</em> each observation is in. We will see a lot of different ways of defining groups as we go on, but a core idea is that observations within a group should conceptually more similar to each other than observations in different groups. For Eliza and Mark, their grouping variable is <code>monkey</code>. This encodes the idea that different monkeys might have very different levels of curiosity, but the same monkey across two different days would probably have fairly similar levels of curiosity.</p>
 <p><em>Group-level covariates</em> are covariates that describe a feature of the <em>group</em> rather than the observation. In this example, <code>age</code> is a group-level covariate, because the monkeys are the same age at each observation.</p>
@@ -349,13 +349,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<p>So the first thing you will notice is that that is <em>a lot</em> of regression coefficients! There are 243 monkeys and 2 days, but only 485 observations. This isn’t enough data to reliably estimate all of these parameters. So what are we to do?</p>
-<p>The problem is the monkeys. If we use <code>monkey</code> as a factor variable, we only have (at most) two observations of each factor level. This is simply not enough observations per to estimate the monkey-specific intercept!</p>
+<p>So the first thing you will notice is that that is <em>a lot</em> of regression coefficients! There are 243 monkeys and 2 days, but only 485 observations. This isn’t enough data to reliably estimate all of these parameters. (Look at the standard errors for the monkey-related coefficients. They are huge!)</p>
+<p>So what are we to do?</p>
+<p>The problem is the monkeys. If we use <code>monkey</code> as a factor variable, we only have (at most) two observations of each factor level. This is simply not enough observations per to estimate a different intercept for each monkey!</p>
 <p>This type of model is often described as having <em>no pooling</em>, which indicates that there is no explicit dependence between the intercepts for each group (<code>monkey</code>). (There is some dependence between groups due to the group-level covariate <code>age</code>.)</p>
 </section>
 <section id="if-we-ignore-the-monkeys-will-they-go-away-or-another-attempt-at-regression" class="level3">
-<h3 class="anchored" data-anchor-id="if-we-ignore-the-monkeys-will-they-go-away-or-another-attempt-at-regression">If we ignore the monkeys, will they go away? or another attempt at regression</h3>
-<p>Our first attempt at a regression model didn’t work particularly well, but that doesn’t mean we should give up. A second option is that we can assume that there is, fundamentally, no difference between monkeys. If all monkeys of the same age have similar amounts of interest in new puzzles, this would be a reasonable assumption. The best case scenario is that not accounting for differences between individual monkeys would still lead to approximately normal residuals, albeit with probably a larger residual variance.</p>
+<h3 class="anchored" data-anchor-id="if-we-ignore-the-monkeys-will-they-go-away-or-another-attempt-at-regression">If we ignore the monkeys, will they go away? or Another attempt at regression</h3>
+<p>Our first attempt at a regression model didn’t work particularly well, but that doesn’t mean we should give up<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>. A second option is that we can assume that there is, fundamentally, no difference between monkeys. If all monkeys of the same age have similar amounts of interest in new puzzles, this would be a reasonable assumption. The best case scenario is that not accounting for differences between individual monkeys would still lead to approximately normal residuals, albeit with probably a larger residual variance.</p>
 <p>This type of modelling assumption is called <em>complete pooling</em> as it pools the information between groups by treating them all as the same.</p>
 <p>Let’s see what happens in this case!</p>
 <div class="cell">
@@ -389,7 +390,7 @@ F-statistic: 2.219 on 3 and 481 DF,  p-value: 0.0851</code></pre>
 <p>Let’s look at the diagnostic plots.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">library</span>(broom)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">augment</span>(fit_lm_pool) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">augment</span>(fit_lm_pool) <span class="sc">|&gt;</span> </span>
 <span id="cb5-3"><a href="#cb5-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> .fitted, <span class="at">y =</span> active_bins <span class="sc">-</span> .fitted)) <span class="sc">+</span></span>
 <span id="cb5-4"><a href="#cb5-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
 <span id="cb5-5"><a href="#cb5-5"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
@@ -397,7 +398,7 @@ F-statistic: 2.219 on 3 and 481 DF,  p-value: 0.0851</code></pre>
 <div class="cell-output-display">
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">augment</span>(fit_lm_pool) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> .std.resid)) <span class="sc">+</span> </span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">augment</span>(fit_lm_pool) <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> .std.resid)) <span class="sc">+</span> </span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
 <span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
 <span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -408,71 +409,74 @@ F-statistic: 2.219 on 3 and 481 DF,  p-value: 0.0851</code></pre>
 <p>There are certainly some patterns in those residuals (and some suggestion that the error need a heavier tail for this model to make sense).</p>
 </section>
 </section>
-<section id="what-is-between-no-pooling-and-complete-pooling" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-between-no-pooling-and-complete-pooling">What is between no pooling and complete pooling?</h2>
-<p>We are in a Goldilocks situation: no pooling results in a model that has too many independent parameters for the amount of data that we’ve got, while complete pooling has too few parameters to correctly account for the differences between the monkeys. So what is our perfectly tempered porridge?</p>
-<p>The answer is to assume that each monkey has its own intercept, but that it’s intercept can only be <em>so far</em> from the overall intercept (which we would’ve gotten from complete pooling). There are a bunch of ways to realize this concept, but the classical method is to use a normal distribution.</p>
+<section id="what-is-between-no-pooling-and-complete-pooling-multilevel-models-thats-what" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-between-no-pooling-and-complete-pooling-multilevel-models-thats-what">What is between no pooling and complete pooling? Multilevel models, that’s what</h2>
+<p>We are in a Goldilocks situation: no pooling results in a model that has too many independent parameters for the amount of data that we’ve got, while complete pooling has too few parameters to correctly account for the differences between the monkeys. So what is our perfectly tempered porridge<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>?</p>
+<p>The answer is to assume that each monkey has its own intercept, but that it’s intercept can only be <em>so far</em> from the overall intercept (that we would’ve gotten from complete pooling). There are a bunch of ways to realize this concept, but the classical method is to use a normal distribution.</p>
 <p>In particular, if the <span class="math inline">\(j\)</span>th monkey has observations <span class="math inline">\(y_{ij}\)</span>, <span class="math inline">\(i=1,2\)</span>, then we can write our model as <span class="math display">\[
-y_{ij}  \sim N(\mu_j + \beta_\text{age}\, \text{age}_j + \beta_\text{day}\, \text{day}_{ij}, \sigma^2).
-\]</span> The effect of age (<span class="math inline">\(\beta\)</span>) and the data standard deviation (<span class="math inline">\(\sigma\)</span>) are just like they’d be in an ordinary linear regression model. Our modification comes in how we treat the <span class="math inline">\(\mu_j\)</span>.</p>
+y_{ij}  \sim N(\mu_j + \beta_\text{age}\, \text{age}_j + \beta_\text{day}\, \text{day}_{ij} + \beta_\text{age,day}\, \text{[age*day]}_{ij}, \sigma^2).
+\]</span></p>
+<p>The effects of age and day and the data standard deviation (<span class="math inline">\(\sigma\)</span>) are just like they’d be in an ordinary linear regression model. Our modification comes in how we treat the <span class="math inline">\(\mu_j\)</span>.</p>
 <p>In a classical linear regression model, we would fit the <span class="math inline">\(\mu_j\)</span>s independently, perhaps with some weakly informative prior distribution. But we’ve already discussed that that won’t work.</p>
-<p>Instead we will make the <span class="math inline">\(\mu_j\)</span> <em>exchangeable</em> rather than independent. Exchangeability is a relaxation of the independence assumption to say instead encode that we have no idea which of the intercepts will do what. That is, if we switch around the labels of our intercepts the prior should not change. There is a long and storied history of exchangeable models in statistics, but the short version that is more than sufficient for our purposes is that they usually<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> take the form <span class="math display">\[\begin{align*}
+<p>Instead we will make the <span class="math inline">\(\mu_j\)</span> <em>exchangeable</em> rather than independent. Exchangeability is a relaxation of the independence assumption to say instead encode that we have no idea which of the intercepts will do what. That is, if we switch around the labels of our intercepts the prior should not change. There is a long and storied history of exchangeable models in statistics, but the short version that is more than sufficient for our purposes is that they usually<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a> take the form <span class="math display">\[\begin{align*}
 \mu_j \mid \tau \stackrel{\text{iid}}{\sim} &amp;p(\mu_j \mid \tau), \qquad i = 1,\ldots, J \\
 \tau \sim &amp; p(\tau).
 \end{align*}\]</span></p>
 <p>In a regression context, we typically assume that <span class="math display">\[
 \mu_j \mid \tau \sim N(\mu, \tau^2)
 \]</span> for some <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\tau\)</span> that will need their own priors.</p>
-<p>Mathematically the difference the classical regression model that assumes independence of the <span class="math inline">\(\mu_j\)</span> and this model is that the former assumes that we can write the joint distribution of the <span class="math inline">\(\mu_j\)</span> as <span class="math display">\[
+<p>We can explore this difference mathematically. The regression model, which assumes independence of the <span class="math inline">\(\mu_j\)</span>, uses <span class="math display">\[
 p(\mu_1, \ldots, \mu_J) = \prod_{j=1}^J N(\mu, \tau_\text{fixed}^2)
-\]</span> while the exchangeable model assumes that <span class="math display">\[
-p(\mu_1, \ldots, \mu_J) = \int_0^\infty \left(\prod_{j=1}^J N(\mu, \tau^2)\right)p(\tau)\,d\tau.
-\]</span></p>
+\]</span> as the joint prior on <span class="math inline">\(\mu_1,\ldots,\mu_J\)</span>. On the other hand, the exchangeable model, which forms the basis of multilevel models, assumes the joint prior <span class="math display">\[
+p(\mu_1, \ldots, \mu_J) = \int_0^\infty \left(\prod_{j=1}^J N(\mu, \tau^2)\right)p(\tau)\,d\tau,
+\]</span> for some prior on <span class="math inline">\(p(\tau)\)</span> on <span class="math inline">\(\tau\)</span>.</p>
 <p>This might not seem like much of a change, but it can be quite profound. In both cases, the prior is saying that each <span class="math inline">\(\mu_j\)</span> is, with high probability, at most <span class="math inline">\(3\tau\)</span> away from the overall mean <span class="math inline">\(\mu\)</span>. The difference is that while the classical least squares formulation uses a fixed value of <span class="math inline">\(\tau\)</span> that needs to be specified by the modeller, while the exchangeable model lets <span class="math inline">\(\tau\)</span> adapt to the data.</p>
-<p>This data adaptation is really nifty! It means that if the groups have similar means, they can borrow information from the other groups (via the narrowing of <span class="math inline">\(\tau\)</span>) in order to improve their precision over an unpooled estimate. On the other hand, if there is a meaningful difference between the groups<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>, this model can still represent that, unlike the unpooled model.</p>
+<p>This data adaptation is really nifty! It means that if the groups have similar means, they can borrow information from the other groups (via the narrowing of <span class="math inline">\(\tau\)</span>) in order to improve their precision over an unpooled estimate. On the other hand, if there is a meaningful difference between the groups<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>, this model can still represent that, unlike the unpooled model.</p>
 <p>In our context, however, we need a tiny bit more. We have a <em>group-level covariate</em> (specifically <code>age</code>) that we think is going to effect the group mean. So the model we want is <span class="math display">\[\begin{align*}
-y_{ij}  \mid \mu_j, \sigma &amp;\sim N(\mu_j, \sigma^2) \\
-\mu_j\mid \tau, \mu,\beta &amp;\sim N(\mu +  \beta_\text{age}\, \text{age}_j + \beta_\text{day}\, \text{day}_{ij}, \tau^2) \\
+y_{ij}  \mid \mu_j,\beta, \sigma &amp;\sim N(\mu_j + \beta_\text{day}\, \text{day}_{ij} + \beta_\text{age,day}\, \text{[age*day]}_{ij} , \sigma^2) \\
+\mu_j\mid \tau, \mu,\beta &amp;\sim N(\mu +  \beta_\text{age}\, \text{age}_j, \tau^2) \\
 \mu &amp;\sim p(\mu)\\
 \beta &amp;\sim p(\beta)\\
 \tau &amp; \sim p(\tau) \\
 \sigma &amp;\sim p(\sigma).
 \end{align*}\]</span></p>
 <p>In order to fully specify the model we need to set the four prior distributions.</p>
-</section>
-<section id="what-are-our-prior-distributions-and-how-do-we-sense-check-the-assumptions" class="level2">
-<h2 class="anchored" data-anchor-id="what-are-our-prior-distributions-and-how-do-we-sense-check-the-assumptions">What are our prior distributions and how do we sense-check the assumptions</h2>
-<p>We need to set priors. The canny amongst you may have noticed that I did not set priors in the previous two examples. There are two reasons for this: firstly I didn’t feel like it, and secondly none but the most terrible prior distributions would have meaningfully changed the conclusions. This is, it turns out, one of the great truths when it comes to prior distributions: they do not matter until they do.</p>
-<p>In particular, if you have a parameter that <em>directly</em> sees the data (eg it’s in the likelihood) and there is nothing weird going on<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>, then the prior distribution will usually not do much as any prior will be quickly overwhelmed by the data.</p>
-<p>The problem is that we have one parameter in our model (<span class="math inline">\(\tau\)</span>) that does not directly see the data. Instead of directly telling us about an observation, it tells us about how different the <em>groups</em> of observations are. There is usually less information in the data about this type of parameter and, consequently, the prior distribution will be more important.</p>
-<p>So let’s pay some proper attention to the priors.</p>
-<p>To begin with, let’s set priors on <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\beta\)</span>, and <span class="math inline">\(\sigma\)</span> (aka the data-level parameters). This is a <em>considerably</em> easier task if the data is scaled. Otherwise, you need to encode information about the usual scale<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> of the data into your priors. Sometimes this is a sensible and easy thing to do, but usually it’s easier to simply scale the data. (A lot of software will simply scale your data for you, but it is <em>always</em> better to do it yourself!)</p>
-<p>So let’s scale our data. We have 2 variables: age and active_bins. For age, we are going to want to measure it as either <em>years from the youngest monkey</em> or <em>years from the average monkey</em>. I think, in this situation, the first version could make a lot of sense, but we are going with the second. This allows us to interpret <span class="math inline">\(\mu\)</span> as the over-all mean. Otherwise, <span class="math inline">\(\mu\)</span> would tell us about the overall average activity of 4 year old monkeys and we will use <span class="math inline">\(\beta(\text{age}_j - 4)\)</span> to estimate how much the activity changes, on average keeping all other aspects constant, as the monkey ages.</p>
-<p>On the other hand, we have no sensible baseline for activity, so deviation from the average seems like a sensible scaling. I also don’t know, <em>a priori</em>, how variable activity is going to be, so I might want to scale<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> it by its standard deviation. In this case, I’m not going to do that because we have a sensible fixed<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> upper limit (8), which I can scale by.</p>
-<p>One important thing here is that if we scale the data by data-dependent quantities (like the minimum, the mean, or the standard deviation) we <em>must</em> keep track of this information. This is because <em>any</em> future data we try to predict with this model will need to be transformed <em>the same way</em>! This particularly has implication when you are doing things like test/training set validation or cross validation: in the first case, the test set needs to be scaled in the same way the training set was; while in the second case each cross validation training set needs to be scaled independently and that scaling needs to be used on the corresponding left-out data<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>.</p>
+<p>This is an example of a <em>multilevel</em><a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> <em>model</em>. The name comes from the data having multiple levels (in this case two: the observation level and the group level). Both levels have an appropriate model for their mean.</p>
+<p>This mathematical representation does a good job in separating out the two different levels. However, there are a lot of other ways of writing multilevel models. An important example is the extended formula notation created<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a> by R’s <code>lme4</code> package. In their notation, we would write this model as</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>age_centre <span class="ot">&lt;-</span> <span class="fu">mean</span>(activity_2mins<span class="sc">$</span>age)</span>
-<span id="cb7-2"><a href="#cb7-2"></a>age_scale <span class="ot">&lt;-</span> <span class="fu">diff</span>(<span class="fu">range</span>(activity_2mins<span class="sc">$</span>age))<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a>active_bins_centre <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a></span>
-<span id="cb7-5"><a href="#cb7-5"></a>activity_2mins_scaled <span class="ot">&lt;-</span> activity_2mins <span class="sc">|&gt;</span></span>
-<span id="cb7-6"><a href="#cb7-6"></a>  <span class="fu">mutate</span>(<span class="at">monkey =</span> <span class="fu">factor</span>(monkey),</span>
-<span id="cb7-7"><a href="#cb7-7"></a>         <span class="at">day =</span> <span class="fu">factor</span>(day),</span>
-<span id="cb7-8"><a href="#cb7-8"></a>         <span class="at">age_centred =</span> (age <span class="sc">-</span> age_centre)<span class="sc">/</span>age_scale,</span>
-<span id="cb7-9"><a href="#cb7-9"></a>         <span class="at">active_bins_scaled =</span> (active_bins <span class="sc">-</span> active_bins_centre)<span class="sc">/</span><span class="dv">4</span>,</span>
-<span id="cb7-10"><a href="#cb7-10"></a>         <span class="at">active_bins_sqrt =</span> <span class="fu">sqrt</span>(active_bins))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>With our scaling completed, we can now start thinking about prior distributions. The trick with priors is to make them wide enough to cover all plausible values of a parameter without making them so wide that they put a whole bunch of weight on essentially silly values.</p>
-<p>We know, for instance, that our unscaled activity will go between 0 and 8. That means that it’s unlikely for the mean of the scaled process to be much bigger than 4, and it’s unlikely for the rate of change with respect to <code>age</code> to be much bigger than to be much bigger than 1 (macaques live for 20-40 years). These considerations suggest that <span class="math inline">\(N(0,1)\)</span> priors should be appropriate for <span class="math inline">\(\mu\)</span>. As we normalised our age data relative to the smallest age, we should think more carefully about the scaling of <span class="math inline">\(\beta\)</span>. Macaques live for 20-30 years, so we need to think about, for instance, an ordinary aged macaque that would be 15 years older than the baseline. Thanks to our scaling, the largest change that we can have is 1, which strongly suggests that if <span class="math inline">\(\beta\)</span> was too much larger than <span class="math inline">\(0.1\)</span> we are going to be in unreasonable territory. So let’s put a <span class="math inline">\(N(0,0.1^2)\)</span> prior on <span class="math inline">\(\beta_\text{age}\)</span>. For <span class="math inline">\(\beta_\text{day}\)</span> we can use a <span class="math inline">\(N(0,1)\)</span> prior. Similarly, the scaling of <code>activity_bins</code> suggests that a <span class="math inline">\(N(0,1)\)</span> prior would be sufficient for the data-level standard deviation <span class="math inline">\(\sigma\)</span>.</p>
-<p>That just leaves us with our choice of prior for the standard deviation of the intercept<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> <span class="math inline">\(\mu_j\)</span>, <span class="math inline">\(\tau\)</span>. Thankfully, we considered this case in detail <a href="https://dansblog.netlify.app/posts/2022-08-29-priors4/priors4.html">in the previous blog post</a>. There I argued that a sensible prior for <span class="math inline">\(\tau\)</span> would be an exponential prior. To be quite honest with you, a half-normal or a half-t also would be fine. But I’m going to stick to my guns. For the scaling, again, it would be a touch surprising (given the scaling of the data) if the group means were more than 3 apart, so choosing <span class="math inline">\(\lambda=1\)</span> in the exponential distribution should give a relatively weak prior without being so wide that we are putting prior mass on a bunch of values that we would never actually want to put prior mass on.</p>
-<p>We can then fit the model with <code>brms</code>. In this case, I’m using the <code>cmdstanr</code> back end, because it’s fast and I like it.</p>
-<p>To specify the model, we use <code>lme4</code>-style notation</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>formula <span class="ot">&lt;-</span> active_bins_scaled <span class="sc">~</span> age_centred<span class="sc">*</span>day <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> monkey)</span>
-<span id="cb8-2"><a href="#cb8-2"></a>formula2 <span class="ot">&lt;-</span> active_bins_sqrt <span class="sc">~</span> age_centred<span class="sc">*</span>day <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> monkey)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>formula <span class="ot">&lt;-</span> active_bins_scaled <span class="sc">~</span> age_centred<span class="sc">*</span>day <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> monkey)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The first bit of this formula is the same as the formula used in linear regression. The interesting bit is is the <code>(1 | monkey)</code>. This is the way to tell R that the intercept (aka <code>1</code> in formula notation) is going to be grouped by <code>monkey</code> and we are going to put an exchangeable normal prior on it. For more complex models there are more complex variations on this theme, but for the moment we won’t go any further.</p>
-<p>To set the priors, we will use <code>brms</code>. Now, if you are Paul you might be able to remember how to set priors in <code>brms</code> without having to look it up, but I am sadly not Paul<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>, so every time I need to set priors in <code>brms</code> I write the formula and use the convenient <code>get_prior</code> function</p>
+</section>
+<section id="reasoning-out-some-prior-distributions" class="level2">
+<h2 class="anchored" data-anchor-id="reasoning-out-some-prior-distributions">Reasoning out some prior distributions</h2>
+<p>We need to set priors. The canny amongst you may have noticed that I did not set priors in the previous two examples. There are two reasons for this: firstly I didn’t feel like it, and secondly none but the most terrible prior distributions would have meaningfully changed the conclusions. This is, it turns out, one of the great truths when it comes to prior distributions: <em>they do not matter until they do</em><a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a>.</p>
+<p>In particular, if you have a parameter that <em>directly</em> sees the data (eg it’s in the likelihood) and there is nothing weird going on<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a>, then the prior distribution will usually not do much as any prior will be quickly overwhelmed by the data.</p>
+<p>The problem is that we have one parameter in our model (<span class="math inline">\(\tau\)</span>) that does not directly see the data. Instead of directly telling us about an observation, it tells us about how different the <em>groups</em> of observations are. There is usually less information in the data about this type of parameter and, consequently, the prior distribution will be more important. This is especially true when you have more than one grouping variable, or when a variable only has a small number of groups.</p>
+<p>So let’s pay some proper attention to the priors.</p>
+<p>To begin with, let’s set priors on <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\beta\)</span>, and <span class="math inline">\(\sigma\)</span> (aka the data-level parameters). This is a <em>considerably</em> easier task if the data is scaled. Otherwise, you need to encode information about the usual scale<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> of the data into your priors. Sometimes this is a sensible and easy thing to do, but usually it’s easier to simply scale the data. (A lot of software will simply scale your data for you, but it is <em>always</em> better to do it yourself!)</p>
+<p>So let’s scale our data. We have three variables that need scaling: <code>age</code> (aka the covariate that isn’t categorical) and <code>active_bins</code> (aka the response). For age, we are going to want to measure it as either <em>years from the youngest monkey</em> or <em>years from the average monkey</em>. I think, in this situation, the first version could make a lot of sense, but we are going with the second. This allows us to interpret <span class="math inline">\(\mu\)</span> as the over-all mean. Otherwise, <span class="math inline">\(\mu\)</span> would tell us about the overall average activity of 4 year old monkeys and we will use <span class="math inline">\(\beta(\text{age}_j - 4)\)</span> to estimate how much the activity changes, on average keeping all other aspects constant, as the monkey ages.</p>
+<p>On the other hand, we have no sensible baseline for activity, so deviation from the average seems like a sensible scaling. I also don’t know, <em>a priori</em>, how variable activity is going to be, so I might want to scale<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a> it by its standard deviation. In this case, I’m not going to do that because we have a sensible fixed<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a> upper limit (8), which I can scale by.</p>
+<p>One important thing here is that if we scale the data by data-dependent quantities (like the minimum, the mean, or the standard deviation) we <em>must</em> keep track of this information. This is because <em>any</em> future data we try to predict with this model will need to be transformed <em>the same way using the same</em><a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> <em>numbers</em>! This particularly has implication when you are doing things like test/training set validation or cross validation: in the first case, the test set needs to be scaled in the same way the training set was; while in the second case each cross validation training set needs to be scaled independently and that scaling needs to be used on the corresponding left-out data<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>age_centre <span class="ot">&lt;-</span> <span class="fu">mean</span>(activity_2mins<span class="sc">$</span>age)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>age_scale <span class="ot">&lt;-</span> <span class="fu">diff</span>(<span class="fu">range</span>(activity_2mins<span class="sc">$</span>age))<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>active_bins_centre <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a></span>
+<span id="cb8-5"><a href="#cb8-5"></a>activity_2mins_scaled <span class="ot">&lt;-</span> activity_2mins <span class="sc">|&gt;</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>  <span class="fu">mutate</span>(<span class="at">monkey =</span> <span class="fu">factor</span>(monkey),</span>
+<span id="cb8-7"><a href="#cb8-7"></a>         <span class="at">day =</span> <span class="fu">factor</span>(day),</span>
+<span id="cb8-8"><a href="#cb8-8"></a>         <span class="at">age_centred =</span> (age <span class="sc">-</span> age_centre)<span class="sc">/</span>age_scale,</span>
+<span id="cb8-9"><a href="#cb8-9"></a>         <span class="at">active_bins_scaled =</span> (active_bins <span class="sc">-</span> active_bins_centre)<span class="sc">/</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>With our scaling completed, we can now start thinking about prior distributions. The trick with priors is to make them wide enough to cover all plausible values of a parameter without making them so wide that they put a whole bunch of weight on essentially silly values.</p>
+<p>We know, for instance, that our unscaled activity will go between 0 and 8. That means that it’s unlikely for the mean of the scaled process to be much bigger than 3 or 4. These considerations, along with the fact that we have centred the data so the mean should be closer to zero, suggest that a <span class="math inline">\(N(0,1)\)</span> prior should be appropriate for <span class="math inline">\(\mu\)</span>.</p>
+<p>As we normalised our age data relative to the smallest age, we should think more carefully about the scaling of <span class="math inline">\(\beta\)</span>. Macaques live for 20-30<a href="#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a> years, so we need to think about, for instance, an ordinary aged macaque that would be 15 years older than the baseline. Thanks to our scaling, the largest change that we can have is around 1, which strongly suggests that if <span class="math inline">\(\beta\)</span> was too much larger than <span class="math inline">\(1/8\)</span> we are going to be in unreasonable territory. So let’s put a <span class="math inline">\(N(0,0.2^2)\)</span> prior<a href="#fn22" class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a> on <span class="math inline">\(\beta_\text{age}\)</span> and <span class="math inline">\(\beta_\text{age,day}\)</span>. For <span class="math inline">\(\beta_\text{day}\)</span> we can use a <span class="math inline">\(N(0,1)\)</span> prior.</p>
+<p>Similarly, the scaling of <code>activity_bins</code> suggests that a <span class="math inline">\(N(0,1)\)</span> prior would be sufficient for the data-level standard deviation <span class="math inline">\(\sigma\)</span>.</p>
+<p>That just leaves us with our choice of prior for the standard deviation of the intercept<a href="#fn23" class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a> <span class="math inline">\(\mu_j\)</span>, <span class="math inline">\(\tau\)</span>. Thankfully, we considered this case in detail <a href="https://dansblog.netlify.app/posts/2022-08-29-priors4/priors4.html">in the previous blog post</a>. There I argued that a sensible prior for <span class="math inline">\(\tau\)</span> would be an exponential prior. To be quite honest with you, a half-normal or a half-t also would be fine. But I’m going to stick to my guns. For the scaling, again, it would be a touch surprising (given the scaling of the data) if the group means were more than 3 apart, so choosing <span class="math inline">\(\lambda=1\)</span> in the exponential distribution should give a relatively weak prior without being so wide that we are putting prior mass on a bunch of values that we would never actually want to put prior mass on.</p>
+<p>We can then fit the model with <code>brms</code>. In this case, I’m using the <code>cmdstanr</code> back end, because it’s fast and I like it.</p>
+<p>To specify the model, we use the <code>lme4</code>-style formula notation discussed above.</p>
+<p>To set the priors, we will use <code>brms</code>. Now, if you are Paul you might be able to remember how to set priors in <code>brms</code> without having to look it up, but I am sadly not Paul<a href="#fn24" class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a>, so every time I need to set priors in <code>brms</code> I write the formula and use the convenient <code>get_prior</code> function</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">library</span>(cmdstanr)</span>
 <span id="cb9-2"><a href="#cb9-2"></a><span class="fu">library</span>(brms)</span>
@@ -486,19 +490,21 @@ y_{ij}  \mid \mu_j, \sigma &amp;\sim N(\mu_j, \sigma^2) \\
 </div>
 </div>
 </div>
-<p>From this, we can see that the default prior on <span class="math inline">\(\beta\)</span> is an improper flat prior, the default prior on the intercept is a Student-t with 3 degrees of freedom centred at zero with standard deviation 2.5. The same prior (restricted to positive numbers) is put on all of the standard deviation parameters. These default prior distributions are, to be honest, probably fine in this context<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a>, but it is good practice to always set your prior.</p>
+<p>From this, we can see that the default prior on <span class="math inline">\(\beta\)</span> is an improper flat prior, the default prior on the intercept is a Student-t with 3 degrees of freedom centred at zero with standard deviation 2.5. The same prior (restricted to positive numbers) is put on all of the standard deviation parameters. These default prior distributions are, to be honest, probably fine in this context<a href="#fn25" class="footnote-ref" id="fnref25" role="doc-noteref"><sup>25</sup></a>, but it is good practice to always set your prior.</p>
+<p>We do this as follows. (Note that <code>brms</code> uses Stan, which parameterises the normal distribution by its mean and <em>standard deviation</em>!)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>priors <span class="ot">&lt;-</span> <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.2</span>), <span class="at">coef =</span> <span class="st">"age_centred"</span>) <span class="sc">+</span> </span>
 <span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="fl">0.2</span>), <span class="at">coef =</span> <span class="st">"age_centred:day2"</span>) <span class="sc">+</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.2</span>), <span class="at">coef =</span> <span class="st">"day2"</span>) <span class="sc">+</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">prior</span>(<span class="fu">exponential</span>(<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"sigma"</span>) <span class="sc">+</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> sd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">coef =</span> <span class="st">"day2"</span>) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"sigma"</span>) <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a>  <span class="fu">prior</span>(<span class="fu">exponential</span>(<span class="dv">1</span>), <span class="at">class =</span> sd) <span class="sc">+</span> <span class="co"># tau</span></span>
+<span id="cb10-6"><a href="#cb10-6"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"Intercept"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="pre-experiment-prophylaxis" class="level2">
 <h2 class="anchored" data-anchor-id="pre-experiment-prophylaxis">Pre-experiment prophylaxis</h2>
 <p>So we have specified some priors using the power of <em>our thoughts</em>. But we should probably check to see if they are broadly sensible. A great thing about Bayesian modelling is that we are explicitly specifying our <em>a priori</em> (or pre-data) assumptions about the data generating process. That means that we can do a fast validation of our priors by simulating from them and checking that they’re not too wild.</p>
-<p>There are lots of ways to do this, but the easiest<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> way to do this is to use the <code>sample_prior = "only"</code> option in the <code>brm()</code> function.</p>
+<p>There are lots of ways to do this, but the easiest<a href="#fn26" class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a> way to do this is to use the <code>sample_prior = "only"</code> option in the <code>brm()</code> function.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>prior_draws <span class="ot">&lt;-</span> <span class="fu">brm</span>(formula, </span>
 <span id="cb11-2"><a href="#cb11-2"></a>           <span class="at">data =</span> activity_2mins_scaled,</span>
@@ -520,10 +526,10 @@ Chain 4 finished in 0.5 seconds.
 
 All 4 chains finished successfully.
 Mean chain execution time: 0.5 seconds.
-Total execution time: 0.8 seconds.</code></pre>
+Total execution time: 0.6 seconds.</code></pre>
 </div>
 </div>
-<p>Now that we have samples from the prior distribution, we can assemble them to work out what our prior tells us we would, pre-data, predict for the number of active bins for a single monkey (in this a single monkey<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a> that is 10 years older than the baseline).</p>
+<p>Now that we have samples from the prior distribution, we can assemble them to work out what our prior tells us we would, pre-data, predict for the number of active bins for a single monkey (in this a single monkey<a href="#fn27" class="footnote-ref" id="fnref27" role="doc-noteref"><sup>27</sup></a> that is 10 years older than the baseline).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>pred_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">age_centred =</span> <span class="dv">10</span>, <span class="at">day =</span> <span class="dv">1</span>, <span class="at">monkey =</span> <span class="st">"88"</span>) </span>
 <span id="cb14-2"><a href="#cb14-2"></a><span class="fu">tibble</span>(<span class="at">pred =</span> brms<span class="sc">::</span><span class="fu">posterior_predict</span>(prior_draws, </span>
@@ -538,7 +544,7 @@ Total execution time: 0.8 seconds.</code></pre>
 <p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The vertical lines are (approximately) the minimum and maximum of the data. This<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> suggests that the implied priors are definitely wider than our observed data, but they are not several orders of magnitude too wide. This is a good situation to be in: it gives enough room in the priors that we might be wrong with our specification while also not allowing for truly wild values of the parameters (and implied predictive distribution). One could even go so far as to say that the prior is weakly informative.</p>
+<p>The vertical lines are (approximately) the minimum and maximum of the data. This<a href="#fn28" class="footnote-ref" id="fnref28" role="doc-noteref"><sup>28</sup></a> suggests that the implied priors are definitely wider than our observed data, but they are not several orders of magnitude too wide. This is a good situation to be in: it gives enough room in the priors that we might be wrong with our specification while also not allowing for truly wild values of the parameters (and implied predictive distribution). One could even go so far as to say that the prior is weakly informative.</p>
 <p>Let’s compare this to the default priors on the standard deviation parameters. (The default priors on the regression parameters are improper so we can’t simulate from them. So I replaced the improper prior with a much narrower <span class="math inline">\(N(0,10^2)\)</span> prior. If you make the prior on the <span class="math inline">\(\beta\)</span> wider the prior predictive distribution also gets wider.)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>priors_default <span class="ot">&lt;-</span> <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">10</span>), <span class="at">class =</span> <span class="st">"b"</span>)</span>
@@ -552,14 +558,14 @@ Total execution time: 0.8 seconds.</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 0.5 seconds.
-Chain 2 finished in 0.5 seconds.
-Chain 3 finished in 0.5 seconds.
-Chain 4 finished in 0.5 seconds.
+Chain 1 finished in 0.4 seconds.
+Chain 2 finished in 0.4 seconds.
+Chain 3 finished in 0.4 seconds.
+Chain 4 finished in 0.4 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 0.5 seconds.
-Total execution time: 0.7 seconds.</code></pre>
+Mean chain execution time: 0.4 seconds.
+Total execution time: 0.5 seconds.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">tibble</span>(<span class="at">pred =</span> brms<span class="sc">::</span><span class="fu">posterior_predict</span>(prior_draws_default, </span>
 <span id="cb17-2"><a href="#cb17-2"></a>                                      <span class="at">newdata =</span> pred_data )) <span class="sc">|&gt;</span></span>
@@ -590,14 +596,14 @@ Total execution time: 0.7 seconds.</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 1.6 seconds.
-Chain 2 finished in 1.6 seconds.
-Chain 3 finished in 1.6 seconds.
-Chain 4 finished in 1.6 seconds.
+Chain 1 finished in 1.2 seconds.
+Chain 2 finished in 1.2 seconds.
+Chain 3 finished in 1.2 seconds.
+Chain 4 finished in 1.2 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 1.6 seconds.
-Total execution time: 1.7 seconds.</code></pre>
+Mean chain execution time: 1.2 seconds.
+Total execution time: 1.3 seconds.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>posterior_draws</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -611,18 +617,18 @@ Formula: active_bins_scaled ~ age_centred * day + (1 | monkey)
 Group-Level Effects: 
 ~monkey (Number of levels: 243) 
               Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-sd(Intercept)     0.31      0.03     0.24     0.37 1.00     1152     2164
+sd(Intercept)     0.31      0.03     0.24     0.37 1.00     1351     2196
 
 Population-Level Effects: 
                  Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-Intercept           -0.04      0.03    -0.10     0.03 1.00     4648     3134
-age_centred          0.01      0.07    -0.11     0.14 1.00     3566     3034
-day2                 0.10      0.04     0.03     0.18 1.00     8007     2416
-age_centred:day2     0.07      0.08    -0.07     0.22 1.00     6341     2627
+Intercept           -0.04      0.03    -0.11     0.02 1.00     4039     2964
+age_centred          0.01      0.07    -0.12     0.14 1.00     3902     3049
+day2                 0.10      0.04     0.03     0.18 1.00     8897     2663
+age_centred:day2     0.07      0.07    -0.07     0.22 1.00     6157     2947
 
 Family Specific Parameters: 
       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-sigma     0.43      0.02     0.39     0.47 1.00     1417     2856
+sigma     0.43      0.02     0.39     0.47 1.00     1997     2630
 
 Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -630,7 +636,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
 <p>There doesn’t seem to be much of an effect of age in this data.</p>
-<p>If you’re curious, this matches well<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a> with the output of <code>lme4</code>, which is a nice sense check for simple models. Generally speaking, if they’re the same then they’re both fine. If they are different<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a>, then you’ve got to look deeper.</p>
+<p>If you’re curious, this matches well<a href="#fn29" class="footnote-ref" id="fnref29" role="doc-noteref"><sup>29</sup></a> with the output of <code>lme4</code>, which is a nice sense check for simple models. Generally speaking, if they’re the same then they’re both fine. If they are different<a href="#fn30" class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a>, then you’ve got to look deeper.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">library</span>(lme4)</span>
 <span id="cb23-2"><a href="#cb23-2"></a>fit_lme4 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(formula, activity_2mins_scaled)</span>
@@ -650,156 +656,223 @@ Fixed Effects:
         -0.04114           0.01016           0.10507           0.08507  </code></pre>
 </div>
 </div>
+<p>We can also compare the fit using leave-one-out cross validation. This is similar to AIC, but more directly interpretable. It is the average of <span class="math display">\[
+\log p_\text{posterior predictive}(y_{ij} \mid y_{-ij}) = \log \left(\int_\theta p(y_{ij} \mid \theta)p(\theta \mid y_{-ij})\, d\theta\right),
+\]</span> where <span class="math inline">\(\theta\)</span> is a vector of all of the parameters in the model. The notation <span class="math inline">\(y_{-ij}\)</span> is the data <em>without</em> the <span class="math inline">\(ij\)</span>th observation. This average is sometimes called the <em>expected log predictive density</em> or elpd.</p>
+<p>To compare it with the two linear regression models, I need to fit them in <code>brms</code>. I will use a <span class="math inline">\(N(0,1)\)</span> prior for the monkey intercepts and the same priors as the previous model for the other parameters.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>priors_lm <span class="ot">&lt;-</span>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"b"</span>) <span class="sc">+</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.2</span>), <span class="at">coef =</span> <span class="st">"age_centred"</span>) <span class="sc">+</span> </span>
+<span id="cb25-3"><a href="#cb25-3"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="fl">0.2</span>), <span class="at">coef =</span> <span class="st">"age_centred:day2"</span>) <span class="sc">+</span></span>
+<span id="cb25-4"><a href="#cb25-4"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">coef =</span> <span class="st">"day2"</span>) <span class="sc">+</span></span>
+<span id="cb25-5"><a href="#cb25-5"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"Intercept"</span>) <span class="sc">+</span></span>
+<span id="cb25-6"><a href="#cb25-6"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"sigma"</span>)</span>
+<span id="cb25-7"><a href="#cb25-7"></a></span>
+<span id="cb25-8"><a href="#cb25-8"></a>posterior_nopool <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb25-9"><a href="#cb25-9"></a>  active_bins_scaled <span class="sc">~</span> age_centred <span class="sc">*</span> day <span class="sc">+</span> monkey, </span>
+<span id="cb25-10"><a href="#cb25-10"></a>  <span class="at">data =</span> activity_2mins_scaled,</span>
+<span id="cb25-11"><a href="#cb25-11"></a>  <span class="at">prior =</span> priors_lm,</span>
+<span id="cb25-12"><a href="#cb25-12"></a>  <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb25-13"><a href="#cb25-13"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb25-14"><a href="#cb25-14"></a>  <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Running MCMC with 4 parallel chains...
+
+Chain 1 finished in 2.5 seconds.
+Chain 3 finished in 2.5 seconds.
+Chain 2 finished in 2.5 seconds.
+Chain 4 finished in 2.5 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 2.5 seconds.
+Total execution time: 2.7 seconds.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>posterior_pool <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb27-2"><a href="#cb27-2"></a>  active_bins_scaled <span class="sc">~</span> age_centred <span class="sc">*</span> day, </span>
+<span id="cb27-3"><a href="#cb27-3"></a>  <span class="at">data =</span> activity_2mins_scaled,</span>
+<span id="cb27-4"><a href="#cb27-4"></a>  <span class="at">prior =</span> priors_lm,</span>
+<span id="cb27-5"><a href="#cb27-5"></a>  <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb27-6"><a href="#cb27-6"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb27-7"><a href="#cb27-7"></a>  <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Running MCMC with 4 parallel chains...
+
+Chain 1 finished in 0.1 seconds.
+Chain 2 finished in 0.1 seconds.
+Chain 3 finished in 0.1 seconds.
+Chain 4 finished in 0.1 seconds.
+
+All 4 chains finished successfully.
+Mean chain execution time: 0.1 seconds.
+Total execution time: 0.3 seconds.</code></pre>
+</div>
+</div>
+<p>We an now use the <code>loo_compare</code> function to compare the models. By default, the best model is listed first and the other models are listed below it with the difference in elpd values given. To do this, we need to tell <code>brms</code> to compute the <code>loo</code> criterion using the <code>add_criterion</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>posterior_draws <span class="ot">&lt;-</span> <span class="fu">add_criterion</span>(posterior_draws, <span class="st">"loo"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Found 6 observations with a pareto_k &gt; 0.7 in model 'posterior_draws'.
+It is recommended to set 'moment_match = TRUE' in order to perform moment
+matching for problematic observations.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>posterior_nopool <span class="ot">&lt;-</span> <span class="fu">add_criterion</span>(posterior_nopool, <span class="st">"loo"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Found 61 observations with a pareto_k &gt; 0.7 in model
+'posterior_nopool'. It is recommended to set 'moment_match = TRUE' in order to
+perform moment matching for problematic observations.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a>posterior_pool <span class="ot">&lt;-</span> <span class="fu">add_criterion</span>(posterior_pool, <span class="st">"loo"</span>)</span>
+<span id="cb33-2"><a href="#cb33-2"></a><span class="fu">loo_compare</span>(posterior_draws, posterior_nopool, posterior_pool)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 elpd_diff se_diff
+posterior_draws    0.0       0.0  
+posterior_pool   -29.2       7.4  
+posterior_nopool -54.2       9.0  </code></pre>
+</div>
+</div>
+<p>There are some warnings there suggesting that we could recompute these using a slower method, but for the purposes of today I’m not going to do that and I shall declare that the multilevel model performs <em>far better</em> than the other two models.</p>
 </section>
 <section id="post-experiment-prophylaxis" class="level2">
-<h2 class="anchored" data-anchor-id="post-experiment-prophylaxis">Post experiment prophylaxis</h2>
-<p>Of course, we would be fools to just assume that because we fit a model the model is a good representation of the data. To do that, we need to look at some posterior checks.</p>
+<h2 class="anchored" data-anchor-id="post-experiment-prophylaxis">Post-experiment prophylaxis</h2>
+<p>Of course, we would be fools to just assume that because we fit a model and compared it to some other models, the model is a good representation of the data. To do that, we need to look at some posterior checks.</p>
 <p>The easiest thing to look at is the predictions themselves.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>fitted <span class="ot">&lt;-</span> activity_2mins_scaled <span class="sc">|&gt;</span></span>
-<span id="cb25-2"><a href="#cb25-2"></a>  <span class="fu">cbind</span>(<span class="fu">t</span>(<span class="fu">posterior_predict</span>(posterior_draws,<span class="at">ndraws =</span> <span class="dv">200</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb25-3"><a href="#cb25-3"></a>  <span class="fu">pivot_longer</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">207</span>, <span class="at">names_to =</span> <span class="st">"draw"</span>, <span class="at">values_to =</span> <span class="st">"fitted"</span>)</span>
-<span id="cb25-4"><a href="#cb25-4"></a></span>
-<span id="cb25-5"><a href="#cb25-5"></a>day_labs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Day 1"</span>, <span class="st">"Day 2"</span>)</span>
-<span id="cb25-6"><a href="#cb25-6"></a><span class="fu">names</span>(day_labs) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>)</span>
-<span id="cb25-7"><a href="#cb25-7"></a></span>
-<span id="cb25-8"><a href="#cb25-8"></a>violin_plot <span class="ot">&lt;-</span> fitted <span class="sc">|&gt;</span> </span>
-<span id="cb25-9"><a href="#cb25-9"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>( <span class="at">x=</span>age, <span class="at">y =</span> <span class="dv">4</span><span class="sc">*</span>fitted <span class="sc">+</span> active_bins_centre, <span class="at">group =</span> age)) <span class="sc">+</span> </span>
-<span id="cb25-10"><a href="#cb25-10"></a>  <span class="fu">geom_violin</span>(<span class="at">colour =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span></span>
-<span id="cb25-11"><a href="#cb25-11"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> active_bins), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb25-12"><a href="#cb25-12"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day, <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">day =</span> day_labs)) <span class="sc">+</span></span>
-<span id="cb25-13"><a href="#cb25-13"></a>  <span class="fu">theme_bw</span>() </span>
-<span id="cb25-14"><a href="#cb25-14"></a>violin_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>fitted <span class="ot">&lt;-</span> activity_2mins_scaled <span class="sc">|&gt;</span></span>
+<span id="cb35-2"><a href="#cb35-2"></a>  <span class="fu">cbind</span>(<span class="fu">t</span>(<span class="fu">posterior_predict</span>(posterior_draws,<span class="at">ndraws =</span> <span class="dv">200</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb35-3"><a href="#cb35-3"></a>  <span class="fu">pivot_longer</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">207</span>, <span class="at">names_to =</span> <span class="st">"draw"</span>, <span class="at">values_to =</span> <span class="st">"fitted"</span>)</span>
+<span id="cb35-4"><a href="#cb35-4"></a></span>
+<span id="cb35-5"><a href="#cb35-5"></a>day_labs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Day 1"</span>, <span class="st">"Day 2"</span>)</span>
+<span id="cb35-6"><a href="#cb35-6"></a><span class="fu">names</span>(day_labs) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>)</span>
+<span id="cb35-7"><a href="#cb35-7"></a></span>
+<span id="cb35-8"><a href="#cb35-8"></a>violin_plot <span class="ot">&lt;-</span> fitted <span class="sc">|&gt;</span> </span>
+<span id="cb35-9"><a href="#cb35-9"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>( <span class="at">x=</span>age, <span class="at">y =</span> <span class="dv">4</span><span class="sc">*</span>fitted <span class="sc">+</span> active_bins_centre, <span class="at">group =</span> age)) <span class="sc">+</span> </span>
+<span id="cb35-10"><a href="#cb35-10"></a>  <span class="fu">geom_violin</span>(<span class="at">colour =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span></span>
+<span id="cb35-11"><a href="#cb35-11"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> active_bins), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb35-12"><a href="#cb35-12"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day, <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">day =</span> day_labs)) <span class="sc">+</span></span>
+<span id="cb35-13"><a href="#cb35-13"></a>  <span class="fu">theme_bw</span>() </span>
+<span id="cb35-14"><a href="#cb35-14"></a>violin_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>That appears to be a reasonably good fit, although it’s possible that the prediction intervals are a bit wide. We can also look at the plot of the posterior residuals vs the fitted values. Here the fitted values are the mean of the posterior predictive distribution.</p>
 <p>Next, let’s check for evidence of non-linearity in <code>age</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>plot_data <span class="ot">&lt;-</span> activity_2mins_scaled <span class="sc">|&gt;</span></span>
-<span id="cb26-2"><a href="#cb26-2"></a>  <span class="fu">mutate</span>(<span class="at">fitted_mean =</span> <span class="fu">colMeans</span>(<span class="fu">posterior_epred</span>(posterior_draws,<span class="at">ndraws =</span> <span class="dv">200</span>)))</span>
-<span id="cb26-3"><a href="#cb26-3"></a></span>
-<span id="cb26-4"><a href="#cb26-4"></a>age_plot <span class="ot">&lt;-</span> plot_data <span class="sc">|&gt;</span> </span>
-<span id="cb26-5"><a href="#cb26-5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span></span>
-<span id="cb26-6"><a href="#cb26-6"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb26-7"><a href="#cb26-7"></a>  <span class="fu">theme_bw</span>()</span>
-<span id="cb26-8"><a href="#cb26-8"></a>age_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>plot_data <span class="ot">&lt;-</span> activity_2mins_scaled <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2"></a>  <span class="fu">mutate</span>(<span class="at">fitted_mean =</span> <span class="fu">colMeans</span>(<span class="fu">posterior_epred</span>(posterior_draws,<span class="at">ndraws =</span> <span class="dv">200</span>)))</span>
+<span id="cb36-3"><a href="#cb36-3"></a></span>
+<span id="cb36-4"><a href="#cb36-4"></a>age_plot <span class="ot">&lt;-</span> plot_data <span class="sc">|&gt;</span> </span>
+<span id="cb36-5"><a href="#cb36-5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span></span>
+<span id="cb36-6"><a href="#cb36-6"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb36-7"><a href="#cb36-7"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb36-8"><a href="#cb36-8"></a>age_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>There doesn’t seem to be any obvious evidence of non-linearity in the residuals, which suggests the linear model for age was sufficient.</p>
-<p>We can also check the distributional assumption<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> that the residuals <span class="math display">\[
+<p>We can also check the distributional assumption<a href="#fn31" class="footnote-ref" id="fnref31" role="doc-noteref"><sup>31</sup></a> that the residuals <span class="math display">\[
 r_{ij} = y_{ij} - \mu_j
 \]</span> have a Gaussian distribution. We can check this with a qq-plot. Here we are using the posterior mean to define our residuals.</p>
 <p>We can look at the qq-plot to see how we’re doing with normality.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>distribution_plot <span class="ot">&lt;-</span> plot_data <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> (active_bins_scaled <span class="sc">-</span> fitted_mean)<span class="sc">/</span><span class="fu">sd</span>(active_bins_scaled <span class="sc">-</span> fitted_mean))) <span class="sc">+</span> </span>
-<span id="cb27-2"><a href="#cb27-2"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
-<span id="cb27-3"><a href="#cb27-3"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
-<span id="cb27-4"><a href="#cb27-4"></a>  <span class="fu">theme_classic</span>()</span>
-<span id="cb27-5"><a href="#cb27-5"></a>distribution_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a>distribution_plot <span class="ot">&lt;-</span> plot_data <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> (active_bins_scaled <span class="sc">-</span> fitted_mean)<span class="sc">/</span><span class="fu">sd</span>(active_bins_scaled <span class="sc">-</span> fitted_mean))) <span class="sc">+</span> </span>
+<span id="cb37-2"><a href="#cb37-2"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb37-3"><a href="#cb37-3"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
+<span id="cb37-4"><a href="#cb37-4"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb37-5"><a href="#cb37-5"></a>distribution_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>That’s not too bad. A bit of a deviation from normality in the tails but nothing that would make me weep. It could well be an artifact of how I defined and normalised the residuals.</p>
 <p>We can also look at the so-called k-hat plot, which can be useful for finding high-leverage observations in general models.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>loo_posterior <span class="ot">&lt;-</span> <span class="fu">LOO</span>(posterior_draws)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Found 3 observations with a pareto_k &gt; 0.7 in model 'posterior_draws'.
-It is recommended to set 'moment_match = TRUE' in order to perform moment
-matching for problematic observations.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>loo_posterior</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>loo_posterior <span class="ot">&lt;-</span> <span class="fu">LOO</span>(posterior_draws) <span class="co">#warnings suppressed</span></span>
+<span id="cb38-2"><a href="#cb38-2"></a>loo_posterior</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Computed from 4000 by 485 log-likelihood matrix
 
          Estimate   SE
-elpd_loo   -349.6 12.3
-p_loo       117.7  5.1
-looic       699.2 24.7
+elpd_loo   -349.5 12.3
+p_loo       117.0  5.1
+looic       699.0 24.6
 ------
 Monte Carlo SE of elpd_loo is NA.
 
 Pareto k diagnostic values:
                          Count Pct.    Min. n_eff
-(-Inf, 0.5]   (good)     417   86.0%   490       
- (0.5, 0.7]   (ok)        65   13.4%   517       
-   (0.7, 1]   (bad)        3    0.6%   403       
+(-Inf, 0.5]   (good)     417   86.0%   748       
+ (0.5, 0.7]   (ok)        62   12.8%   341       
+   (0.7, 1]   (bad)        6    1.2%   275       
    (1, Inf)   (very bad)   0    0.0%   &lt;NA&gt;      
 See help('pareto-k-diagnostic') for details.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="fu">plot</span>(loo_posterior)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="fu">plot</span>(loo_posterior)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>This suggests that observations 126, 255, 283 are potentially high leverage and we should check them more carefully. I won’t be doing that today.</p>
-<p>Finally, let’s look at the residuals vs the fitted values. This is a commonly used diagnostic plot in linear regression and it can be very useful for visually detecting non-linear patterns and heteroskedasticity in the residuals. So let’s make the plot<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a>.</p>
+<p>This suggests that observations 10, 233, 234, 367, 394, 479 are potentially high leverage and we should check them more carefully. I won’t be doing that today.</p>
+<p>Finally, let’s look at the residuals vs the fitted values. This is a commonly used diagnostic plot in linear regression and it can be very useful for visually detecting non-linear patterns and heteroskedasticity in the residuals. So let’s make the plot<a href="#fn32" class="footnote-ref" id="fnref32" role="doc-noteref"><sup>32</sup></a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a>problem_plot <span class="ot">&lt;-</span> plot_data <span class="sc">|&gt;</span> </span>
-<span id="cb33-2"><a href="#cb33-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> fitted_mean, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span> </span>
-<span id="cb33-3"><a href="#cb33-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb33-4"><a href="#cb33-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">colour =</span> <span class="st">"blue"</span>)<span class="sc">+</span></span>
-<span id="cb33-5"><a href="#cb33-5"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day) <span class="sc">+</span></span>
-<span id="cb33-6"><a href="#cb33-6"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb33-7"><a href="#cb33-7"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb33-8"><a href="#cb33-8"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>))</span>
-<span id="cb33-9"><a href="#cb33-9"></a>problem_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula 'y ~ x'</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>problem_plot <span class="ot">&lt;-</span> plot_data <span class="sc">|&gt;</span> </span>
+<span id="cb41-2"><a href="#cb41-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> fitted_mean, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span> </span>
+<span id="cb41-3"><a href="#cb41-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb41-4"><a href="#cb41-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">colour =</span> <span class="st">"blue"</span>)<span class="sc">+</span></span>
+<span id="cb41-5"><a href="#cb41-5"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day) <span class="sc">+</span></span>
+<span id="cb41-6"><a href="#cb41-6"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb41-7"><a href="#cb41-7"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb41-8"><a href="#cb41-8"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb41-9"><a href="#cb41-9"></a>problem_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Hmmmm. That’s not <em>excellent</em>. The stripes are related to the 8 distinct values the response can take, but there is definitely a trend in the residuals. In particular, we are under-predicting small values and over-predicting large values. <em>There is something here and we will look into it</em>!</p>
 </section>
 <section id="understanding-diagnostic-plots-from-multilevel-models" class="level2">
 <h2 class="anchored" data-anchor-id="understanding-diagnostic-plots-from-multilevel-models">Understanding diagnostic plots from multilevel models</h2>
-<p>The thing is, multilevel models are notorious for having patterns that are essentially a product of the data design and not of any type of statistical misspecification. In a really great paper that you should all read, <a href="https://arxiv.org/pdf/1502.06988.pdf">Adam Loy, Heike Hofmann, and Di Cook</a> talk extensively about the challenges with interpreting diagnostic plots for linear mixed effects models<a href="#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a>.</p>
-<p>I’m not going to fully follow their recommendations, mostly because I’m too lazy<a href="#fn22" class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a> to write a for loop, but I am going to appropriate the guts of their idea.</p>
+<p>The thing is, multilevel models are notorious for having patterns that are essentially a product of the data design and not of any type of statistical misspecification. In a really great paper that you should all read, <a href="https://arxiv.org/pdf/1502.06988.pdf">Adam Loy, Heike Hofmann, and Di Cook</a> talk extensively about the challenges with interpreting diagnostic plots for linear mixed effects models<a href="#fn33" class="footnote-ref" id="fnref33" role="doc-noteref"><sup>33</sup></a>.</p>
+<p>I’m not going to fully follow their recommendations, mostly because I’m too lazy<a href="#fn34" class="footnote-ref" id="fnref34" role="doc-noteref"><sup>34</sup></a> to write a for loop, but I am going to appropriate the guts of their idea.</p>
 <p>They note that strange patterns can occur in diagnostic plots <em>even for correctly specified models</em>. Moreover, we simply do not know what these patters will be. It’s too complex a function of the design, the structure, the data, and the potential misspecification. That sounds bad, but they note that <em>we don’t need to know what pattern to expect</em>. Why not? Because we can simulate it!</p>
-<p>So this is the idea: Let’s simulate some fake<a href="#fn23" class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a> data from a correctly specified model that otherwise matches with our data. We can then compare the diagnostic plots from the fake data with diagnostic plots from the real data and see if the patterns are meaningfully different.</p>
+<p>So this is the idea: Let’s simulate some fake<a href="#fn35" class="footnote-ref" id="fnref35" role="doc-noteref"><sup>35</sup></a> data from a correctly specified model that otherwise matches with our data. We can then compare the diagnostic plots from the fake data with diagnostic plots from the real data and see if the patterns are meaningfully different.</p>
 <p>In order to do this, we should have a method to construct <em>multiple</em> fake data sets. Why? Well a plot is nothing but another test statistic and we <em>must</em> take this variability into account.</p>
 <p>(That said, do what I say, not what I do. This is a blog. I’m not going to code well enough to make this clean and straightforward, so I’m just going to do one.)</p>
 <p>There is an entire theory of <a href="https://royalsocietypublishing.org/doi/10.1098/rsta.2009.0120"><em>visual inference</em></a> that uses these lineups of diagnostic plots, where one uses the real data and the rest use realisations of the null data, that is really quite interesting and <em>well</em> beyond the scope of this post. But if you want to know more, read the <a href="https://arxiv.org/pdf/1502.06988.pdf">Low, Hoffman, and Cook</a> paper!</p>
 <section id="making-new-data" class="level3">
 <h3 class="anchored" data-anchor-id="making-new-data">Making new data</h3>
 <p>The first thing that we need to do is to work out how to simulate fake data from a correctly specified model with the same structure. Following the Low etc paper, I’m going to do a simple parameteric bootstrap, where I take the posterior medians of the fitted distribution and simulate data from them.</p>
-<p>That said, there are a bunch of other options. Specifically, we have a whole bag of samples from our posterior distribution and it would be possible to use that to select values of<a href="#fn24" class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a> <span class="math inline">\((\mu, \beta, \tau, \sigma)\)</span> for our simulation.</p>
+<p>That said, there are a bunch of other options. Specifically, we have a whole bag of samples from our posterior distribution and it would be possible to use that to select values of<a href="#fn36" class="footnote-ref" id="fnref36" role="doc-noteref"><sup>36</sup></a> <span class="math inline">\((\mu, \beta, \tau, \sigma)\)</span> for our simulation.</p>
 <p>So let’s make some fake data and fit the model to it!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>monkey_effect <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">monkey =</span> <span class="fu">unique</span>(activity_2mins_scaled<span class="sc">$</span>monkey), </span>
-<span id="cb35-2"><a href="#cb35-2"></a>                        <span class="at">monkey_effect =</span> <span class="fu">rnorm</span>(<span class="dv">243</span>,<span class="dv">0</span>,<span class="fl">0.31</span>))</span>
-<span id="cb35-3"><a href="#cb35-3"></a>data_fake <span class="ot">&lt;-</span> activity_2mins_scaled <span class="sc">|&gt;</span></span>
-<span id="cb35-4"><a href="#cb35-4"></a>  <span class="fu">left_join</span>(monkey_effect, <span class="at">by =</span> <span class="st">"monkey"</span>)  <span class="sc">|&gt;</span></span>
-<span id="cb35-5"><a href="#cb35-5"></a>  <span class="fu">mutate</span>(<span class="at">active_bins_scaled =</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(age_centred),</span>
-<span id="cb35-6"><a href="#cb35-6"></a>            <span class="at">mean =</span> <span class="sc">-</span><span class="fl">0.04</span> <span class="sc">+</span><span class="fl">0.01</span> <span class="sc">*</span> age_centred <span class="sc">+</span> </span>
-<span id="cb35-7"><a href="#cb35-7"></a>              monkey_effect <span class="sc">+</span> <span class="fu">if_else</span>(day <span class="sc">==</span> <span class="st">"2"</span>, <span class="fl">0.1</span> <span class="sc">+</span> <span class="fl">0.085</span> <span class="sc">*</span>age_centred, <span class="fl">0.0</span>), </span>
-<span id="cb35-8"><a href="#cb35-8"></a>            <span class="at">sd =</span> <span class="fl">0.43</span>))</span>
-<span id="cb35-9"><a href="#cb35-9"></a>                                              </span>
-<span id="cb35-10"><a href="#cb35-10"></a>posterior_draws_fake <span class="ot">&lt;-</span> <span class="fu">brm</span>(formula, </span>
-<span id="cb35-11"><a href="#cb35-11"></a>           <span class="at">data =</span> data_fake,</span>
-<span id="cb35-12"><a href="#cb35-12"></a>           <span class="at">prior =</span> priors,</span>
-<span id="cb35-13"><a href="#cb35-13"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
-<span id="cb35-14"><a href="#cb35-14"></a>           <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb35-15"><a href="#cb35-15"></a>           <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>monkey_effect <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">monkey =</span> <span class="fu">unique</span>(activity_2mins_scaled<span class="sc">$</span>monkey), </span>
+<span id="cb42-2"><a href="#cb42-2"></a>                        <span class="at">monkey_effect =</span> <span class="fu">rnorm</span>(<span class="dv">243</span>,<span class="dv">0</span>,<span class="fl">0.31</span>))</span>
+<span id="cb42-3"><a href="#cb42-3"></a>data_fake <span class="ot">&lt;-</span> activity_2mins_scaled <span class="sc">|&gt;</span></span>
+<span id="cb42-4"><a href="#cb42-4"></a>  <span class="fu">left_join</span>(monkey_effect, <span class="at">by =</span> <span class="st">"monkey"</span>)  <span class="sc">|&gt;</span></span>
+<span id="cb42-5"><a href="#cb42-5"></a>  <span class="fu">mutate</span>(<span class="at">active_bins_scaled =</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(age_centred),</span>
+<span id="cb42-6"><a href="#cb42-6"></a>            <span class="at">mean =</span> <span class="sc">-</span><span class="fl">0.04</span> <span class="sc">+</span><span class="fl">0.01</span> <span class="sc">*</span> age_centred <span class="sc">+</span> </span>
+<span id="cb42-7"><a href="#cb42-7"></a>              monkey_effect <span class="sc">+</span> <span class="fu">if_else</span>(day <span class="sc">==</span> <span class="st">"2"</span>, <span class="fl">0.1</span> <span class="sc">+</span> <span class="fl">0.085</span> <span class="sc">*</span>age_centred, <span class="fl">0.0</span>), </span>
+<span id="cb42-8"><a href="#cb42-8"></a>            <span class="at">sd =</span> <span class="fl">0.43</span>))</span>
+<span id="cb42-9"><a href="#cb42-9"></a>                                              </span>
+<span id="cb42-10"><a href="#cb42-10"></a>posterior_draws_fake <span class="ot">&lt;-</span> <span class="fu">brm</span>(formula, </span>
+<span id="cb42-11"><a href="#cb42-11"></a>           <span class="at">data =</span> data_fake,</span>
+<span id="cb42-12"><a href="#cb42-12"></a>           <span class="at">prior =</span> priors,</span>
+<span id="cb42-13"><a href="#cb42-13"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb42-14"><a href="#cb42-14"></a>           <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb42-15"><a href="#cb42-15"></a>           <span class="at">refresh =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 1.3 seconds.
-Chain 2 finished in 1.3 seconds.
+Chain 1 finished in 1.2 seconds.
+Chain 2 finished in 1.2 seconds.
 Chain 3 finished in 1.3 seconds.
-Chain 4 finished in 1.3 seconds.
+Chain 4 finished in 1.2 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 1.3 seconds.
-Total execution time: 1.5 seconds.</code></pre>
+Mean chain execution time: 1.2 seconds.
+Total execution time: 1.4 seconds.</code></pre>
 </div>
 </div>
 </section>
@@ -807,106 +880,107 @@ Total execution time: 1.5 seconds.</code></pre>
 <h3 class="anchored" data-anchor-id="the-good-plots">The good plots</h3>
 <p>First up, let’s look at the violin plot.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a><span class="fu">library</span>(cowplot)</span>
-<span id="cb37-2"><a href="#cb37-2"></a>fitted_fake <span class="ot">&lt;-</span> data_fake <span class="sc">|&gt;</span></span>
-<span id="cb37-3"><a href="#cb37-3"></a>  <span class="fu">cbind</span>(<span class="fu">t</span>(<span class="fu">posterior_predict</span>(posterior_draws_fake,<span class="at">ndraws =</span> <span class="dv">200</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb37-4"><a href="#cb37-4"></a>  <span class="fu">pivot_longer</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">207</span>, <span class="at">names_to =</span> <span class="st">"draw"</span>, <span class="at">values_to =</span> <span class="st">"fitted"</span>)</span>
-<span id="cb37-5"><a href="#cb37-5"></a></span>
-<span id="cb37-6"><a href="#cb37-6"></a>day_labs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Day 1"</span>, <span class="st">"Day 2"</span>)</span>
-<span id="cb37-7"><a href="#cb37-7"></a><span class="fu">names</span>(day_labs) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>)</span>
-<span id="cb37-8"><a href="#cb37-8"></a></span>
-<span id="cb37-9"><a href="#cb37-9"></a>violin_fake <span class="ot">&lt;-</span> fitted_fake <span class="sc">|&gt;</span> </span>
-<span id="cb37-10"><a href="#cb37-10"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>( <span class="at">x=</span>age, <span class="at">y =</span> <span class="dv">4</span><span class="sc">*</span>fitted <span class="sc">+</span> active_bins_centre, <span class="at">group =</span> age)) <span class="sc">+</span> </span>
-<span id="cb37-11"><a href="#cb37-11"></a>  <span class="fu">geom_violin</span>(<span class="at">colour =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span></span>
-<span id="cb37-12"><a href="#cb37-12"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> active_bins), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb37-13"><a href="#cb37-13"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day, <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">day =</span> day_labs)) <span class="sc">+</span></span>
-<span id="cb37-14"><a href="#cb37-14"></a>  <span class="fu">theme_bw</span>() </span>
-<span id="cb37-15"><a href="#cb37-15"></a>  </span>
-<span id="cb37-16"><a href="#cb37-16"></a><span class="fu">plot_grid</span>(violin_plot, violin_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a><span class="fu">library</span>(cowplot)</span>
+<span id="cb44-2"><a href="#cb44-2"></a>fitted_fake <span class="ot">&lt;-</span> data_fake <span class="sc">|&gt;</span></span>
+<span id="cb44-3"><a href="#cb44-3"></a>  <span class="fu">cbind</span>(<span class="fu">t</span>(<span class="fu">posterior_predict</span>(posterior_draws_fake,<span class="at">ndraws =</span> <span class="dv">200</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb44-4"><a href="#cb44-4"></a>  <span class="fu">pivot_longer</span>(<span class="dv">8</span><span class="sc">:</span><span class="dv">207</span>, <span class="at">names_to =</span> <span class="st">"draw"</span>, <span class="at">values_to =</span> <span class="st">"fitted"</span>)</span>
+<span id="cb44-5"><a href="#cb44-5"></a></span>
+<span id="cb44-6"><a href="#cb44-6"></a>day_labs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Day 1"</span>, <span class="st">"Day 2"</span>)</span>
+<span id="cb44-7"><a href="#cb44-7"></a><span class="fu">names</span>(day_labs) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>)</span>
+<span id="cb44-8"><a href="#cb44-8"></a></span>
+<span id="cb44-9"><a href="#cb44-9"></a>violin_fake <span class="ot">&lt;-</span> fitted_fake <span class="sc">|&gt;</span> </span>
+<span id="cb44-10"><a href="#cb44-10"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>( <span class="at">x=</span>age, <span class="at">y =</span> <span class="dv">4</span><span class="sc">*</span>fitted <span class="sc">+</span> active_bins_centre, <span class="at">group =</span> age)) <span class="sc">+</span> </span>
+<span id="cb44-11"><a href="#cb44-11"></a>  <span class="fu">geom_violin</span>(<span class="at">colour =</span> <span class="st">"lightgrey"</span>) <span class="sc">+</span></span>
+<span id="cb44-12"><a href="#cb44-12"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> active_bins), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb44-13"><a href="#cb44-13"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day, <span class="at">labeller =</span> <span class="fu">labeller</span>(<span class="at">day =</span> day_labs)) <span class="sc">+</span></span>
+<span id="cb44-14"><a href="#cb44-14"></a>  <span class="fu">theme_bw</span>() </span>
+<span id="cb44-15"><a href="#cb44-15"></a>  </span>
+<span id="cb44-16"><a href="#cb44-16"></a><span class="fu">plot_grid</span>(violin_plot, violin_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>That’s very similar to our data plot.</p>
 <p>Next up, we will look at the residuals ordered by age</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>plot_data_fake <span class="ot">&lt;-</span> data_fake <span class="sc">|&gt;</span></span>
-<span id="cb38-2"><a href="#cb38-2"></a>  <span class="fu">mutate</span>(<span class="at">fitted_mean =</span> <span class="fu">colMeans</span>(<span class="fu">posterior_epred</span>(posterior_draws_fake,<span class="at">ndraws =</span> <span class="dv">200</span>)))</span>
-<span id="cb38-3"><a href="#cb38-3"></a></span>
-<span id="cb38-4"><a href="#cb38-4"></a>age_fake <span class="ot">&lt;-</span> plot_data_fake <span class="sc">|&gt;</span> </span>
-<span id="cb38-5"><a href="#cb38-5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span></span>
-<span id="cb38-6"><a href="#cb38-6"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb38-7"><a href="#cb38-7"></a>  <span class="fu">theme_bw</span>()</span>
-<span id="cb38-8"><a href="#cb38-8"></a><span class="fu">plot_grid</span>(age_plot, age_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a>plot_data_fake <span class="ot">&lt;-</span> data_fake <span class="sc">|&gt;</span></span>
+<span id="cb45-2"><a href="#cb45-2"></a>  <span class="fu">mutate</span>(<span class="at">fitted_mean =</span> <span class="fu">colMeans</span>(<span class="fu">posterior_epred</span>(posterior_draws_fake,<span class="at">ndraws =</span> <span class="dv">200</span>)))</span>
+<span id="cb45-3"><a href="#cb45-3"></a></span>
+<span id="cb45-4"><a href="#cb45-4"></a>age_fake <span class="ot">&lt;-</span> plot_data_fake <span class="sc">|&gt;</span> </span>
+<span id="cb45-5"><a href="#cb45-5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span></span>
+<span id="cb45-6"><a href="#cb45-6"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb45-7"><a href="#cb45-7"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb45-8"><a href="#cb45-8"></a><span class="fu">plot_grid</span>(age_plot, age_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Fabulous!</p>
 <p>Now let’s check the distributional assumption on the residuals!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a>distribution_fake <span class="ot">&lt;-</span> plot_data_fake <span class="sc">|&gt;</span></span>
-<span id="cb39-2"><a href="#cb39-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> (active_bins_scaled <span class="sc">-</span> fitted_mean)<span class="sc">/</span><span class="fu">sd</span>(active_bins_scaled <span class="sc">-</span> fitted_mean))) <span class="sc">+</span> </span>
-<span id="cb39-3"><a href="#cb39-3"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
-<span id="cb39-4"><a href="#cb39-4"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
-<span id="cb39-5"><a href="#cb39-5"></a>  <span class="fu">theme_classic</span>()</span>
-<span id="cb39-6"><a href="#cb39-6"></a></span>
-<span id="cb39-7"><a href="#cb39-7"></a><span class="fu">plot_grid</span>(distribution_plot, distribution_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a>distribution_fake <span class="ot">&lt;-</span> plot_data_fake <span class="sc">|&gt;</span></span>
+<span id="cb46-2"><a href="#cb46-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> (active_bins_scaled <span class="sc">-</span> fitted_mean)<span class="sc">/</span><span class="fu">sd</span>(active_bins_scaled <span class="sc">-</span> fitted_mean))) <span class="sc">+</span> </span>
+<span id="cb46-3"><a href="#cb46-3"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb46-4"><a href="#cb46-4"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
+<span id="cb46-5"><a href="#cb46-5"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb46-6"><a href="#cb46-6"></a></span>
+<span id="cb46-7"><a href="#cb46-7"></a><span class="fu">plot_grid</span>(distribution_plot, distribution_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Excellent!</p>
 <p>Finally, we can look at the k-hat plot. Because I’m lazy, I’m not going to put them side by side. You can scroll.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a>loo_fake <span class="ot">&lt;-</span> <span class="fu">LOO</span>(posterior_draws_fake)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>loo_fake <span class="ot">&lt;-</span> <span class="fu">LOO</span>(posterior_draws_fake)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Found 7 observations with a pareto_k &gt; 0.7 in model
+<pre><code>Warning: Found 4 observations with a pareto_k &gt; 0.7 in model
 'posterior_draws_fake'. It is recommended to set 'moment_match = TRUE' in order
 to perform moment matching for problematic observations.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>loo_fake</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1"></a>loo_fake</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Computed from 4000 by 485 log-likelihood matrix
 
          Estimate   SE
-elpd_loo   -354.8 15.4
-p_loo       114.3  6.2
-looic       709.5 30.8
+elpd_loo   -362.3 14.3
+p_loo       115.1  5.8
+looic       724.6 28.5
 ------
 Monte Carlo SE of elpd_loo is NA.
 
 Pareto k diagnostic values:
                          Count Pct.    Min. n_eff
-(-Inf, 0.5]   (good)     412   84.9%   804       
- (0.5, 0.7]   (ok)        66   13.6%   259       
-   (0.7, 1]   (bad)        7    1.4%   168       
+(-Inf, 0.5]   (good)     422   87.0%   571       
+ (0.5, 0.7]   (ok)        59   12.2%   205       
+   (0.7, 1]   (bad)        4    0.8%   169       
    (1, Inf)   (very bad)   0    0.0%   &lt;NA&gt;      
 See help('pareto-k-diagnostic') for details.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a><span class="fu">plot</span>(loo_fake)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1"></a><span class="fu">plot</span>(loo_fake)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>And look: we get some extreme values. (Depending on the run we get more or less). This suggests that while it would be useful to look at the data points flagged by the k-hat statistic, it may just be sampling variation.</p>
+<p>And look: we get some extreme values. (Depending on the run we get more or less). This suggests that while it would be useful to look at the data points flagged by the k-hat statistic, it may just be sampling variation.;</p>
+<p>All of this suggests our model assumptions are not being grossly violated. All except for that residual vs fitted values plot…</p>
 </section>
 <section id="the-haunted-residual-vs-fitted-plot" class="level3">
 <h3 class="anchored" data-anchor-id="the-haunted-residual-vs-fitted-plot">The haunted residual vs fitted plot</h3>
 <p>Now let’s look at our residual vs fitted plot.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a>problem_fake <span class="ot">&lt;-</span> plot_data_fake <span class="sc">|&gt;</span> </span>
-<span id="cb45-2"><a href="#cb45-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> fitted_mean, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span> </span>
-<span id="cb45-3"><a href="#cb45-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb45-4"><a href="#cb45-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">colour =</span> <span class="st">"blue"</span>)<span class="sc">+</span></span>
-<span id="cb45-5"><a href="#cb45-5"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day) <span class="sc">+</span></span>
-<span id="cb45-6"><a href="#cb45-6"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb45-7"><a href="#cb45-7"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb45-8"><a href="#cb45-8"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>))</span>
-<span id="cb45-9"><a href="#cb45-9"></a><span class="fu">plot_grid</span>(problem_plot, problem_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a>problem_fake <span class="ot">&lt;-</span> plot_data_fake <span class="sc">|&gt;</span> </span>
+<span id="cb52-2"><a href="#cb52-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> fitted_mean, <span class="at">y =</span> active_bins_scaled <span class="sc">-</span> fitted_mean)) <span class="sc">+</span> </span>
+<span id="cb52-3"><a href="#cb52-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb52-4"><a href="#cb52-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">colour =</span> <span class="st">"blue"</span>)<span class="sc">+</span></span>
+<span id="cb52-5"><a href="#cb52-5"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>day) <span class="sc">+</span></span>
+<span id="cb52-6"><a href="#cb52-6"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb52-7"><a href="#cb52-7"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb52-8"><a href="#cb52-8"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb52-9"><a href="#cb52-9"></a><span class="fu">plot_grid</span>(problem_plot, problem_fake, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Real"</span>, <span class="st">"Fake"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+<p><img src="everybodys-got-something-to-hide-except-me-and-my-monkey_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>And what do you know! They look the same. (Well, minus the discretisation artefacts.)</p>
@@ -915,10 +989,10 @@ See help('pareto-k-diagnostic') for details.</code></pre>
 <h3 class="anchored" data-anchor-id="so-what-the-hell-is-going-on">So what the hell is going on?</h3>
 <p>Great question! It turns out that this is one of those cases where our intuition from linear models <em>does not</em> transfer over to multilevel models.</p>
 <p>We can actually reason this out by thinking about a model where we have no covariates.</p>
-<p>If we have no pooling then the observations for every monkey are, essentially, averaged to get our estimate of <span class="math inline">\(\mu_j\)</span>. If we repeat this, we will find that our <span class="math inline">\(\mu_j\)</span> are basically<a href="#fn25" class="footnote-ref" id="fnref25" role="doc-noteref"><sup>25</sup></a> unbiased and the corresponding residual <span class="math display">\[
+<p>If we have no pooling then the observations for every monkey are, essentially, averaged to get our estimate of <span class="math inline">\(\mu_j\)</span>. If we repeat this, we will find that our <span class="math inline">\(\mu_j\)</span> are basically<a href="#fn37" class="footnote-ref" id="fnref37" role="doc-noteref"><sup>37</sup></a> unbiased and the corresponding residual <span class="math display">\[
 r_{ij} = y_{ij} - \mu_j
 \]</span> will have mean zero.</p>
-<p>But that’s not what happens when we have partial pooling. When we have partial pooling we are <em>combining</em> our naive average<a href="#fn26" class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a> <span class="math inline">\(\bar y_j\)</span> with the global average <span class="math inline">\(\mu\)</span> in a way that accounts for the size of group <span class="math inline">\(j\)</span> relative to other groups as well as the within-group variability relative to the between-group variability.</p>
+<p>But that’s not what happens when we have partial pooling. When we have partial pooling we are <em>combining</em> our naive average<a href="#fn38" class="footnote-ref" id="fnref38" role="doc-noteref"><sup>38</sup></a> <span class="math inline">\(\bar y_j\)</span> with the global average <span class="math inline">\(\mu\)</span> in a way that accounts for the size of group <span class="math inline">\(j\)</span> relative to other groups as well as the within-group variability relative to the between-group variability.</p>
 <details>
 <summary>
 Expand for maths. Just a little
@@ -939,11 +1013,11 @@ r_{ij} = y_j - \alpha \bar{y_j} - (1-\alpha)\mu
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>So what have we done? Well we’ve gone through the process of fitting and scruitinising a simple Bayesian multilevel model. We’ve talked about some of the challenges associated with graphical diagnostics for structured data. And we’ve all<a href="#fn27" class="footnote-ref" id="fnref27" role="doc-noteref"><sup>27</sup></a> learnt something about the residual-vs-fitted plot for a multilevel model.</p>
-<p>And most importantly, we’ve all learnt the value of using fake data simulated from the posterior model to help us understand our diagnostics.</p>
-<p>There is more to the scientific story here. It turns out that while there is no effect over 2 minutes, there is a slight effect over 20 minutes. So the conceptual replication failed, but still found some interesting things.</p>
+<p>So what have we done? Well we’ve gone through the process of fitting and scruitinising a simple Bayesian multilevel model. We’ve talked about some of the challenges associated with graphical diagnostics for structured data. And we’ve all<a href="#fn39" class="footnote-ref" id="fnref39" role="doc-noteref"><sup>39</sup></a> learnt something about the residual-vs-fitted plot for a multilevel model.</p>
+<p>Most importantly, we’ve all learnt the value of using fake data simulated from the posterior model to help us understand our diagnostics.</p>
+<p>There is more to the scientific story here. It turns out that while there is no effect over 2 minutes, there is <a href="https://royalsocietypublishing.org/doi/10.1098/rsos.200316">a slight effect over 20 minutes</a>. So the conceptual replication failed, but still found some interesting things.</p>
 <p>Of course, I’ve ignored one big elephant in the room: That data was discrete. In the end, our distributional diagnostics didn’t throw up any massive red flags, but nevertheless it could be an interesting exercise to see what happens if we use a more problem-adapted likelihood.</p>
-<p>Last, and certainly not least, I barely scratched the surface of the <a href="https://arxiv.org/pdf/1502.06988.pdf">Loy, Hoffman, and Cook</a> paper. Anyone who is interested in fitting Gaussian multilevel models should definitely give it a read.</p>
+<p>Last, and certainly not least, I barely scratched the surface<a href="#fn40" class="footnote-ref" id="fnref40" role="doc-noteref"><sup>40</sup></a> of the <a href="https://arxiv.org/pdf/1502.06988.pdf">Loy, Hoffman, and Cook</a> paper. Anyone who is interested in fitting Gaussian multilevel models should definitely give it a read.</p>
 
 
 </section>
@@ -952,35 +1026,48 @@ r_{ij} = y_j - \alpha \bar{y_j} - (1-\alpha)\mu
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>Actually 244, but one of them turned out to be blind. Animal research is a journey.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>It turns out that some of the monkeys didn’t want to give up the puzzle after 20 minutes. One held out for 72 minutes before the data collection ended. Cheeky monkeys.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Did Mark make me do unspeakable, degrading, borderline immoral things to get the data? No.&nbsp;It’s open source. Truly the first time I’ve been disappoined that something was open source.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>They <em>always</em> take this form if there is a countable collection of exchangeable random variables. For a finite set there are a few more options. But no one talks about those.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>monkeys<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6"><p>A non-exhaustive set of weird things: categorical regressors with a rare category, tail parameters, mixture models<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn7"><p>There are situations where this is not true. For instance if you have a log or logit link function you can put reasonable bounds on your coefficients regardless of the scaling of your data. That said, the computational procedures <em>always</em> appreciate a bit of scaling. If there’s one thing that computers hate more that big numbers it’s small numbers.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8"><p>Of course, we know that the there are only 8 fifteen second intervals in two minutes, so we could use this information to make a data-independent scaling. To be brutally francis with you, that’s what you should probably do in this situation, but I’m trying to be pedagogical so let’s scale it by the standard deviation.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn9"><p>Fixed scaling is always easier than data-dependent scaling<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn10"><p>The <code>tidymodels</code> package in R is a great example of an ecosystem that does this properly. <a href="https://www.tmwr.org">Max and Julia’s book</a> is very excellent and well worth a read.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn11"><p>In some places, we would call this a random effect.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn12"><p>He is very lovely. Many people would prefer that I was him.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn13"><p>It’s possible the the prior on <span class="math inline">\(\tau\)</span> might be too wide. If we were doing a logistic regression, these priors would definitely be too wide. And if we had a lot of different random terms (eg if we had lots of different species or lots of different labs) then they would also probably be too wide. But they are better than not having priors.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn14"><p>Not the most computationally efficient, but the easiest. Also because it’s the same code we will later use to fit the model, we are evaluating the priors that are actually used and not the ones that we think we’re using.<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn15"><p> It’s number 88, but because our prior is exchangeable it does not matter which monkey we do this for!<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn16"><p>I also checked different values of <code>age</code> as well as looking at the posterior mean (via <code>posterior_epred</code>) and the conclusions stay the same.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn17"><p>The numbers will never be exactly equal, but they are of similar orders of magnitude.<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn18"><p>Or if you get some sort of error or warning from <code>lme4</code><a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn19"><p>So there’s a wrinkle here. Technically, all of the residuals have different variances, which is annoying. You typically studentise them using the leverage scores, but this is a touch trickier for multilevel models. Chapter 7 of <a href="https://www.google.com/search?client=safari&amp;rls=en&amp;q=richly+parametrized+linear+models&amp;ie=UTF-8&amp;oe=UTF-8">Jim Hodges’s excellent book</a> contains a really good discussion.<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn20"><p>Once again, we are not studentizing the residuals. I’m sorry.<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn21"><p>Another name for a multilevel model with a Gaussian response<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn22"><p>Also because all of my data plots are gonna be stripey as hell, and that kinda destroys the point of visual inference.<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn23"><p>They call it <em>null data</em>.<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn24"><p>Note that I am <em>not</em> using values of <span class="math inline">\(\mu_j\)</span>! I will simulate those from the normal distribution to ensure correct model specification. For the same reason, I am not using a residual bootstrap. The aim here is not to assess uncertainty so much as it is to <a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn25"><p>This is a bit more complex when you’re Bayesian, but the intuition still holds. The difference is that now it is asymptotic<a href="#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn26"><p>This is the average of all observations in group j. <span class="math display">\[
+<li id="fn1"><p>Mark insisted that I like to his google scholar rather than his website. He’s cute that way.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Mark wants me to tell you that he’s not vain he’s just moving. Sure Jan.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>I know that marmosets suffer from lesbian bed death, but I’m told that a marmoset is not a macaque, which in turn is not a macaw. Ecology is fascinating.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>A real problem in the world is that there aren’t enough monkeys for animal research at the best of times. Once you need aged monkeys, it’s an even smaller population. Non-human primate research is <em>hard</em>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Actually 244, but one of them turned out to be blind. Animal research is a journey.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>It turns out that some of the monkeys didn’t want to give up the puzzle after 20 minutes. One held out for 72 minutes before the data collection ended. Cheeky monkeys.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Did Mark make me do unspeakable, degrading, borderline immoral things to get the data? No.&nbsp;It’s open source. Truly the first time I’ve been disappointed that something was open source.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>If statisticians abandoned linear regression we would have nothing left. We would be desiccated husks propping up the bar at 3am talking about how we used to do loads of lines in the 80s.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>Our perfect amount of pool? I don’t know how metaphors work<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>They <em>always</em> take this form if there is a countable collection of exchangeable random variables. For a finite set there are a few more options. But no one talks about those.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>monkeys<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>Also known as a mixed effects or a linear mixed effects model.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>There are <em>many</em> other ways to represnt Gaussian multilevel models. My former colleague Emi Tanaka and Francis Hui wrote a <a href="https://arxiv.org/abs/1911.08628">great paper</a> on this topic.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>Some particularly bold and foolish people take this to mean that priors aren’t important. They usually get their arse handed to them the moment they try to fit an even mildly complex model.<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>A non-exhaustive set of weird things: categorical regressors with a rare category, tail parameters, mixture models<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>There are situations where this is not true. For instance if you have a log or logit link function you can put reasonable bounds on your coefficients regardless of the scaling of your data. That said, the computational procedures <em>always</em> appreciate a bit of scaling. If there’s one thing that computers hate more that big numbers it’s small numbers.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>Of course, we know that the there are only 8 fifteen second intervals in two minutes, so we could use this information to make a data-independent scaling. To be brutally francis with you, that’s what you should probably do in this situation, but I’m trying to be pedagogical so let’s at least think about scaling it by the standard deviation.<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p>Fixed scaling is always easier than data-dependent scaling<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>A real trick for young players is scaling new data by the mean and standard deviation of the new data rather than the old data. That’s a very subtle bug that can be <em>very</em> hard to squash.<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20"><p>The <code>tidymodels</code> package in R is a great example of an ecosystem that does this properly. <a href="https://www.tmwr.org">Max and Julia’s book</a> on using <code>tidymodels</code> is very excellent and well worth a read.<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21"><p>Of all of the things in this post, this has been the most aggressively fact checked one<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn22"><p>In prior width and on grindr, you should always expect that he’s rounding up.<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn23"><p>In some places, we would call this a random effect.<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24"><p>He is very lovely. Many people would prefer that I was him.<a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn25"><p>It’s possible the the prior on <span class="math inline">\(\tau\)</span> might be too wide. If we were doing a logistic regression, these priors would definitely be too wide. And if we had a lot of different random terms (eg if we had lots of different species or lots of different labs) then they would also probably be too wide. But they are better than not having priors.<a href="#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn26"><p>Not the most computationally efficient, but the easiest. Also because it’s the same code we will later use to fit the model, we are evaluating the priors that are actually used and not the ones that we think we’re using.<a href="#fnref26" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn27"><p> It’s number 88, but because our prior is exchangeable it does not matter which monkey we do this for!<a href="#fnref27" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn28"><p>I also checked different values of <code>age</code> as well as looking at the posterior mean (via <code>posterior_epred</code>) and the conclusions stay the same.<a href="#fnref28" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn29"><p>The numbers will never be exactly equal, but they are of similar orders of magnitude.<a href="#fnref29" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn30"><p>Or if you get some sort of error or warning from <code>lme4</code><a href="#fnref30" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn31"><p>So there’s a wrinkle here. Technically, all of the residuals have different variances, which is annoying. You typically studentise them using the leverage scores, but this is a touch trickier for multilevel models. Chapter 7 of <a href="https://www.google.com/search?client=safari&amp;rls=en&amp;q=richly+parametrized+linear+models&amp;ie=UTF-8&amp;oe=UTF-8">Jim Hodges’s excellent book</a> contains a really good discussion.<a href="#fnref31" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn32"><p>Once again, we are not studentizing the residuals. I’m sorry.<a href="#fnref32" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn33"><p>Another name for a multilevel model with a Gaussian response<a href="#fnref33" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn34"><p>Also because all of my data plots are gonna be stripey as hell, and that kinda destroys the point of visual inference.<a href="#fnref34" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn35"><p>They call it <em>null data</em>.<a href="#fnref35" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn36"><p>Note that I am <em>not</em> using values of <span class="math inline">\(\mu_j\)</span>! I will simulate those from the normal distribution to ensure correct model specification. For the same reason, I am not using a residual bootstrap. The aim here is not to assess uncertainty so much as it is to <a href="#fnref36" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn37"><p>This is a bit more complex when you’re Bayesian, but the intuition still holds. The difference is that now it is asymptotic<a href="#fnref37" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn38"><p>This is the average of all observations in group j. <span class="math display">\[
 \bar y_j = \frac{1}{n_j} \sum_{i=1}^{n_j} y_{ij}.
-\]</span><a href="#fnref26" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn27"><p>I mean, some of us knew this. Personally, I only remembered after I saw it and swore a bit.<a href="#fnref27" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+\]</span><a href="#fnref38" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn39"><p>I mean, some of us knew this. Personally, I only remembered after I saw it and swore a bit.<a href="#fnref39" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn40"><p>In particular, they have an interesting discussion on assessing the distributional assumption for <span class="math inline">\(\mu_j\)</span>.<a href="#fnref40" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2022,
   author = {Dan Simpson},

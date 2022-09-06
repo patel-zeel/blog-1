@@ -9,7 +9,7 @@ twitter-card:
   title: "Priors part 4: Specifying priors that appropriately penalise complexity"
   creator: "@dan_p_simpson"
 citation: 
-  url: https://dansblog.netlify.app/2022-08-29-priors4
+  url: https://dansblog.netlify.app/2022-08-29-priors4/2022-08-29-priors4.html
 
 draft: false
 ---
@@ -29,7 +29,7 @@ So let's talk about priors. But the good stuff. The aim is to give my answer to 
 
 You don't. No one does. They're not real.
 
-Parameters are polite fictions that we use to get through the day. They're our weapons of mass destruction. They're the magazines we only bought for the articles. They are our girlfriends who live in Canada^[Our weapon of ass destruction that lives in Canada?].
+Parameters are polite fictions that we use to get through the day. They're our weapons of mass destruction. They're the magazines we only bought for the articles. They are our girlfriends who live in Canada^[Our weapons of ass destruction that lives in Canada?].
 
 
 One way we can see this is to ask ourselves a simple^[Negative binomial parameterised by mean and overdispersion so that its mean is $\mu$ and the variance is $\mu(1+\alpha \mu)$ because we are not flipping fucking coins here]:
