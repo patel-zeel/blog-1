@@ -103,6 +103,8 @@ activity_20minms80 <- acti_data |> filter(obs<81) |>
             age = min(age)) |>
   rename(monkey = subj_id, day = Day) |>
   ungroup()
+
+glimpse(activity_20minms80)
 ```
 
 ## Ok Mary, how are we going to analyze this data?
@@ -286,7 +288,7 @@ activity_2mins_scaled <- activity_2mins |>
          day = factor(day),
          age_centred = (age - age_centre)/age_scale,
          active_bins_scaled = (active_bins - active_bins_centre)/4)
-
+glimpse(activity_2mins_scaled)
 ```
 
 With our scaling completed, we can now start thinking about prior distributions. The trick with priors is to make them wide enough to cover all plausible values of a parameter without making them so wide that they put a whole bunch of weight on essentially silly values.  
@@ -323,6 +325,7 @@ priors <- prior(normal(0, 0.2), coef = "age_centred") +
   prior(normal(0,1), class = "sigma") +
   prior(exponential(1), class = sd) + # tau
   prior(normal(0,1), class = "Intercept")
+priors
 ```
 
 ## Pre-experiment prophylaxis
