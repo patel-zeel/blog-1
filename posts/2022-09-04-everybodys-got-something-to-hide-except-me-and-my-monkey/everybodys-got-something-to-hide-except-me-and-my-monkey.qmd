@@ -32,7 +32,7 @@ food inside).
 This is where Eliza---who knows a little something about monkeys---comes
 into frame: this did not gel with her experiences at all.
 
-So Eliza (and [Mark](https://scholar.google.com.au/citations?hl=en&user=yg9U_okAAAAJ)^[Mark insisted that I like to his google scholar rather than his website. He's cute that way.] ^[Mark wants me to tell you that he's not vain he's just moving. Sure Jan.], who also knows a little something about monkeys) decided to 
+So Eliza (and [Mark](https://scholar.google.com.au/citations?hl=en&user=yg9U_okAAAAJ)^[Mark insisted that I link to his google scholar rather than his website. He's cute that way.] ^[Mark wants me to tell you that he's not vain he's just moving. Sure Jan.], who also knows a little something about monkeys) decided to 
 look into it.
 
 ## What are the stake?s (According to the papers, not according to me, who knows exactly nothing^[I know that marmosets suffer from lesbian bed death, but I'm told that a marmoset is not a macaque, which in turn is not a macaw. Ecology is fascinating.] about this type of work)
@@ -96,7 +96,7 @@ activity_2mins <- acti_data |>
   rename(monkey = subj_id, day = Day) |>
   ungroup()
 
-activity_20minms80 <- acti_data |> filter(obs<81) |>
+activity_20mins80 <- acti_data |> filter(obs<81) |>
   group_by(subj_id, Day) |>
   summarize(total=sum(Activity), 
             active_bins = sum(Activity > 0), 
@@ -104,7 +104,7 @@ activity_20minms80 <- acti_data |> filter(obs<81) |>
   rename(monkey = subj_id, day = Day) |>
   ungroup()
 
-glimpse(activity_20minms80)
+glimpse(activity_20mins80)
 ```
 
 ## Ok Mary, how are we going to analyze this data?
