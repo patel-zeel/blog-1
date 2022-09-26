@@ -125,6 +125,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
+<link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
@@ -359,12 +362,12 @@ d(\xi) = \sqrt{2 \operatorname{KL}(f(\cdot \mid \xi) || f(\cdot \mid \xi_0))}.
 <div id="exm-neg-binom2" class="theorem example">
 <p><span class="theorem-title"><strong>Example 4 (Overdispersion of a negative binomial (continued)) </strong></span>The negative binomial distribution is discrete so <span class="math display">\[\begin{multline}
 \frac{1}{2}d^2(\alpha) = \sum_{k=1}^\infty \frac{\Gamma(k + \alpha^{-1})}{\Gamma(\alpha^{-1})\Gamma(k+1)}  \left(\frac{\mu}{\mu + \alpha^{-1}}\right)^k \left(\frac{\alpha^{-1}}{\mu + \alpha^{-1}}\right)^{1/\alpha} \\
-\times \left[\log \Gamma(k  +\alpha^{-1}) - \log \Gamma(\alpha^{-1})  - k \log(\mu + \alpha^{-1}) + \alpha^{-1}\log \alpha^{-1} - \alpha^{-1}\log(\mu + \alpha^{-1})  + \mu \right].
+\times \left[\log \Gamma(k  +\alpha^{-1}) - \log \Gamma(\alpha^{-1})  - k \log(\mu + \alpha^{-1})\right. \\ \left. + \alpha^{-1}\log \left(\alpha^{-1}(\mu + \alpha^{-2})\right)  + \mu \right].
 \end{multline}\]</span> This has two problems: I can’t work out what it is and it might<a href="#fn32" class="footnote-ref" id="fnref32" role="doc-noteref"><sup>32</sup></a> end up depending on <span class="math inline">\(\mu\)</span>.</p>
-<p>Thankfully we can use our alternative representation of the negative binomial to note that <span class="math inline">\(u_i \sim \text{Gamma}(\alpha^{-1}, \alpha^{-1})\)</span> and so we could just as well consider <span class="math inline">\(u_i\)</span> the model component that we want to penalise the complexity of. In this case we need the KL divergence<a href="#fn33" class="footnote-ref" id="fnref33" role="doc-noteref"><sup>33</sup></a> <a href="https://en.wikipedia.org/wiki/Gamma_distribution#Kullback–Leibler_divergence">between Gamma distributions</a> <span class="math display">\[\begin{multline}
-\operatorname{KL}(\text{Gamma}(a^{-1},a^{-1}) || \text{Gamma}(b^{-1},b^{-1})) = (a^{-1}-b^{-1}) \psi(a^{-1}) - \log\Gamma(a^{-1}) + \log\Gamma(b^{-1}) \\
-+ b^{-1}(\log a^{-1} - \log b^{-1}) + b^{-1}-a^{-1},
-\end{multline}\]</span> where <span class="math inline">\(\psi(a)\)</span> is the <a href="https://en.wikipedia.org/wiki/Digamma_function">digamma function</a>.</p>
+<p>Thankfully we can use our alternative representation of the negative binomial to note that <span class="math inline">\(u_i \sim \text{Gamma}(\alpha^{-1}, \alpha^{-1})\)</span> and so we could just as well consider <span class="math inline">\(u_i\)</span> the model component that we want to penalise the complexity of. In this case we need the KL divergence<a href="#fn33" class="footnote-ref" id="fnref33" role="doc-noteref"><sup>33</sup></a> <a href="https://en.wikipedia.org/wiki/Gamma_distribution#Kullback–Leibler_divergence">between Gamma distributions</a> <span class="math display">\[\begin{align*}
+\operatorname{KL}(\text{Gamma}(a^{-1},a^{-1}) || \text{Gamma}(b^{-1},b^{-1})) =&amp; (a^{-1}-b^{-1}) \psi(a^{-1}) \\ &amp;\quad- \log\Gamma(a^{-1}) + \log\Gamma(b^{-1}) \\ &amp;\quad
++ b^{-1}(\log a^{-1} - \log b^{-1})\\ &amp;\quad + b^{-1}-a^{-1},
+\end{align*}\]</span> where <span class="math inline">\(\psi(a)\)</span> is the <a href="https://en.wikipedia.org/wiki/Digamma_function">digamma function</a>.</p>
 <p>As <span class="math inline">\(b\rightarrow 0\)</span>, the KL divergence becomes<a href="#fn34" class="footnote-ref" id="fnref34" role="doc-noteref"><sup>34</sup></a> <span class="math display">\[\begin{align*}
 &amp;b^{-1}  (\log(a^{-1}) - \psi(a^{-1})) + \log\Gamma(b^{-1}) - b^{-1}\log b^{-1} + b^{-1}  + o(b^{-1})\\
 =&amp; b^{-1} (\log(a^{-1}) - \psi(a^{-1})) + b^{-1} \log b^{-1} - b^{-1} - b^{-1}\log b^{-1} + b^{-1} \\
@@ -398,7 +401,7 @@ d(\alpha) \approx \sqrt{\alpha}.
 </div>
 <div id="exm-student-t-2" class="theorem example">
 <p><span class="theorem-title"><strong>Example 5 (Student-t degrees of freedom (Continued)) </strong></span>In our original paper, we computed the distance for the degrees of freedom numerically. However, <a href="https://arxiv.org/pdf/1811.08042.pdf">Yongqiang Tang</a> derived an analytic expression for it. <span class="math display">\[
-d(\nu) = \sqrt{1 + \log \left(\frac{2}{\nu-2}\right) + 2 \log\left(\frac{\Gamma((\nu+1)/2)}{\Gamma(\nu/2)}\right) - (\nu + 1)(\psi((\nu+1)/2) - \psi(\nu/2))}.
+d(\nu) = \sqrt{1 +  \log\left(\frac{2\Gamma((\nu+1)/2)^2}{(\nu-2)\Gamma(\nu/2)^2}\right) - (\nu + 1)(\psi((\nu+1)/2) - \psi(\nu/2))}.
 \]</span></p>
 <p>If we note that <span class="math display">\[
 \log(\Gamma(z)) = \left(z- \frac{1}{2}\right)\log z - z + \frac{1}{2}\log(2\pi)  + \frac{1}{12z} + \mathcal{O}(z^{-1}),

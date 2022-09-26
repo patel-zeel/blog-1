@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.15">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dan Simpson">
+<meta name="dcterms.date" content="2022-09-22">
+<meta name="description" content="If you’re not a machine learner, Gaussian processes need priors on their parameters. Like everything else to do with Gaussian processes, this can be delicate. This post works through some options.">
+
+<title>Un garçon pas comme les autres (Bayes) - Priors for the parameters in a Gaussian process</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Un garçon pas comme les autres (Bayes) - Priors for the parameters in a Gaussian process">
+<meta property="og:description" content="If you’re not a machine learner, Gaussian processes need priors on their parameters. Like everything else to do with Gaussian processes, this can be delicate. This post works through some options.">
+<meta property="og:image" content="https://dansblog.netlify.app/posts/2022-09-07-priors5/tina.jpg">
+<meta property="og:site-name" content="Un garçon pas comme les autres (Bayes)">
+<meta name="twitter:title" content="Priors for the parameters in a Gaussian process">
+<meta name="twitter:description" content="If you’re not a machine learner, Gaussian processes need priors on their parameters. Like everything else to do with Gaussian processes, this can be delicate. This post works through some options.">
+<meta name="twitter:image" content="https://dansblog.netlify.app/posts/2022-09-07-priors5/tina.jpg">
+<meta name="twitter:creator" content="@dan_p_simpson">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Un garçon pas comme les autres (Bayes)</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About this blog</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/dan_p_simpson"><i class="bi bi-twitter" role="img" aria-label="twitter">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/dpsimpson"><i class="bi bi-github" role="img" aria-label="github">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://dansblog.netlify.app"><i class="bi bi-person-circle" role="img" aria-label="website">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Priors for the parameters in a Gaussian process</h1>
+                  <div>
+        <div class="description">
+          <p>If you’re not a machine learner, Gaussian processes need priors on their parameters. Like everything else to do with Gaussian processes, this can be delicate. This post works through some options.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Prior distributions</div>
+                <div class="quarto-category">fundamentals</div>
+                <div class="quarto-category">PC priors</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Dan Simpson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">September 22, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#how-do-you-put-a-prior-on-parameters-of-a-gaussian-process" id="toc-how-do-you-put-a-prior-on-parameters-of-a-gaussian-process" class="nav-link active" data-scroll-target="#how-do-you-put-a-prior-on-parameters-of-a-gaussian-process">How do you put a prior on parameters of a Gaussian process?</a>
+  <ul class="collapse">
+  <li><a href="#a-first-crack-at-a-pc-prior" id="toc-a-first-crack-at-a-pc-prior" class="nav-link" data-scroll-target="#a-first-crack-at-a-pc-prior">A first crack at a PC prior</a></li>
+  <li><a href="#whats-bad-about-this" id="toc-whats-bad-about-this" class="nav-link" data-scroll-target="#whats-bad-about-this">What’s bad about this?</a></li>
+  <li><a href="#the-matérn-covariance-fucntion" id="toc-the-matérn-covariance-fucntion" class="nav-link" data-scroll-target="#the-matérn-covariance-fucntion">The Matérn covariance fucntion</a></li>
+  <li><a href="#asymptotics-i-barely-know-her" id="toc-asymptotics-i-barely-know-her" class="nav-link" data-scroll-target="#asymptotics-i-barely-know-her">Asymptotics? I barely know her!</a></li>
+  <li><a href="#when-is-a-parameter-not-consistently-estimatable-an-aside-that-will-almost-immediately-become-relevant" id="toc-when-is-a-parameter-not-consistently-estimatable-an-aside-that-will-almost-immediately-become-relevant" class="nav-link" data-scroll-target="#when-is-a-parameter-not-consistently-estimatable-an-aside-that-will-almost-immediately-become-relevant">When is a parameter not consistently estimatable: an aside that will almost immediately become relevant</a></li>
+  <li><a href="#matérn-fields-under-fixed-domain-asymptotics-the-love-that-dares-not-speak-its-name" id="toc-matérn-fields-under-fixed-domain-asymptotics-the-love-that-dares-not-speak-its-name" class="nav-link" data-scroll-target="#matérn-fields-under-fixed-domain-asymptotics-the-love-that-dares-not-speak-its-name">Matérn fields under fixed domain asymptotics: the love that dares not speak its name</a></li>
+  <li><a href="#so-the-prior-is-important-then-what-do-other-people-do" id="toc-so-the-prior-is-important-then-what-do-other-people-do" class="nav-link" data-scroll-target="#so-the-prior-is-important-then-what-do-other-people-do">So the prior is important then! What do other people do?</a></li>
+  <li><a href="#rescuing-the-pc-prior-or-what-i-recommend-you-do" id="toc-rescuing-the-pc-prior-or-what-i-recommend-you-do" class="nav-link" data-scroll-target="#rescuing-the-pc-prior-or-what-i-recommend-you-do">Rescuing the PC prior; or What I recommend you do</a></li>
+  <li><a href="#comparing-it-with-the-reference-prior" id="toc-comparing-it-with-the-reference-prior" class="nav-link" data-scroll-target="#comparing-it-with-the-reference-prior">Comparing it with the reference prior</a></li>
+  <li><a href="#moving-beyond-the-matérn" id="toc-moving-beyond-the-matérn" class="nav-link" data-scroll-target="#moving-beyond-the-matérn">Moving beyond the Matérn</a></li>
+  <li><a href="#whats-in-the-rest-of-the-post" id="toc-whats-in-the-rest-of-the-post" class="nav-link" data-scroll-target="#whats-in-the-rest-of-the-post">What’s in the rest of the post?</a></li>
+  </ul></li>
+  <li><a href="#an-invitation-to-the-theory-of-stationary-gaussian-processes" id="toc-an-invitation-to-the-theory-of-stationary-gaussian-processes" class="nav-link" data-scroll-target="#an-invitation-to-the-theory-of-stationary-gaussian-processes">An invitation to the theory of Stationary Gaussian processes</a>
+  <ul class="collapse">
+  <li><a href="#stationary-covariance-functions-and-bochners-theorem" id="toc-stationary-covariance-functions-and-bochners-theorem" class="nav-link" data-scroll-target="#stationary-covariance-functions-and-bochners-theorem">Stationary covariance functions and Bochner’s theorem</a></li>
+  <li><a href="#spectral-representations-and-the-simplest-of-the-many-many-versions-of-a-stochastic-integral" id="toc-spectral-representations-and-the-simplest-of-the-many-many-versions-of-a-stochastic-integral" class="nav-link" data-scroll-target="#spectral-representations-and-the-simplest-of-the-many-many-versions-of-a-stochastic-integral">Spectral representations (and the simplest of the many many versions of a stochastic integral)</a></li>
+  <li><a href="#the-cameron-martin-space-of-a-stationary-gaussian-process" id="toc-the-cameron-martin-space-of-a-stationary-gaussian-process" class="nav-link" data-scroll-target="#the-cameron-martin-space-of-a-stationary-gaussian-process">The Cameron-Martin space of a stationary Gaussian process</a></li>
+  <li><a href="#another-look-at-equivalence-and-singularity" id="toc-another-look-at-equivalence-and-singularity" class="nav-link" data-scroll-target="#another-look-at-equivalence-and-singularity">Another look at equivalence and singularity</a></li>
+  <li><a href="#a-convenient-suffient-condition-for-absolute-continuity-which-turns-out-to-be-necessary-for-matérn-fields" id="toc-a-convenient-suffient-condition-for-absolute-continuity-which-turns-out-to-be-necessary-for-matérn-fields" class="nav-link" data-scroll-target="#a-convenient-suffient-condition-for-absolute-continuity-which-turns-out-to-be-necessary-for-matérn-fields">A convenient suffient condition for absolute continuity, which turns out to be necessary for Matérn fields</a></li>
+  </ul></li>
+  <li><a href="#deriving-the-pc-prior" id="toc-deriving-the-pc-prior" class="nav-link" data-scroll-target="#deriving-the-pc-prior">Deriving the PC prior</a>
+  <ul class="collapse">
+  <li><a href="#approximating-the-kullback-leibler-divergence-for-a-matérn-random-field" id="toc-approximating-the-kullback-leibler-divergence-for-a-matérn-random-field" class="nav-link" data-scroll-target="#approximating-the-kullback-leibler-divergence-for-a-matérn-random-field">Approximating the Kullback-Leibler divergence for a Matérn random field</a></li>
+  <li><a href="#the-pc-prior-for-sigma-ell" id="toc-the-pc-prior-for-sigma-ell" class="nav-link" data-scroll-target="#the-pc-prior-for-sigma-ell">The PC prior for <span class="math inline">\((\sigma, \ell)\)</span></a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>Long time readers will know that I bloody love a Gaussian process. I wrote an <em>extremely detailed</em> post on the <a href="https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness.html">various ways to define Gaussian processes</a>. And I did not do that because I just love inflicting Hilbert spaces on people. In fact, the only reason that I ever went beyond the standard operational definition of GPs that most people live their whole lives using is that I needed to.</p>
+<p>Twice.</p>
+<p>The first time was when I needed to understand approximation properties of a certain class of GPs. <a href="https://dansblog.netlify.app/posts/2021-11-24-getting-into-the-subspace/getting-into-the-subspace.html">I wrote a post about it</a>. It’s intense<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>The second time that I really needed to dive into their arcana and apocrypha<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> was when I foolishly asked the question <em>can we compute PC priors for Gaussian processes?</em>.</p>
+<p>The answer was yes. But it’s a bit tricky.</p>
+<p>So today I’m going to walk you through the ideas. There’s no real need to read the GP post before this one<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, but it would be immensely useful to have at least glanced at the <a href="https://dansblog.netlify.app/posts/2022-08-29-priors4/priors4.html">post on PC priors</a>.</p>
+<section id="how-do-you-put-a-prior-on-parameters-of-a-gaussian-process" class="level2">
+<h2 class="anchored" data-anchor-id="how-do-you-put-a-prior-on-parameters-of-a-gaussian-process">How do you put a prior on parameters of a Gaussian process?</h2>
+<p>We are in the situation where we have a model that looks something like this<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> <a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> <span class="math display">\[\begin{align*}
+y_i \mid \beta, u, \theta &amp;\sim p(y_i \sim \beta, u, \phi) \\
+u(\cdot) \mid \theta &amp;\sim GP(0, c_\theta) \\
+\beta, \phi &amp;\sim p(\beta,\phi),
+\end{align*}\]</span> where <span class="math inline">\(c_\theta(\cdot,\cdot)\)</span> is a covariance function with parameters <span class="math inline">\(\theta\)</span> and we need to specify a joint prior on the GP parameters <span class="math inline">\(\theta\)</span>.</p>
+<p>The simplest case of this would be GP regression, but a key thing here is that, in general, the structure (or functional form) of the priors on <span class="math inline">\(\theta\)</span> probably shouldn’t be too tightly tied to the tied to the specific likelihood. Why do I say that? Well the <em>scaling</em> of a GP should depend on information about the likelihood, but it’s hard to make a compelling case for the other type of information conveyed by a prior to depend on it.</p>
+<p>Now this view is predicated on us wanting to make an informative prior. In some very special cases, people with too much time on their hands have derived reference priors for specific models involving GPs. These priors care <em>deeply</em> about which likelihood you use. In fact, if you use them with a different model<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>, you may not end up with a proper<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> posterior.We will talk about those later.</p>
+<p>To start, let’s look at the simplest way to build a PC prior. We will then talk about why this is not a good idea.</p>
+<section id="a-first-crack-at-a-pc-prior" class="level3">
+<h3 class="anchored" data-anchor-id="a-first-crack-at-a-pc-prior">A first crack at a PC prior</h3>
+<p>As always, the best place to start is the simplest possible option. There’s always a hope<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> that we won’t need to pull out the big guns.</p>
+<p>So what is the simplest solution? Well it’s to treat a GP as just a specific multivariate Gaussian distribution <span class="math display">\[
+u \sim GP(0, \sigma^2R(\theta)),
+\]</span> where <span class="math inline">\(R(\theta)\)</span> is a correlation matrix.</p>
+<p>The nice thing about a multivariate Gaussian is that we have a clean expression for its Kullback-Leibler divergence. Wikipedia tells us that for an <span class="math inline">\(n\)</span>-dimensional multivariate Gaussian <span class="math display">\[
+2\operatorname{KL}(N(0, \Sigma) || N(0, \Sigma_0)) = \operatorname{tr}\left(\Sigma_0^{-1}\Sigma\right) + \log \det \Sigma_0 - \log \det \Sigma- n.
+\]</span> To build a PC prior we need to consider a base model. That’s tricky in generality, but as we’ve assumed that the covariance matrix can be decomposed into the variance <span class="math inline">\(\sigma^2\)</span> and a correlation matrix <span class="math inline">\(R(\theta)\)</span>, we can at least specify an easy base model for <span class="math inline">\(\sigma\)</span>. As always, the simplest model is one with no GP in it, which corresponds to <span class="math inline">\(\sigma_\text{base} = 0\)</span>. From here, we can follow the usual steps to specify the PC prior <span class="math display">\[
+p(\sigma) = \lambda e^{-\lambda \sigma},
+\]</span> where we choose <span class="math inline">\(\lambda = \log(\alpha)/U\)</span> for some upper bound <span class="math inline">\(U&gt;0\)</span> and some tail probaility <span class="math inline">\(0&lt;\alpha&lt;1\)</span> so that <span class="math display">\[
+\Pr(\theta &gt; U) = \alpha.
+\]</span> The specific choice of <span class="math inline">\(U\)</span> will depend on the context. For instance, if it’s logistic regression we probably want something like<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> <span class="math inline">\(U=1\)</span>. If we have a GP on the log-mean of a Poisson distribution, then we probably want <span class="math inline">\(U &lt; 21.5\)</span> if you want the <em>mean</em> of the Poisson distribution to be less than the maximum integer<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a> in R. In most data, you’re gonna want<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> <span class="math inline">\(U\ll 5\)</span>. If the GP is on the mean of a normal distribution, the choice of <span class="math inline">\(U\)</span> will depend on the context and scaling of the data.</p>
+<p>Without more assumptions about the form of the covariance function, it is impossible to choose a base model for the other parameters <span class="math inline">\(\theta\)</span>.</p>
+<p>That said, there is one special case that’s important: the case where <span class="math inline">\(\sigma = \ell\)</span> is a single parameter controlling the intrinsic length scale, that is the distance at which the correlation between two points <span class="math inline">\(\ell\)</span> units apart is approximately zero. The larger <span class="math inline">\(\ell\)</span> is, the more correlated observations of the GP are and, hence, the less wiggly its realisation is. On the other hand, as <span class="math inline">\(\ell \rightarrow 0\)</span>, the observations GP often behaves like realisations from an iid Gaussian and the GP becomes<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> wilder and wilder.</p>
+<p>This suggests that a good base model for the length-scale parameter would be <span class="math inline">\(\ell = \infty\)</span>. We note that if both the base model and the alternative have the same value of <span class="math inline">\(\sigma\)</span>, then it cancels out in the KL-divergence. Under this assumption, we get that <span class="math display">\[
+d(\ell \mid \sigma) = \text{``}\lim_{\ell_0\rightarrow \infty}\text{''} \sqrt{\operatorname{tr}\left(R(\ell_0)^{-1}R(\ell)\right)  - \log \det R(\ell) + \log \det R(\ell_0) - n},
+\]</span> where I’m being a bit cheeky putting that limit in, as we might need to do some singular model jigery-pokery of the same type we needed to do <a href="https://dansblog.netlify.app/posts/2022-08-29-priors4/priors4.html#the-speed-of-a-battered-sav-proximity-to-the-base-model">for the standard deviation</a>. We will formalise<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a> this, I promise.</p>
+<p>As the model gets more complex as the length scale decreases, we want our prior to control the smallest value <span class="math inline">\(\ell\)</span> can take. This suggests we want to choose <span class="math inline">\(\lambda\)</span> to ensure <span class="math display">\[
+\Pr(\ell &lt; L) = \alpha.
+\]</span> How do we choose the lower bound <span class="math inline">\(L\)</span>? One idea is that our prior should have very little probability of the length scale being smaller than the length-scale of the data. So we can chose <span class="math inline">\(L\)</span> to be the smallest distance between observations (if the data is regularly spaced) or as a low quantile of the distribution of distances between nearest neighbours.</p>
+<p>All of this will specify a PC prior for a Gaussian process. So let’s now discuss why that prior is a bit shit.</p>
+</section>
+<section id="whats-bad-about-this" class="level3">
+<h3 class="anchored" data-anchor-id="whats-bad-about-this">What’s bad about this?</h3>
+<p>The prior on the standard deviation is fine.</p>
+<p>The prior on the length scale is more of an issue. There are a couple of bad things about this prior. The first one might seem innocuous at first glance. We decided to treat the GP as a multivariate Gaussian with covariance matrix <span class="math inline">\(\sigma^2 R(\theta)\)</span>. This is not a neutral choice. In order to do it, we need to <em>commit</em> to a certain set of observation locations<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a>. Why? The matrix <span class="math inline">\(R(\theta)\)</span> depends entirely on the observation locations and if we use this matrix to define the prior we are tied to those locations.</p>
+<p>This means that if we change the amount of data in the model we will need to change the prior. This is going to play havoc<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a> on any sort of cross-validation! It’s worth saying that the other two sources of information (the minimum length scale and the upper bound on <span class="math inline">\(\sigma\)</span>) are not nearly as sensitive to small changes in the data. This information is, in some sense, fundamental to the problem at hand and, therefore, much more stable ground to build your prior upon.</p>
+<p>There’s another problem, of course: this prior is expensive to compute. The KL divergence involves computing <span class="math inline">\(\operatorname{tr}(R(\ell_0)^{-1}R(\ell))\)</span> which costs as much as another log-density evaluation for the Gaussian process (which is to say it’s very expensive).</p>
+<p>So this prior is going to be <em>deeply</em> inconvenient if we have varying amounts of data (through cross-validation or sequential data gathering). It’s also going to be wildly more computationally expensive than you expect a one-dimensional prior to be.</p>
+<p>All in all, it seems a bit shit.</p>
+</section>
+<section id="the-matérn-covariance-fucntion" class="level3">
+<h3 class="anchored" data-anchor-id="the-matérn-covariance-fucntion">The Matérn covariance fucntion</h3>
+<p>It won’t be possible to derive a prior for a general Gaussian process, so we are going to need to make some simplifying assumptions. The assumption that we are going to make is that the covariance comes from the Whittle-Matérn<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> <a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a> class <span class="math display">\[
+c(s, s') = \sigma^2 \frac{2^{1-\nu}}{\Gamma(\nu)}\left(\sqrt{8\nu}\frac{\|s-s'\|}{\ell}\right)^\nu K_\nu\left(\sqrt{8\nu}\frac{\|s-s'\|}{\ell}\right),
+\]</span> where <span class="math inline">\(\nu\)</span> is the <em>smoothness</em> parameter, <span class="math inline">\(\ell\)</span> is the <em>length-scale</em> parameter, <span class="math inline">\(\sigma\)</span> is the <em>marginal standard deviation</em>, and <span class="math display">\[
+K_\nu(x) = \int_0^\infty e^{-x\cosh t}\cosh(\nu t)\,dt
+\]</span> is the modified Bessel<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a> function of the second kind.</p>
+<p>This class of covariance function is extremely important in practice. It interpolates between two of the most common covariance functions:</p>
+<ul>
+<li>when <span class="math inline">\(\nu = 1/2\)</span>, it corresponds to the exponential covariance function,</li>
+<li>when <span class="math inline">\(\nu = \infty\)</span>, it corresponds to the square exponential covariance.</li>
+</ul>
+<p>There are years of experience suggesting that Matérn covariance functions with finite <span class="math inline">\(\nu\)</span> perform better than the square exponential covariance.</p>
+<p>Common practice is to fix<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> the value of <span class="math inline">\(\nu\)</span>. There are a few reasons for this. One of the most compelling practical reasons is that we can’t easily evaluate its derivative, which rules out most modern optimisation and MCMC algorithms. It’s also <em>very</em> difficult to think about how you would set a prior on it. The techniques in this post will not help, and as far as I’ve ever been able to tell, nothing else will either. Finally, you could expect there to be <em>horrible</em> confounding between <span class="math inline">\(\nu\)</span>, <span class="math inline">\(\ell\)</span>, and <span class="math inline">\(\sigma\)</span>, which will make inference very hard (both numerically and morally).</p>
+<p>It turns out that even with <span class="math inline">\(\nu\)</span> fixed, we will run into a few problems. But to understand those, we are going to need to know a bit more about how inferring parameters in a Gaussian processes actually works.</p>
+<p>Just for future warning, I will occasionally refer to a GP with a Matérn covariance function as a “Matérn field”<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a>.</p>
+</section>
+<section id="asymptotics-i-barely-know-her" class="level3">
+<h3 class="anchored" data-anchor-id="asymptotics-i-barely-know-her">Asymptotics? I barely know her!</h3>
+<p>Let’s take a brief detour into classical inference for a moment and ask ourselves <em>when can we recover the parameters of a Gaussian process</em>? For most models we run into in statistics, the answer to that question is <em>when we get enough data</em>. But for Gaussian processes, the story is more complex.</p>
+<p>First of all, there is the very real question of what we mean by getting more data. When our observations are iid, this so easy that when asked how she got more data, Kylie just said she <a href="https://www.youtube.com/watch?v=jDKPvy-ZXC8">“did it again”</a>.</p>
+<p>But this is more complex once data has dependence. For instance, in a multilevel model you could have the number of groups staying fixed while the number of observations in each group goes to infinity, you could have the number of observations in each group staying fixed while the number of groups go to infinity, or you could have both<a href="#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a> going to infinity.</p>
+<p>For Gaussian processes it also gets quite complicated. Here is a non-exhaustive list of options:</p>
+<ul>
+<li>You observe the same realisation of the GP at an increasing number of points that eventually cover the <em>whole of</em> <span class="math inline">\(\mathbb{R}^d\)</span> (this is called the <em>increasing domain</em> or <em>outfill</em> regime); or</li>
+<li>You observe the same realisation of the GP at an increasing number of points <em>that stay within a fixed domain</em> (this is called the <em>fixed domain</em> or <em>infill</em> regime); or</li>
+<li>You observe multiple realisations of the same GP at a finite number of points that stay in the same location (this does not have a name, in space-time it’s sometimes called <em>monitoring data</em>); or</li>
+<li>You observe multiple realisations of the same GP at a (possibly different) finite number of points that can be in different locations for different realisations; or</li>
+<li>You observe realisations of a process that evolves in space <em>and</em> time (not really a different regime so much as a different problem).</li>
+</ul>
+<p>One of the truly unsettling things about Gaussian processes is that the ability to estimate the parameters depends on which of these regimes you choose!</p>
+<p>Of course, we all know that asymptotic regimes are just polite fantasies that statisticians concoct in order to self-soothe. They are not reflections on reality. They serve approximately the same purpose<a href="#fn22" class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a> as watching a chain of Law and Order episodes.</p>
+<p>The real purpose of thinking about what happens when we get more data is to use it as a loose approximation of what happens with the data you have. So the real question is <em>which regime is the most realistic for my data</em>?.</p>
+<p>One way you can approach this question is to ask yourself what you would do if you had the budget to get more data. My work has mostly been in spatial statistics, in which case the answer is <em>usually</em><a href="#fn23" class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a> that you would sample more points in the same area. This suggests that fixed-domain asymptotics is a good fit for my needs. I’d expect that in most GP regression cases, we’re not expecting<a href="#fn24" class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a> that further observations would be on new parts of the covariate space, which would suggest fixed-domain asymptotics are usefulthere too.</p>
+<p>This, it turns out, is awkward.</p>
+</section>
+<section id="when-is-a-parameter-not-consistently-estimatable-an-aside-that-will-almost-immediately-become-relevant" class="level3">
+<h3 class="anchored" data-anchor-id="when-is-a-parameter-not-consistently-estimatable-an-aside-that-will-almost-immediately-become-relevant">When is a parameter not consistently estimatable: an aside that will almost immediately become relevant</h3>
+<p>The problem with a GP with the Matérn covariance function on a fixed domain is that it’s not possible<a href="#fn25" class="footnote-ref" id="fnref25" role="doc-noteref"><sup>25</sup></a> to estimate all of its parameters at the same time. This isn’t the case for the other asymptotic regime, but you’ve got to dance with who you came to the dance with.</p>
+<p>To make this more concrete, we need to think about a Gaussian process as a realisation of a function rather than as a vector of observations. Why? Because under fixed-domain asymptotics we are seeing values of the function closer and cloer together until we essentailly see the entire function on that domain.</p>
+<p>Of course, this is why I wrote <a href="https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness.html">a long and technical blog post</a> on understanding Gaussian processes as random functions. But don’t worry. You don’t need to have read that part.</p>
+<p>The key thing is that because a GP is a function, we need to think of it’s probability of being in a set <span class="math inline">\(A\)</span> of functions. There will be a set of function <span class="math inline">\(\operatorname{supp}(u)\)</span>, which we call the <em>support</em> of <span class="math inline">\(u(\cdot)\)</span> that is the smallest set such that <span class="math display">\[
+\Pr(u(\cdot) \in \operatorname{supp}(u)) = 1.
+\]</span> Every GP has an associated support and, while you probably don’t think much about it, GPs are <em>obsessed</em> with their supports. They love them. They hug them. They share them with their friends. They keep them from their enemies. And they are one of the key things that we need to think about in order to understand why it’s hard to estimate parameters in a Matérn covariance function.</p>
+<p>There is a key theorem that is unique<a href="#fn26" class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a> to Gaussian processes. It’s usually phrased in terms of <em>Gaussian measures</em>, which are just the probability associated with a GP. For example, if <span class="math inline">\(u_1(\cdot)\)</span> is a GP then <span class="math display">\[
+\mu_1(A) = \Pr(u_1(\cdot) \in A)
+\]</span> is the corresponding Gaussian measure. We can express the support of <span class="math inline">\(u(\cdot)\)</span> as the smallest set of functions such that <span class="math inline">\(\mu(A)=1\)</span>.</p>
+<div id="thm-singular-equiv" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 1 (Feldman-Hájek theorem) </strong></span>Two Gaussian measures <span class="math inline">\(\mu_1\)</span> and <span class="math inline">\(\mu_2\)</span> with corresponding GPs <span class="math inline">\(u_1(\cdot)\)</span> and <span class="math inline">\(u_2(\cdot)\)</span> on a locally convex space<a href="#fn27" class="footnote-ref" id="fnref27" role="doc-noteref"><sup>27</sup></a> either satisfy, for every<a href="#fn28" class="footnote-ref" id="fnref28" role="doc-noteref"><sup>28</sup></a> set <span class="math inline">\(A\)</span><br>
+<span class="math display">\[
+\mu_2(A) &gt; 0 \Rightarrow \mu_1(A) &gt; 0 \text{ and } \mu_1(A) &gt; 0 \Rightarrow \mu_2(A) &gt; 0,
+\]</span> in which case we say that <span class="math inline">\(\mu_1\)</span> and <span class="math inline">\(\mu_2\)</span> are <em>equivalent</em><a href="#fn29" class="footnote-ref" id="fnref29" role="doc-noteref"><sup>29</sup></a> (confusingly<a href="#fn30" class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a> written <span class="math inline">\(\mu_1 \equiv \mu_2\)</span>) and <span class="math inline">\(\operatorname{supp}(u_1) = \operatorname{supp}(u_2)\)</span>, <strong>or</strong> <span class="math display">\[
+\mu_2(A) &gt; 0 \Rightarrow \mu_1(A) = 0 \text{ and } \mu_1(A) &gt; 0 \Rightarrow \mu_2(A) = 0,
+\]</span> in which case we say <span class="math inline">\(\mu_1\)</span> and <span class="math inline">\(\mu_2\)</span> are <em>singular</em> (written <span class="math inline">\(\mu_1 \perp \mu_2\)</span>) and <span class="math inline">\(u_1(\cdot)\)</span> and <span class="math inline">\(u_2(\cdot)\)</span> have disjoint supports.</p>
+</div>
+<p>Later on in the post, we will see some precise conditions for when two Gaussian measures are equivalent, but for now it’s worth saying that it is a <em>very</em> delicate property. In fact, if <span class="math inline">\(u_2(\cdot) = \alpha u_1(\cdot)\)</span> for any <span class="math inline">\(|\alpha|\neq 1\)</span>, then <span class="math inline">\(\mu_1 \perp \mu_2\)</span>!</p>
+<p>This seems like it will cause problems. And it can<a href="#fn31" class="footnote-ref" id="fnref31" role="doc-noteref"><sup>31</sup></a>. But it’s <em>fabulous</em> for inference.</p>
+<p>To see this, we can use one of the implications of singularity: <span class="math inline">\(\mu_1 \perp \mu_2\)</span> if and only if <span class="math display">\[
+\operatorname{KL}(u_1(\cdot) || u_2(\cdot)) = \infty,
+\]</span> where the the Kullback-Leibler divergence can be interpreted as the expectation of the likelihood ratio of <span class="math inline">\(u_1\)</span> vs <span class="math inline">\(u_2\)</span> under <span class="math inline">\(u_1\)</span>. Hence, if <span class="math inline">\(u_1(\cdot)\)</span> and <span class="math inline">\(u_2(\cdot)\)</span> are singular, we can (on average) choose the correct one using a likelihood ratio test. This means that we will be able to correctly recover the true<a href="#fn32" class="footnote-ref" id="fnref32" role="doc-noteref"><sup>32</sup></a> parameter.</p>
+<p>It turns out the opposite is also true.</p>
+<div id="thm-strong-neg" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 2 </strong></span>If <span class="math inline">\(\mu_\theta\)</span>, <span class="math inline">\(\theta \in \Theta\)</span> is a family of Gaussian measures corresponding to the GPs <span class="math inline">\(u_\theta(\cdot)\)</span> and <span class="math inline">\(\mu_\theta \equiv \mu_{\theta'}\)</span> for all values of <span class="math inline">\(\theta, \theta' \in \Theta\)</span>, then there is <em>no</em> sequence of estimators <span class="math inline">\(\hat \theta_n\)</span> such that, for all <span class="math inline">\(\theta_0 \in \Theta\)</span> <span class="math display">\[
+{\Pr}_{\theta_0}(\hat \theta_n \rightarrow \theta_0) = 1,
+\]</span> where <span class="math inline">\({\Pr}_{\theta_0}(\cdot)\)</span> is the probability under data drawn with true parameter <span class="math inline">\(\theta_0\)</span>. That is there is no estimator <span class="math inline">\(\hat \theta_n\)</span> that is (strongly) consistent for all <span class="math inline">\(\theta \in \Theta\)</span>.</p>
+</div>
+<details>
+<summary>
+Click for a surprise (the proof. shit i spoiled the surprise)
+</summary>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>We are going to do this by contradiction. So assume that there is a sequence such that <span class="math display">\[
+\Pr{_{\theta_0}}(\hat \theta_n \rightarrow \theta_0) = 1.
+\]</span> For some <span class="math inline">\(\epsilon &gt;0\)</span>, let <span class="math inline">\(A_n = \{\|\hat\theta_n - \theta_0\|&gt;\epsilon\}\)</span>. Then we can re-state our almost sure convergence as <span class="math display">\[
+\Pr{_{\theta_0}}\left(\limsup_{n\rightarrow \infty}A_n\right) = 0,
+\]</span> where the limit superior is defined<a href="#fn33" class="footnote-ref" id="fnref33" role="doc-noteref"><sup>33</sup></a> as <span class="math display">\[
+\limsup_{n\rightarrow \infty}A_n = \bigcap_{n=1}^\infty \left(\bigcup_{m=n}^\infty A_n\right).
+\]</span></p>
+<p>For any <span class="math inline">\(\theta' \neq \theta_0\)</span> with <span class="math inline">\(\mu_{\theta'} \equiv \mu_{\theta_0}\)</span>, the definition of equivalent measures tells us that <span class="math display">\[
+\Pr{_{\theta'}}\left(\limsup_{n\rightarrow \infty}A_n\right) = 0
+\]</span> and therefore <span class="math display">\[
+\Pr{_{\theta'}}\left(\hat \theta_n \rightarrow \theta_0\right) = 1.
+\]</span> The problem with this is that is that this data is generated using <span class="math inline">\(u_{\theta'}\)</span>, but the estimator converges to <span class="math inline">\(\theta_0\)</span> instead of <span class="math inline">\(\theta'\)</span>. Hence, the estimator isn’t uniformly (strongly) consistent.</p>
+</div>
+</details>
+<p>This seems bad but, you know, it’s a pretty strong version of convergence. And sometimes our brothers and sisters in Christ who are more theoretically minded like to give themselves a treat and consider weaker forms of convergence. It turns out that that’s a disaster too.</p>
+<div id="thm-weak-neg" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 3 </strong></span>If <span class="math inline">\(\mu_\theta\)</span>, <span class="math inline">\(\theta \in \Theta\)</span> is a family of Gaussian measures corresponding to the GPs <span class="math inline">\(u_\theta(\cdot)\)</span> and <span class="math inline">\(\mu_\theta \equiv \mu_{\theta'}\)</span> for all values of <span class="math inline">\(\theta, \theta' \in \Theta\)</span>, then there is <em>no</em> sequence of estimators <span class="math inline">\(\hat \theta_n\)</span> such that, for all <span class="math inline">\(\theta_0 \in \Theta\)</span> and all <span class="math inline">\(\epsilon &gt; 0\)</span> <span class="math display">\[
+\lim_{n\rightarrow \infty}{\Pr}_{\theta_0}(\|\hat \theta_n - \theta_0\| &gt; \epsilon) = 0.
+\]</span> That is there is no estimator <span class="math inline">\(\hat \theta_n\)</span> that is (weakly) consistent for all <span class="math inline">\(\theta \in \Theta\)</span>.</p>
+</div>
+<p>If you can’t tell the difference between these two theorems that’s ok. You probably weren’t trying to sublimate some childhood trauma and all of your sexual energy into maths just so you didn’t have to deal with the fact that you might be gay and you were pretty sure that wasn’t an option and anyway it’s not like it’s <em>that</em> important. Like whatever, you don’t need physical or emotional intimacy. You’ve got a pile of books on measure theory next to your bed. You are living your best life. Anyway. It makes almost no practical difference. BUT I WILL PROVE IT ANYWAY.</p>
+<details>
+<summary>
+Once more, into the proof.
+</summary>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>This proof is based on a kinda advanced fact, which involves every mathematician’s favourite question: what happens along a subsequence?</p>
+<div class="callout-note callout callout-style-default no-icon callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Probability Fact!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(\hat \theta_n\)</span> converges to <span class="math inline">\(\theta\)</span> in probability, then there exists an infinite sub-sequence <span class="math inline">\(\hat \theta_{n_k}\)</span>, where <span class="math inline">\(n_k \rightarrow \infty\)</span> as <span class="math inline">\(k \rightarrow \infty\)</span>, such that <span class="math inline">\(\hat \theta_{n_k}\)</span> converges to <span class="math inline">\(\theta\)</span> with probability one (or almost surely).</p>
+</div>
+</div>
+<p>This basically says that the two modes of convergence are quite similar except convergence in probability is relaxed enough to have some<a href="#fn34" class="footnote-ref" id="fnref34" role="doc-noteref"><sup>34</sup></a> values that aren’t doing so good at the whole converging thing.</p>
+<p>With this in hand, let us build a contradiction. Assume that <span class="math inline">\(\hat \theta_n\)</span> is weakly consistent for all <span class="math inline">\(\theta \in \Theta\)</span>. Then, if we generate data under <span class="math inline">\(\mu_{\theta_0}\)</span>, then we get that, along a subsequence <span class="math inline">\(n_k\)</span> <span class="math display">\[
+\Pr{_{\theta_0}}(\hat \theta_{n_k} \rightarrow \theta_0) =1.
+\]</span></p>
+<p>Now, if <span class="math inline">\(\hat \theta_n\)</span> is weakly consistent for all <span class="math inline">\(\theta\)</span>, then so is <span class="math inline">\(\hat \theta_{n_k}\)</span>. Then, by our assumption, for every <span class="math inline">\(\theta' \in \Theta\)</span> and every <span class="math inline">\(\epsilon&gt;0\)</span> <span class="math display">\[
+\lim_{k \rightarrow \infty} \Pr{_{\theta'}}\left(\|\hat \theta_{n_k} - \theta'\| &gt; \epsilon\right) = 0.
+\]</span></p>
+<p>Our probability fact tells us that there is a <em>further</em> infinite sub-sub-sequence <span class="math inline">\(n_{k_\ell}\)</span> such that <span class="math display">\[
+\Pr{_{\theta'}}\left(\hat \theta_{n_{k_\ell}} \rightarrow \theta'\right) = 1.
+\]</span> But <a href="#thm-strong-neg">Theorem&nbsp;2</a> tells us that <span class="math inline">\(\hat \theta_{n_k}\)</span> (and hence <span class="math inline">\(\theta_{n_{k_l}}\)</span>) satisfies <span class="math display">\[
+\Pr{_{\theta'}}\left(\hat \theta_{n_{k_\ell}} \rightarrow \theta_0\right) = 1.
+\]</span> This is a contradiction unless <span class="math inline">\(\theta'= \theta_0\)</span>, which proves the assertion.</p>
+</div>
+</details>
+</section>
+<section id="matérn-fields-under-fixed-domain-asymptotics-the-love-that-dares-not-speak-its-name" class="level3">
+<h3 class="anchored" data-anchor-id="matérn-fields-under-fixed-domain-asymptotics-the-love-that-dares-not-speak-its-name">Matérn fields under fixed domain asymptotics: the love that dares not speak its name</h3>
+<p>All of that lead up immediately becomes extremely relevant once we learn one thing about Gaussian processes with the Matérn covariance function.</p>
+<div id="thm-matern-sing" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 4 </strong></span>Let <span class="math inline">\(\mu_{\nu, \sigma, \ell}\)</span> be the Gaussian measure corresponding to the GP with Matérn covariance function with parameters <span class="math inline">\((\nu, \sigma, \ell)\)</span>, let <span class="math inline">\(D\)</span> be any finite domain in <span class="math inline">\(\mathbb{R}^d\)</span>, and let <span class="math inline">\(d \leq 3\)</span>. Then, restricted to <span class="math inline">\(D\)</span>, <span class="math display">\[
+\mu_{\nu,\sigma_1, \ell_1} \equiv \mu_{\nu, \sigma_2, \ell_2}
+\]</span> if and only if <span class="math display">\[
+\frac{\sigma_1^2}{\ell_1^{2\nu}} = \frac{\sigma_2^2}{\ell_2^{2\nu}}.
+\]</span></p>
+</div>
+<p>I’ll go through the proof of this later, but the techniques require a lot of warm up, so let’s just deal with the consequences for now.</p>
+<p>Basically, <a href="#thm-matern-sing">Theorem&nbsp;4</a> says that we can’t consistently estimate the range and the marginal standard deviation for a one, two, or three dimensional Gaussian process. <a href="https://www.stat.purdue.edu/~zhanghao/Paper/JASA2004.pdf">Hao Zhang noted this</a> and that it remains true<a href="#fn35" class="footnote-ref" id="fnref35" role="doc-noteref"><sup>35</sup></a> when dealing with non-Gaussian data.</p>
+<p>The good news, I guess, is that in more than four<a href="#fn36" class="footnote-ref" id="fnref36" role="doc-noteref"><sup>36</sup></a> dimensions the measures are always singular.</p>
+<p>Now, I don’t give one single solitary shit about the existence of consistent estimators. I am doing Bayesian things and this post is supposed to be about setting prior distributions. But it is important. Let’s take a look at some simulations.</p>
+<p>First up, let’s look at what happens in 2D when we directly (ie with no noise) observe a zero-mean GP with exponential covariance function (<span class="math inline">\(\nu = 1/2\)</span>) at points in the unit square. In this case, the log-likelihood is, up to an additive constant, <span class="math display">\[
+\log p(y \mid \theta) = -\frac{1}{2}\log |\Sigma(\theta)| - \frac{1}{2}y^T\Sigma(\theta)^{-1}y.
+\]</span></p>
+<p>The R code is not pretty but I’m trying to be relatively efficient with my Cholesky factors.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">set.seed</span>(<span class="dv">24601</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3"></a>cov_fun <span class="ot">&lt;-</span> \(h,sigma, ell) sigma<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>h<span class="sc">/</span>ell)</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a>log_lik <span class="ot">&lt;-</span> <span class="cf">function</span>(sigma, ell, y, h) {</span>
+<span id="cb1-6"><a href="#cb1-6"></a>  V <span class="ot">&lt;-</span> <span class="fu">cov_fun</span>(h, sigma, ell)</span>
+<span id="cb1-7"><a href="#cb1-7"></a>  R <span class="ot">&lt;-</span> <span class="fu">chol</span>(V)</span>
+<span id="cb1-8"><a href="#cb1-8"></a>  <span class="sc">-</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="fu">diag</span>(R))) <span class="sc">-</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">sum</span>(y <span class="sc">*</span> <span class="fu">backsolve</span>(R, <span class="fu">backsolve</span>(R, y, <span class="at">transpose =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb1-9"><a href="#cb1-9"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can now simulate 500 data points on the unit square, compute their distances, and simulate from the GP.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>dat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">s1 =</span> <span class="fu">runif</span>(n), <span class="at">s2 =</span> <span class="fu">runif</span>(n), </span>
+<span id="cb2-3"><a href="#cb2-3"></a>              <span class="at">dist_mat =</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(<span class="fu">cbind</span>(s1,s2))),</span>
+<span id="cb2-4"><a href="#cb2-4"></a>              <span class="at">y =</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="at">mu=</span><span class="fu">rep</span>(<span class="dv">0</span>,n), </span>
+<span id="cb2-5"><a href="#cb2-5"></a>                      <span class="at">Sigma =</span> <span class="fu">cov_fun</span>(dist_mat, <span class="fl">1.0</span>, <span class="fl">0.2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>With all of this in hand, let’s look at the likelihood surface along<a href="#fn37" class="footnote-ref" id="fnref37" role="doc-noteref"><sup>37</sup></a> the line <span class="math display">\[
+\frac{\sigma^2}{\ell} = c
+\]</span> for various values of <span class="math inline">\(c\)</span>. I’m using some <code>purrr</code> trickery<a href="#fn38" class="footnote-ref" id="fnref38" role="doc-noteref"><sup>38</sup></a> here to deal with the fact that sometimes the cholesky factorisation will throw an error.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>m <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>f <span class="ot">&lt;-</span> <span class="fu">partial</span>(log_lik, <span class="at">y =</span> dat<span class="sc">$</span>y, <span class="at">h =</span> dat<span class="sc">$</span>dist_mat)</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a>pars <span class="ot">&lt;-</span> \(c) <span class="fu">tibble</span>(<span class="at">ell =</span> <span class="fu">seq</span>(<span class="fl">0.05</span>,<span class="dv">1</span>, <span class="at">length.out =</span> m),</span>
+<span id="cb3-5"><a href="#cb3-5"></a>                    <span class="at">sigma =</span> <span class="fu">sqrt</span>(c <span class="sc">*</span> ell), <span class="at">c =</span> <span class="fu">rep</span>(c, m))</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a> ll <span class="ot">&lt;-</span> <span class="fu">map_df</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">8</span>,pars) <span class="sc">|&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a>  <span class="fu">mutate</span>(<span class="at">contour =</span> <span class="fu">factor</span>(c), </span>
+<span id="cb3-9"><a href="#cb3-9"></a>         <span class="at">ll =</span> <span class="fu">map2_dbl</span>(sigma, ell, </span>
+<span id="cb3-10"><a href="#cb3-10"></a>                       <span class="fu">possibly</span>(f, <span class="at">otherwise =</span> <span class="cn">NA_real_</span>)))</span>
+<span id="cb3-11"><a href="#cb3-11"></a></span>
+<span id="cb3-12"><a href="#cb3-12"></a></span>
+<span id="cb3-13"><a href="#cb3-13"></a>ll <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(ell, ll, <span class="at">colour =</span> contour)) <span class="sc">+</span> </span>
+<span id="cb3-14"><a href="#cb3-14"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>) <span class="sc">+</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="priors5_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can see the same thing in 2D (albeit at a lower resolution for computational reasons). I’m also not computing a bunch of values that I know will just be massively negative.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>f_trim <span class="ot">&lt;-</span> \(sigma, ell) <span class="fu">ifelse</span>(sigma<span class="sc">^</span><span class="dv">2</span> <span class="sc">&lt;</span> <span class="dv">3</span><span class="sc">*</span>ell <span class="sc">|</span> sigma<span class="sc">^</span><span class="dv">2</span> <span class="sc">&gt;</span> <span class="dv">8</span><span class="sc">*</span>ell,</span>
+<span id="cb4-2"><a href="#cb4-2"></a>                               <span class="cn">NA_real_</span>, <span class="fu">f</span>(sigma, ell))</span>
+<span id="cb4-3"><a href="#cb4-3"></a>m <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>surf <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(<span class="at">ell =</span> <span class="fu">seq</span>(<span class="fl">0.05</span>,<span class="dv">1</span>,<span class="at">length.out =</span> m),</span>
+<span id="cb4-5"><a href="#cb4-5"></a>                    <span class="at">sigma =</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="dv">4</span>, <span class="at">length.out =</span> m)) <span class="sc">|&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a>  <span class="fu">mutate</span>(<span class="at">ll =</span>  <span class="fu">map2_dbl</span>(sigma, ell, </span>
+<span id="cb4-7"><a href="#cb4-7"></a>                       <span class="fu">possibly</span>(f_trim, <span class="at">otherwise =</span> <span class="cn">NA_real_</span>)))</span>
+<span id="cb4-8"><a href="#cb4-8"></a></span>
+<span id="cb4-9"><a href="#cb4-9"></a>surf <span class="sc">|&gt;</span> <span class="fu">filter</span>(ll <span class="sc">&gt;</span> <span class="dv">50</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(ell, sigma, <span class="at">fill =</span> ll)) <span class="sc">+</span> </span>
+<span id="cb4-11"><a href="#cb4-11"></a>  <span class="fu">geom_raster</span>() <span class="sc">+</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a>  <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="priors5_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Clearly there is a ridge in the likelihood surface, which suggests that our posterior is going to be driven by the prior along that ridge.</p>
+<p>For completeness, let’s run the same experiment again when we have some known observation noise, that is <span class="math inline">\(y_i \sim N(u(s_i), 1)\)</span>. In this case, the log-likelihood is <span class="math display">\[
+\log p(y\mid \sigma, \ell) = -\frac{1}{2} \log \det(\Sigma(\theta) + I) - \frac{1}{2}y^{T}(\Sigma(\theta) + I)^{-1}y.
+\]</span></p>
+<p>Let us do the exact same thing again!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>dat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">s1 =</span> <span class="fu">runif</span>(n), <span class="at">s2 =</span> <span class="fu">runif</span>(n), </span>
+<span id="cb5-3"><a href="#cb5-3"></a>              <span class="at">dist_mat =</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(<span class="fu">cbind</span>(s1,s2))),</span>
+<span id="cb5-4"><a href="#cb5-4"></a>              <span class="at">mu =</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="at">mu=</span><span class="fu">rep</span>(<span class="dv">0</span>,n), </span>
+<span id="cb5-5"><a href="#cb5-5"></a>                      <span class="at">Sigma =</span> <span class="fu">cov_fun</span>(dist_mat, <span class="fl">1.0</span>, <span class="fl">0.2</span>)),</span>
+<span id="cb5-6"><a href="#cb5-6"></a>              <span class="at">y =</span> <span class="fu">rnorm</span>(n, mu, <span class="dv">1</span>))</span>
+<span id="cb5-7"><a href="#cb5-7"></a></span>
+<span id="cb5-8"><a href="#cb5-8"></a>log_lik <span class="ot">&lt;-</span> <span class="cf">function</span>(sigma, ell, y, h) {</span>
+<span id="cb5-9"><a href="#cb5-9"></a>  V <span class="ot">&lt;-</span> <span class="fu">cov_fun</span>(h, sigma, ell)</span>
+<span id="cb5-10"><a href="#cb5-10"></a>  R <span class="ot">&lt;-</span> <span class="fu">chol</span>(V <span class="sc">+</span> <span class="fu">diag</span>(<span class="fu">dim</span>(V)[<span class="dv">1</span>]))</span>
+<span id="cb5-11"><a href="#cb5-11"></a>  <span class="sc">-</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="fu">diag</span>(R))) <span class="sc">-</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">sum</span>(y <span class="sc">*</span> <span class="fu">backsolve</span>(R, <span class="fu">backsolve</span>(R, y, <span class="at">transpose =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb5-12"><a href="#cb5-12"></a>}</span>
+<span id="cb5-13"><a href="#cb5-13"></a></span>
+<span id="cb5-14"><a href="#cb5-14"></a>m <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a>f <span class="ot">&lt;-</span> <span class="fu">partial</span>(log_lik, <span class="at">y =</span> dat<span class="sc">$</span>y, <span class="at">h =</span> dat<span class="sc">$</span>dist_mat)</span>
+<span id="cb5-16"><a href="#cb5-16"></a></span>
+<span id="cb5-17"><a href="#cb5-17"></a>pars <span class="ot">&lt;-</span> \(c) <span class="fu">tibble</span>(<span class="at">ell =</span> <span class="fu">seq</span>(<span class="fl">0.05</span>,<span class="dv">1</span>, <span class="at">length.out =</span> m),</span>
+<span id="cb5-18"><a href="#cb5-18"></a>                    <span class="at">sigma =</span> <span class="fu">sqrt</span>(c <span class="sc">*</span> ell), <span class="at">c =</span> <span class="fu">rep</span>(c, m))</span>
+<span id="cb5-19"><a href="#cb5-19"></a></span>
+<span id="cb5-20"><a href="#cb5-20"></a> ll <span class="ot">&lt;-</span> <span class="fu">map_df</span>(<span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="dv">10</span>, <span class="at">length.out =</span> <span class="dv">30</span>),pars) <span class="sc">|&gt;</span></span>
+<span id="cb5-21"><a href="#cb5-21"></a>  <span class="fu">mutate</span>(<span class="at">contour =</span> <span class="fu">factor</span>(c), </span>
+<span id="cb5-22"><a href="#cb5-22"></a>         <span class="at">ll =</span> <span class="fu">map2_dbl</span>(sigma, ell, </span>
+<span id="cb5-23"><a href="#cb5-23"></a>                       <span class="fu">possibly</span>(f, <span class="at">otherwise =</span> <span class="cn">NA_real_</span>)))</span>
+<span id="cb5-24"><a href="#cb5-24"></a></span>
+<span id="cb5-25"><a href="#cb5-25"></a></span>
+<span id="cb5-26"><a href="#cb5-26"></a>ll <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(ell, ll, <span class="at">colour =</span> contour)) <span class="sc">+</span> </span>
+<span id="cb5-27"><a href="#cb5-27"></a>  <span class="fu">geom_line</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb5-28"><a href="#cb5-28"></a>  <span class="co">#scale_color_brewer(palette = "Set1") +</span></span>
+<span id="cb5-29"><a href="#cb5-29"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="priors5_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>f_trim <span class="ot">&lt;-</span> \(sigma, ell) <span class="fu">ifelse</span>(sigma<span class="sc">^</span><span class="dv">2</span> <span class="sc">&lt;</span> <span class="fl">0.1</span><span class="sc">*</span>ell <span class="sc">|</span> sigma<span class="sc">^</span><span class="dv">2</span> <span class="sc">&gt;</span> <span class="dv">10</span><span class="sc">*</span>ell,</span>
+<span id="cb6-2"><a href="#cb6-2"></a>                               <span class="cn">NA_real_</span>, <span class="fu">f</span>(sigma, ell))</span>
+<span id="cb6-3"><a href="#cb6-3"></a>m <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>surf <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(<span class="at">ell =</span> <span class="fu">seq</span>(<span class="fl">0.05</span>,<span class="dv">1</span>,<span class="at">length.out =</span> m),</span>
+<span id="cb6-5"><a href="#cb6-5"></a>                    <span class="at">sigma =</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="dv">4</span>, <span class="at">length.out =</span> m)) <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a>  <span class="fu">mutate</span>(<span class="at">ll =</span>  <span class="fu">map2_dbl</span>(sigma, ell, </span>
+<span id="cb6-7"><a href="#cb6-7"></a>                       <span class="fu">possibly</span>(f_trim, <span class="at">otherwise =</span> <span class="cn">NA_real_</span>)))</span>
+<span id="cb6-8"><a href="#cb6-8"></a></span>
+<span id="cb6-9"><a href="#cb6-9"></a>surf <span class="sc">|&gt;</span> <span class="fu">filter</span>(ll <span class="sc">&gt;</span> <span class="sc">-</span><span class="dv">360</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(ell, sigma, <span class="at">fill =</span> ll)) <span class="sc">+</span> </span>
+<span id="cb6-11"><a href="#cb6-11"></a>  <span class="fu">geom_raster</span>() <span class="sc">+</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a>  <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="priors5_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Once again, we can see that there is going to be a ridge in the likelihood surface! It’s a bit less disastrous this time, but it’s not excellent even with 500 observations (which is a decent number on a unit square). The weird structure of the prior is still going to lead to a long, non-elliptical shape in your posterior that your computational engine (and your person interpreting the results) are going to have to come to terms with.</p>
+<p>Unless, of course, the prior can save you.</p>
+</section>
+<section id="so-the-prior-is-important-then-what-do-other-people-do" class="level3">
+<h3 class="anchored" data-anchor-id="so-the-prior-is-important-then-what-do-other-people-do">So the prior is important then! What do other people do?</h3>
+<p>That ridge in the likelihood surface does not go away in low dimensions, which essentially means that our inference along that ridge is going to be driven by the prior.</p>
+<p>Possibly the worst choice you could make in this situation is trying to make a minimally informative prior. Of course, that’s what <a href="https://www.google.com/search?client=safari&amp;rls=en&amp;q=Objective+Bayesian+Analysis+of+Spatially+Correlated+Data%2C&amp;ie=UTF-8&amp;oe=UTF-8">somebody did when they made a reference prior for the problem</a>. In fact it was the first paper<a href="#fn39" class="footnote-ref" id="fnref39" role="doc-noteref"><sup>39</sup></a> that looks rigorously at prior distributions on the parameters of GPs. It’s just unfortunate that it’s quite shit. It has still been cited quite a lot. And there are some technical advances to the theory of reference priors, but if you use it you just find yourself mapping out that damn ridge.</p>
+<p>On top of being, structurally, a bad choice, the reference prior has a few other downsides:</p>
+<ul>
+<li>It is very computationally intensive and quite complex. Not unlike the bad version of the PC prior!</li>
+<li>It requires <em>strong</em> assumptions about the likelihood. The first version assumed that there was no observation noise. Later papers allowed there to be observation noise. But only if it’s Gaussian.</li>
+<li>It is derived under the asymptotic regime where an infinite sequence of different independent realisations of the GP are observed at the same finite set of points. This is not the most useful regime for GPs.</li>
+</ul>
+<p>All in all, it’s a bit of a casserole.</p>
+<p>From the other end, there’s a very interesting contribution from <a href="https://arxiv.org/pdf/0908.3556.pdf">Aad van der Vaart and Harry van Zanten</a> wrote a very lovely theoretical paper that looked at which priors on <span class="math inline">\(\ell\)</span> could result in theoretically optimal posterior contraction rates. They argued that <span class="math inline">\(\ell^{-d}\)</span> should have a Gamma distribution. Within the Matérn class, their results are only valid for the squared exponential contrivance function.</p>
+<p>One of the stranger things that I have never fully understood is that the argument I’m going to make below ends up with a gamma distribution on <span class="math inline">\(\ell^{-d/2}\)</span>, which is somewhat different to van der Vaart and van Zanten. If I was to being forced to bullshit some justification I’d probably say something about the Matern process depending only on the distance between observations makes the <span class="math inline">\(d\)</span>-sphere the natural geometry (the volume of which scales like <span class="math inline">\(\ell^{-d/2}\)</span>) rather than the <span class="math inline">\(d\)</span>-cube (the volume of which scales lie <span class="math inline">\(\ell^{-d}\)</span>). But that would be total bullshit. I simply have no idea. They’re proposal comes via the time-honoured tradition of “constant chasing” in some fairly tricky proofs, so I have absolutely no intuition for it.</p>
+<p>We also found in other contexts that use the KL divergence rather than its square root tended to perform worse. So I’m kinda happy with our scaling and their’s doesn’t cover the same case anyway.</p>
+<p>Neither of these papers consider that ridge in the likelihood surface.</p>
+<p>This lack of consideration—as well as their success in everything else we tried them on—was a big part of our push to make a useful version of a PC prior for Gaussian processes.</p>
+</section>
+<section id="rescuing-the-pc-prior-or-what-i-recommend-you-do" class="level3">
+<h3 class="anchored" data-anchor-id="rescuing-the-pc-prior-or-what-i-recommend-you-do">Rescuing the PC prior; or What I recommend you do</h3>
+<p>It has been a long journey, but we are finally where I wanted us to be. So let’s talk about how to fix the PC prior. In particular, I’m going to go through how to derive a prior on the length scale <span class="math inline">\(\ell\)</span> that has a simple form.</p>
+<p>In order to solve this problem, we are going to do three things in the rest of this post:</p>
+<ol type="1">
+<li>Restrict our attention to the stationary<a href="#fn40" class="footnote-ref" id="fnref40" role="doc-noteref"><sup>40</sup></a> GPs</li>
+<li>Restrict our attention to the Matérn class of covariance functions.</li>
+<li>Greatly increase our mathematical<a href="#fn41" class="footnote-ref" id="fnref41" role="doc-noteref"><sup>41</sup></a> sophistication.</li>
+</ol>
+<p>But before we do that, I’m going to walk you through the punchline.</p>
+<p>This work was originally done with the magnificent <a href="https://www.ntnu.edu/employees/fuglstad">Geir-Arne Fuglstad</a>, the glorious <a href="https://www.maths.ed.ac.uk/~flindgre/">Finn Lindren</a>, and the resplendent <a href="https://www.kaust.edu.sa/en/study/faculty/haavard-rue">Håvard Rue</a>. If you want to read the original paper, <a href="https://arxiv.org/abs/1503.00256">the preprint is here</a><a href="#fn42" class="footnote-ref" id="fnref42" role="doc-noteref"><sup>42</sup></a>.</p>
+<p>The short version is that the PC prior for the length scale in a <span class="math inline">\(d\)</span>-dimensional space is a Fréchet distribution<a href="#fn43" class="footnote-ref" id="fnref43" role="doc-noteref"><sup>43</sup></a> with shape parameter <span class="math inline">\(d/2\)</span>. That is, <span class="math display">\[
+p(\ell) = \frac{d\lambda_\ell}{2} \ell^{-(d/2+1)}e^{-\lambda_{\ell}\ell^{-d/2}},
+\]</span> where we choose <span class="math inline">\(\lambda_\ell = -\log(\alpha_\ell)L^{d/2}\)</span> to ensure that <span class="math display">\[
+\Pr(\ell &lt; L) = e^{-\lambda L^{-d/2}} &lt; \alpha_\ell.
+\]</span> In two dimensions, this is an inverse gamma prior, which gives rigorous justification to a commonly used prior in spatial statistics.</p>
+</section>
+<section id="comparing-it-with-the-reference-prior" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-it-with-the-reference-prior">Comparing it with the reference prior</h3>
+<p><strong>Tbh I’m not sure if this is needed. Thoughts?</strong></p>
+</section>
+<section id="moving-beyond-the-matérn" class="level3">
+<h3 class="anchored" data-anchor-id="moving-beyond-the-matérn">Moving beyond the Matérn</h3>
+<p><strong>This is needed. I will write it tomorrow</strong></p>
+</section>
+<section id="whats-in-the-rest-of-the-post" class="level3">
+<h3 class="anchored" data-anchor-id="whats-in-the-rest-of-the-post">What’s in the rest of the post?</h3>
+<p>The remainder of this post will be devoted to deriving the PC prior. It’s going to get a bit hairy and I’m going to assume you’ve at least skimmed through the first 2 definitions in my <a href="https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness.html">previous post defining GPs</a>.</p>
+<p>The main purpose of the rest of the post is to show the types of things that you need to think about to get the relatively straighforward prior. Because if I had to suffer you all have to suffer.</p>
+</section>
+</section>
+<section id="an-invitation-to-the-theory-of-stationary-gaussian-processes" class="level2">
+<h2 class="anchored" data-anchor-id="an-invitation-to-the-theory-of-stationary-gaussian-processes">An invitation to the theory of Stationary Gaussian processes</h2>
+<p>Gaussian processes with the Matérn covariance function are an excellent example of a stationary<a href="#fn44" class="footnote-ref" id="fnref44" role="doc-noteref"><sup>44</sup></a> Gaussian process, which are characterised<a href="#fn45" class="footnote-ref" id="fnref45" role="doc-noteref"><sup>45</sup></a> <a href="#fn46" class="footnote-ref" id="fnref46" role="doc-noteref"><sup>46</sup></a> by have covariance functions of the form <span class="math display">\[
+c(s, s') = c(s- s'),
+\]</span> where I am abusing notation and using <span class="math inline">\(c\)</span> for both the two parameter and one parameter functions. This assumption means that the correlation structure does not depend on where you are in space, only on the distance between points.</p>
+<p>The assumption of stationarity massively simplifies GPs. Firstly, the stationarity assumption greatly reduces the number of parameters you need to describe a GP as we don’t need to worry about location-specific parameters. Secondly, it increases the statistical power of the model. If two subsets of the domain are more than <span class="math inline">\(2\ell\)</span> apart, they are essentially independent replicates of the GP with the same parameters. This means that if the locations <span class="math inline">\(s\)</span> vary across a large enough area (relative to the natural length scale), we get multiple effective replicates<a href="#fn47" class="footnote-ref" id="fnref47" role="doc-noteref"><sup>47</sup></a> from the same realisation of the process.</p>
+<p>In practice, stationarity<a href="#fn48" class="footnote-ref" id="fnref48" role="doc-noteref"><sup>48</sup></a> is often a <em>good enough</em> assumption when the mean has been modelled carefully, <a href="https://arxiv.org/abs/1409.0743">especially given the limitations of the data</a>. That said, priors on non-stationary processes can be set using the PC prior methodology by using a stationary process as the base model. The <a href="https://arxiv.org/abs/1503.00256">supplementary material</a> of our paper gives a simple, but useful, example of this.</p>
+<section id="stationary-covariance-functions-and-bochners-theorem" class="level3">
+<h3 class="anchored" data-anchor-id="stationary-covariance-functions-and-bochners-theorem">Stationary covariance functions and Bochner’s theorem</h3>
+<p>The restriction to stationary processes is <em>extremely</em> powerful. It opens us up to using Fourier analysis as a potent tool for understanding GPs. We are going to need this to construct our KL divergence, and so with some trepidation, let’s dive into the moonee ponds of spectral representations.</p>
+<p>The first thing that we need to do is remember what a [<em>Fourier transform</em>] is. A Fourier transform of a square integrable function <span class="math inline">\(\phi(s)\)</span> is<a href="#fn49" class="footnote-ref" id="fnref49" role="doc-noteref"><sup>49</sup></a> <span class="math display">\[
+\hat \phi(\omega) = \mathcal{F}(\phi)(\omega) =\frac{1}{(2\pi)^d}\int_{\mathbb{R}^d} e^{-i\omega^Ts}\phi(s) \,ds.
+\]</span></p>
+<p>If you have bad memories<a href="#fn50" class="footnote-ref" id="fnref50" role="doc-noteref"><sup>50</sup></a> of desperately trying to compute Fourier integrals in undergrad, I promise you that we are not doing that today. We are simply affirming their right to exist (and my right to look them up in a table).</p>
+<p>The reason I care about Fourier<a href="#fn51" class="footnote-ref" id="fnref51" role="doc-noteref"><sup>51</sup></a> transforms is that if I have a non-negative measure<a href="#fn52" class="footnote-ref" id="fnref52" role="doc-noteref"><sup>52</sup></a> <span class="math inline">\(\nu\)</span>, I can define a function <span class="math display">\[
+c(h) = \int_{\mathbb{R}^d}e^{i\omega^Th}\,d\nu(\omega).
+\]</span> If measures freak you out, you can—with some loss of generality—assume that there is a function <span class="math inline">\(f(\omega)\geq 0\)</span> such that <span class="math display">\[
+c(h) = \int_{\mathbb{R}^d}e^{i\omega^Th}f(\omega)\,d\omega.
+\]</span> We are going to call <span class="math inline">\(\nu\)</span> the spectral measure and the corresponding <span class="math inline">\(f\)</span>, if it exists, is called the spectral density.</p>
+<p>I put it to you that, defined this way, <span class="math inline">\(c(s,s') = c(s - s')\)</span> is a (complex) positive definite function.</p>
+<p>Recall<a href="#fn53" class="footnote-ref" id="fnref53" role="doc-noteref"><sup>53</sup></a> that a function is positive definite if, for every for every <span class="math inline">\(k&gt;0\)</span>, every <span class="math inline">\(s_1, \ldots, s_k \in \mathbb{R}^d\)</span>, and every <span class="math inline">\(a_1, \ldots, a_k \in \mathbb{C}\)</span> <span class="math display">\[
+\sum_{i = 1}^k\sum_{j=1}^k a_i\bar{a}_j c(s_i, s_j) \geq 0,
+\]</span> where <span class="math inline">\(\bar a\)</span> is the complex conjugate of <span class="math inline">\(a\)</span>.</p>
+<p>Using our assumption about <span class="math inline">\(c(\cdot)\)</span> we can write the left hand side as <span class="math display">\[\begin{align*}
+\sum_{i = 1}^k\sum_{j=1}^k a_i\bar{a}_j c(s_i, s_j) &amp;= \sum_{i = 1}^k\sum_{j=1}^k a_i\bar{a}_j c(s_i- s_j) \\
+&amp;=\sum_{i = 1}^k\sum_{j=1}^k a_i\bar{a}_j \int_{\mathbb{R}^d} e^{i\omega^T(s_i-s_j}\,d\nu(\omega) \\
+&amp;=\int_{\mathbb{R}^d}\sum_{i = 1}^k\sum_{j=1}^k a_i\bar{a}_j e^{i\omega^T(s_i-s_j}\,d\nu(\omega) \\
+&amp;=\int_{\mathbb{R}^d}\left(\sum_{i = 1}^k a_i e^{i\omega^Ts_i}\right)\left(\sum_{j = 1}^k \bar{a_j} e^{-i\omega^Ts_j}\right) \,d\nu(\omega)\\
+&amp;=\int_{\mathbb{R}^d}\left(\sum_{i = 1}^k a_i e^{i\omega^Ts_i}\right)\overline{\left(\sum_{j = 1}^k a_j e^{i\omega^Ts_j}\right)} \,d\nu(\omega) \\
+&amp;=\int_{\mathbb{R}^d}\left|\sum_{i = 1}^k a_i e^{i\omega^Ts_i}\right|^2\,d\nu(\omega) \geq 0,
+\end{align*}\]</span> where <span class="math inline">\(|a|^2 = a\bar{a}\)</span>.</p>
+<p>We have shown that if <span class="math inline">\(c(s,s') = c(s-s') = \int e^{i\omega^T(s-s')}\,d \nu(\omega)\)</span> , then it is a valid covariance function. This is true, although harder to prove, in the other direction and the result is known as Bochner’s theorem.</p>
+<div id="thm-bochner" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 5 (Bochner’s theorem) </strong></span>A function <span class="math inline">\(c(\cdot)\)</span> is positive definite, ie for every <span class="math inline">\(k&gt;0\)</span>, every <span class="math inline">\(s_1, \ldots, s_k \in \mathbb{R}^d\)</span>, and every <span class="math inline">\(a_1, \ldots, a_k \in \mathbb{C}\)</span> <span class="math display">\[
+\sum_{i = 1}^k\sum_{j=1}^k a_i\bar{a}_j c(s_i- s_j) \geq 0,
+\]</span> if and only if there is a non-negative finite measure <span class="math inline">\(\nu\)</span> such that <span class="math display">\[
+c(h) = \int_{\mathbb{R}^d} e^{i\omega^Th}\,d\nu(\omega).
+\]</span></p>
+</div>
+<p>Just as a covariance function<a href="#fn54" class="footnote-ref" id="fnref54" role="doc-noteref"><sup>54</sup></a> is enough to completely specify a zero-mean Gaussian process, a spectral measure is enough to completely specify a zero mean <em>stationary</em> Gaussian process.</p>
+<p>Our lives are mathematically much easier when <span class="math inline">\(\nu\)</span> represents a density <span class="math inline">\(f(\omega)\)</span> that satisfies <span class="math display">\[
+\int_{\mathbb{R}^d}\phi(\omega)\,d\nu(\omega) = \int_{\mathbb{R}^d}\phi(\omega)f(\omega)\,d\omega.
+\]</span> This function, when it exists, is precisely the Fourier transform of <span class="math inline">\(c(h)\)</span>. Unfortunately, this will not exist<a href="#fn55" class="footnote-ref" id="fnref55" role="doc-noteref"><sup>55</sup></a> for all possible positive definite functions. But as we drift further and further down this post, we will begin to assume that we’re only dealing with cases where <span class="math inline">\(f\)</span> exists.</p>
+<p>The case of particular interest to us is the Matérn covariance function. The parameterisation used above is really lovely, but for mathematical convenience, we are going to set<a href="#fn56" class="footnote-ref" id="fnref56" role="doc-noteref"><sup>56</sup></a> <span class="math inline">\(\kappa = \sqrt{8\nu}\ell^{-1}\)</span>, which has<a href="#fn57" class="footnote-ref" id="fnref57" role="doc-noteref"><sup>57</sup></a> Fourier transform <span class="math display">\[\begin{align*}
+f(\omega) &amp;= \frac{\Gamma(\nu+d/2)\kappa^{2\nu}\sigma^2}{4^{d}\pi^{d/2}\Gamma(\nu)}\frac{1}{(\kappa^2 + \|\omega\|^2)^{\nu+d/2}}\\
+&amp;= C_\text{Matérn}(\nu,d).\kappa^{2\nu}\sigma^2 \frac{1}{(\kappa^2 + \|\omega\|^2)^{\nu+d/2}},
+\end{align*}\]</span> where <span class="math inline">\(C_\text{Matérn}(\nu,d)\)</span> is defined implicitly above and is a constant (as we are keeping <span class="math inline">\(\nu\)</span> fixed).</p>
+</section>
+<section id="spectral-representations-and-the-simplest-of-the-many-many-versions-of-a-stochastic-integral" class="level3">
+<h3 class="anchored" data-anchor-id="spectral-representations-and-the-simplest-of-the-many-many-versions-of-a-stochastic-integral">Spectral representations (and the simplest of the many many versions of a stochastic integral)</h3>
+<p>To see this, we need a tiny bit of machinery. Specifically, we need the concept of a Gaussian <span class="math inline">\(\nu\)</span>-noise and its corresponding integral.</p>
+<div id="def-nu-noise" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1 (Complex <span class="math inline">\(\nu\)</span>-noise) </strong></span>A (complex) <span class="math inline">\(\nu\)</span>-noise<a href="#fn58" class="footnote-ref" id="fnref58" role="doc-noteref"><sup>58</sup></a> is a random measure<a href="#fn59" class="footnote-ref" id="fnref59" role="doc-noteref"><sup>59</sup></a> <span class="math inline">\(Z_\nu(\cdot)\)</span> such that, for every<a href="#fn60" class="footnote-ref" id="fnref60" role="doc-noteref"><sup>60</sup></a> disjoint<a href="#fn61" class="footnote-ref" id="fnref61" role="doc-noteref"><sup>61</sup></a> pair of sets <span class="math inline">\(A, B\)</span> satisfies the following properties</p>
+<ol type="1">
+<li><span class="math inline">\(Z_\nu(A)\)</span> has mean zero and variance <span class="math inline">\(\nu(A)\)</span>,</li>
+<li>If <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are disjoint then <span class="math inline">\(Z_\nu(A\cup B) = Z_\nu(A) + Z_\nu(B)\)</span></li>
+<li>If <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are disjoint then <span class="math inline">\(Z_\nu(A)\)</span> and <span class="math inline">\(Z_\nu(B)\)</span> are uncorrelated<a href="#fn62" class="footnote-ref" id="fnref62" role="doc-noteref"><sup>62</sup></a>, ie <span class="math inline">\(\mathbb{E}(Z_\nu(A) \overline{Z_\nu(B)}) = 0\)</span>.</li>
+</ol>
+</div>
+<p>This definition might not seem like much, but imagine a simple<a href="#fn63" class="footnote-ref" id="fnref63" role="doc-noteref"><sup>63</sup></a> piecewise constant function <span class="math display">\[
+f(\omega) = \sum_{i=1}^{n} f_i 1_{A_i}(\omega),\quad g(\omega) =  \sum_{i=1}^{n} g_i 1_{A_i}(\omega)
+\]</span> where <span class="math inline">\(f_i, g_i\in \mathbb{C}\)</span> and the sets <span class="math inline">\(A_i\)</span> are pairwise disjoint and <span class="math inline">\(\bigcup_{i=1}^n A_i = \mathbb{R}^d\)</span>. Then we can define an integral with respect to the <span class="math inline">\(\nu\)</span>-noise as <span class="math display">\[
+\int_{\mathbb{R}^d} f(\omega)\,dZ_\nu(\omega) = \sum_{i=1}^n f_i Z_\nu(A_i),
+\]</span> which has mean <span class="math inline">\(0\)</span> and variance <span class="math display">\[
+\mathbb{E}\left(\int_{\mathbb{R}^d} f(\omega)\,dZ_\nu(\omega)\right)^2 = \sum_{i=1}^n f_i \nu(A_i) = \int_{\mathbb{R}^d}f(\omega)\,d\nu(\omega),
+\]</span> where the last equality comes from the definition of an integral of a piecewise constant function.</p>
+<p>Moreover, we get the covariance <span class="math display">\[\begin{align*}
+\mathbb{E}\left(\int_{\mathbb{R}^d} f(\omega)\,dZ_\nu(\omega)\overline{\int_{\mathbb{R}^d} g(\omega)\,dZ_\nu(\omega)}\right)^2 &amp;= \sum_{i=1}^n \sum_{j=1}^n f_ig_j \nu(A_i \cap A_j) \\
+&amp;= \sum_{i=1}^n f_i\overline{g}_i \nu(A_i) \\
+&amp;= \int_{\mathbb{R}^d}f(\omega)\overline{g(\omega)}\,d\nu(\omega).
+\end{align*}\]</span></p>
+<p>A nice thing is that while these piecewise constant functions are quite simple, we can approximate <em>any</em><a href="#fn64" class="footnote-ref" id="fnref64" role="doc-noteref"><sup>64</sup></a> function arbitrarily well by a simple function. This is the same fact we use to build ourselves ordinary<a href="#fn65" class="footnote-ref" id="fnref65" role="doc-noteref"><sup>65</sup></a> integrals.</p>
+<p>In particular, the brave and the bold among you might just say “we can take limits here and <em>define</em>” an integral with respect to the <span class="math inline">\(\nu\)</span>-noise this way. And, indeed, that works. You get that. for any <span class="math inline">\(f\in L^2(\nu)\)</span>,</p>
+<p><span class="math display">\[
+\mathbb{E}\left(\int_{\mathbb{R}^d} f(\omega)\,d Z_\nu(\omega)\right) = 0
+\]</span> and, for any <span class="math inline">\(f,g \in L^2(\nu)\)</span>, <span class="math display">\[
+\mathbb{E}\left(\int_{\mathbb{R}^d} f(\omega)\,d Z_\nu(\omega)\overline{\int_{\mathbb{R}^d} g(\omega)\,d Z_\nu(\omega)}\right) = \int_{\mathbb{R}^d} f(\omega)\overline{g(\omega)}\,d \nu(\omega).
+\]</span></p>
+<p>If we define <span class="math display">\[
+u(s) = \int_{\mathbb{R}^d}e^{i\omega^Ts}\,dZ_\nu(\omega),
+\]</span> then it follows immediately that <span class="math inline">\(u(s)\)</span> is mean zero and has covariance function <span class="math display">\[
+\mathbb{E}(u(s)\overline{u(s')}) = \int_{\mathbb{R}^d}e^{i\omega^T(s - s')}\, d\nu(\omega) = c(s-s').
+\]</span> That is <span class="math inline">\(\nu\)</span> is the spectral measure associated with the correlation function.</p>
+<p>Combining this with Bochner’s theorem, we have just proved<a href="#fn66" class="footnote-ref" id="fnref66" role="doc-noteref"><sup>66</sup></a> the spectral representation theorem for general<a href="#fn67" class="footnote-ref" id="fnref67" role="doc-noteref"><sup>67</sup></a> (weakly) stationary<a href="#fn68" class="footnote-ref" id="fnref68" role="doc-noteref"><sup>68</sup></a> random fields<a href="#fn69" class="footnote-ref" id="fnref69" role="doc-noteref"><sup>69</sup></a>.</p>
+<div id="thm-spectral-rep" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 6 (Spectral representation theorem) </strong></span>If <span class="math inline">\(\nu\)</span> is a finite, non-negative measure on <span class="math inline">\(\mathbb{R}^d\)</span> and <span class="math inline">\(W\)</span> is a complex <span class="math inline">\(\nu\)</span>-noise, then the complex-valued process <span class="math display">\[
+u(s) =\int_{\mathbb{R}^d}e^{i\omega^Ts}\,dZ_\nu(\omega)
+\]</span> has mean zero an covariance <span class="math display">\[
+c(s,s') = \int_{\mathbb{R}^d}e^{i\omega^T(s-s')}\,d\nu(\omega)
+\]</span> and is therefore weakly stationary. If <span class="math inline">\(Z_\nu(A) \sim N(0, \nu(A))\)</span> then <span class="math inline">\(u(s)\)</span> is a Gaussian process.</p>
+<p>Furthermore, every mean-square continuous mean zero stationary Gaussian process with covariance function <span class="math inline">\(c(s,s')= c(s-s')\)</span> and corresponding spectral measure <span class="math inline">\(\nu\)</span> has an associated <span class="math inline">\(\nu\)</span>-noise <span class="math inline">\(Z_\nu(\cdot)\)</span> such that <span class="math display">\[
+u(s) =\int_{\mathbb{R}^d}e^{i\omega^Ts}\,dZ_\nu(\omega)
+\]</span> holds in the mean-square sense for all <span class="math inline">\(s \in \mathbb{R}^d\)</span>.</p>
+<p><span class="math inline">\(Z_\nu(\cdot)\)</span> is called the <em>spectral process</em> <a href="#fn70" class="footnote-ref" id="fnref70" role="doc-noteref"><sup>70</sup></a> associated with <span class="math inline">\(u(\cdot)\)</span>. When it exists, the density of <span class="math inline">\(\nu\)</span>, denoted by <span class="math inline">\(f(\omega)\)</span>, is called the <em>spectral density</em> or the <em>power spectrum</em>.</p>
+</div>
+<p>All throughout here I used complex numbers and complex Gaussian processes because, believe it or not, it makes things easier. But you will be pleased to know that <span class="math inline">\(u(\cdot)\)</span> will be real-valued as long as the spectral density <span class="math inline">\(f(\omega)\)</span> is symmetric around the origin. And it always is.</p>
+</section>
+<section id="the-cameron-martin-space-of-a-stationary-gaussian-process" class="level3">
+<h3 class="anchored" data-anchor-id="the-cameron-martin-space-of-a-stationary-gaussian-process">The Cameron-Martin<a href="#fn71" class="footnote-ref" id="fnref71" role="doc-noteref"><sup>71</sup></a> space of a stationary Gaussian process</h3>
+<p>One particular advantage of stationary processes is that we get a straightforward characterization of the Cameron-Martin space inner product. Recall that the Cameron-Martin space (or reproducing kernel Hilbert space) associated with a Gaussian process is the<a href="#fn72" class="footnote-ref" id="fnref72" role="doc-noteref"><sup>72</sup></a> space of all functions of the form <span class="math display">\[
+h(s) = \sum_{k=1}^K c_k c(s, s_k),
+\]</span> where <span class="math inline">\(K\)</span> is finite, <span class="math inline">\(c_k\)</span> are real, and <span class="math inline">\(s_k\)</span> are distinct points in <span class="math inline">\(\mathbb{R}^d\)</span>. This is the space that the posterior mean for GP regression lives in.</p>
+<p>The inner product associated with this space can be written in terms of the spectral density <span class="math inline">\(f\)</span> as<a href="#fn73" class="footnote-ref" id="fnref73" role="doc-noteref"><sup>73</sup></a> <span class="math display">\[
+\langle h, h'\rangle = \int_{\mathbb{R}^d} \hat h(\omega) \overline{\hat {h'}(\omega)} \frac{1}{f(\omega)}\,d\omega.
+\]</span> In particular, for a Matérn Gaussian process, the corresponding norm is <span class="math display">\[
+\| h\|_{H_u} = C_\text{Matérn}\kappa^{2\nu}\sigma^2 \int_{\mathbb{R}^d}|\hat h(\omega)|^2 (\kappa^2 + \|\omega\|^2)^{\nu+d/2}\,d\omega.
+\]</span> For those of you familiar with function spaces, this is equivalent to the norm on <span class="math inline">\(H^{\nu-d/2}(\mathbb{R}^d)\)</span>. One way to interpret this is that the <em>set</em> of functions in the Cameron-Martin space for a Matérn GP only depends on <span class="math inline">\(\nu\)</span>, while the norm and inner product (and hence the posterior mean and all that stuff) depend on <span class="math inline">\(\nu\)</span>, <span class="math inline">\(\kappa\)</span>, and <span class="math inline">\(\sigma\)</span>. This observation is going to be important.</p>
+</section>
+<section id="another-look-at-equivalence-and-singularity" class="level3">
+<h3 class="anchored" data-anchor-id="another-look-at-equivalence-and-singularity">Another look at equivalence and singularity</h3>
+<p>It would’ve been a bit of an odd choice to spend all this time talking about spectral representations and never using them. So in this section, I’m going to cover the reason for the season: singularity or absolute continuity of Gaussian measures.</p>
+<p>The Feldman-Hájek theorem quoted is true on quite general sets of functions. However, if we are willing to restrict ourselves to a separable<a href="#fn74" class="footnote-ref" id="fnref74" role="doc-noteref"><sup>74</sup></a> Hilbert<a href="#fn75" class="footnote-ref" id="fnref75" role="doc-noteref"><sup>75</sup></a> space there is a much more refined version of the theorem that we can use.</p>
+<div id="thm-continuity2" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 7 (Feldman-Hájek theorem (Taylor’s<a href="#fn76" class="footnote-ref" id="fnref76" role="doc-noteref"><sup>76</sup></a> version)) </strong></span>Two Gaussian measures <span class="math inline">\(\mu_1\)</span> (mean <span class="math inline">\(m_1\)</span>, covariance operator<a href="#fn77" class="footnote-ref" id="fnref77" role="doc-noteref"><sup>77</sup></a> <span class="math inline">\(C_1\)</span>) and <span class="math inline">\(\mu_2\)</span> (mean <span class="math inline">\(m_2\)</span>, covariance operator <span class="math inline">\(C_2\)</span>) on a <em>separable Hilbert space</em> <span class="math inline">\(X\)</span> are absolutely continuous <em>if and only if</em></p>
+<ol type="1">
+<li><p>The Cameron-Martin spaces associated with <span class="math inline">\(\mu_1\)</span> and <span class="math inline">\(\mu_2\)</span> are the same (considered as sets of functions. They usually will not have the same inner products.),</p></li>
+<li><p><span class="math inline">\(m_1 - m_2\)</span> is in the<a href="#fn78" class="footnote-ref" id="fnref78" role="doc-noteref"><sup>78</sup></a> Cameron-Martin space, and</p></li>
+<li><p>The operator <span class="math inline">\(T = C_1^{-1/2}C_2C_1^{-1/2} - I\)</span> is a Hilber-Schmidt operator, that is it has a countable set of eigenvalues <span class="math inline">\(\delta_k\)</span> and corresponding eigenfunctions <span class="math inline">\([hi_k\)</span> that satisfy <span class="math inline">\(\delta_k &gt; -1\)</span> and <span class="math display">\[
+\sum_{k=1}^{\infty}\delta_k^2 &lt; \infty.
+\]</span> When these three conditions are fulfilled, the Radon-Nikodym derivative is <span class="math display">\[
+\frac{d\mu_2}{d\mu_1} = \exp\left(-\frac{1}{2}\sum_{k=1}^\infty \left(\frac{\delta_k}{1 + \delta_k}\eta_k^2 - \log(1+\delta_k)\right)\right],
+\]</span> where <span class="math inline">\(\eta_k\)</span> is an sequence of N(0,1) random variables<a href="#fn79" class="footnote-ref" id="fnref79" role="doc-noteref"><sup>79</sup></a> <a href="#fn80" class="footnote-ref" id="fnref80" role="doc-noteref"><sup>80</sup></a> (under <span class="math inline">\(\mu_1\)</span>).</p></li>
+</ol>
+<p>Otherwise, the two measures are singular.</p>
+</div>
+<p>This version of Feldman-Hájek is considerably more useful than its previous incarnation. The first condition basically says that the posterior means from the two priors will have the same smoothness and is rarely a problem. Typically the second condition is fulfilled in practice (for example, we always set the mean to zero).</p>
+<p>The third condition is where all of the action is. This is, roughly speaking, a condition that says that <span class="math inline">\(C_1\)</span> and <span class="math inline">\(C_2\)</span> aren’t toooooo different. To understand this, we need to look a little at what the <span class="math inline">\(\delta_k\)</span> values actually are. It turns out to actually be easier to ask about <span class="math inline">\(1+ \delta_k\)</span>, which are the eigenvalues of <span class="math inline">\(C_1^{-1/2}C_2 C_1^{-1/2}\)</span>. In that case, we are trying to find the orthonormal system of functions <span class="math inline">\(\phi_k\in X\)</span> such that <span class="math display">\[\begin{align*}
+C_1^{-1/2}C_2 C_1^{-1/2}\phi_k &amp;= (1+\delta_k) \phi_k \\
+C^{-1/2}C_2 \psi_k &amp;= (1+\delta_k) C_1^{1/2}\psi_k \\
+C_2\psi_k &amp;=(1+\delta_k) C_1\psi_k,
+\end{align*}\]</span> where <span class="math inline">\(\psi_k = C_1^{-1/2}\phi_k\)</span>.</p>
+<p>Hence, we can roughly interpret the <span class="math inline">\(\delta_k\)</span> as the eigenvalues of <span class="math display">\[
+C_1^{-1}C_2 - I.
+\]</span> The Hilbert-Schmidt condition is then requiring that <span class="math inline">\(C_1^{-1}C_2\)</span> is not infinitely far from the identity mapping.</p>
+<p>A particularly nice version of this theorem occurs when <span class="math inline">\(C_1\)</span> and <span class="math inline">\(C_2\)</span> have the <em>same</em> eigenvectors. This is a fairly restrictive assumption, but we are going to end up using it later, so it’s worth specialising. In that case, assuming <span class="math inline">\(C_j\)</span> has eigenvalues <span class="math inline">\(\lambda_k^{(j)}\)</span> and correpsonding <span class="math inline">\(L^2\)</span>-orthogonal eigenfunctions <span class="math inline">\(\phi_k(\cdot)\)</span>, we can write<a href="#fn81" class="footnote-ref" id="fnref81" role="doc-noteref"><sup>81</sup></a> <span class="math display">\[
+[C_jh](s) = \sum_{k=1}^\infty \lambda_k^{(j)} \langle\phi_k, h\rangle \phi_k(s).
+\]</span> Using the orthogonality of the eigenfunctions, we can show<a href="#fn82" class="footnote-ref" id="fnref82" role="doc-noteref"><sup>82</sup></a> that <span class="math display">\[
+[C_j^{\beta}h](s)=\sum_{k=1}^\infty (\lambda_k^{(j)})^\beta \langle\phi_k, h\rangle \phi_k(s).
+\]</span></p>
+<p>With a bit of effort, we can see that <span class="math display">\[
+(C_1^{-1/2}C_2C_1^{-1/2} - I)h = \sum_{k=1}^\infty \frac{\lambda_k^{(2)} - \lambda_k^{(1)}}{\lambda_k^{(1)}} \langle\phi_k, h\rangle \phi_k
+\]</span> and so <span class="math display">\[
+\delta_k = \frac{\lambda_k^{(2)} - \lambda_k^{(1)}}{\lambda_k^{(1)}}.
+\]</span> From that, we get<a href="#fn83" class="footnote-ref" id="fnref83" role="doc-noteref"><sup>83</sup></a> the KL divergence <span class="math display">\[\begin{align*}
+\operatorname{KL}(\mu_1 || \mu_2) &amp;= \mathbb{E}_{\mu_1}\log\left(\frac{d\mu_2}{d\mu_2}\right) \\
+&amp;=-\frac{1}{2}\sum_{k=1}^\infty \left(\frac{\delta_k}{1 + \delta_k} - \log(1+\delta_k)\right) \\
+&amp;= \frac{1}{2}\sum_{k=1}^\infty \left[\frac{\lambda_k^{(2)}}{\lambda_k^{(1)}} -1+ \log\left(\frac{\lambda_k^{(2)}}{\lambda_k^{(1)}}\right)\right].
+\end{align*}\]</span></p>
+<p>Possibly unsurprisingly, this is simply the sum of the one dimensional divergences <span class="math display">\[
+\sum_{k=1}^\infty\operatorname{KL}(N(0,\lambda_k^{(1)}) || N(0,\lambda_k^{(2)})).
+\]</span> It’s fun to convince yourself that that <span class="math inline">\(\sum_{k=1}^\infty \delta_k^2 &lt; \infty\)</span> is sufficient to ensure the sum converges.</p>
+</section>
+<section id="a-convenient-suffient-condition-for-absolute-continuity-which-turns-out-to-be-necessary-for-matérn-fields" class="level3">
+<h3 class="anchored" data-anchor-id="a-convenient-suffient-condition-for-absolute-continuity-which-turns-out-to-be-necessary-for-matérn-fields">A convenient suffient condition for absolute continuity, which turns out to be necessary for Matérn fields</h3>
+<p>Ok. So I lied. I suggested that we’d use all of that spectral stuff in the last section. And we didn’t! Because I’m dastardly. But this time I promise we will!</p>
+<p>It turns out that even with our fancy version of Feldman-Hájek, it can be difficult<a href="#fn84" class="footnote-ref" id="fnref84" role="doc-noteref"><sup>84</sup></a> to work out whether two Gaussian processes are singular or equivalent. One of the big challenges is that the eigenvalues and eigenfunctions depend on the domain <span class="math inline">\(D\)</span> and so we would, in principle, have to check this quite complex condition for every single domain.</p>
+<p>Thankfully, there is an easy to parse sufficient condition that we can use that show when two GPs are equivalent on <em>every</em> bounded domain. These conditions are stated in terms of the spectral densities.</p>
+<div id="thm-sufficient" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 8 (Sufficent condition for equivalence (Thm 4 of <a href="https://www.google.com/search?client=safari&amp;rls=en&amp;q=on+absolute+continuity+of+measures+with+application+to+homogenous+gaussian+fields&amp;ie=UTF-8&amp;oe=UTF-8">Skorokhod and Yadrenko</a>)) </strong></span>Let <span class="math inline">\(u_1(\cdot)\)</span> and <span class="math inline">\(u_2(\cdot)\)</span> be mean-zero Gaussian processes with spectral densities <span class="math inline">\(f_j(\omega)\)</span>, <span class="math inline">\(j=1,2\)</span>. Assume that <span class="math inline">\(f_1(\omega)\|\omega\|^\alpha\)</span> is bounded away from zero and infinity for some<a href="#fn85" class="footnote-ref" id="fnref85" role="doc-noteref"><sup>85</sup></a> <span class="math inline">\(\alpha&gt;0\)</span> and <span class="math display">\[
+\int_{\mathbb{R}^d}\left(\frac{f_2(\omega) - f_1(\omega)}{f_1(\omega)}\right)^2\,d\omega &lt; \infty.
+\]</span> Then the joint distributions of <span class="math inline">\(\{u_1(s): s \in D\}\)</span> and <span class="math inline">\(\{u_2(s): s \in D\}\)</span> are equivalent measures for every bounded region <span class="math inline">\(D\)</span>.</p>
+</div>
+<p>The <a href="https://pages.stat.wisc.edu/~wahba/stat860public/pdf1/skorokhod.yadrenko.1973.pdf">proof</a> of this is pretty nifty. Essentially it constructs the operator <span class="math inline">\(T+I\)</span> in a sneaky<a href="#fn86" class="footnote-ref" id="fnref86" role="doc-noteref"><sup>86</sup></a> way and then bounds its trace on rectangle containing <span class="math inline">\(D\)</span>. That upper bound is finite precisely when the above integral is finite.</p>
+<p>Now that we have a relatively simple condition for equivalence, let’s look at Matérn fields. In particular, we will assume <span class="math inline">\(u_j(\cdot)\)</span>, <span class="math inline">\(j=1,2\)</span> are two Matérn GPs with the same smoothness parameter <span class="math inline">\(\nu\)</span> and other parameters<a href="#fn87" class="footnote-ref" id="fnref87" role="doc-noteref"><sup>87</sup></a> <span class="math inline">\((\kappa_j, \sigma_j)\)</span>. <span class="math display">\[
+\int_{\mathbb{R}^d}\left(\frac{f_2(\omega) - f_1(\omega)}{f_1(\omega)}\right)^2\,d\omega  = \int_{\mathbb{R}^d}\left(\frac{\kappa_2^{2\nu}\sigma_2^2(\kappa_2^2 + \|\omega\|^2)^{-\nu - d/2} }{\kappa_1^{2\nu}\sigma_1^2(\kappa_1^2 + \|\omega\|^2)^{-\nu - d/2}}-1\right)^2\,d\omega.
+\]</span> We can save ourselves some trouble by considering two cases separately.</p>
+<p><strong>Case 1:</strong> <span class="math inline">\(\kappa_1^{2\nu}\sigma_1^2 = \kappa_2^{2\nu}\sigma_2^2\)</span>.</p>
+<p>In this case, we can make the change to spherical coordinates via the substitution <span class="math inline">\(r = \|\omega\|\)</span> and, again to save my poor fingers, let’s set <span class="math inline">\(\alpha = \nu + d/2\)</span>. The condition becomes <span class="math display">\[
+\int_0^\infty\left[\left(\frac{\kappa_1^2 + r^2 }{\kappa_2^2 + r^2}\right)^{\alpha}-1\right]^2r^{d-1}\,dr &lt; \infty.
+\]</span> To check that this integral is finite, first note that, near <span class="math inline">\(r=0\)</span>, the integrand is<a href="#fn88" class="footnote-ref" id="fnref88" role="doc-noteref"><sup>88</sup></a> <span class="math inline">\(\mathcal{O}({r^{d-1}})\)</span>, so there is no problem there. Near <span class="math inline">\(r = \infty\)</span> (aka the other place bad stuff can happen), the integrand is <span class="math display">\[
+2\alpha(\kappa_1^2 - \kappa_2^2)^2 r^{d-5} + \mathcal{O}(r^{d-7}).
+\]</span> This is integrable for large <span class="math inline">\(r\)</span> whenever<a href="#fn89" class="footnote-ref" id="fnref89" role="doc-noteref"><sup>89</sup></a> <span class="math inline">\(d \leq 3\)</span>. Hence, the two fields are equivalent whenever <span class="math inline">\(d\leq 3\)</span> and <span class="math inline">\(\kappa_1^{2\nu}\sigma_1^2 = \kappa_2^{2\nu}\sigma_2^2\)</span>. It is harder, but possible to show that the fields are singular when <span class="math inline">\(d&gt;4\)</span>. The case with <span class="math inline">\(d=4\)</span> is boring and nobody cares.</p>
+<p><strong>Case 2: </strong> <span class="math inline">\(\kappa_1^{2\nu}\sigma_1^2 \neq \kappa_2^{2\nu}\sigma_2^2\)</span>.</p>
+<p>Let’s define <span class="math inline">\(\sigma_3 = \sigma_2(\kappa_2/\kappa_1)^\nu\)</span>. Then it’s clear that <span class="math inline">\(\kappa_1^{2\nu}\sigma_3^2 = \kappa_2^{2\nu}\sigma_2^2\)</span> and therefore the Matérn field with parameters <span class="math inline">\((\kappa_1, \sigma_3, \nu)\)</span> is equivalent to <span class="math inline">\(u_2(\cdot)\)</span>.</p>
+<p>We will now show that <span class="math inline">\(u_1\)</span> and <span class="math inline">\(u_3\)</span> are singular, which implies that <span class="math inline">\(u_1\)</span> and <span class="math inline">\(u_2\)</span> are singular. To do this, we just need to note that, as <span class="math inline">\(u_1\)</span> and <span class="math inline">\(u_3\)</span> have the <em>same</em> value of <span class="math inline">\(\kappa\)</span>, <span class="math display">\[
+u_3(s) = \frac{\sigma_3}{\sigma_1}u_1(s).
+\]</span> We know, from the previous blog post, that <span class="math inline">\(u_3\)</span> and <span class="math inline">\(u_1\)</span> will be singular unless <span class="math inline">\(\sigma_1 = \sigma_3\)</span>, but this only happens when <span class="math inline">\(\kappa_1^{2\nu}\sigma_1^2 = \kappa_2^{2\nu}\sigma_2^2\)</span>, which is not true by assumption.</p>
+<p>Hence we have proved the following Theorem due, in this form, to Zhang (2004) and Anderes (2010).</p>
+<div id="thm-matern-equiv" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 9 (Thm 2 of <a href="https://www.stat.purdue.edu/~zhanghao/Paper/JASA2004.pdf">Zhang (2004)</a>) </strong></span>Two Gaussian process on <span class="math inline">\(\mathbb{R}^d\)</span>, <span class="math inline">\(d\leq 3\)</span>, with Matérn covariance functions with parameters <span class="math inline">\((\ell_j, \sigma_j, \nu)\)</span>, <span class="math inline">\(j=1,2\)</span> induce equivalent Gaussian measures if and only if <span class="math display">\[
+\frac{\sigma_1^2}{\ell_1^{2\nu}} = \frac{\sigma_2^2}{\ell_2^{2\nu}}.
+\]</span> When <span class="math inline">\(d &gt; 4\)</span>, the measures are always singular (<a href="https://projecteuclid.org/journals/annals-of-statistics/volume-38/issue-2/On-the-consistent-separation-of-scale-and-variance-for-Gaussian/10.1214/09-AOS725.full">Anderes, 2010</a>).</p>
+</div>
+</section>
+</section>
+<section id="deriving-the-pc-prior" class="level2">
+<h2 class="anchored" data-anchor-id="deriving-the-pc-prior">Deriving the PC prior</h2>
+<p>With all of that in hand, we are finally (finally!) in a position to show that, in 3 or fewer dimensions, the PC prior distance is <span class="math inline">\(d(\kappa) = \kappa^{d/2}\)</span>. After this, we can put everythign together! Hooray!</p>
+<section id="approximating-the-kullback-leibler-divergence-for-a-matérn-random-field" class="level3">
+<h3 class="anchored" data-anchor-id="approximating-the-kullback-leibler-divergence-for-a-matérn-random-field">Approximating the Kullback-Leibler divergence for a Matérn random field</h3>
+<p>Now, you can find a proof of this in the appendix of our JASA paper, but to be honest it’s quite informal. But although you can sneak any old shite into JASA, this is a blog goddamnit and a blog has integrity. So let’s do a significantly more rigorous proof of our argument.</p>
+<p>To do this, we will need to find the KL divergence between <span class="math inline">\(u_1\)</span>, with parameters <span class="math inline">\((\kappa, \tau \kappa_1^{-\nu}, \nu)\)</span> and a base model <span class="math inline">\(u_0\)</span> with parameters <span class="math inline">\((\kappa_0, \tau \kappa_0^{-\nu})\)</span>, where <span class="math inline">\(\kappa_0\)</span> is some fixed, small number and <span class="math inline">\(\tau &gt;0\)</span> is fixed. We will actually be interested in the behaviour of the KL divergence as <span class="math inline">\(\kappa_0\)</span> goes to zero. Why? Well we will talk about base models in the next section. And then you’ll know why. Please have some patience.</p>
+<p>The specific choice of standard deviation in both models ensures that <span class="math inline">\(\kappa^{2\nu}\sigma^2 = \kappa_0^{2\nu}\sigma_0^2\)</span> and so the KL divergence is finite.</p>
+<p>In order to approximate the KL divergence, we are going to find a basis that simultaneously diagonalises both processes. In the paper, we simply declared that we could do this. And, morally, we can. But as I said a blog aims to a higher standard than mere morality. Here we strive for meaningless rigour.</p>
+<p>To that end, we are going to spend a moment thinking about how this can be done in a way that isn’t intrinsically tied to a given domain <span class="math inline">\(D\)</span>. There may well be a lot of different ways to do this, but the most obvious one is to notice that if <span class="math inline">\(u(\cdot)\)</span> is <em>periodic</em> on the cube <span class="math inline">\([-L,L]^d\)</span> for some <span class="math inline">\(L \gg 0\)</span>, then it can be considered as a GP on a <span class="math inline">\(d\)</span>-dimensional torus.</p>
+<p>A nice thing about periodic GPs is that we actually know their Karhunen-Loève<a href="#fn90" class="footnote-ref" id="fnref90" role="doc-noteref"><sup>90</sup></a> representation. In particular, if <span class="math inline">\(c_p(\cdot)\)</span> is a stationary covariance function on a torus, then we know that it’s eigenfunctions are <span class="math display">\[
+\phi_k(s) = e^{-\frac{2\pi i}{L} k^Th}, \quad k \in \mathbb{Z}^d
+\]</span> and its eigenvalues are <span class="math display">\[
+\lambda_k = \int_{\mathbb{T}^d} e^{-\frac{2\pi i}{L} k^Th} c_p(h)\,dh.
+\]</span> This gives<a href="#fn91" class="footnote-ref" id="fnref91" role="doc-noteref"><sup>91</sup></a> <span class="math display">\[
+c_p(h) = \left(\frac{2\pi}{L}\right)^d \sum_{k \in \mathbb{Z}^d}\lambda_k  e^{-\frac{2\pi i}{L} k^Th}.
+\]</span></p>
+<p>Now we have some work to do. Firstly, our process is not periodic on <span class="math inline">\(\mathbb{R}^d\)</span>. That’s a bit of a barrier. Secondly, even if it were, we don’t actually know what <span class="math inline">\(\lambda_k\)</span> is going to be. This is probably<a href="#fn92" class="footnote-ref" id="fnref92" role="doc-noteref"><sup>92</sup></a> an issue.</p>
+<p>So let’s make this sucker periodic. The trick is to note that, at long enough distances, <span class="math inline">\(u(s)\)</span> and <span class="math inline">\(u(s')\)</span> are almost uncorrelated. In particular, if <span class="math inline">\(\|s - s'| \gg \ell\)</span>, then <span class="math inline">\(\operatorname{Cov}(u(s), u(s')) \approx 0\)</span>. This means that if we are interested in <span class="math inline">\(u(\cdot)\)</span> on a fixed domain <span class="math inline">\(D\)</span>, then we can replace it with <span class="math inline">\(u_p(s)\)</span> that is a GP where the covariance function <span class="math inline">\(c_p(\cdot)\)</span> is the periodic extension of <span class="math inline">\(c(h)\)</span> from <span class="math inline">\([-L,L]^d\)</span> to <span class="math inline">\(\mathbb{R}^d\)</span> (aka we just repeat it!).</p>
+<p>This repetition won’t be noticed on <span class="math inline">\(D\)</span> as long as <span class="math inline">\(L\)</span> is big enough. But we can run into the small<a href="#fn93" class="footnote-ref" id="fnref93" role="doc-noteref"><sup>93</sup></a> problem. This procedure can lead to a covariance function <span class="math inline">\(c_p(\cdot)\)</span> that is <em>not</em> positive definite. Big problem.</p>
+<p>It turns out that one way to fix this is is to use a smooth cutoff function <span class="math inline">\(\delta(h)\)</span> that is 1 on <span class="math inline">\([-L,L]^d\)</span> and 0 outside of <span class="math inline">\([-\gamma,\gamma]^d\)</span>, where <span class="math inline">\(L&gt;0\)</span> is big enough so that <span class="math inline">\(D \subset [-L, L]^d\)</span> and <span class="math inline">\(\gamma &gt; L\)</span>. We can then build the periodic extension of a stationary covariance function <span class="math inline">\(c(\cdot)\)</span> as <span class="math display">\[
+c_p(h) = \sum_{k \in \mathbb{Z}^d}c(x + 2Lk)\delta(x + 2 Lk).
+\]</span> It’s important<a href="#fn94" class="footnote-ref" id="fnref94" role="doc-noteref"><sup>94</sup></a> to note that this is not the same thing as simply repeating the covariance function in a periodic manner. Near the boundaries (but outside of the domain) there will be some “wrap-around” contamination. <a href="https://arxiv.org/abs/1603.05559">Bachmayr, Cohen, and Migliorati</a> show that this <em>does not work</em> for general stationary covariance functions, but does work under the additional condition that <span class="math inline">\(\gamma\)</span> is big enough and there exist some <span class="math inline">\(s \geq r &gt; d/2\)</span> and <span class="math inline">\(0 &lt; \underline{C} \leq \overline{C} &lt; \infty\)</span> such that <span class="math display">\[
+\underline{C}(1 + \|\omega\|^2)^{-s} \leq f(\omega)\leq \overline{C}(1 + \|\omega\|^2)^{-r}.
+\]</span> This condition obviously holds for the Matérn covariance function and <a href="https://arxiv.org/abs/1905.13522">Bachmayr, Graham, Nguyen, and Scheichl</a><a href="#fn95" class="footnote-ref" id="fnref95" role="doc-noteref"><sup>95</sup></a> showed that <span class="math inline">\(\gamma &gt; A(\nu)\ell\)</span> is sufficient to make this work.</p>
+<p>The nice thing about this procedure is that <span class="math inline">\(c_p(s-s') = c(s-s')\)</span> as long as <span class="math inline">\(s, s' \in D\)</span>, which means that our inference is going to be <em>identical</em> on our sample as it would be with the non-periodic covariance function! Splendid!</p>
+<p>Now that we have made a valid periodic extension (and hence we know what the eigenfunctions are), we need to work out what the corresponding eigenvalues are.</p>
+<p>We know that <span class="math display">\[
+\int_{\mathbb{R}^d} e^{-\frac{\pi i}{L}k^Th}c(h)\,dh = f\left(\frac{\pi}{L}k\right).
+\]</span> But it is not clear what will happen when we take the Fourier transform of <span class="math inline">\(c_p(\cdot)\)</span>.</p>
+<p>Thankfully, the convolution theorem is here to help us and we know that, if <span class="math inline">\(\theta(s) = 1 - \delta(s)\)</span>, then <span class="math display">\[
+\int_{\mathbb{R}^d} e^{-\frac{\pi i}{L}k^Th}(c(h) - c_p(h))\,dh = (\hat{\theta}*f)\left(\frac{\pi}{L}k\right),
+\]</span> where <span class="math inline">\(*\)</span> is the convolution operator.</p>
+<p>In the perfect world, <span class="math inline">\((\hat{\theta}*f)(\omega)\)</span> would be very close to zero, so we can just replace the Fourier transform of <span class="math inline">\(c_p\)</span> with the Fourier transform of <span class="math inline">\(c\)</span>. And thank god we live in a perfect world.</p>
+<p>The specifics here are a bit tedious<a href="#fn96" class="footnote-ref" id="fnref96" role="doc-noteref"><sup>96</sup></a>, but you can show that <span class="math inline">\((\hat{\theta}*f)(\omega) \rightarrow 0\)</span> as <span class="math inline">\(\gamma \rightarrow \infty\)</span>. For Matérn fields, Bachmayr etc performed some heroic calculations to show that the difference is exponentially small as <span class="math inline">\(\gamma \rightarrow \infty\)</span> and that, as long as <span class="math inline">\(\gamma &gt; A(\nu) \ell\)</span>, everything is positive definite and lovely.</p>
+<p>So after a bunch of effort and a bit of a literature dive, we have finally got a simultaneous eigenbasis and we can write our KL divergene as <span class="math display">\[\begin{align*}
+\operatorname{KL}(u_1 || u_0) &amp;= \frac{1}{2} \sum_{\omega \in \frac{2\pi}{L}\mathbb{Z}}\left[\frac{f_1(\omega)}{f_0(\omega)} - 1 - \log \left(\frac{f_1(\omega)}{f_0(\omega)}\right)\right] \\
+&amp;= \frac{1}{2} \sum_{\omega \in \frac{2\pi}{L}\mathbb{Z}}\left[\frac{(\kappa_0^2 + \|\omega\|^2)^\alpha}{(\kappa^2 + \|\omega\|^2)^\alpha} - 1 - \log \left(\frac{(\kappa_0^2 + \|\omega\|^2)^\alpha}{(\kappa^2 + \|\omega\|^2)^\alpha} \right)\right].
+\end{align*}\]</span> We can write this as <span class="math display">\[
+\operatorname{KL}(u_1 || u_0) =\frac{1}{2} \left(\frac{L \kappa}{2\pi}\right)^d \sum_{\omega \in \frac{2\pi}{L}\mathbb{Z}}\left(\left[\frac{(\kappa_0^2 + \|\omega\|^2)^\alpha}{(\kappa^2 + \|\omega\|^2)^\alpha} - 1 - \log \left(\frac{(\kappa_0^2 + \|\omega\|^2)^\alpha}{(\kappa^2 + \|\omega\|^2)^\alpha} \right)\right]\left(\frac{2\pi}{L \kappa}\right)^d\right).
+\]</span> Then, noticing that the sum is just a trapesium rule approximation to an integrand, we get, as <span class="math inline">\(\kappa_0 \rightarrow 0\)</span> (and hence <span class="math inline">\(L, \gamma\rightarrow \infty\)</span>), <span class="math display">\[
+\operatorname{KL}(u_1 || u_0) = \frac{1}{2} \left(\frac{L \kappa}{2\pi}\right)^d \int_{\mathbb{R}^d}\left[\frac{((\kappa_0/\kappa)^2 + \|\omega\|^2)^\alpha}{(1 + \|\omega\|^2)^\alpha} - 1 - \log \left(\frac{((\kappa_0/\kappa)^2 + \|\omega\|^2)^\alpha}{(1 + \|\omega\|^2)^\alpha} \right)\right] + o(1).
+\]</span> The integral converges whenever <span class="math inline">\(d \leq 3\)</span>.</p>
+<p>This suggests that we can rescale the distance by absorbing the <span class="math inline">\((L/(2\pi^d))\)</span> into the constant in the PC prior, and get <span class="math display">\[
+d(\kappa) = \kappa^{d/2}.
+\]</span></p>
+</section>
+<section id="the-pc-prior-for-sigma-ell" class="level3">
+<h3 class="anchored" data-anchor-id="the-pc-prior-for-sigma-ell">The PC prior for <span class="math inline">\((\sigma, \ell)\)</span></h3>
+<p>Here goes the PC prior scaling stuff and justification of the base model.</p>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>The most common feedback was “I hung in for as long as I could”.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>If you don’t think we’re gonna get our Maccabees on you’re dreamin’. Hell, I might have to post Enoch-ussy on main.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>you might just need to trust me at some points<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>It could be easily more complex with multilevel component, multiple GPs, time series components etc etc. But the simplest example is a GP regression.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>The GP has mean zero for the same reason we usually centre our covariates: it lets the intercept model the overall mean.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Not just the likelihood but also everything else in the model<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>A challenge with reference priors is that they are often improper (aka they don’t integrate to 1). This causes some conceptual difficulties, but there is a whole theory of Bayes that’s mostly fine with this as long as the resulting posterior integrates to one. But this is by no means guaranteed and is typically only checked in very specific cases. Jim Berger, one of the bigger proponents of reference prior, used to bring his wife to conference poster sessions. When she got bored, she would simply find a grad student and ask them if they’d checked if the posterior was proper. Sometimes you need to make your own fun.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Hope has no place in statistics.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>Remember that any number on the logit scale outside of <span class="math inline">\([-3,3]\)</span> might as well be the same number<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p><code>log(.Machine$integer.max) = 21.48756</code><a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p><span class="math inline">\(e^5 \approx 148\)</span>, so 70% of the prior mass is less than that. 90% of the prior mass is less than <span class="math inline">\(e^{10} \approx 22026\)</span> and 99% is less than <span class="math inline">\(10^{13}\)</span>. This is still a weak prior.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>Conceptually. The mathematics of what happens as <span class="math inline">\(\ell \rightarrow 0\)</span> aren’t really worth focusing on.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>It’s going to turn out that we don’t have to do anything weird, but I don’t want to discount the posibility.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>Or, you know, linear functionals<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>You can find Bayesians who say that they don’t care if cross validation works or not. You can find Bayesians who will say just about anything.<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>There are lots of parameterisations, but they’re all easy to move between. Compared to wikipedia, we use the <span class="math inline">\(\sqrt{8}\)</span> scaling rather than the <span class="math inline">\(\sqrt{2}\)</span> scaling.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>Everything in this post can be easily generalised to having different length scales on each dimension.<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p>If you’ve not run into these before, <span class="math inline">\(x^{\nu}K_\nu(x)\)</span> is <a href="https://functions.wolfram.com/Bessel-TypeFunctions/BesselK/06/01/04/01/03/">finite at zero</a> and decreases monotonically in an exponential-ish fashion as <span class="math inline">\(x\rightarrow \infty\)</span>.<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>Possibly trying several values and either selecting the best or stacking all of the models<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20"><p>Field because by rights GPs with multidimensional parameter spaces should be called <em>Gaussian Fields</em> but we can’t have nice things so whatever. Live your lives.<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21"><p>At which point you need to ask yourself if one goes their faster. It’s chaos.<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn22"><p>Asymptotics as copaganda.<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn23"><p>I mean, if you can repeat experiments that’s obviously amazing, but there are lots of situations where that is either not possible or not the greatest use of resources. There’s an interesting subfield of statistical earth sciences that focuses on working out the value of getting new types of observations in spatial data. This particular variant of the value of information problem throws up some fun corners.<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24"><p>or hoping<a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn25"><p>in 3 or fewer dimensions<a href="#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn26"><p>I have not fact checked this<a href="#fnref26" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn27"><p>Basically everything you care about. Feel free to google the technical definition. But any space with a metric is locally convex. Lots of things that aren’t metric spaces are too.<a href="#fnref27" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn28"><p>measurable<a href="#fnref28" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn29"><p>This will seem a bit weird if it’s the first time you’ve seen the concept. In finite dimensions (aka most of statistics) <em>every</em> Gaussian is equivalent to every other Gaussian. In fact, it’s equivalent to every other continuous distribution with non-zero density on the whole of <span class="math inline">\(\mathbb{R}^d\)</span>. But shit gets weird when you’re dealing with functions and we just need to take a hit of the video head cleaner and breathe until we get used to it.<a href="#fnref29" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn30"><p>These measures <em>are not the same</em>. They just happen to be non-zero on the same sets.<a href="#fnref30" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn31"><p>eg, computationally where Metropolis-Hastings acceptance probabilities have an annoying tendency to go to zero unless you are extraordinarily careful.<a href="#fnref31" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn32"><p>if it exists<a href="#fnref32" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn33"><p>This can be interpreted as the event that <span class="math inline">\(|\hat\theta_n - \theta_0| &gt; 0\)</span> infinity many times which would strongly suggest that it’s not bloody converging.<a href="#fnref33" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn34"><p>or even many<a href="#fnref34" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn35"><p>Technically, a recent paper in JRSSSB said that if you add an iid Gaussian process you will get identifiability, but that’s maybe not the most realistic asymptotic approximation.<a href="#fnref35" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn36"><p>The fourth dimension is where mathematicians go to die<a href="#fnref36" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn37"><p>It’s computationally pretty expensive to plot the whole likelihood surface, so I’m just doing it along lines<a href="#fnref37" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn38"><p><code>partial</code> freezes a few parameter values, and <code>possibly</code> replaces any calls that return an error with an NA<a href="#fnref38" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn39"><p>That I could find<a href="#fnref39" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn40"><p>Saddle up for some spectral theory.<a href="#fnref40" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn41"><p>I’m terribly sorry.<a href="#fnref41" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn42"><p>I’m moderately sure that the preprint is pretty similar to the published version but I am not going to check.<a href="#fnref42" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn43"><p>With this parameterisation it’s sometimes known as a Type-II Gumbel distribution. Because why not.<a href="#fnref43" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn44"><p>In fact, it’s isotropic, which is a stricter condition on most spaces. But there’s no real reason to specialise to isotropic processes so we simply won’t.<a href="#fnref44" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn45"><p>We are assuming that the mean is zero, but absent that assumption, we need to assume that the mean is constant.<a href="#fnref45" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn46"><p>For non-Gaussian processes, this property is known as <em>second-order</em> stationarity. For GPs this corresponds to stong stationary, which is a property of the distribution rather than the covariance functio <a href="#fnref46" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn47"><p>If you’ve been exposed to the concept of ergodicity of random fields you may be eligible for compensation.<a href="#fnref47" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn48"><p>Possibly with varying length scales or some other form of anisotropy<a href="#fnref48" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn49"><p>This is normalisation is to make my life easier.<a href="#fnref49" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn50"><p>Let’s not lie, I just jumped straight to complex numbers. Some of you are having flashbacks.<a href="#fnref50" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn51"><p>Fourier-Stieljes<a href="#fnref51" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn52"><p>countably additive set-valued function. Like a probability but it doesn’t have to total to one<a href="#fnref52" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn53"><p>and complexify<a href="#fnref53" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn54"><p>or a Cameron-Martin space<a href="#fnref54" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn55"><p>That is, this measure bullshit isn’t just me pretending to be smart. It’s necessary.<a href="#fnref55" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn56"><p>Feeling annoyed by a reparameterisation this late in the blog post? Well tough. I’ve got to type this shit out and if I had to track all of those <span class="math inline">\(\sqrt{8\nu}\)</span>s I would simply curl up and die.<a href="#fnref56" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn57"><p>In my whole damn life I have never successfully got the constant correct, so maybe check that yourself. But truly it does not matter. All that matters for the purposes of this post is the density as a function of <span class="math inline">\((\omega, \sigma,\kappa)\)</span>.<a href="#fnref57" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn58"><p>This is not restricted to being Gaussian, but for all intents and porpoises it is.<a href="#fnref58" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn59"><p>Countably additive set-valued function taking any value in <span class="math inline">\(\mathbb{C}\)</span><a href="#fnref59" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn60"><p><span class="math inline">\(\nu\)</span>-measurable<a href="#fnref60" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn61"><p><span class="math inline">\(A \cap B = \emptyset\)</span><a href="#fnref61" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn62"><p>If <span class="math inline">\(Z_\nu(A)\)</span> is also Gaussian then this is the same as them being independent<a href="#fnref62" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn63"><p>This is the technical term for this type of function because mathematicians weren’t hugged enough as children.<a href="#fnref63" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn64"><p>for a particular value of “any”<a href="#fnref64" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn65"><p>for a particular value of “ordinary”<a href="#fnref65" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn66"><p>Well enough for a statistician anyway. You can look it up the details but if you desperately need to formalise it, you build an isomorphism between <span class="math inline">\(\operatorname{span}\{u(s), s \in \mathbb{R}^d\}\)</span> and <span class="math inline">\(\operatorname{span}\{e^{i\omega^Ts}, s \in \mathbb{R}^d\}\)</span> and use that to construct <span class="math inline">\(W\)</span>. It’s not <em>wildly</em> difficult but it’s also not actually interesting except for mathturbatory reasons.<a href="#fnref66" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn67"><p>Non-Gaussian!<a href="#fnref67" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn68"><p>On more spaces, the same construction still works. Just use whatever Fourier transform you have available.<a href="#fnref68" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn69"><p>or stochastic processes<a href="#fnref69" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn70"><p>Yes, it’s a stochastic process over some <span class="math inline">\(\sigma\)</span>-algebra of sets in my definition. <em>Sometimes</em> people use <span class="math display">\[
+\tilde{Z}_\nu(s) = Z_\nu((-\infty, s_1]\times\cdots \times (-\infty, s_d])
+\]</span> as the spectral process and interpret the integrals as Lebesgue-Stieltjes integrals. All power to them! So cute! It makes literally no difference and truly I do not think it makes anything easier. By the time you’re like “you know what, I reckon Stieltjes integrals are the way to go” you’ve left “easier” a few miles back. You’ve still got to come up with an appropriate concept of an integral.<a href="#fnref70" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn71"><p>Also known as the Reproducing Kernel Hilbert Space even though it doesn’t actually have to be one. This is the space of all means. See the previous GP blog.<a href="#fnref71" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn72"><p>closure of the<a href="#fnref72" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn73"><p>In <a href="https://dansblog.netlify.app/posts/2021-11-03-yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness/yes-but-what-is-a-gaussian-process-or-once-twice-three-times-a-definition-or-a-descent-into-madness.html">the previous post</a>, I wrote this in terms of the inverse of the covariance operator. For a stationary operator, the covariance operator is (by the convolution theorem) <span class="math display">\[
+Ch(s) = \int_{\mathbb{R}}e^{i\omega s}\hat{h}(\omega) f(\omega)\,d\omega
+\]</span> and it should be pretty easy to convince yourself that <span class="math display">\[
+C^{-1}h(s) = \int_{\mathbb{R}}e^{i\omega s}\hat{h}(\omega) \frac{1}{f(\omega)}\,d\omega.
+\]</span><a href="#fnref73" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn74"><p>ie one where we can represent functions using a Fourier series rather than a Fourier transform<a href="#fnref74" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn75"><p>ie one with an inner product<a href="#fnref75" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn76"><p>Bogachev’s Gaussian Measures book, Corollary 6.4.11 with some interpretation work to make it slightly more human-readable. I also added the minus sign he missed in the density.<a href="#fnref76" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn77"><p>Recall that this is the integral operator <span class="math inline">\(C_1 f = \int_D c_1(x,x')f(x')\,d x'\)</span>.<a href="#fnref77" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn78"><p>Because of condition 1 if it’s in one of them it’s in the other too!<a href="#fnref78" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn79"><p>Technically, they are an orthonormal basis in the closure of <span class="math inline">\(\{\ell -\mu(\ell) : \ell \in X^* \}\)</span> under the <span class="math inline">\(R_{u_1}\)</span> norm, but let’s just be friendly to ourselves and pretend <span class="math inline">\(u_j\)</span> have zero mean so these spaces are the same. The theorem is very explicit about what they are. If <span class="math inline">\(\phi_k\)</span> are the (<span class="math inline">\(X\)</span>-orthonormal) eigenfunctions corresponding to <span class="math inline">\(\delta_k\)</span>, then <span class="math display">\[
+\eta_k = \int_\mathbb{R}^d C_1^{1/2}\phi_k(s)\,dW_1(s),
+\]</span> where <span class="math inline">\(W_1(s)\)</span> is the spectral process associated with <span class="math inline">\(u_1\)</span>. Give or take, this the same thing I said in the main text.<a href="#fnref79" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn80"><p>After reading all of that, let me tell you that it simply does not matter even a little bit.<a href="#fnref80" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn81"><p>Yes - this is Mercer’s theorem again. The only difference is that we are assuming that the eigenfunctions are the same for each <span class="math inline">\(j\)</span> so they don’t need an index.<a href="#fnref81" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn82"><p><span class="math display">\[\begin{align*}
+C_j^\beta[C_j^{-\beta}h] &amp;= \sum_{m=1}^\infty (\lambda_m^{(j)})^\beta \left\langle\phi_m, \sum_{k=1}^\infty (\lambda_k^{(j)})^{-\beta} \langle\phi_k, h\rangle \phi_k\right\rangle \phi_m \\
+&amp;= \sum_{m=1}^\infty (\lambda_m^{(j)})^\beta\sum_{k=1}^\infty (\lambda_k^{(j)})^{-\beta} \langle\phi_k, h\rangle \left\langle\phi_m,   \phi_k\right\rangle \phi_m \\
+&amp;=\sum_{m=1}^\infty (\lambda_m^{(j)})^\beta (\lambda_m^{(j)})^{-\beta} \langle\phi_m, h\rangle \phi_m \\
+&amp;= h
+\end{align*}\]</span><a href="#fnref82" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn83"><p>You simply cannot make me care enough to prove that we can swap summation and expectation. Of course we bloody can. Also <span class="math inline">\(\mathbb{E}_{\mu_1} \eta_k^2 = 1\)</span>.<a href="#fnref83" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn84"><p>But not impossible. <a href="https://arxiv.org/abs/2005.08904">Kristin Kirchner and David Bolin</a> have done some very nice work on this recently.<a href="#fnref84" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn85"><p>This is a stronger condition than the one in the paper, but it’s a) readily verifiable and b) domain independent.<a href="#fnref85" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn86"><p>This is legitimately quite hard to parse. You’ve got to back-transform their orthogonal basis <span class="math inline">\(g_k\)</span> to an orthogonal basis on <span class="math inline">\(L^2(D)\)</span>, which is where those inverse square roots come from!<a href="#fnref86" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn87"><p>Remember <span class="math inline">\(\kappa = \sqrt{8\nu}\ell^{-1}\)</span> because Daddy hates typing.<a href="#fnref87" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn88"><p>Through the magical power of WolframAlpha or, you know, my own ability to do simple Taylor expansions.<a href="#fnref88" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn89"><p><span class="math inline">\(d-5&lt;-1\)</span><a href="#fnref89" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn90"><p>The other KL. The spicy, secret KL. KL after dark. What Loève but a second-hand Karhunen?<a href="#fnref90" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn91"><p>Specifically, this kinda funky set of normalisation choices that statisticians love to make gives<a href="#fnref91" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn92"><p>We will see that this is not an issue, but you better bloody believe that our JASA paper just breezed the fuck past these issues. Proof by citations that didn’t actually say what we needed them to say but were close enough for government work. Again, this is one of those situations where the thing we are doing is obviously valid, but the specifics (which are unimportant for our situation because we are going to send <span class="math inline">\(\kappa_0\rightarrow 0\)</span> and <span class="math inline">\(L \rightarrow \infty\)</span> in a way that’s <em>much</em> faster than <span class="math inline">\(\kappa_0^{-1}\)</span>) are tedious and, I cannot stress this enough, completely unimportant in this context. But it’s a fucking blog and a blog has fucking integrity that the Journal of the American Fucking Statistical Association does not even almost claim to have. I’ve had some red wine.<a href="#fnref92" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn93"><p>big<a href="#fnref93" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn94"><p>I cannot stress enough that we’re not bloody implementing this scheme, so it’s not even slightly important. Scan on, McDuff.<a href="#fnref94" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn95"><p>Fun fact. I worked in the same department as authors 2 and 4 for a while and they are both very lovely.<a href="#fnref95" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn96"><p>Check out either of the Bachmayr <em>et al.</em> papers if you’re interested.<a href="#fnref96" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2022,
+  author = {Dan Simpson},
+  editor = {},
+  title = {Priors for the Parameters in a {Gaussian} Process},
+  date = {2022-09-22},
+  url = {https://dansblog.netlify.app/2022-09-07-priors5/2022-09-07-priors5.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Dan Simpson. 2022. <span>“Priors for the Parameters in a Gaussian
+Process.”</span> September 22, 2022. <a href="https://dansblog.netlify.app/2022-09-07-priors5/2022-09-07-priors5.html">https://dansblog.netlify.app/2022-09-07-priors5/2022-09-07-priors5.html</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

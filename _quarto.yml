@@ -31,3 +31,4 @@ format:
     theme: ember.scss
     css: styles.css
     include-after-body: plausible.html
+    df-print: paged

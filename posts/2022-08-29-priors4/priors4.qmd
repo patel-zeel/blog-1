@@ -200,7 +200,7 @@ Ok. Let's compute some of these distances!
 The negative binomial distribution is discrete so
 \begin{multline}
 \frac{1}{2}d^2(\alpha) = \sum_{k=1}^\infty \frac{\Gamma(k + \alpha^{-1})}{\Gamma(\alpha^{-1})\Gamma(k+1)}  \left(\frac{\mu}{\mu + \alpha^{-1}}\right)^k \left(\frac{\alpha^{-1}}{\mu + \alpha^{-1}}\right)^{1/\alpha} \\
-\times \left[\log \Gamma(k  +\alpha^{-1}) - \log \Gamma(\alpha^{-1})  - k \log(\mu + \alpha^{-1}) + \alpha^{-1}\log \alpha^{-1} - \alpha^{-1}\log(\mu + \alpha^{-1})  + \mu \right].
+\times \left[\log \Gamma(k  +\alpha^{-1}) - \log \Gamma(\alpha^{-1})  - k \log(\mu + \alpha^{-1})\right. \\ \left. + \alpha^{-1}\log \left(\alpha^{-1}(\mu + \alpha^{-2})\right)  + \mu \right].
 \end{multline}
 This has two problems: I can't work out what it is and it might^[It also might not. I don't care to work it out.] end up depending on $\mu$.
 
@@ -208,10 +208,10 @@ Thankfully we can use our alternative representation of the negative binomial to
 note that $u_i \sim \text{Gamma}(\alpha^{-1}, \alpha^{-1})$ and so we could just
 as well consider $u_i$ the model component that we want to penalise the complexity of.
 In this case we need the KL divergence^[The "easy" way to get this is to use the fact that the Gamma is in the exponential family and use the general formula for KL divergences in exponential families. The easier way is to look it up on Wikipedia] [between Gamma distributions](https://en.wikipedia.org/wiki/Gamma_distribution#Kullback–Leibler_divergence)
-\begin{multline}
-\operatorname{KL}(\text{Gamma}(a^{-1},a^{-1}) || \text{Gamma}(b^{-1},b^{-1})) = (a^{-1}-b^{-1}) \psi(a^{-1}) - \log\Gamma(a^{-1}) + \log\Gamma(b^{-1}) \\
-+ b^{-1}(\log a^{-1} - \log b^{-1}) + b^{-1}-a^{-1},
-\end{multline}
+\begin{align*}
+\operatorname{KL}(\text{Gamma}(a^{-1},a^{-1}) || \text{Gamma}(b^{-1},b^{-1})) =& (a^{-1}-b^{-1}) \psi(a^{-1}) \\ &\quad- \log\Gamma(a^{-1}) + \log\Gamma(b^{-1}) \\ &\quad
++ b^{-1}(\log a^{-1} - \log b^{-1})\\ &\quad + b^{-1}-a^{-1},
+\end{align*}
 where $\psi(a)$ is the [digamma function](https://en.wikipedia.org/wiki/Digamma_function).
 
 As $b\rightarrow 0$, the KL divergence becomes^[Using [asymptotic expansions](https://functions.wolfram.com/GammaBetaErf/LogGamma/06/03/) for the log of a Gamma function at infinity]
@@ -266,7 +266,7 @@ In our original paper, we computed the distance for the degrees of freedom numer
 However, [Yongqiang Tang](https://arxiv.org/pdf/1811.08042.pdf) derived an
 analytic expression for it.
 $$
-d(\nu) = \sqrt{1 + \log \left(\frac{2}{\nu-2}\right) + 2 \log\left(\frac{\Gamma((\nu+1)/2)}{\Gamma(\nu/2)}\right) - (\nu + 1)(\psi((\nu+1)/2) - \psi(\nu/2))}.
+d(\nu) = \sqrt{1 +  \log\left(\frac{2\Gamma((\nu+1)/2)^2}{(\nu-2)\Gamma(\nu/2)^2}\right) - (\nu + 1)(\psi((\nu+1)/2) - \psi(\nu/2))}.
 $$
 
 If we note that 
