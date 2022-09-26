@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dan Simpson">
-<meta name="dcterms.date" content="2022-09-22">
+<meta name="dcterms.date" content="2022-09-28">
 <meta name="description" content="If you’re not a machine learner, Gaussian processes need priors on their parameters. Like everything else to do with Gaussian processes, this can be delicate. This post works through some options.">
 
 <title>Un garçon pas comme les autres (Bayes) - Priors for the parameters in a Gaussian process</title>
@@ -218,7 +218,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">September 22, 2022</p>
+        <p class="date">September 28, 2022</p>
       </div>
     </div>
       
@@ -962,7 +962,7 @@ C^{-1}h(s) = \int_{\mathbb{R}}e^{i\omega s}\hat{h}(\omega) \frac{1}{f(\omega)}\,
 <li id="fn77"><p>Recall that this is the integral operator <span class="math inline">\(C_1 f = \int_D c_1(x,x')f(x')\,d x'\)</span>.<a href="#fnref77" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn78"><p>Because of condition 1 if it’s in one of them it’s in the other too!<a href="#fnref78" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn79"><p>Technically, they are an orthonormal basis in the closure of <span class="math inline">\(\{\ell -\mu(\ell) : \ell \in X^* \}\)</span> under the <span class="math inline">\(R_{u_1}\)</span> norm, but let’s just be friendly to ourselves and pretend <span class="math inline">\(u_j\)</span> have zero mean so these spaces are the same. The theorem is very explicit about what they are. If <span class="math inline">\(\phi_k\)</span> are the (<span class="math inline">\(X\)</span>-orthonormal) eigenfunctions corresponding to <span class="math inline">\(\delta_k\)</span>, then <span class="math display">\[
-\eta_k = \int_\mathbb{R}^d C_1^{1/2}\phi_k(s)\,dW_1(s),
+\eta_k = \int_{\mathbb{R}^d} C_1^{1/2}\phi_k(s)\,dW_1(s),
 \]</span> where <span class="math inline">\(W_1(s)\)</span> is the spectral process associated with <span class="math inline">\(u_1\)</span>. Give or take, this the same thing I said in the main text.<a href="#fnref79" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn80"><p>After reading all of that, let me tell you that it simply does not matter even a little bit.<a href="#fnref80" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn81"><p>Yes - this is Mercer’s theorem again. The only difference is that we are assuming that the eigenfunctions are the same for each <span class="math inline">\(j\)</span> so they don’t need an index.<a href="#fnref81" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
@@ -991,13 +991,13 @@ C_j^\beta[C_j^{-\beta}h] &amp;= \sum_{m=1}^\infty (\lambda_m^{(j)})^\beta \left\
   author = {Dan Simpson},
   editor = {},
   title = {Priors for the Parameters in a {Gaussian} Process},
-  date = {2022-09-22},
-  url = {https://dansblog.netlify.app/2022-09-07-priors5/2022-09-07-priors5.html},
+  date = {2022-09-28},
+  url = {https://dansblog.netlify.app/posts/2022-09-07-priors5/priors5.html},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
 Dan Simpson. 2022. <span>“Priors for the Parameters in a Gaussian
-Process.”</span> September 22, 2022. <a href="https://dansblog.netlify.app/2022-09-07-priors5/2022-09-07-priors5.html">https://dansblog.netlify.app/2022-09-07-priors5/2022-09-07-priors5.html</a>.
+Process.”</span> September 28, 2022. <a href="https://dansblog.netlify.app/posts/2022-09-07-priors5/priors5.html">https://dansblog.netlify.app/posts/2022-09-07-priors5/priors5.html</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
