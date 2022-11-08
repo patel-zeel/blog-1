@@ -15,64 +15,7 @@
 <link>https://dansblog.netlify.app/index.html</link>
 </image>
 <generator>quarto-1.2.15</generator>
-<lastBuildDate>Sun, 06 Nov 2022 13:00:00 GMT</lastBuildDate>
-<item>
-  <title>Piss queen with an anal rising</title>
-  <dc:creator>Dan Simpson</dc:creator>
-  <link>https://dansblog.netlify.app/posts/2022-11-05-causual-gps/casual_gps.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>I am not a causal queen. I’m sorry. I love you all. I love your horrendous notation. I love your uncheckable conditions. I get positively giddy when someone says “efficient”. I love youse all.</p>
-<p>But I am not a causal queen.</p>
-<p>So, of course, I’m going to foolishly spend a few thousand words on some causal-adjacent topics. Because, my brothers nad sisters in Christ, if you like using things like Gaussian processes and multilevel models (and I like using things like Gaussian processes), you need to think a lot more about this stuff than you do if you’re just doing regression models.</p>
-<p>I guess, most of all, this bit can be read as a disclaimer. But we shall see.</p>
-<section id="the-problem" class="level2">
-<h2 class="anchored" data-anchor-id="the-problem">The problem</h2>
-<p>One of the most common tasks in statistics is linear<sup>1</sup> regression: the fine art of putting a straight line through some data. This typically takes the form <img src="https://latex.codecogs.com/png.latex?%0Ay_i%20%5Csim%20N(%5Cbeta_0%20+%20%5Cbeta_1%20x_%7B1i%7D%20+%20%5Cbeta_2%20x_%7B2i%7D%20+%20%5Ccdots%20+%20%5Cbeta_p%20x_%7Bpi%7D,%20%5Csigma%5E2),%0A"> where <img src="https://latex.codecogs.com/png.latex?%5Cbeta_0"> is the intercept, <img src="https://latex.codecogs.com/png.latex?%5Cbeta_j"> is the weight of the covariate <img src="https://latex.codecogs.com/png.latex?x_j">, and <img src="https://latex.codecogs.com/png.latex?%5Csigma"> is a thing that no one cares about until<sup>2</sup> they need a p-value.</p>
-<p>We <em>all</em> know how to interpret <img src="https://latex.codecogs.com/png.latex?%5Cbeta_j">: it is the amount we expect the average of <img src="https://latex.codecogs.com/png.latex?y_i"> to change if we increase <img src="https://latex.codecogs.com/png.latex?x_j"> by one unit <em>and leave everything else fixed</em>. That is <img src="https://latex.codecogs.com/png.latex?%0A%5Cbeta_j%20=%20%5Cmathbb%7BE%7D(y%20%5Cmid%20X_j%20=%20x_j+1,%20X_%7B-j%7D%20=%20x_%7B-j%7D)%20-%20%5Cmathbb%7BE%7D(y%20%5Cmid%20X%20=%20x).%0A"></p>
-<p>That has not, does not, and will not stop people from interpreting <img src="https://latex.codecogs.com/png.latex?%5Cbeta_j"> any damn way they please.</p>
-<p>The whole reason that we have causal analysis is that this quantity isn’t really very interesting. It is … unusual … to be able to change only one variable in your regression. For example if <img src="https://latex.codecogs.com/png.latex?x_1"> and <img src="https://latex.codecogs.com/png.latex?x_2"> are correlated, changing <img src="https://latex.codecogs.com/png.latex?x_1"> will necessarily change <img src="https://latex.codecogs.com/png.latex?x_2">. So instead we want the <em>unconditional</em> equivalent of <img src="https://latex.codecogs.com/png.latex?%5Cbeta_j">, which is the quantity <img src="https://latex.codecogs.com/png.latex?%0A%5Cmathbb%7BE%7D(y%20%5Cmid%20X_j%20=%20x_j+1)%20-%20%5Cmathbb%7BE%7D(y%20%5Cmid%20X_j%20=%20x_j).%0A"></p>
-<p>(If you’ve ever wondered if causal analysis is just predictive inference, you can see here that it <em>almost</em> is. The difference is that you need to model more than you ordinarily would.)</p>
-<p>This quantity is <em>hard</em> to estimate because it requires us to marginalise<sup>3</sup> the distribution of the other covariates, which I’ll occasionally write as <img src="https://latex.codecogs.com/png.latex?x_%7B-j%7D">.</p>
-<p>To do this, you need some sort of model for the entire<sup>4</sup> joint distribution <img src="https://latex.codecogs.com/png.latex?p(y,%20x)">. This is <em>very</em> hard to do.</p>
-<p>To get around that, all of the causal modelers make some assumptions about the relationships between the covariates and how they relate to the response. Sometimes, people write this as a DAG<sup>5</sup> and all power to them. But just as often, people just write them down, give them soft-sounding names like SUTVA<sup>6</sup>.</p>
-<p>But that’s not really the topic of this post.</p>
-<p>I just want to talk about what happens to the <img src="https://latex.codecogs.com/png.latex?%5Cbeta_j">s when you change your model to <img src="https://latex.codecogs.com/png.latex?%0Ay_i%20%5Cmid%20x_i,%20%5Cbeta,%20u,%20%5Csigma%20%5Csim%20N(x_i%5ET%5Cbeta%20+%20u_i,%20%5Csigma%5E2%20),%0A"> where the random effect <img src="https://latex.codecogs.com/png.latex?u_i%20%5Csim%20N(0,%20Q%5E%7B-1%7D)"> for some matrix <img src="https://latex.codecogs.com/png.latex?Q">.</p>
-
-
-</section>
-
-
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>and logsitic etc but like this is a blog↩︎</p></li>
-<li id="fn2"><p>and even then they do a sneaky <img src="https://latex.codecogs.com/png.latex?%5Csigma%5E2"> estimate. Frequentist statistics is in love with secrets.↩︎</p></li>
-<li id="fn3"><p>average over↩︎</p></li>
-<li id="fn4"><p>This is in direct opposition to regression modelling where you only need a model for the conditional mean <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BE%7D(y%20%5Cmid%20x)"> (or the Bayesian equivalent where you need a model for the conditional distribution <img src="https://latex.codecogs.com/png.latex?p(y%20%5Cmid%20x)">).↩︎</p></li>
-<li id="fn5"><p>TikZ is my passion↩︎</p></li>
-<li id="fn6"><p>The Stable Unit Treatment Value Assumption, which is the assumption that the value of the unit treatment is stable.↩︎</p></li>
-</ol>
-</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{simpson2022,
-  author = {Dan Simpson},
-  editor = {},
-  title = {Piss Queen with an Anal Rising},
-  date = {2022-11-07},
-  url = {https://dansblog.netlify.app/posts/2022-09-07-priors5/priors5.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-simpson2022" class="csl-entry quarto-appendix-citeas">
-Dan Simpson. 2022. <span>“Piss Queen with an Anal Rising.”</span>
-November 7, 2022. <a href="https://dansblog.netlify.app/posts/2022-09-07-priors5/priors5.html">https://dansblog.netlify.app/posts/2022-09-07-priors5/priors5.html</a>.
-</div></div></section></div> ]]></description>
-  <category>Gaussian Processes</category>
-  <guid>https://dansblog.netlify.app/posts/2022-11-05-causual-gps/casual_gps.html</guid>
-  <pubDate>Sun, 06 Nov 2022 13:00:00 GMT</pubDate>
-  <media:content url="https://dansblog.netlify.app/posts/2022-11-05-causual-gps/chair.JPG" medium="image"/>
-</item>
+<lastBuildDate>Mon, 26 Sep 2022 14:00:00 GMT</lastBuildDate>
 <item>
   <title>Priors for the parameters in a Gaussian process</title>
   <dc:creator>Dan Simpson</dc:creator>
