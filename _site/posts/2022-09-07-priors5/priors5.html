@@ -780,14 +780,14 @@ p(\ell, \sigma) = \sigma^{-1}\left(\operatorname{tr}\left[\left(\frac{\partial R
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 38.1 seconds.
-Chain 2 finished in 39.9 seconds.
-Chain 4 finished in 41.2 seconds.
-Chain 3 finished in 43.2 seconds.
+Chain 1 finished in 41.6 seconds.
+Chain 2 finished in 43.4 seconds.
+Chain 4 finished in 44.8 seconds.
+Chain 3 finished in 47.0 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 40.6 seconds.
-Total execution time: 43.3 seconds.</code></pre>
+Mean chain execution time: 44.2 seconds.
+Total execution time: 47.2 seconds.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>fit_ref<span class="sc">$</span><span class="fu">print</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -809,14 +809,14 @@ Total execution time: 43.3 seconds.</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
-Chain 1 finished in 4.4 seconds.
-Chain 4 finished in 4.5 seconds.
-Chain 3 finished in 4.8 seconds.
-Chain 2 finished in 4.9 seconds.
+Chain 1 finished in 4.9 seconds.
+Chain 4 finished in 5.1 seconds.
+Chain 3 finished in 5.4 seconds.
+Chain 2 finished in 5.5 seconds.
 
 All 4 chains finished successfully.
-Mean chain execution time: 4.6 seconds.
-Total execution time: 5.0 seconds.</code></pre>
+Mean chain execution time: 5.2 seconds.
+Total execution time: 5.6 seconds.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>fit_pc<span class="sc">$</span><span class="fu">print</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1025,10 +1025,10 @@ f(\omega) = \sum_{i=1}^{n} f_i 1_{A_i}(\omega),\quad g(\omega) =  \sum_{i=1}^{n}
 \]</span> where <span class="math inline">\(f_i, g_i\in \mathbb{C}\)</span> and the sets <span class="math inline">\(A_i\)</span> are pairwise disjoint and <span class="math inline">\(\bigcup_{i=1}^n A_i = \mathbb{R}^d\)</span>. Then we can define an integral with respect to the <span class="math inline">\(\nu\)</span>-noise as <span class="math display">\[
 \int_{\mathbb{R}^d} f(\omega)\,dZ_\nu(\omega) = \sum_{i=1}^n f_i Z_\nu(A_i),
 \]</span> which has mean <span class="math inline">\(0\)</span> and variance <span class="math display">\[
-\mathbb{E}\left(\int_{\mathbb{R}^d} f(\omega)\,dZ_\nu(\omega)\right)^2 = \sum_{i=1}^n f_i \nu(A_i) = \int_{\mathbb{R}^d}f(\omega)\,d\nu(\omega),
-\]</span> where the last equality comes from the definition of an integral of a piecewise constant function.</p>
+\mathbb{E}\left(\int_{\mathbb{R}^d} f(\omega)\,dZ_\nu(\omega)\right)^2 = \sum_{i=1}^n f_i^2 \nu(A_i) = \int_{\mathbb{R}^d}f(\omega)^2\,d\nu(\omega),
+\]</span> where the first equality comes from noting that <span class="math inline">\(\int_{A_i} \,dZ_v(\omega)\)</span> and <span class="math inline">\(\int_{A_j} \, dZ_v(\omega)\)</span> are uncorrelated and the last equality comes from the definition of an integral of a piecewise constant function.</p>
 <p>Moreover, we get the covariance <span class="math display">\[\begin{align*}
-\mathbb{E}\left(\int_{\mathbb{R}^d} f(\omega)\,dZ_\nu(\omega)\overline{\int_{\mathbb{R}^d} g(\omega)\,dZ_\nu(\omega)}\right)^2 &amp;= \sum_{i=1}^n \sum_{j=1}^n f_i g_j \nu(A_i \cap A_j) \\
+\mathbb{E}\left(\int_{\mathbb{R}^d} f(\omega)\,dZ_\nu(\omega)\overline{\int_{\mathbb{R}^d} g(\omega)\,dZ_\nu(\omega)}\right) &amp;= \sum_{i=1}^n \sum_{j=1}^n f_i g_j \nu(A_i \cap A_j) \\
 &amp;= \sum_{i=1}^n f_i\overline{g}_i \nu(A_i) \\
 &amp;= \int_{\mathbb{R}^d}f(\omega)\overline{g(\omega)}\,d\nu(\omega).
 \end{align*}\]</span></p>
@@ -1106,9 +1106,9 @@ C_1^{-1}C_2 - I.
 \]</span> and so <span class="math display">\[
 \delta_k = \frac{\lambda_k^{(2)} - \lambda_k^{(1)}}{\lambda_k^{(1)}}.
 \]</span> From that, we get<a href="#fn99" class="footnote-ref" id="fnref99" role="doc-noteref"><sup>99</sup></a> the KL divergence <span class="math display">\[\begin{align*}
-\operatorname{KL}(\mu_1 || \mu_2) &amp;= \mathbb{E}_{\mu_1}\log\left(\frac{d\mu_2}{d\mu_2}\right) \\
+\operatorname{KL}(\mu_1 || \mu_2) &amp;= \mathbb{E}_{\mu_1}\log\left(\frac{d\mu_1}{d\mu_2}\right) \\
 &amp;=-\frac{1}{2}\sum_{k=1}^\infty \left(\frac{\delta_k}{1 + \delta_k} - \log(1+\delta_k)\right) \\
-&amp;= \frac{1}{2}\sum_{k=1}^\infty \left[\frac{\lambda_k^{(2)}}{\lambda_k^{(1)}} -1+ \log\left(\frac{\lambda_k^{(2)}}{\lambda_k^{(1)}}\right)\right].
+&amp;= \frac{1}{2}\sum_{k=1}^\infty \left[\frac{\lambda_k^{(1)}}{\lambda_k^{(2)}} -1+ \log\left(\frac{\lambda_k^{(1)}}{\lambda_k^{(2)}}\right)\right].
 \end{align*}\]</span></p>
 <p>Possibly unsurprisingly, this is simply the sum of the one dimensional divergences <span class="math display">\[
 \sum_{k=1}^\infty\operatorname{KL}(N(0,\lambda_k^{(1)}) || N(0,\lambda_k^{(2)})).

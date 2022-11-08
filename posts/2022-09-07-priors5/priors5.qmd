@@ -1009,13 +1009,13 @@ $$
 $$
 which has mean $0$ and variance 
 $$
-\mathbb{E}\left(\int_{\mathbb{R}^d} f(\omega)\,dZ_\nu(\omega)\right)^2 = \sum_{i=1}^n f_i \nu(A_i) = \int_{\mathbb{R}^d}f(\omega)\,d\nu(\omega),
+\mathbb{E}\left(\int_{\mathbb{R}^d} f(\omega)\,dZ_\nu(\omega)\right)^2 = \sum_{i=1}^n f_i^2 \nu(A_i) = \int_{\mathbb{R}^d}f(\omega)^2\,d\nu(\omega),
 $$
-where the last equality comes from the definition of an integral of a piecewise constant function.
+where the first equality comes from noting that $\int_{A_i} \,dZ_v(\omega)$ and $\int_{A_j} \, dZ_v(\omega)$ are uncorrelated and the last equality comes from the definition of an integral of a piecewise constant function.
 
 Moreover, we get the covariance
 \begin{align*}
-\mathbb{E}\left(\int_{\mathbb{R}^d} f(\omega)\,dZ_\nu(\omega)\overline{\int_{\mathbb{R}^d} g(\omega)\,dZ_\nu(\omega)}\right)^2 &= \sum_{i=1}^n \sum_{j=1}^n f_i g_j \nu(A_i \cap A_j) \\
+\mathbb{E}\left(\int_{\mathbb{R}^d} f(\omega)\,dZ_\nu(\omega)\overline{\int_{\mathbb{R}^d} g(\omega)\,dZ_\nu(\omega)}\right) &= \sum_{i=1}^n \sum_{j=1}^n f_i g_j \nu(A_i \cap A_j) \\
 &= \sum_{i=1}^n f_i\overline{g}_i \nu(A_i) \\
 &= \int_{\mathbb{R}^d}f(\omega)\overline{g(\omega)}\,d\nu(\omega).
 \end{align*}
@@ -1165,9 +1165,9 @@ $$
 $$
 From that, we get^[You simply cannot make me care enough to prove that we can swap summation and expectation. Of course we bloody can. Also $\mathbb{E}_{\mu_1} \eta_k^2 = 1$.] the KL divergence 
 \begin{align*}
-\operatorname{KL}(\mu_1 || \mu_2) &= \mathbb{E}_{\mu_1}\log\left(\frac{d\mu_2}{d\mu_2}\right) \\
+\operatorname{KL}(\mu_1 || \mu_2) &= \mathbb{E}_{\mu_1}\log\left(\frac{d\mu_1}{d\mu_2}\right) \\
 &=-\frac{1}{2}\sum_{k=1}^\infty \left(\frac{\delta_k}{1 + \delta_k} - \log(1+\delta_k)\right) \\
-&= \frac{1}{2}\sum_{k=1}^\infty \left[\frac{\lambda_k^{(2)}}{\lambda_k^{(1)}} -1+ \log\left(\frac{\lambda_k^{(2)}}{\lambda_k^{(1)}}\right)\right].
+&= \frac{1}{2}\sum_{k=1}^\infty \left[\frac{\lambda_k^{(1)}}{\lambda_k^{(2)}} -1+ \log\left(\frac{\lambda_k^{(1)}}{\lambda_k^{(2)}}\right)\right].
 \end{align*}
 
 Possibly unsurprisingly, this is simply the sum of the one dimensional divergences 
