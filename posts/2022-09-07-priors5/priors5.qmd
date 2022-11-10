@@ -1368,5 +1368,4 @@ Of course, we don't want the prior on some weird parameterisation (even though w
 $$
 p(\ell, \sigma) = \left[\frac{d}{2}|\log(\alpha_\ell)|L_\ell^{d/2} \ell^{-d/2-1}\exp\left(-|\log(\alpha_\ell)|L_\ell^{d/2} \ell^{-d/2}\right)\right] \times \left[\frac{|\log(\alpha_\sigma)|}{U_\sigma}\exp\left(-\frac{|\log(\alpha_\sigma)|}{U_\sigma}\sigma\right)\right].
 $$
-
 It. Is. Finished.
