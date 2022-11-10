@@ -67,7 +67,7 @@ To build a PC prior we need to consider a base model. That's tricky in generalit
 $$
 p(\sigma) = \lambda e^{-\lambda \sigma},
 $$
-where we choose $\lambda = \log(\alpha)/U$ for some upper bound $U>0$ and some tail probability $0<\alpha<1$ so that 
+where we choose $\lambda = |\log(\alpha)|/U$ for some upper bound $U>0$ and some tail probability $0<\alpha<1$ so that 
 $$
 \Pr(\theta > U) = \alpha.
 $$
